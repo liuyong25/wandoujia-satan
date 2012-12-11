@@ -13,7 +13,7 @@ files = [
   REQUIRE,
   REQUIRE_ADAPTER,
   'app/scripts/vendor/angular.min.js',
-  'test/lib/angular-*.js',
+  'test/lib/angular-mocks.js',
   'test/main.js',
   {pattern: 'app/**/*.js', included: false},
   {pattern: 'test/**/*.js', included: false}
