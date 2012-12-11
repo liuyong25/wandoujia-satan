@@ -3,7 +3,7 @@ define([], function() {
   // jasmine
   describe('something', function() {
     it('should pass', function() {
-      expect(true).toBe(true);
+      expect(true).toBe(false);
     });
   });
 });
