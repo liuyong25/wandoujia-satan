@@ -12,6 +12,8 @@ files = [
   JASMINE_ADAPTER,
   REQUIRE,
   REQUIRE_ADAPTER,
+  'app/scripts/vendor/angular.min.js',
+  'test/lib/angular-*.js',
   'test/main.js',
   {pattern: 'app/**/*.js', included: false},
   {pattern: 'test/**/*.js', included: false}
