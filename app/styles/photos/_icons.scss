@@ -1,0 +1,42 @@
+@import "photos/*.png";
+$icon-height: 20px;
+
+$full-icons-list: add, calendar, del, dl, share, close-toolbar;
+$single-icons-list: del-toolbar, dl-toolbar, share-toolbar, date;
+$all-icons-list: join($full-icons-list, $single-icons-list);
+
+@each $icon in $all-icons-list {
+    // sprite meta
+    $sprite-name: $icon;
+    $sprite-width: photos-sprite-width($sprite-name);
+    $sprite-height: photos-sprite-height($sprite-name);
+    // icon class directly populated in namespace
+    i.photos-icon-#{$icon} {
+        @include inline-block;
+        width: $sprite-width;
+        height: $sprite-height;
+        margin: ($icon-height - $sprite-height) / 2 0;
+        @include photos-sprite($sprite-name);
+        vertical-align: top;
+        @include hide-text;
+    }
+}
+@each $icon in $full-icons-list {
+    // sprite meta
+    $sprite-name: $icon;
+    $sprite-width: photos-sprite-width($sprite-name);
+    $sprite-height: photos-sprite-height($sprite-name);
+    %has-icon-#{$icon} {
+        cursor: pointer;
+        width: $sprite-width;
+        height: $icon-height;
+        &:hover, &:focus {
+            i.photos-icon-#{$icon} {
+                @include photos-sprite(#{$sprite-name}_h);
+            }
+        }
+        &:active i.photos-icon-#{$icon} {
+            @include photos-sprite(#{$sprite-name}_p);
+        }
+    }
+}

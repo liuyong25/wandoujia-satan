@@ -1,0 +1,47 @@
+.block {
+    position: absolute;
+    background: #fff;
+    border-radius: 3px;
+    @include box-shadow(0 1px 0 1px rgba(0, 0, 0, 0.15));
+
+    .photo {
+        margin: 5px;
+        overflow: hidden;
+    }
+
+    $actions-height: 26px;
+    &.block-active {
+        .actions {
+            height: $actions-height;
+        }
+    }
+    .actions {
+        @include transition(height 0.2s);
+        @include transition-delay(0.3s);
+        @include clearfix;
+        height: 0;
+        padding-right: 5px;
+
+        .action-select {
+            @include float-left;
+            margin: 0;
+            width: $actions-height;
+            height: $actions-height;
+            text-align: center;
+        }
+        %action {
+            @include float-right;
+            $padding-top: ($actions-height - $icon-height) / 2;
+            padding: $padding-top 5px $padding-top 7px;
+        }
+        .action-delete {
+            @extend %action, %has-icon-del;
+        }
+        .action-download {
+            @extend %action, %has-icon-dl;
+        }
+        .action-share {
+            @extend %action, %has-icon-share;
+        }
+    }
+}

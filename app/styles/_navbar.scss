@@ -1,0 +1,61 @@
+// Global Navbar.
+// Basic styles are modified in bootstrap submodule.
+@import "navbar/*.png";
+.navbar {
+    .brand {
+        margin: 0;
+    }
+    .nav {
+        $item-padding: 30px;
+        & > li > a {
+            padding-left: $item-padding;
+            padding-right: $item-padding;
+        }
+        &.nav-global {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            margin-left: -(navbar-sprite-width(img) + $item-padding * 2) * 4 / 2;
+        }
+    }
+
+    // logo & icons
+    %icon {
+        @include inline-block;
+        @include hide-text;
+        line-height: 0;
+    }
+    i.navbar-logo {
+        @extend %icon;
+        @include navbar-sprite(logo);
+        width: navbar-sprite-width(logo);
+        height: navbar-sprite-height(logo);
+        $margin: (20px - navbar-sprite-height(logo)) / 2 - 2px;
+        margin: $margin 0;
+    }
+    @each $icon in app, contact, img, sms, setting {
+        i.navbar-icon-#{$icon} {
+            @extend %icon;
+            @include navbar-sprite($icon);
+            $margin: (20px - navbar-sprite-height($icon)) / 2 - 1px;
+            width: navbar-sprite-width($icon);
+            height: navbar-sprite-height($icon);
+            margin-top: $margin;
+            margin-bottom: $margin;
+        }
+        .nav > .active > a {
+            &, &:hover, &:focus {
+                i.navbar-icon-#{$icon} {
+                    @include navbar-sprite(#{$icon}_sel);
+                }
+            }
+        }
+        .nav > li > a {
+            &:hover, &:focus {
+                i.navbar-icon-#{$icon} {
+                    @include navbar-sprite(#{$icon}_sel);
+                }
+            }
+        }
+    }
+}

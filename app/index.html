@@ -14,17 +14,51 @@
         <script src="scripts/vendor/modernizr.min.js"></script>
     </head>
     <body>
-    <div class="container" style="margin-top:50px">
-        <div class="hero-unit">
-            <h1>Wotcha!</h1>
-            <p>You now have</p>
-            <ul>
-                <li>HTML5 Boilerplate</li>
-                <li>Twitter Bootstrap</li>
-                <li>RequireJS</li>
+    <div class="navbar navbar-fixed-bottom navbar-inverse">
+        <div class="navbar-inner">
+            <a class="brand"><i class="navbar-logo">Wandoujia</i></a>
+            <ul class="nav nav-global">
+                <li  class="active"><a href=""><i class="navbar-icon-img"></i></a></li>
+                <li><a href=""><i class="navbar-icon-sms"></i></a></li>
+                <li><a href=""><i class="navbar-icon-contact"></i></a></li>
+                <li><a href=""><i class="navbar-icon-app"></i></a></li>
             </ul>
-            <p>installed.</p>
-            <h3>Enjoy coding! - Yeoman</h3>
+            <ul class="nav pull-right nav-actions">
+               <li><a href=""><i class="navbar-icon-setting"></i></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="timeline-container">
+            <div class="showcases-container">
+                <div class="showcase showcase-today" style="min-height: 300px;">
+                    <span class="date">今天<i class="photos-icon-date"></i></span>
+                    <div class="block block-active">
+                        <div class="photo" style="width:200px; height: 100px; "></div>
+                        <div class="actions">
+                            <label class="action-select"><input type="checkbox"></label>
+                            <a class="action-share" href="" ><i class="photos-icon-share"></i></a>
+                            <a class="action-download" href=""><i class="photos-icon-dl"></i></a>
+                            <a class="action-delete" href=""><i class="photos-icon-del"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase">
+                    <span class="date">昨天<i class="photos-icon-date"></i></span>
+                </div>
+            </div>
+            <div class="actions-container">
+                <a class="action-pick-date"><i class="photos-icon-calendar"></i></a>
+                <a class="action-upload-photo"><i class="photos-icon-add"></i></a>
+                <div class="toolbar">
+                    <span class="counter">5</span>
+                    <label class="action-select-all"><input type="checkbox"></label>
+                    <a href="" class="action-delete"><i class="photos-icon-del-toolbar"></i></a>
+                    <a href="" class="action-download"><i class="photos-icon-dl-toolbar"></i></a>
+                    <a href="" class="action-share"><i class="photos-icon-share-toolbar"></i></a>
+                    <a href="" class="action-close-toolbar"><i class="photos-icon-close-toolbar"></i></a>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -43,12 +77,14 @@
 
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+<!--
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
+-->
 
     <!-- build:js scripts/amd-app.js -->
     <script data-main="scripts/main" src="scripts/vendor/require.js"></script>

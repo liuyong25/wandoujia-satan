@@ -1,0 +1,57 @@
+.toolbar {
+    $toolbar-height: 43px;
+    $click-height: 30px;
+    $border-radius: 4px;
+    position: fixed;
+    left: -$border-radius;
+    top: 40px;
+    padding-left: $border-radius;
+    height: $toolbar-height;
+    border-radius: $border-radius;
+    @include background-image(linear-gradient(#f6f6f6, #f5f5f5));
+    @include box-shadow(0 2px 5px rgba(0,0,0,0.4), inset 0 1px #fff);
+    @include transform3d(translateX(-100%));
+    @include transition(all 0.2s);
+    &.toolbar-active { @include transform3d(translateX(0)); }
+
+    %tool { @include float-left; }
+    .counter {
+        @extend %tool;
+        $height: 20px;
+        height: $height;
+        padding: 0 6px;
+        margin: ($toolbar-height - $height) / 2 0 0 26px;
+        border-radius: 3px;
+        @include box-shadow(0 1px rgba(255,255,255,0.15), inset 0 1px 1px rgba(0,0,0,0.5));
+        @include background-image(linear-gradient(#646464, #707070));
+        font-size: 12px;
+        color: #fff;
+        @include text-shadow(0 1px 0 1px rgba(0,0,0,0.35));
+        text-align: center;
+    }
+    .action-select-all {
+        @extend %tool;
+        padding: 5px 9px;
+        margin: ($toolbar-height - $click-height) / 2 - 3px 0 0 17px;
+    }
+    %tool-extra {
+        @extend %tool;
+        @include background-image(linear-gradient(#7bbe19, #5d9b02));
+        padding: ($toolbar-height - $icon-height) / 2 5px;
+    }
+    .action-delete {
+        @extend %tool-extra;
+        padding-left: 10px;
+        margin-left: 10px;
+    }
+    .action-download { @extend %tool-extra; }
+    .action-share {
+        @extend %tool-extra;
+        padding-right: 10px;
+    }
+    .action-close-toolbar {
+        @extend %tool, %has-icon-close-toolbar;
+        padding: ($click-height - photos-sprite-width(close-toolbar)) / 2;
+        margin: ($toolbar-height - $click-height) / 2 - 1px 0 0 0;
+    }
+}

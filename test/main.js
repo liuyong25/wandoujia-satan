@@ -1,3 +1,4 @@
+
 require.config({
   baseUrl: '/base/app/scripts',
   shim: {

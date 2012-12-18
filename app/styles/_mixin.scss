@@ -1,0 +1,16 @@
+@mixin ui-layer-top {
+    // greater than bootstrap FixedNavbar, less than bootstrap ModalDrop
+    z-index: 1031;
+}
+@mixin ui-layer-content-top($z: 900) {
+    // below all bootstrap ui components
+    @if $z < 900 {
+        z-index: 900;
+    }
+    @else if $z > 999 {
+        z-index: 999;
+    }
+    @else {
+        z-index: $z;
+    }
+}
