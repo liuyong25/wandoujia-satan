@@ -28,24 +28,10 @@
             </ul>
         </div>
     </div>
-    <div class="container-fluid">
+    <div data-ng-cloak class="container-fluid">
         <div class="timeline-container">
-            <div class="showcases-container">
-                <div class="showcase showcase-today" style="min-height: 300px;">
-                    <span class="date">今天<i class="photos-icon-date"></i></span>
-                    <div class="block block-active">
-                        <div class="photo" style="width:200px; height: 100px; "></div>
-                        <div class="actions">
-                            <label class="action-select checkbox inline"><input type="checkbox"></label>
-                            <a class="action-share" href="" ><i class="photos-icon-share"></i></a>
-                            <a class="action-download" href=""><i class="photos-icon-dl"></i></a>
-                            <a class="action-delete" href=""><i class="photos-icon-del"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="showcase">
-                    <span class="date">昨天<i class="photos-icon-date"></i></span>
-                </div>
+            <div class="showcases-container" ng-init="list = [1, 2, 3, 4]">
+                <div wd-showcase ng-repeat="d in list" data-date="2012"></div>
             </div>
             <div class="actions-container">
                 <a class="action-pick-date"><i class="photos-icon-calendar"></i></a>

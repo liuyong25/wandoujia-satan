@@ -1,6 +1,10 @@
 // Variables
 $global-line-height: 20px;
 
+
+// http://docs.angularjs.org/api/ng.directive:ngCloak
+[ng\:cloak], [ng-cloak], .ng-cloak { display: none; }
+
 body {
     background: image-url("bg-pattern.png");
 }
