@@ -12,9 +12,10 @@
         width: 5px;
         background: #d7d7d7;
     }
-    @import "icons";
-    @import "actions";
-    @import "toolbar";
-    @import "showcase";
+    @import "icons";    // all icon sprites
+    @import "actions";  // photos actions
+    @import "toolbar";  // photos toolbar
+    @import "showcase"; // showcase consists of group of photos
+    @import "block";    // each photos is contained in a block
 }
 

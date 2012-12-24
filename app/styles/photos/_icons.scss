@@ -1,23 +1,30 @@
 @import "photos/*.png";
-$icon-height: 20px;
+$icon-height: $global-line-height;
 
-$full-icons-list: add, calendar, del, dl, share, close-toolbar;
-$single-icons-list: del-toolbar, dl-toolbar, share-toolbar, date;
-$all-icons-list: join($full-icons-list, $single-icons-list);
+// icons have hover & active style
+$full-icons-list  : "add", "calendar", "del", "dl", "share", "close-toolbar";
+// icons only have one style at any situation
+$single-icons-list: "del-toolbar", "dl-toolbar", "share-toolbar", "date";
+$all-icons-list   : join($full-icons-list, $single-icons-list);
 
 @each $icon in $all-icons-list {
     // sprite meta
-    $sprite-name: $icon;
-    $sprite-width: photos-sprite-width($sprite-name);
+    $sprite-name  : $icon;
+    $sprite-width : photos-sprite-width($sprite-name);
     $sprite-height: photos-sprite-height($sprite-name);
     // icon class directly populated in namespace
     i.photos-icon-#{$icon} {
-        @include inline-block;
-        width: $sprite-width;
-        height: $sprite-height;
-        margin: ($icon-height - $sprite-height) / 2 0;
         @include photos-sprite($sprite-name);
+        // constrain icon dimensions for preventing sprites leaking
+        @include box($sprite-width, $sprite-height);
+        // ensure icon margin edge from top to bottom is computed just equals the global line height
+        @include inline-block;
+        $margin-all   : $icon-height - $sprite-height;
+        $margin-top   : round($margin-all / 2);
+        $margin-bottom: $margin-all - $margin-top;
+        margin: $margin-top 0 $margin-bottom;
         vertical-align: top;
+        // for accessibility
         @include hide-text;
     }
 }
@@ -28,8 +35,7 @@ $all-icons-list: join($full-icons-list, $single-icons-list);
     $sprite-height: photos-sprite-height($sprite-name);
     %has-icon-#{$icon} {
         cursor: pointer;
-        width: $sprite-width;
-        height: $icon-height;
+        @include box($sprite-width, $sprite-height);
         &:hover, &:focus {
             i.photos-icon-#{$icon} {
                 @include photos-sprite(#{$sprite-name}_h);

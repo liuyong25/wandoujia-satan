@@ -10,11 +10,7 @@
     }
 
     $actions-height: 26px;
-    &.block-active {
-        .actions {
-            height: $actions-height;
-        }
-    }
+    &.block-active .actions { height: $actions-height; }
     .actions {
         @include transition(height 0.2s);
         @include transition-delay(0.3s);
@@ -24,15 +20,12 @@
 
         .action-select {
             @include float-left;
-            margin: 0;
-            width: $actions-height;
-            height: $actions-height;
-            text-align: center;
+            padding-left: 25px;
         }
         %action {
             @include float-right;
             $padding-top: ($actions-height - $icon-height) / 2;
-            padding: $padding-top 5px $padding-top 7px;
+            padding: $padding-top 6px;
         }
         .action-delete {
             @extend %action, %has-icon-del;

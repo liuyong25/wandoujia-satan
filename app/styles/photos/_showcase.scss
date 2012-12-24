@@ -1,12 +1,10 @@
 .showcases-container {
     .showcase {
-        position: relative;
+        @include position-container;
         padding: 0 106px 0 30px;
         .date {
-            position: absolute;
-            top: 50px;
-            left: -80px;
-            width: 60px;
+            @include box(60px);
+            @include offset(-80px, 50px);
             font-size: 12px;
             text-align: right;
             @include text-shadow(#fff 0 1px);
@@ -16,7 +14,6 @@
                 right: -20px - photos-sprite-width(date) / 2 + 3px;
             }
         }
-        @import "block";
     }
     // .showcase-today .action-upload-photo {
     //     @extend %has-icon-add;

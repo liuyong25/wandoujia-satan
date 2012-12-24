@@ -1,9 +1,6 @@
 .actions-container {
-    width: 0;
-    height: 0;
-    position: fixed;
-    left: 77px;
-    top: 0;
+    @include box(0, 0);
+    @include fix(77px, 0);
 
     $action-width: photos-sprite-width(add);
     $action-height: photos-sprite-height(add);
@@ -17,11 +14,10 @@
         top: 25px + $action-width + $action-padding * 2;
     }
     %action {
-        position: absolute;
-        left: 0;
+        @include offset(0);
         $padding-top: $action-padding + ($action-height - $icon-height) / 2;
         $padding-left: $action-padding;
         padding: $padding-top $padding-left;
-        margin: (-$action-padding - $action-height / 2) 0 0 (-$action-padding - $action-width / 2);
+        margin: (-$action-padding - $action-height / 2) (-$action-padding - $action-width / 2);
     }
 }

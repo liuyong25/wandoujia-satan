@@ -1,7 +1,7 @@
-@import "bootstrap";
+@import "bootstrap";    // mostly bootstrap in css form
 
-@import "compass";
-@import "mixin";
-@import "base";
-@import "navbar";
-@import "photos/main";
+@import "compass";      // compass
+@import "mixin";        // custom mixins & functions
+@import "base";         // platform level styles
+@import "navbar";       // platform level navbar
+@import "photos/main";  // photos module styles
