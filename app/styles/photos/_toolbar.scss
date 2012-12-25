@@ -9,7 +9,11 @@
     @include box-shadow(0 2px 5px rgba(0,0,0,0.4), inset 0 1px #fff);
     @include transform3d(translateX(-100%));
     @include transition(all 0.2s);
-    &.toolbar-active { @include transform3d(translateX(0)); }
+    @include transition-delay(0.2s);
+    &.toolbar-active {
+        @include transform3d(translateX(0));
+        @include transition-delay(0);
+    }
 
     %tool { @include float-left; }
     .counter {

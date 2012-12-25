@@ -29,16 +29,16 @@
         </div>
     </div>
     <div data-ng-cloak class="container-fluid">
-        <div class="timeline-container">
-            <div class="showcases-container" ng-controller="galleryController">
+        <div class="timeline-container" ng-controller="galleryController">
+            <div class="showcases-container">
                 <div ng-repeat="s in [1,2]" wd-showcase data-date="2012" data-photos="photos"></div>
             </div>
             <div class="actions-container">
                 <a class="action-pick-date"><i class="photos-icon-calendar"></i></a>
                 <a class="action-upload-photo"><i class="photos-icon-add"></i></a>
-                <div class="toolbar -toolbar-active">
-                    <span class="counter">5</span>
-                    <label class="action-select-all checkbox"><input type="checkbox"></label>
+                <div class="toolbar" ng-class="{'toolbar-active': selectedPhotosCount}">
+                    <span class="counter">{{selectedPhotosCount}}</span>
+                    <label class="action-select-all checkbox"><input type="checkbox" ng-model="selectType" ng-change="selectAll()"></label>
                     <a href="" class="action-delete"><i class="photos-icon-del-toolbar"></i></a>
                     <a href="" class="action-download"><i class="photos-icon-dl-toolbar"></i></a>
                     <a href="" class="action-share"><i class="photos-icon-share-toolbar"></i></a>

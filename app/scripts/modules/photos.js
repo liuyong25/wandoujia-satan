@@ -27,6 +27,40 @@ angular.module('wdPhotos', ['wdResources'])
             });
         });
         $scope.photos = data;
+        $scope.selectedPhotosCount = 0;
+        $scope.selectAll = function() {
+            $scope.$broadcast($scope.selectedPhotosCount > 1 ? 'selectNone' : 'selectAll');
+        };
+        $scope.$on('select', function() {
+            $scope.selectedPhotosCount += 1;
+        });
+        $scope.$on('deselect', function() {
+            $scope.selectedPhotosCount -= 1;
+        });
+    }])
+    .controller('blockController', ['$scope', '$window', function($scope, $window) {
+        $scope.selected = false;
+        $scope.preview = function() {
+            $window.alert(this.photo.id);
+        };
+        $scope.delete = function() {
+            $window.confirm('delete? ' + this.photo.id);
+        };
+        $scope.share = function() {};
+        $scope.download = function() {};
+        $scope.$watch('selected', function(newValue, oldValue) {
+            if (newValue === oldValue) {
+                return;
+            }
+            var eventName = newValue ? 'select' : 'deselect';
+            $scope.$emit(eventName, $scope.photo.id);
+        });
+        $scope.$on('selectAll', function() {
+            $scope.selected = true;
+        });
+        $scope.$on('selectNone', function() {
+            $scope.selected = false;
+        });
     }]);
 
 

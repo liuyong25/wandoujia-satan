@@ -69,7 +69,7 @@ function defaultLayoutAlgorithm(metrics) {
     var height = 0;
     _.each(rows, function(row, i) {
         var left = 0;
-        var top = height + (i ? gapHeight : 0);
+        var top = height;
         _.each(row, function(photo, j) {
             metas.push({
                 id: photo.id,
@@ -86,7 +86,7 @@ function defaultLayoutAlgorithm(metrics) {
             }
             left += gapWidth;
         });
-        height = top + row[0].height + 2 * borderWidth;
+        height = top + row[0].height + 2 * borderWidth + gapHeight;
     });
 
     return {
@@ -95,13 +95,13 @@ function defaultLayoutAlgorithm(metrics) {
     };
 }
 
-var layoutController = ['$scope', function($scope) {
+var layoutController = ['$scope', '$window', function($scope, $window) {
     $scope.relayout = function() {
         $scope.layout = defaultLayoutAlgorithm({
             gapWidth: 20,
-            gapHeight: 15,
-            borderWidth: 1,
-            containerWidth: angular.element('.showcases-container').width(),
+            gapHeight: 35,
+            borderWidth: 5,
+            containerWidth: angular.element('.showcases-container').width() - 106 - 30,
             containerHeight: -1,
             photos: _.map($scope.photos, function(photo) {
                 return {
@@ -113,23 +113,35 @@ var layoutController = ['$scope', function($scope) {
         });
     };
 
-    $scope.createBlockPosition = function(i) {
-        var meta = $scope.layout.metas[i];
+    $scope.createBlockPosition = function() {
+        var meta = $scope.layout.metas[this.$index];
         return {
-            left: meta.x,
+            left: meta.x + 30,
             top: meta.y
         };
     };
-    $scope.createPhotoDimensions = function(i) {
-        var meta = $scope.layout.metas[i];
+    $scope.createPhotoDimensions = function() {
+        var meta = $scope.layout.metas[this.$index];
         return {
             width: meta.width,
-            height: meta.height - (170-138)
+            height: meta.height
+        };
+    };
+    $scope.createImagePosition = function() {
+        var meta = $scope.layout.metas[this.$index];
+        return {
+            left: meta.innerX,
+            top: meta.innerY
+        };
+    };
+    $scope.createDatePosition = function() {
+        return {
+            top: $scope.layout.metas[0].height / 2 - 20 / 2
         };
     };
 }];
 
-return ['$window', function($window) {
+return [function() {
     return {
         restrict: 'EA',
         replace: true,
@@ -147,17 +159,7 @@ return ['$window', function($window) {
             var relayout = _.debounce(function() {
                 scope.$apply(layout);
             }, 1000);
-            console.log(element);
-            window.ell = element;
-            element.on('click', '.action-share', function() {})
-                .on('click', '.action-download', function() {})
-                .on('click', /*'.action-delete', */function() {
-                    $window.confirm('delete?');
-                })
-                .on('click', '.action-select', function() {})
-                .on('click', 'a', function(e) {
-                    e.preventDefault();
-                });
+
             angular.element(window).on('resize', relayout);
             element.on('$destory', function() {
                 angular.element(window).off('resize', relayout);

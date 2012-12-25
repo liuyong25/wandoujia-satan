@@ -8,6 +8,13 @@
     .photo {
         margin: 5px;
         overflow: hidden;
+        @include position-container;
+        cursor: pointer;
+        img {
+            position: absolute;
+            // revert bootstrap img style
+            max-width: none;
+        }
     }
 
     $actions-height: 26px;
@@ -18,7 +25,7 @@
         }
     }
     .actions {
-        @include transition(height 0.1s linear);
+        @include transition(height 0.1s linear 0.1s);
         @include clearfix;
         height: 0;
         padding-right: 5px;

@@ -1,12 +1,20 @@
 <div class="showcase">
-    <span class="date">{{ date }}<i class="photos-icon-date"></i></span>
-    <div ng-repeat="photo in photos" class="block" ng-style="createBlockPosition($index)">
-        <div class="photo" ng-style="createPhotoDimensions($index)"><img ng-src="{{photo.path}}" alt="{{photo.title}}"></div>
+    <span class="date" ng-style="createDatePosition()">{{date}}<i class="photos-icon-date"></i></span>
+    <div class="block"
+        ng-repeat="photo in photos"
+        ng-style="createBlockPosition()"
+        ng-class="{'block-active': selected}"
+        ng-controller="blockController">
+        <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
+            <img alt="{{photo.title}}"
+                ng-src="{{photo.path}}"
+                ng-style="createImagePosition()">
+        </div>
         <div class="actions">
-            <label class="action-select checkbox inline"><input type="checkbox"></label>
-            <a class="action-share" href=""><i class="photos-icon-share"></i></a>
-            <a class="action-download" href=""><i class="photos-icon-dl"></i></a>
-            <a class="action-delete" href="#"><i class="photos-icon-del"></i></a>
+            <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected"></label>
+            <a class="action-share" href="" ng-click="share()"><i class="photos-icon-share"></i></a>
+            <a class="action-download" href="" ng-click="download()"><i class="photos-icon-dl"></i></a>
+            <a class="action-delete" href="" ng-click="delete()"><i class="photos-icon-del"></i></a>
         </div>
     </div>
 </div>
