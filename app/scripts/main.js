@@ -9,7 +9,7 @@ require.config({
     // lib
     jquery: 'vendor/jquery.wrapper',
     underscore: 'vendor/underscore',
-    angular: 'vendor/angular.wrapper',
+    angular: 'vendor/angular/angular.wrapper',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',

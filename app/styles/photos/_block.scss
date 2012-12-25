@@ -1,4 +1,5 @@
 .block {
+    @include transition(all 0.2s);
     position: absolute;
     background: #fff;
     border-radius: 3px;
@@ -10,16 +11,21 @@
     }
 
     $actions-height: 26px;
-    &.block-active .actions { height: $actions-height; }
+    &.block-active, &:hover {
+        .actions {
+            @include transition(height 0.1s linear 0.2s);
+            height: $actions-height;
+        }
+    }
     .actions {
-        @include transition(height 0.2s);
-        @include transition-delay(0.3s);
+        @include transition(height 0.1s linear);
         @include clearfix;
         height: 0;
         padding-right: 5px;
 
         .action-select {
             @include float-left;
+            padding-top: 2px;
             padding-left: 25px;
         }
         %action {

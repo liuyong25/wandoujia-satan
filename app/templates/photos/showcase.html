@@ -1,12 +1,12 @@
-<div class="showcase" style="min-height: 300px;">
+<div class="showcase">
     <span class="date">{{ date }}<i class="photos-icon-date"></i></span>
-    <div class="block block-active">
-        <div class="photo" style="width:200px; height: 100px; "></div>
+    <div ng-repeat="photo in photos" class="block" ng-style="createBlockPosition($index)">
+        <div class="photo" ng-style="createPhotoDimensions($index)"><img ng-src="{{photo.path}}" alt="{{photo.title}}"></div>
         <div class="actions">
             <label class="action-select checkbox inline"><input type="checkbox"></label>
-            <a class="action-share" href="" ><i class="photos-icon-share"></i></a>
+            <a class="action-share" href=""><i class="photos-icon-share"></i></a>
             <a class="action-download" href=""><i class="photos-icon-dl"></i></a>
-            <a class="action-delete" href=""><i class="photos-icon-del"></i></a>
+            <a class="action-delete" href="#"><i class="photos-icon-del"></i></a>
         </div>
     </div>
 </div>

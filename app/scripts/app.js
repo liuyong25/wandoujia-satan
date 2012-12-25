@@ -6,6 +6,6 @@ define([
         photos
     ) {
     'use strict';
-    angular.bootstrap(document, ['wdjPhotos']);
+    angular.bootstrap(document, ['wdPhotos']);
     return 'Hello from Yeoman!';
 });

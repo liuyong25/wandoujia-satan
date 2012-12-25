@@ -30,13 +30,13 @@
     </div>
     <div data-ng-cloak class="container-fluid">
         <div class="timeline-container">
-            <div class="showcases-container" ng-init="list = [1, 2, 3, 4]">
-                <div wd-showcase ng-repeat="d in list" data-date="2012"></div>
+            <div class="showcases-container" ng-controller="galleryController">
+                <div ng-repeat="s in [1,2]" wd-showcase data-date="2012" data-photos="photos"></div>
             </div>
             <div class="actions-container">
                 <a class="action-pick-date"><i class="photos-icon-calendar"></i></a>
                 <a class="action-upload-photo"><i class="photos-icon-add"></i></a>
-                <div class="toolbar toolbar-active">
+                <div class="toolbar -toolbar-active">
                     <span class="counter">5</span>
                     <label class="action-select-all checkbox"><input type="checkbox"></label>
                     <a href="" class="action-delete"><i class="photos-icon-del-toolbar"></i></a>
