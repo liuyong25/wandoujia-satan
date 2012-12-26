@@ -2,34 +2,30 @@ define([
         'angular',
         'directives/photos/showcase',
         'modules/resources',
-        'underscore'
+        'underscore',
+        'services/photos/photo-group'
     ], function(
         angular,
         showcase,
         resources,
-        _
+        _,
+        PhotoGroup
     ) {
 'use strict';
 
 angular.module('wdPhotos', ['wdResources'])
     .directive('wdShowcase', showcase)
-    .controller('galleryController', ['$scope', 'Photos', function($scope, Photos) {
-        var data = [];
-        _.times(10, function(i) {
-            data.push({
-                id: i,
-                path: 'http://photo.wandoujia.com/photo/thumbnail?token=%2Fimage%2F0d0da66d0450d0fc623ce27e2150cce5&size=height170&expires=1356505644401&signature=pootKauZTkOxTxXCDU%2Bys0EK9Ds%3D',
-                display_name: 'xxxxx',
-                title: 'gum',
-                date_added: Date.now(),
-                width: 285,
-                height: 170
-            });
-        });
-        $scope.photos = data;
+    .factory('PhotoGroup', PhotoGroup)
+    .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', function($scope, Photos, PhotoGroup) {
+        $scope.photos = [];
         $scope.selectedPhotosCount = 0;
+        var photos = Photos.query(function() {
+            $scope.photos = photos;
+            $scope.groups = PhotoGroup.divide(photos);
+console.log($scope.groups);
+        });
         $scope.selectAll = function() {
-            $scope.$broadcast($scope.selectedPhotosCount > 1 ? 'selectNone' : 'selectAll');
+            $scope.$broadcast($scope.selectedPhotosCount === $scope.photos.length ? 'selectNone' : 'selectAll');
         };
         $scope.$on('select', function() {
             $scope.selectedPhotosCount += 1;
@@ -39,7 +35,9 @@ angular.module('wdPhotos', ['wdResources'])
         });
     }])
     .controller('blockController', ['$scope', '$window', function($scope, $window) {
+        // model for select checkbox
         $scope.selected = false;
+        // photo actions
         $scope.preview = function() {
             $window.alert(this.photo.id);
         };
@@ -48,12 +46,11 @@ angular.module('wdPhotos', ['wdResources'])
         };
         $scope.share = function() {};
         $scope.download = function() {};
+        // events
         $scope.$watch('selected', function(newValue, oldValue) {
-            if (newValue === oldValue) {
-                return;
+            if (newValue !== oldValue) {
+                $scope.$emit(newValue ? 'select' : 'deselect', $scope.photo.id);
             }
-            var eventName = newValue ? 'select' : 'deselect';
-            $scope.$emit(eventName, $scope.photo.id);
         });
         $scope.$on('selectAll', function() {
             $scope.selected = true;

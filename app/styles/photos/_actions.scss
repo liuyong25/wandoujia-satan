@@ -7,14 +7,14 @@
     $action-padding: 10px;
     .action-pick-date {
         @extend %action, %has-icon-calendar;
-        top: 25px;
+        @include offset(0, 25px);
     }
     .action-upload-photo {
         @extend %action, %has-icon-add;
-        top: 25px + $action-width + $action-padding * 2;
+        // top: 25px + $action-width + $action-padding * 2;
+        @include offset(-40px, 25px);
     }
     %action {
-        @include offset(0);
         $padding-top: $action-padding + ($action-height - $icon-height) / 2;
         $padding-left: $action-padding;
         padding: $padding-top $padding-left;

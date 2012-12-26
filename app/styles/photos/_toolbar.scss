@@ -8,19 +8,19 @@
     @include background-image(linear-gradient(#f6f6f6, #f5f5f5));
     @include box-shadow(0 2px 5px rgba(0,0,0,0.4), inset 0 1px #fff);
     @include transform3d(translateX(-100%));
-    @include transition(all 0.2s);
-    @include transition-delay(0.2s);
-    &.toolbar-active {
+    opacity: 0;
+    @include transition(all 0.5s);
+    padding-right: 10px;
+    &.toolbar-active, &:hover {
         @include transform3d(translateX(0));
-        @include transition-delay(0);
+        opacity: 1;
     }
 
     %tool { @include float-left; }
     .counter {
-        @extend %tool;
+        @include offset(26px, fill-height($toolbar-height));
         @include box(auto, auto, 3px);
         padding: 0 6px;
-        margin: fill-height($toolbar-height) 0 0 26px;
         @include box-shadow(0 1px rgba(255,255,255,0.15), inset 0 1px 1px rgba(0,0,0,0.5));
         @include background-image(linear-gradient(#646464, #707070));
         font-size: 12px;
@@ -33,12 +33,22 @@
         @extend %tool;
         $padding-top: fill-height($click-height);
         padding: $padding-top 0 $padding-top 25px;
-        margin: fill-height($toolbar-height, $click-height) 0 0 21px;
+        margin: fill-height($toolbar-height, $click-height) 0 0 66px;
     }
     %tool-extra {
         @extend %tool;
         @include background-image(linear-gradient(#7bbe19, #5d9b02));
-        padding: fill-height($toolbar-height) 5px;
+        $fill-padding: fill-height($toolbar-height);
+        $padding-top: ceil($fill-padding);
+        $padding-bottom: floor($fill-padding);
+        padding: $padding-top 5px $padding-bottom;
+        & > i {
+            @include transition(all 0.1s);
+            opacity: 0.8;
+            &:hover {
+                opacity: 1;
+            }
+        }
     }
     .action-delete {
         @extend %tool-extra;

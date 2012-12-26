@@ -1,14 +1,17 @@
 <div class="showcase">
-    <span class="date" ng-style="createDatePosition()">{{date}}<i class="photos-icon-date"></i></span>
+    <span class="date" ng-style="datePosition">{{date}}<i class="photos-icon-date"></i></span>
     <div class="block"
         ng-repeat="photo in photos"
         ng-style="createBlockPosition()"
         ng-class="{'block-active': selected}"
         ng-controller="blockController">
         <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
-            <img alt="{{photo.title}}"
+            <!--
                 ng-src="{{photo.path}}"
-                ng-style="createImagePosition()">
+                ng-style="createImagePosition()"
+             -->
+            <img alt="{{photo.width}}, {{photo.height}}"
+                >
         </div>
         <div class="actions">
             <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected"></label>

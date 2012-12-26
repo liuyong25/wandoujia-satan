@@ -97,11 +97,14 @@ function defaultLayoutAlgorithm(metrics) {
 
 var layoutController = ['$scope', '$window', function($scope, $window) {
     $scope.relayout = function() {
+        if (!$scope.photos.length) {
+            return;
+        }
         $scope.layout = defaultLayoutAlgorithm({
-            gapWidth: 20,
+            gapWidth: 12,
             gapHeight: 35,
             borderWidth: 5,
-            containerWidth: angular.element('.showcases-container').width() - 106 - 30,
+            containerWidth: angular.element('.showcases-container').width() - 20 - 40,
             containerHeight: -1,
             photos: _.map($scope.photos, function(photo) {
                 return {
@@ -111,12 +114,16 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
                 };
             })
         });
+
+        $scope.datePosition = {
+            top: $scope.layout.metas[0].height / 2 - 20 / 2
+        };
     };
 
     $scope.createBlockPosition = function() {
         var meta = $scope.layout.metas[this.$index];
         return {
-            left: meta.x + 30,
+            left: meta.x + 40,
             top: meta.y
         };
     };
@@ -134,11 +141,6 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
             top: meta.innerY
         };
     };
-    $scope.createDatePosition = function() {
-        return {
-            top: $scope.layout.metas[0].height / 2 - 20 / 2
-        };
-    };
 }];
 
 return [function() {
@@ -154,7 +156,9 @@ return [function() {
         link: function(scope, element, attrs) {
             function layout() {
                 scope.relayout();
-                element.height(scope.layout.height);
+                if (scope.layout) {
+                    element.height(scope.layout.height);
+                }
             }
             var relayout = _.debounce(function() {
                 scope.$apply(layout);
@@ -165,7 +169,9 @@ return [function() {
                 angular.element(window).off('resize', relayout);
             });
 
-            layout();
+            scope.$watch('photos', function() {
+                layout();
+            });
         }
     };
 }];
