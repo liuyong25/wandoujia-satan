@@ -22,7 +22,6 @@ angular.module('wdPhotos', ['wdResources'])
         var photos = Photos.query(function() {
             $scope.photos = photos;
             $scope.groups = PhotoGroup.divide(photos);
-console.log($scope.groups);
         });
         $scope.selectAll = function() {
             $scope.$broadcast($scope.selectedPhotosCount === $scope.photos.length ? 'selectNone' : 'selectAll');

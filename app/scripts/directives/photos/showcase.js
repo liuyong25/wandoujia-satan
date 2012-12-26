@@ -10,6 +10,9 @@ define([
 'use strict';
 
 function defaultLayoutAlgorithm(metrics) {
+console.log(metrics);
+    var fixedHeight = metrics.fixedHeight;
+    var minWidth = metrics.minWidth;
     var gapWidth = metrics.gapWidth;
     var gapHeight = metrics.gapHeight;
     var borderWidth = metrics.borderWidth;
@@ -17,53 +20,64 @@ function defaultLayoutAlgorithm(metrics) {
     var photos = metrics.photos;
     var defaultRatio = 3 / 2;
 
-    // Keep each photo by w / h ratio between 1 / defaultRatio to defaultRatio
     _.each(photos, function(photo) {
         photo.originWidth = photo.width;
         photo.originHeight = photo.height;
-        if (photo.width + borderWidth * 2 >= containerWidth) {
-            return;
-        }
         var w = photo.width;
         var h = photo.height;
         var ratio = w / h;
-        if (ratio > defaultRatio) {
-            photo.width = h * defaultRatio;
-        }
-        else if (ratio < 1 / defaultRatio) {
-            photo.height = w * defaultRatio;
-        }
+        h = Math.min(fixedHeight, h);
+        w = Math.max(minWidth, h * ratio);
+        photo.width = w;
+        photo.height = fixedHeight;
     });
 
     var rows = [];
     var row;
     var rowWidth = 0;
-    _.each(photos, function(photo) {
-        if (photo.width + borderWidth * 2 >= containerWidth) {
-            rows.splice(Math.max(0, rows.length - 2), 0, [photo]);
+    var minRowWidth = 0;
+    var photo;
+    for (var i = 0, l = photos.length; i < l; i += 1) {
+        photo = photos[i];
+        if (!rowWidth) {
+            row = [];
+            rows.push(row);
+        }
+        // row.push(photo);
+        minRowWidth += (minRowWidth ? gapWidth : 0) + borderWidth * 2 + minWidth;
+        rowWidth += (rowWidth ? gapWidth : 0) + borderWidth * 2 + photo.width;
+// console[minRowWidth > containerWidth && row.length > 0 ? 'warn' : 'log'](rows.length, i, photo.width, minRowWidth, rowWidth, containerWidth);
+        if (containerWidth < minRowWidth && row.length > 0 ||
+            containerWidth < rowWidth) {
+            // step back
+            i -= 1;
+            rowWidth = minRowWidth = 0;
         }
         else {
-            if (!rowWidth) {
-                rows.push(row = []);
-            }
             row.push(photo);
-            rowWidth += (rowWidth ? gapWidth : 0) + borderWidth * 2 + photo.width;
-            if (rowWidth >= containerWidth) {
-                rowWidth = 0;
-            }
         }
-    });
+    }
     _.each(rows, function(row) {
-        var rowHeight = _.chain(row).pluck('height').min().value();
-        var currentWidth = _.reduce(row, function(memo, photo) { return memo + photo.width; }, 0);
+        // var rowHeight = _.chain(row).pluck('height').min().value();
+        var currentWidth = _.reduce(row, function(memo, photo) {
+            return memo + photo.width;
+        }, 0);
         var availableWidth = containerWidth - (row.length - 1) * gapWidth - row.length * 2 * borderWidth;
         var scale  = availableWidth / currentWidth;
-        _.each(row, function(photo) {
-            if (scale < 1) {
+        if (scale > 1) {
+            _.each(row, function(photo) {
                 photo.width = Math.round(photo.width * scale);
-            }
-            photo.height = rowHeight;
-        });
+            });
+        }
+        else if (scale < 1) {
+            _.chain(row)
+                .filter(function(photo) {
+                    return photo.width > minWidth;
+                })
+                .each(function(photo) {
+                    photo.width = Math.round(photo.width * scale);
+                });
+        }
     });
     var metas = [];
     var height = 0;
@@ -101,6 +115,8 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
             return;
         }
         $scope.layout = defaultLayoutAlgorithm({
+            fixedHeight: 170,
+            minWidth: 120,
             gapWidth: 12,
             gapHeight: 35,
             borderWidth: 5,

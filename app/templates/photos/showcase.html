@@ -8,9 +8,10 @@
         <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
             <!--
                 ng-src="{{photo.path}}"
-                ng-style="createImagePosition()"
              -->
             <img alt="{{photo.width}}, {{photo.height}}"
+                ng-style="createImagePosition()"
+                style="width: {{photo.width}}px; height: {{photo.height}}px;background:#000;"
                 >
         </div>
         <div class="actions">

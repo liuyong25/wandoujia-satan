@@ -1,6 +1,11 @@
 .timeline-container {
-    position: relative;
-    padding: 0 0 90px 60px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 80px;
+    padding: 0 0 10px 80px;
+    overflow: auto;
 
     // time"line", the real one...
     &:before {

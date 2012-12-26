@@ -41,7 +41,7 @@
         $fill-padding: fill-height($toolbar-height);
         $padding-top: ceil($fill-padding);
         $padding-bottom: floor($fill-padding);
-        padding: $padding-top 5px $padding-bottom;
+        padding: $padding-top 8px $padding-bottom;
         & > i {
             @include transition(all 0.1s);
             opacity: 0.8;
@@ -52,13 +52,13 @@
     }
     .action-delete {
         @extend %tool-extra;
-        padding-left: 10px;
+        padding-left: 13px;
         margin-left: 10px;
     }
     .action-download { @extend %tool-extra; }
     .action-share {
         @extend %tool-extra;
-        padding-right: 10px;
+        padding-right: 13px;
     }
     .action-close-toolbar {
         @extend %tool, %has-icon-close-toolbar;

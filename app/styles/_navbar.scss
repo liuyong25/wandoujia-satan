@@ -2,6 +2,15 @@
 // Basic styles are modified in bootstrap submodule.
 @import "navbar/*.png";
 .navbar {
+    &:after {
+        content: "";
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 76px;
+        height: 14px;
+        @include background-image(linear-gradient(top, rgba(235, 235, 235, 0) 0, rgba(235, 235, 235, 1) 10px));
+    }
     .brand {
         margin: 0;
     }

@@ -48,7 +48,7 @@ return [function() {
             });
             var remains = photos.length;
             var groups = [];
-            _(periods).each(function(period, index) {
+            _.each(periods, function(period, index) {
                 var group = {
                     date: period.title,
                     photos: []
