@@ -10,7 +10,6 @@ define([
 'use strict';
 
 function defaultLayoutAlgorithm(metrics) {
-console.log(metrics);
     var fixedHeight = metrics.fixedHeight;
     var minWidth = metrics.minWidth;
     var gapWidth = metrics.gapWidth;
@@ -46,7 +45,7 @@ console.log(metrics);
         // row.push(photo);
         minRowWidth += (minRowWidth ? gapWidth : 0) + borderWidth * 2 + minWidth;
         rowWidth += (rowWidth ? gapWidth : 0) + borderWidth * 2 + photo.width;
-// console[minRowWidth > containerWidth && row.length > 0 ? 'warn' : 'log'](rows.length, i, photo.width, minRowWidth, rowWidth, containerWidth);
+        // console[minRowWidth > containerWidth && row.length > 0 ? 'warn' : 'log'](rows.length, i, photo.width, minRowWidth, rowWidth, containerWidth);
         if (containerWidth < minRowWidth && row.length > 0 ||
             containerWidth < rowWidth) {
             // step back
@@ -57,7 +56,7 @@ console.log(metrics);
             row.push(photo);
         }
     }
-    _.each(rows, function(row) {
+    _.each(rows, function(row, i) {
         // var rowHeight = _.chain(row).pluck('height').min().value();
         var currentWidth = _.reduce(row, function(memo, photo) {
             return memo + photo.width;
@@ -65,9 +64,12 @@ console.log(metrics);
         var availableWidth = containerWidth - (row.length - 1) * gapWidth - row.length * 2 * borderWidth;
         var scale  = availableWidth / currentWidth;
         if (scale > 1) {
-            _.each(row, function(photo) {
-                photo.width = Math.round(photo.width * scale);
-            });
+            // last row should not need scale.
+            if (i !== rows.length - 1) {
+                _.each(row, function(photo) {
+                    photo.width = Math.round(photo.width * scale);
+                });
+            }
         }
         else if (scale < 1) {
             _.chain(row)
@@ -120,7 +122,7 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
             gapWidth: 12,
             gapHeight: 35,
             borderWidth: 5,
-            containerWidth: angular.element('.showcases-container').width() - 20 - 40,
+            containerWidth: angular.element('.showcases-container').width() - 40 - 40,
             containerHeight: -1,
             photos: _.map($scope.photos, function(photo) {
                 return {

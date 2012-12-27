@@ -28,8 +28,8 @@
             </ul>
         </div>
     </div>
-    <div data-ng-cloak class="container-fluid">
-        <div class="timeline-container" ng-controller="galleryController">
+    <div ng-cloak class="container-fluid wdj-photos" ng-controller="galleryController">
+        <div class="timeline-container">
             <div class="showcases-container" ng-repeat="group in groups">
                 <div wd-showcase data-date="{{group.date}}" data-photos="group.photos"></div>
             </div>
@@ -45,6 +45,17 @@
                     <!-- <a href="" class="action-close-toolbar"><i class="photos-icon-close-toolbar"></i></a> -->
                 </div>
             </div>
+        </div>
+        <div class="slides-container" ng-class="{'slides-active': previewId != null}">
+            <div class="photo"></div>
+            <a href="" class="action-previous"><i class="photos-slide-icon-pre"></i></a>
+            <a href="" class="action-next"><i class="photos-slide-icon-next"></i></a>
+            <a href="" class="action-play"><i class="photos-slide-icon-play"></i></a>
+            <a href="" class="action-rotate"><i class="photos-slide-icon-rotate"></i></a>
+            <a href="" class="action-delete"><i class="photos-slide-icon-delete"></i></a>
+            <a href="" class="action-download"><i class="photos-slide-icon-dl"></i></a>
+            <a href="" class="action-share"><i class="photos-slide-icon-share"></i></a>
+            <a href="" class="action-close" ng-click="closePreview()"><i class="photos-slide-icon-close"></i></a>
         </div>
     </div>
 

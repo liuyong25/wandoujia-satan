@@ -5,7 +5,7 @@
         ng-style="createBlockPosition()"
         ng-class="{'block-active': selected}"
         ng-controller="blockController">
-        <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
+        <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview(photo.id)">
             <!--
                 ng-src="{{photo.path}}"
              -->
