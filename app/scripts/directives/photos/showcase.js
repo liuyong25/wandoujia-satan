@@ -9,6 +9,7 @@ define([
     ) {
 'use strict';
 
+// TODO: may cause infinity-loop, need tweak
 function defaultLayoutAlgorithm(metrics) {
     var fixedHeight = metrics.fixedHeight;
     var minWidth = metrics.minWidth;
@@ -42,10 +43,9 @@ function defaultLayoutAlgorithm(metrics) {
             row = [];
             rows.push(row);
         }
-        // row.push(photo);
         minRowWidth += (minRowWidth ? gapWidth : 0) + borderWidth * 2 + minWidth;
         rowWidth += (rowWidth ? gapWidth : 0) + borderWidth * 2 + photo.width;
-        // console[minRowWidth > containerWidth && row.length > 0 ? 'warn' : 'log'](rows.length, i, photo.width, minRowWidth, rowWidth, containerWidth);
+// console[minRowWidth > containerWidth && row.length > 0 ? 'warn' : 'log'](rows.length, i, photo.width, minRowWidth, rowWidth, containerWidth);
         if (containerWidth < minRowWidth && row.length > 0 ||
             containerWidth < rowWidth) {
             // step back
@@ -112,7 +112,7 @@ function defaultLayoutAlgorithm(metrics) {
 }
 
 var layoutController = ['$scope', '$window', function($scope, $window) {
-    $scope.relayout = function() {
+    $scope.relayout = function(containerWidth) {
         if (!$scope.photos.length) {
             return;
         }
@@ -122,7 +122,7 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
             gapWidth: 12,
             gapHeight: 35,
             borderWidth: 5,
-            containerWidth: angular.element('.showcases-container').width() - 40 - 40,
+            containerWidth: containerWidth,
             containerHeight: -1,
             photos: _.map($scope.photos, function(photo) {
                 return {
@@ -161,7 +161,7 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
     };
 }];
 
-return [function() {
+return ['$rootScope', function($rootScope) {
     return {
         restrict: 'EA',
         replace: true,
@@ -173,22 +173,16 @@ return [function() {
         template: template,
         link: function(scope, element, attrs) {
             function layout() {
-                scope.relayout();
+                scope.relayout($rootScope.viewport.width - 120 - 40);
                 if (scope.layout) {
                     element.height(scope.layout.height);
                 }
             }
-            var relayout = _.debounce(function() {
-                scope.$apply(layout);
-            }, 1000);
-
-            angular.element(window).on('resize', relayout);
-            element.on('$destory', function() {
-                angular.element(window).off('resize', relayout);
-            });
-
-            scope.$watch('photos', function() {
-                layout();
+            scope.$watch('photos.length', layout);
+            $rootScope.$watch('viewport.width', function(newWidth, oldWidth) {
+                if (newWidth !== oldWidth) {
+                    layout();
+                }
             });
         }
     };

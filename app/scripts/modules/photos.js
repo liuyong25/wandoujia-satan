@@ -4,27 +4,32 @@ define([
         'modules/resources',
         'underscore',
         'services/photos/photo-group',
-        'directives/loading'
+        'directives/loading',
+        'directives/window-event-watcher'
     ], function(
         angular,
         showcase,
         resources,
         _,
         PhotoGroup,
-        loading
+        loading,
+        windowEventWatcher
     ) {
 'use strict';
 
 angular.module('wdPhotos', ['wdResources'])
+    .directive('wdWindowEventWatcher', windowEventWatcher)
     .directive('wdShowcase', showcase)
     .directive('wdLoading', loading)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', function($scope, Photos, PhotoGroup) {
         $scope.photos = [];
+        $scope.groups = [];
         $scope.selectedPhotosCount = 0;
         $scope.previewPhoto = null;
+        $scope.previewPhotoIndex = null;
         var photos = Photos.query(function() {
-            $scope.photos = [photos[0]];
+            $scope.photos = photos;
             $scope.groups = PhotoGroup.divide($scope.photos);
         });
         $scope.selectAll = function() {
@@ -32,6 +37,7 @@ angular.module('wdPhotos', ['wdResources'])
         };
         $scope.closePreview = function() {
             $scope.previewPhoto = null;
+            $scope.previewPhotoIndex = null;
         };
         $scope.$on('select', function() {
             $scope.selectedPhotosCount += 1;
@@ -39,8 +45,9 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.$on('deselect', function() {
             $scope.selectedPhotosCount -= 1;
         });
-        $scope.$on('preview', function(e, photo) {
+        $scope.$on('preview', function(e, photo, index) {
             $scope.previewPhoto = photo;
+            $scope.previewPhotoIndex = index;
         });
     }])
     .controller('blockController', ['$scope', '$window', function($scope, $window) {
@@ -53,7 +60,7 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.share = function() {};
         $scope.download = function() {};
         $scope.preview = function() {
-            $scope.$emit('preview', this.photo);
+            $scope.$emit('preview', this.photo, this.$index);
         };
         // events
         $scope.$watch('selected', function(newValue, oldValue) {
@@ -67,7 +74,17 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.$on('selectNone', function() {
             $scope.selected = false;
         });
+    }])
+    .controller('slideController', ['$scope', function($scope) {
+        var $parentScope = $scope.$parent;
+        $scope.next = function() {
+            $parentScope.previewPhotoIndex += 1;
+            $parentScope.previewPhoto = $scope.photos[$parentScope.previewPhotoIndex];
+        };
+        $scope.previous = function() {
+                $parentScope.previewPhotoIndex -= 1;
+                $parentScope.previewPhoto = $scope.photos[$parentScope.previewPhotoIndex];
+        };
     }]);
-
 
 });

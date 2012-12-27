@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="styles/main.css">
         <script src="scripts/vendor/modernizr.min.js"></script>
     </head>
-    <body>
+    <body wd-window-event-watcher>
     <div class="navbar navbar-fixed-bottom navbar-inverse">
         <div class="navbar-inner">
             <a class="brand"><i class="navbar-logo">Wandoujia</i></a>
@@ -46,10 +46,23 @@
                 </div>
             </div>
         </div>
-        <div class="slides-container" ng-class="{'slides-active': previewPhoto != null}">
-            <div class="frame"><img ng-src="{{previewPhoto.path}}" alt=""></div>
-            <a href="" class="action-previous"><i class="photos-slide-icon-pre"></i></a>
-            <a href="" class="action-next"><i class="photos-slide-icon-next"></i></a>
+        <div class="slides-container"
+            ng-class="{'slides-active': previewPhoto != null}"
+            ng-controller="slideController">
+            <div class="frame">
+                <!--
+                    ng-src="{{previewPhoto.path}}"
+                 -->
+                <span><span><img alt=""
+                    ng-src="http://wallpaperstate.org/wp-content/gallery/2_wallpapers_wallpaper_07/windows-7-wallpapers-r-ibackgroundz-com_.jpg"
+                    ></span></span>
+            </div>
+            <a href="" class="action-previous"
+                ng-show="previewPhotoIndex > 0"
+                ng-click="previous()"><i class="photos-slide-icon-pre"></i></a>
+            <a href="" class="action-next"
+                ng-show="previewPhotoIndex < photos.length - 1"
+                ng-click="next()"><i class="photos-slide-icon-next"></i></a>
             <a href="" class="action-play"><i class="photos-slide-icon-play"></i></a>
             <a href="" class="action-rotate"><i class="photos-slide-icon-rotate"></i></a>
             <a href="" class="action-delete"><i class="photos-slide-icon-delete"></i></a>

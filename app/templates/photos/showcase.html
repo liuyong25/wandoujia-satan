@@ -7,9 +7,9 @@
         ng-controller="blockController">
         <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
             <!--
-                style="width: {{photo.width}}px; height: {{photo.height}}px;"
              -->
-            <img alt="{{photo.width}}, {{photo.height}}"
+            <img alt="{{photo.thumbnail_width}}, {{photo.thumbnail_height}}"
+                style="width: {{photo.thumbnail_width}}px; height: {{photo.thumbnail_height}}px;background:black"
                 ng-src="{{photo.thumbnail_path}}"
                 ng-style="createImagePosition()"
                 >
