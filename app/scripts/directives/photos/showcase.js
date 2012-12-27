@@ -127,8 +127,8 @@ var layoutController = ['$scope', '$window', function($scope, $window) {
             photos: _.map($scope.photos, function(photo) {
                 return {
                     id: photo.id,
-                    width: photo.width,
-                    height: photo.height
+                    width: photo.thumbnail_width,
+                    height: photo.thumbnail_height
                 };
             })
         });

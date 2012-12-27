@@ -3,32 +3,35 @@ define([
         'directives/photos/showcase',
         'modules/resources',
         'underscore',
-        'services/photos/photo-group'
+        'services/photos/photo-group',
+        'directives/loading'
     ], function(
         angular,
         showcase,
         resources,
         _,
-        PhotoGroup
+        PhotoGroup,
+        loading
     ) {
 'use strict';
 
 angular.module('wdPhotos', ['wdResources'])
     .directive('wdShowcase', showcase)
+    .directive('wdLoading', loading)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', function($scope, Photos, PhotoGroup) {
         $scope.photos = [];
         $scope.selectedPhotosCount = 0;
-        $scope.previewId = null;
+        $scope.previewPhoto = null;
         var photos = Photos.query(function() {
-            $scope.photos = photos;
-            $scope.groups = PhotoGroup.divide(photos);
+            $scope.photos = [photos[0]];
+            $scope.groups = PhotoGroup.divide($scope.photos);
         });
         $scope.selectAll = function() {
             $scope.$broadcast($scope.selectedPhotosCount === $scope.photos.length ? 'selectNone' : 'selectAll');
         };
         $scope.closePreview = function() {
-                $scope.previewId = null;
+            $scope.previewPhoto = null;
         };
         $scope.$on('select', function() {
             $scope.selectedPhotosCount += 1;
@@ -36,8 +39,8 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.$on('deselect', function() {
             $scope.selectedPhotosCount -= 1;
         });
-        $scope.$on('preview', function(photoId) {
-            $scope.previewId = photoId;
+        $scope.$on('preview', function(e, photo) {
+            $scope.previewPhoto = photo;
         });
     }])
     .controller('blockController', ['$scope', '$window', function($scope, $window) {
@@ -50,7 +53,7 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.share = function() {};
         $scope.download = function() {};
         $scope.preview = function() {
-            $scope.$emit('preview', this.photo.id);
+            $scope.$emit('preview', this.photo);
         };
         // events
         $scope.$watch('selected', function(newValue, oldValue) {

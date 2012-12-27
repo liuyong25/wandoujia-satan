@@ -20,7 +20,7 @@
     $actions-height: 26px;
     &.block-active, &:hover {
         .actions {
-            @include transition(height 0.1s linear 0.2s);
+            @include transition(height 0.1s linear 0.1s);
             height: $actions-height;
         }
     }

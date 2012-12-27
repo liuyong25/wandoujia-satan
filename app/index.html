@@ -46,8 +46,8 @@
                 </div>
             </div>
         </div>
-        <div class="slides-container" ng-class="{'slides-active': previewId != null}">
-            <div class="photo"></div>
+        <div class="slides-container" ng-class="{'slides-active': previewPhoto != null}">
+            <div class="frame"><img ng-src="{{previewPhoto.path}}" alt=""></div>
             <a href="" class="action-previous"><i class="photos-slide-icon-pre"></i></a>
             <a href="" class="action-next"><i class="photos-slide-icon-next"></i></a>
             <a href="" class="action-play"><i class="photos-slide-icon-play"></i></a>
@@ -57,6 +57,7 @@
             <a href="" class="action-share"><i class="photos-slide-icon-share"></i></a>
             <a href="" class="action-close" ng-click="closePreview()"><i class="photos-slide-icon-close"></i></a>
         </div>
+        <div class="wd-loading" ng-class="{'wd-loading-hide': photos.length > 0}"></div>
     </div>
 
         <!--[if lt IE 7]>

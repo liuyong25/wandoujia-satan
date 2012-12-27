@@ -17,6 +17,19 @@
         opacity: 1;
     }
 
+    .frame {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        top: 30px;
+        bottom: 80px;
+        text-align: center;
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    }
+
     $actions: "pre", "next", "play", "rotate", "delete", "dl", "share", "close";
     $action-padding: 10px;
     $action-margin: 10px;
@@ -47,8 +60,8 @@
         @extend %has-sprite-pre;
         position: absolute;
         left: 0;
-        top: 0;
-        bottom: 0;
+        top: 80px;
+        bottom: 80px;
         width: 70px;
         i {
             @include offset(50%, 50%);
@@ -59,8 +72,8 @@
         @extend %has-sprite-next;
         position: absolute;
         right: 0;
-        top: 0;
-        bottom: 0;
+        top: 80px;
+        bottom: 80px;
         width: 70px;
         i {
             @include offset(50%, 50%);
@@ -99,5 +112,6 @@
         position: absolute;
         top: 0;
         right: 0;
+        padding: 20px;
     }
 }

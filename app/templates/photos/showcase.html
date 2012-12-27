@@ -5,13 +5,13 @@
         ng-style="createBlockPosition()"
         ng-class="{'block-active': selected}"
         ng-controller="blockController">
-        <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview(photo.id)">
+        <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
             <!--
-                ng-src="{{photo.path}}"
+                style="width: {{photo.width}}px; height: {{photo.height}}px;"
              -->
             <img alt="{{photo.width}}, {{photo.height}}"
+                ng-src="{{photo.thumbnail_path}}"
                 ng-style="createImagePosition()"
-                style="width: {{photo.width}}px; height: {{photo.height}}px;background:#000;"
                 >
         </div>
         <div class="actions">
