@@ -43,10 +43,7 @@ return [function() {
             if (!photos.length) {
                 return;
             }
-            photos = _.sortBy(photos, function(photo) {
-                return photo.date_added;
-            });
-            var remains = photos.length;
+            var pointer = 0;
             var groups = [];
             _.each(periods, function(period, index) {
                 var group = {
@@ -54,12 +51,12 @@ return [function() {
                     photos: []
                 };
                 var photo;
-                while (remains) {
-                    photo = photos[remains - 1];
+                while (pointer < photos.length) {
+                    photo = photos[pointer];
                     if (photo.date_added >= period.start &&
                         photo.date_added <= period.end) {
                         group.photos.push(photo);
-                        remains -= 1;
+                        pointer += 1;
                     }
                     else {
                         break;

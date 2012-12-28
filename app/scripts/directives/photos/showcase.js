@@ -9,7 +9,6 @@ define([
     ) {
 'use strict';
 
-// TODO: may cause infinity-loop, need tweak
 function defaultLayoutAlgorithm(metrics) {
     var fixedHeight = metrics.fixedHeight;
     var minWidth = metrics.minWidth;
@@ -46,14 +45,26 @@ function defaultLayoutAlgorithm(metrics) {
         minRowWidth += (minRowWidth ? gapWidth : 0) + borderWidth * 2 + minWidth;
         rowWidth += (rowWidth ? gapWidth : 0) + borderWidth * 2 + photo.width;
 // console[minRowWidth > containerWidth && row.length > 0 ? 'warn' : 'log'](rows.length, i, photo.width, minRowWidth, rowWidth, containerWidth);
-        if (containerWidth < minRowWidth && row.length > 0 ||
-            containerWidth < rowWidth) {
-            // step back
-            i -= 1;
+        // cw < mw < w, full, drop the last and start a new row
+        if (minRowWidth > containerWidth) {
+            // side case that containerWidth is extremely narrow
+            if (row.length === 0) {
+                row.push(photo);
+            }
+            else {
+                // step back
+                i -= 1;
+            }
             rowWidth = minRowWidth = 0;
         }
+        // mw < w < cw, spare, can contain more
+        else if (rowWidth < containerWidth) {
+            row.push(photo);
+        }
+        // mw < cw < w, full, start a new row
         else {
             row.push(photo);
+            rowWidth = minRowWidth = 0;
         }
     }
     _.each(rows, function(row, i) {
@@ -61,7 +72,9 @@ function defaultLayoutAlgorithm(metrics) {
         var currentWidth = _.reduce(row, function(memo, photo) {
             return memo + photo.width;
         }, 0);
+// console.log(minWidth * row.length, currentWidth);
         var availableWidth = containerWidth - (row.length - 1) * gapWidth - row.length * 2 * borderWidth;
+        var deltaWidth = availableWidth - currentWidth;
         var scale  = availableWidth / currentWidth;
         if (scale > 1) {
             // last row should not need scale.
@@ -72,13 +85,16 @@ function defaultLayoutAlgorithm(metrics) {
             }
         }
         else if (scale < 1) {
-            _.chain(row)
-                .filter(function(photo) {
-                    return photo.width > minWidth;
-                })
-                .each(function(photo) {
-                    photo.width = Math.round(photo.width * scale);
-                });
+            var shrinkablePhoto = _.filter(row, function(photo) {
+                return photo.width > minWidth;
+            });
+            var shrinkablePhotoWidth = _.reduce(shrinkablePhoto, function(sum, photo) {
+                return sum + photo.width;
+            }, 0);
+            var shrinkScale = (shrinkablePhotoWidth + deltaWidth) / shrinkablePhotoWidth;
+            _.each(shrinkablePhoto, function(photo) {
+                photo.width = Math.round(photo.width * shrinkScale);
+            });
         }
     });
     var metas = [];
