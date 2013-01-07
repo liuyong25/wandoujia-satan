@@ -1,0 +1,12 @@
+<div class="actions-container">
+    <!-- <a class="action-pick-date" ng-click="pickDate()"><i class="photos-icon-calendar"></i></a> -->
+    <a class="action-upload-photo" ng-click="upload()"><i class="photos-icon-add"></i></a>
+    <div class="toolbar" ng-class="{'toolbar-active': count}">
+        <span class="counter">{{count}}</span>
+        <label class="action-select-all checkbox"><input type="checkbox" ng-model="selectionType" ng-change="selectAll()"></label>
+        <a href="" class="action-delete" ng-click="onDelete"><i class="photos-icon-del-toolbar"></i></a>
+        <a href="" class="action-download" ng-click="onDownload"><i class="photos-icon-dl-toolbar"></i></a>
+        <a href="" class="action-share" ng-click="onShare"><i class="photos-icon-share-toolbar"></i></a>
+        <!-- <a href="" class="action-close-toolbar"><i class="photos-icon-close-toolbar"></i></a> -->
+    </div>
+</div>

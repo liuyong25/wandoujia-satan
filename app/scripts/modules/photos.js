@@ -4,23 +4,28 @@ define([
         'modules/resources',
         'underscore',
         'services/photos/photo-group',
-        'directives/loading',
-        'directives/window-event-watcher'
+        'modules/bootstrap',
+        'modules/common',
+        'directives/photos/actionbar',
+        'directives/photos/slides'
     ], function(
         angular,
         showcase,
         resources,
         _,
         PhotoGroup,
-        loading,
-        windowEventWatcher
+        bootstrap,
+        common,
+        actionbar,
+        slides
     ) {
 'use strict';
 
-angular.module('wdPhotos', ['wdResources'])
-    .directive('wdWindowEventWatcher', windowEventWatcher)
-    .directive('wdShowcase', showcase)
-    .directive('wdLoading', loading)
+angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
+    .constant('WDP_PLAYING_INTERVAL', 1000)
+    .directive('wdpShowcase', showcase)
+    .directive('wdpActionbar', actionbar)
+    .directive('wdpSlides', slides)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window',
         function($scope, Photos, PhotoGroup, $window) {
@@ -39,10 +44,6 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.selectAll = function() {
             $scope.$broadcast($scope.selectedPhotosCount === $scope.photos.length ? 'selectNone' : 'selectAll');
         };
-        $scope.closePreview = function() {
-            $scope.previewPhoto = null;
-            $scope.previewPhotoIndex = null;
-        };
         $scope.$on('select', function() {
             $scope.selectedPhotosCount += 1;
         });
@@ -58,6 +59,10 @@ angular.module('wdPhotos', ['wdResources'])
         });
         $scope.$on('delete', function(e, photo) {
         });
+
+        $scope.delete = function(photo) {
+            $scope.photos = _.without($scope.photos, photo);
+        };
     }])
     .controller('blockController', ['$scope', '$window', function($scope, $window) {
         // model for select checkbox
@@ -85,17 +90,6 @@ angular.module('wdPhotos', ['wdResources'])
         $scope.$on('selectNone', function() {
             $scope.selected = false;
         });
-    }])
-    .controller('slideController', ['$scope', function($scope) {
-        var $parentScope = $scope.$parent;
-        $scope.next = function() {
-            $parentScope.previewPhotoIndex += 1;
-            $parentScope.previewPhoto = $scope.photos[$parentScope.previewPhotoIndex];
-        };
-        $scope.previous = function() {
-                $parentScope.previewPhotoIndex -= 1;
-                $parentScope.previewPhoto = $scope.photos[$parentScope.previewPhotoIndex];
-        };
     }]);
 
 });

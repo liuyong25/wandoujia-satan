@@ -1,0 +1,23 @@
+<div class="slides-container"
+    ng-class="{'slides-active': current != null}">
+    <div class="frame">
+        <!--
+            ng-src="http://wallpaperstate.org/wp-content/gallery/2_wallpapers_wallpaper_07/windows-7-wallpapers-r-ibackgroundz-com_.jpg"
+         -->
+        <span><span><img alt=""
+            ng-src="{{current.path}}"
+            ></span></span>
+    </div>
+    <a href="" class="action-previous"
+        ng-show="index > 0"
+        ng-click="previous()"><i class="photos-slide-icon-pre"></i></a>
+    <a href="" class="action-next"
+        ng-show="index < photos.length - 1"
+        ng-click="next()"><i class="photos-slide-icon-next"></i></a>
+    <a href="" class="action-play" ng-click="play()"><i class="photos-slide-icon-play"></i></a>
+    <a href="" class="action-rotate"><i class="photos-slide-icon-rotate"></i></a>
+    <a href="" class="action-delete" ng-click="remove()"><i class="photos-slide-icon-delete"></i></a>
+    <a href="" class="action-download"><i class="photos-slide-icon-dl"></i></a>
+    <a href="" class="action-share"><i class="photos-slide-icon-share"></i></a>
+    <a href="" class="action-close" ng-click="close()"><i class="photos-slide-icon-close"></i></a>
+</div>
