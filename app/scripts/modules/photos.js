@@ -7,7 +7,8 @@ define([
         'modules/bootstrap',
         'modules/common',
         'directives/photos/actionbar',
-        'directives/photos/slides'
+        'directives/photos/slides',
+        'services/photos/layout-algorithm'
     ], function(
         angular,
         showcase,
@@ -17,7 +18,8 @@ define([
         bootstrap,
         common,
         actionbar,
-        slides
+        slides,
+        layoutAlgorithm
     ) {
 'use strict';
 
@@ -26,14 +28,17 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .directive('wdpShowcase', showcase)
     .directive('wdpActionbar', actionbar)
     .directive('wdpSlides', slides)
+    .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
-    .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window',
-        function($scope, Photos, PhotoGroup, $window) {
+    .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window', 'wdSharing',
+        function($scope, Photos, PhotoGroup, $window, wdSharing) {
         $scope.photos = [];
         $scope.groups = [];
-        $scope.selectedPhotosCount = 0;
+        $scope.photosPositions = {};
+        $scope.selectedPhotos = [];
         $scope.previewPhoto = null;
         $scope.previewPhotoIndex = null;
+
         var photos = Photos.query(function() {
             $scope.photos = _.sortBy(photos, function(photo) {
                 return -photo.date_added;
@@ -41,55 +46,46 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             // $scope.photos = _.first(photos, 5);  // for debug...
             $scope.groups = PhotoGroup.divide($scope.photos);
         });
-        $scope.selectAll = function() {
-            $scope.$broadcast($scope.selectedPhotosCount === $scope.photos.length ? 'selectNone' : 'selectAll');
+        $scope.isSelected = function(photo) {
+            return _.indexOf($scope.selectedPhotos, photo) >= 0;
         };
-        $scope.$on('select', function() {
-            $scope.selectedPhotosCount += 1;
-        });
-        $scope.$on('deselect', function() {
-            $scope.selectedPhotosCount -= 1;
-        });
-        $scope.$on('preview', function(e, photo, index) {
+        $scope.selectAll = function() {
+            if ($scope.selectedPhotos.length === $scope.photos.length) {
+                $scope.selectedPhotos = [];
+            }
+            else {
+                $scope.selectedPhotos = $scope.photos;
+            }
+        };
+        $scope.select = function(photo) {
+            $scope.selectedPhotos.push(photo);
+        };
+        $scope.deselect = function(photo) {
+            $scope.selectedPhotos.splice(_.indexOf($scope.selectedPhotos, photo), 1);
+        };
+        $scope.preview = function(photo, index) {
             $scope.previewPhoto = photo;
             $scope.previewPhotoIndex = index;
-        });
-        $scope.$on('download', function(e, photo) {
+        };
+        $scope.download = function(photo) {
             $window.open(photo.path);
-        });
-        $scope.$on('delete', function(e, photo) {
-        });
-
+        };
+        $scope.share = function(photo) {
+            wdSharing.weibo(photo);
+        };
         $scope.delete = function(photo) {
-            $scope.photos = _.without($scope.photos, photo);
+            $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+            var group = _.find($scope.groups, function(group) {
+                return _.any(group.photos, function(p) {
+                    return p === photo;
+                });
+            });
+            group.photos.splice(_.indexOf(group.photos, photo), 1);
+            photo.$remove();
         };
-    }])
-    .controller('blockController', ['$scope', '$window', function($scope, $window) {
-        // model for select checkbox
-        $scope.selected = false;
-        // photo actions
-        $scope.delete = function() {
-            $scope.$emit('delete', this.photo, this.$index);
+        $scope.deleteAll = function() {
         };
-        $scope.share = function() {};
-        $scope.download = function() {
-            $scope.$emit('download', this.photo, this.$index);
-        };
-        $scope.preview = function() {
-            $scope.$emit('preview', this.photo, this.$index);
-        };
-        // events
-        $scope.$watch('selected', function(newValue, oldValue) {
-            if (newValue !== oldValue) {
-                $scope.$emit(newValue ? 'select' : 'deselect', $scope.photo.id);
-            }
-        });
-        $scope.$on('selectAll', function() {
-            $scope.selected = true;
-        });
-        $scope.$on('selectNone', function() {
-            $scope.selected = false;
-        });
+        $scope.upload = function() {};
     }]);
 
 });

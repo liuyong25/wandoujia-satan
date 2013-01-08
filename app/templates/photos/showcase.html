@@ -1,24 +1,3 @@
-<div class="showcase">
-    <span class="date" ng-style="datePosition">{{date}}<i class="photos-icon-date"></i></span>
-    <div class="block"
-        ng-repeat="photo in photos"
-        ng-style="createBlockPosition()"
-        ng-class="{'block-active': selected}"
-        ng-controller="blockController">
-        <div class="photo" ng-style="createPhotoDimensions()" ng-click="preview()">
-            <!--
-                style="width: {{photo.thumbnail_width}}px; height: {{photo.thumbnail_height}}px;background:black"
-                ng-src="{{photo.thumbnail_path}}"
-             -->
-            <img alt="{{photo.thumbnail_width}}, {{photo.thumbnail_height}}"
-                ng-style="createImagePosition()"
-                >
-        </div>
-        <div class="actions">
-            <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected"></label>
-            <a class="action-share" href="" ng-click="share()"><i class="photos-icon-share"></i></a>
-            <a class="action-download" href="" ng-click="download()"><i class="photos-icon-dl"></i></a>
-            <a class="action-delete" href="" ng-click="delete()"><i class="photos-icon-del"></i></a>
-        </div>
-    </div>
+<div class="showcase" ng-transclude>
+    <span class="date">{{date}}<i class="photos-icon-date"></i></span>
 </div>

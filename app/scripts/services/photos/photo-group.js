@@ -48,7 +48,8 @@ return [function() {
             _.each(periods, function(period, index) {
                 var group = {
                     date: period.title,
-                    photos: []
+                    photos: [],
+                    selectedPhotos: []
                 };
                 var photo;
                 while (pointer < photos.length) {

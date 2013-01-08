@@ -9,8 +9,8 @@ return [function() {
         replace: true,
         template: template,
         scope: {
-            selectionType:  '=',
-            count:          '=',
+            photos:         '=',
+            selectedPhotos: '=',
             pickDate:       '&onPickDate',
             upload:         '&onUpload',
             selectAll:      '&onSelectAll',
