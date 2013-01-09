@@ -9,10 +9,10 @@
             ></span></span>
     </div>
     <a href="" class="action-previous"
-        ng-show="index > 0"
+        ng-show="hasPrevious()"
         ng-click="previous()"><i class="photos-slide-icon-pre"></i></a>
     <a href="" class="action-next"
-        ng-show="index < photos.length - 1"
+        ng-show="hasNext()"
         ng-click="next()"><i class="photos-slide-icon-next"></i></a>
     <a href="" class="action-play" ng-click="play()"><i class="photos-slide-icon-play"></i></a>
     <a href="" class="action-rotate"><i class="photos-slide-icon-rotate"></i></a>

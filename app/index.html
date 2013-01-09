@@ -30,41 +30,36 @@
                 <div wdp-showcase
                     ng-repeat="group in groups"
                     data-date="group.date"
-                    data-photos="group.photos"
-
-                    data-on-select="select(photo)"
-                    data-on-deselect="deselect(photo)"
-                    data-on-preview="preview(photo, index)"
-                    data-on-download="download(photo)"
-                    data-on-share="share(photo)"
-                    data-on-delete="delete(photo)"
-                    >
+                    data-photos="group.photos">
                     <div class="block"
                         ng-repeat="photo in group.photos"
-                        ng-style="createBlockPosition()"
-                        ng-init="selected = isSelected({photo: photo})"
+                        wdp-block
+                        data-index="$index"
+                        data-selected="isSelected(photo)"
+                        ng-style="blockPosition()"
                         ng-class="{'block-active': selected}">
                         <div class="photo"
-                            ng-style="createPhotoDimensions()"
-                            ng-click="preview({photo: photo, index: $index})">
+                            ng-style="photoDimensions()"
+                            ng-click="preview(photo)">
 
 <!--
                                 style="width: {{photo.thumbnail_width}}px; height: {{photo.thumbnail_height}}px;background:black"
                                 ng-src="{{photo.thumbnail_path}}"
  -->
-                            <img alt="{{photo.thumbnail_width}}, {{photo.thumbnail_height}}"
-                                ng-style="createImagePosition()">
+                            <img alt=""
+                                ng-style="photoPosition()">
                         </div>
                         <div class="actions">
                             <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected" ng-change="toggleSelected(selected, photo)"></label>
                             <a class="action-share" href=""
-                                ng-click="share({photo: photo})"><i class="photos-icon-share"></i></a>
+                                ng-click="share(photo)"><i class="photos-icon-share"></i></a>
                             <a class="action-download" href=""
-                                ng-click="download({photo: photo})"><i class="photos-icon-dl"></i></a>
+                                ng-click="download(photo)"><i class="photos-icon-dl"></i></a>
                             <a class="action-delete" href=""
-                                ng-click="delete({photo: photo})"><i class="photos-icon-del"></i></a>
+                                ng-click="delete(photo)"><i class="photos-icon-del"></i></a>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div wdp-actionbar
@@ -72,14 +67,13 @@
                 data-selected-photos="selectedPhotos"
                 data-on-select-all="selectAll()"
                 data-on-upload="upload()"
-                data-on-delete="deleteAll()"
+                data-on-delete="deleteSelected()"
                 data-on-download="download(photo)"
                 data-on-share="share(photo)"
                 ></div>
         </div>
         <div wdp-slides
             data-current="previewPhoto"
-            data-index="previewPhotoIndex"
             data-photos="photos"
             data-on-delete="delete(photo)"
             data-on-download="download(photo)"
@@ -96,8 +90,10 @@
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="scripts/vendor/jquery.min.js"><\/script>')</script>
+        <!--
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
-        <script>window.angular || document.write('<script src="scripts/vendor/angular.min.js"><\/script>')</script>
+        -->
+        <script>window.angular || document.write('<script src="scripts/vendor/angular/angular.min.js"><\/script>')</script>
 
 
 

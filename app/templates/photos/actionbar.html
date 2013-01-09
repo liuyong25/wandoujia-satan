@@ -3,7 +3,7 @@
     <a class="action-upload-photo" ng-click="upload()"><i class="photos-icon-add"></i></a>
     <div class="toolbar" ng-class="{'toolbar-active': selectedPhotos.length}">
         <span class="counter">{{selectedPhotos.length}}</span>
-        <label class="action-select-all checkbox" ng-click="selectAll()"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length"></label>
+        <label class="action-select-all checkbox"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length" ng-click="selectAll()"></label>
         <a href="" class="action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i></a>
         <a href="" class="action-download" ng-click="download()"><i class="photos-icon-dl-toolbar"></i></a>
         <a href="" class="action-share" ng-click="share()"><i class="photos-icon-share-toolbar"></i></a>

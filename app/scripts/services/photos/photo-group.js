@@ -41,11 +41,11 @@ return [function() {
     return {
         divide: function(photos) {
             if (!photos.length) {
-                return;
+                return [];
             }
             var pointer = 0;
             var groups = [];
-            _.each(periods, function(period, index) {
+            _.each(periods, function(period) {
                 var group = {
                     date: period.title,
                     photos: [],

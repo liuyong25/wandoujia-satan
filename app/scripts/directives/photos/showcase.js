@@ -9,22 +9,22 @@ define([
 
 var layoutController = ['$scope', function($scope) {
     var self = this;
-    $scope.$parent.createBlockPosition = function(index) {
-        var meta = self.layout[this.$index];
+    self.createBlockPosition = function(index) {
+        var meta = self.layout[index];
         return {
             left: meta.x + 40,
             top: meta.y
         };
     };
-    $scope.$parent.createPhotoDimensions = function(index) {
-        var meta = self.layout[this.$index];
+    self.createPhotoDimensions = function(index) {
+        var meta = self.layout[index];
         return {
             width: meta.width,
             height: meta.height
         };
     };
-    $scope.$parent.createImagePosition = function(index) {
-        var meta = self.layout[this.$index];
+    self.createImagePosition = function(index) {
+        var meta = self.layout[index];
         return {
             left: meta.innerX,
             top: meta.innerY
@@ -42,45 +42,49 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', function($rootScope, PhotosLayout
             photos: '=',
             date: '='
         },
-        link: function($scope, element, attrs, controller) {
-            function layout() {
-                if ($scope.photos.length) {
-                    var meta = PhotosLayoutAlgorithm['default']({
-                        fixedHeight: 170,
-                        minWidth: 120,
-                        gapWidth: 12,
-                        gapHeight: 35,
-                        borderWidth: 5,
-                        containerWidth: $rootScope.viewport.width - 120 - 40,
-                        containerHeight: -1,
-                        photos: _.map($scope.photos, function(photo) {
-                            return {
-                                id: photo.id,
-                                width: photo.thumbnail_width,
-                                height: photo.thumbnail_height
-                            };
-                        })
-                    });
-                    controller.layout = meta.metas;
+        compile: function($scope, element) {
+console.log(arguments[0].html());
 
-                    element.height(meta.height);
-                    element.children('.date').css({
-                        top: meta.metas[0].height / 2 - 20 / 2
-                    });
-                }
-                else {
-                    element.remove();
-                    $scope.$destroy();
-                }
-            }
+            return function($scope, element, attrs, controller) {
+                function layout() {
+                    if ($scope.photos.length) {
+                        var meta = PhotosLayoutAlgorithm['default']({
+                            fixedHeight: 170,
+                            minWidth: 120,
+                            gapWidth: 12,
+                            gapHeight: 35,
+                            borderWidth: 5,
+                            containerWidth: $rootScope.viewport.width - 120 - 40,
+                            containerHeight: -1,
+                            photos: _.map($scope.photos, function(photo) {
+                                return {
+                                    id: photo.id,
+                                    width: photo.thumbnail_width,
+                                    height: photo.thumbnail_height
+                                };
+                            })
+                        });
+                        controller.layout = meta.metas;
 
-            $scope.$watch('photos', layout);
-            $scope.$watch('photos.length', layout);
-            $rootScope.$watch('viewport.width', function(newWidth, oldWidth) {
-                if (newWidth !== oldWidth) {
-                    layout();
+                        element.height(meta.height);
+                        element.children('.date').css({
+                            top: meta.metas[0].height / 2 - 20 / 2
+                        });
+                    }
+                    else {
+                        element.remove();
+                        $scope.$destroy();
+                    }
                 }
-            });
+
+                $scope.$watch('photos', layout);
+                $scope.$watch('photos.length', layout);
+                $rootScope.$watch('viewport.width', function(newWidth, oldWidth) {
+                    if (newWidth !== oldWidth) {
+                        layout();
+                    }
+                });
+            };
         }
     };
 }];

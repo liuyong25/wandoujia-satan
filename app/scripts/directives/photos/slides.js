@@ -1,7 +1,9 @@
 define([
-        'text!templates/photos/slides.html'
+        'text!templates/photos/slides.html',
+        'underscore'
     ], function(
-        template
+        template,
+        _
     ) {
 'use strict';
 return ['WDP_PLAYING_INTERVAL', function(WDP_PLAYING_INTERVAL) {
@@ -29,12 +31,17 @@ return ['WDP_PLAYING_INTERVAL', function(WDP_PLAYING_INTERVAL) {
                     $scope.playing = null;
                 };
                 $scope.next = function() {
-                    $scope.index += 1;
-                    $scope.photo = $scope.photos[$scope.index];
+                    $scope.current = $scope.photos[_.indexOf($scope.photos, $scope.current) + 1];
                 };
                 $scope.previous = function() {
                     $scope.index -= 1;
-                    $scope.photo = $scope.photos[$scope.index];
+                    $scope.current = $scope.photos[_.indexOf($scope.photos, $scope.current) - 1];
+                };
+                $scope.hasNext = function() {
+                    return _.indexOf($scope.photos, $scope.current) < $scope.photos.length - 1;
+                };
+                $scope.hasPrevious = function() {
+                    return _.indexOf($scope.photos, $scope.current) > 0;
                 };
                 $scope.close = function() {
                     $scope.current = null;
@@ -47,7 +54,6 @@ return ['WDP_PLAYING_INTERVAL', function(WDP_PLAYING_INTERVAL) {
             }],
         scope: {
             current: '=',
-            index: '=',
             photos: '=',
             'delete': '&onDelete',
             download: '&onDownload',
