@@ -1,12 +1,11 @@
-<div class="slides-container"
-    ng-class="{'slides-active': current != null}">
+<div class="slides-container">
     <div class="frame">
         <!--
-            ng-src="http://wallpaperstate.org/wp-content/gallery/2_wallpapers_wallpaper_07/windows-7-wallpapers-r-ibackgroundz-com_.jpg"
-         -->
-        <span><span><img alt=""
             ng-src="{{current.path}}"
-            ></span></span>
+         -->
+        <img alt=""
+            ng-src="http://wallpaperstate.org/wp-content/gallery/2_wallpapers_wallpaper_07/windows-7-wallpapers-r-ibackgroundz-com_.jpg"
+            >
     </div>
     <a href="" class="action-previous"
         ng-show="hasPrevious()"

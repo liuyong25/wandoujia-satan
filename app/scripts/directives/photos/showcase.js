@@ -43,8 +43,6 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', function($rootScope, PhotosLayout
             date: '='
         },
         compile: function($scope, element) {
-console.log(arguments[0].html());
-
             return function($scope, element, attrs, controller) {
                 function layout() {
                     if ($scope.photos.length) {
