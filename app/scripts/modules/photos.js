@@ -9,7 +9,8 @@ define([
         'directives/photos/actionbar',
         'directives/photos/slides',
         'services/photos/layout-algorithm',
-        'directives/photos/block'
+        'directives/photos/block',
+        'directives/photos/uploader'
     ], function(
         angular,
         showcase,
@@ -21,12 +22,14 @@ define([
         actionbar,
         slides,
         layoutAlgorithm,
-        block
+        block,
+        uploader
     ) {
 'use strict';
 
 angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .constant('WDP_PLAYING_INTERVAL', 1000)
+    .directive('wdpUploader', uploader)
     .directive('wdpShowcase', showcase)
     .directive('wdpBlock', block)
     .directive('wdpActionbar', actionbar)
@@ -95,7 +98,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
             $scope.selectedPhotos = [];
         };
-        $scope.upload = function() {};
+        $scope.upload = function() {
+
+        };
     }]);
 
 });

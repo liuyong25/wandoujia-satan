@@ -1,5 +1,8 @@
  require.config({
   shim: {
+    'vendor/plupload/plupload.html5': ['vendor/plupload/plupload'],
+    'vendor/plupload/plupload.html4': ['vendor/plupload/plupload'],
+    'plupload': ['vendor/plupload/plupload', 'vendor/plupload/plupload.html5', 'vendor/plupload/plupload.html4'],
     'underscore': {
         exports: '_'
     }
@@ -10,6 +13,7 @@
     jquery: 'vendor/jquery.wrapper',
     underscore: 'vendor/underscore',
     angular: 'vendor/angular/angular.wrapper',
+    plupload: 'vendor/plupload/plupload.wrapper',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',

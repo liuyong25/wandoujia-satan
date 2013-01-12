@@ -20,4 +20,9 @@
         padding: $padding-top $padding-left;
         margin: (-$action-padding - $action-height / 2) (-$action-padding - $action-width / 2);
     }
+    .plupload {
+        width: 1px;
+        height: 1px;
+        line-height: 0;
+    }
 }

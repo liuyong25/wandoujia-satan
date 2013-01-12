@@ -1,6 +1,11 @@
-<div class="actions-container">
+<div class="actions-container" id="-wdp-uploader-container">
     <!-- <a class="action-pick-date" ng-click="pickDate()"><i class="photos-icon-calendar"></i></a> -->
-    <a class="action-upload-photo" ng-click="upload()"><i class="photos-icon-add"></i></a>
+    <a class="action-upload-photo" id="-wdp-uploader-trigger"
+        wdp-uploader
+        data-on-uploaded="upload(file)"
+        data-browse-button-id="-wdp-uploader-trigger"
+        data-container-id="-wdp-uploader-container"
+        ><i class="photos-icon-add"></i></a>
     <div class="toolbar" ng-class="{'toolbar-active': selectedPhotos.length}">
         <span class="counter">{{selectedPhotos.length}}</span>
         <label class="action-select-all checkbox"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length" ng-click="selectAll()"></label>

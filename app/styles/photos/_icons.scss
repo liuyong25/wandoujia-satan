@@ -35,7 +35,7 @@ $all-icons-list   : join($full-icons-list, $single-icons-list);
     $sprite-height: photos-sprite-height($sprite-name);
     %has-icon-#{$icon} {
         cursor: pointer;
-        @include box($sprite-width, $sprite-height);
+        @include box($sprite-width, /*$sprite-height*/$icon-height);
         &:hover, &:focus {
             i.photos-icon-#{$icon} {
                 @include photos-sprite(#{$sprite-name}_h);
