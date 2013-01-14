@@ -66,7 +66,7 @@
                 data-photos="photos"
                 data-selected-photos="selectedPhotos"
                 data-on-select-all="selectAll()"
-                data-on-upload="upload()"
+                data-on-upload="upload(files)"
                 data-on-delete="deleteSelected()"
                 data-on-download="download(photo)"
                 data-on-share="share(photo)"
@@ -79,7 +79,7 @@
             data-on-download="download(photo)"
             data-on-share="share(photo)"
             ></div>
-        <div class="wd-loading" data-visible="photos.length > 0"></div>
+        <div class="wd-loading" data-visible="photos.length == 0"></div>
     </div>
 
         <!--[if lt IE 7]>

@@ -14,6 +14,9 @@ return ['$window', function($window) {
     return {
         getServer: function() {
             return params['server'] ? ('//' + params['server']) : '';
+        },
+        getAPIPrefix: function() {
+            return '/api/v1';
         }
     };
 }];

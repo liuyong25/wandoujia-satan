@@ -43,10 +43,8 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         $scope.selectedPhotos = [];
         $scope.previewPhoto = null;
 
-        var photos = Photos.query(function() {
-            $scope.photos = _.sortBy(photos, function(photo) {
-                return -photo.date_added;
-            });
+        Photos.query(function(photos) {
+            $scope.photos = photos;
             // $scope.photos = _.first(photos, 5);  // for debug...
         });
 
@@ -99,9 +97,12 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
             $scope.selectedPhotos = [];
         };
-        $scope.upload = function(file) {
-            Photos.get({id: file}, function(photo) {
-                $scope.photos.unshift(photo);
+        $scope.upload = function(files) {
+            console.log(11111,files);
+            _.each(files, function(file) {
+                Photos.get({id: file.id}, function(photo) {
+                    $scope.photos.unshift(photo);
+                });
             });
         };
     }]);

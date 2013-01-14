@@ -43,6 +43,9 @@ return [function() {
             if (!photos.length) {
                 return [];
             }
+            photos = _.sortBy(photos, function(photo) {
+                return -photo.date_added;
+            })
             var pointer = 0;
             var groups = [];
             _.each(periods, function(period) {

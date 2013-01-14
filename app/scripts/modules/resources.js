@@ -7,8 +7,6 @@ define([
     ) {
 'use strict';
 
-var deviceAPIPrefix = '/api/v1';
-
 function encodeServer(server) {
     return server.replace(':', '\\:');
 }
@@ -18,7 +16,6 @@ angular.module('wdResources', ['ngResource', 'wdCommon'])
         delete $httpProvider.defaults.headers.common["X-Requested-With"];
     }])
     .factory('Photos', ['$resource', 'wdDev', function($resource, wdDev) {
-        console.log(encodeServer(wdDev.getServer()));
-        return $resource(encodeServer(wdDev.getServer()) + deviceAPIPrefix + '/resource/photos/:id', {id: '@id'});
+        return $resource(encodeServer(wdDev.getServer()) + wdDev.getAPIPrefix() + '/resource/photos/:id', {id: '@id'});
     }]);
 });

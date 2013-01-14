@@ -1,18 +1,20 @@
 define([
-        'plupload'
+        'plupload',
+        'jquery'
     ], function(
-        plupload
+        plupload,
+        jQuery
     ) {
 'use strict';
 
-return [function() {
+return ['wdDev', function(wdDev) {
     return {
         scope: {
             uploaded: '&onUploaded'
         },
         link: function($scope, element, attrs) {
             var uploader = new plupload.Uploader({
-                url: 'test',
+                url: wdDev.getServer() + wdDev.getAPIPrefix() + '/directive/photos/upload',
                 runtimes: 'html5, html4',
                 container: attrs.containerId,
                 'browse_button': attrs.browseButtonId,
@@ -34,7 +36,9 @@ return [function() {
                 console.log(err);
             });
             uploader.bind('FileUploaded', function(up, file, info) {
-                $scope.uploaded({file: info.response.id});
+                var response = jQuery.parseJSON(info.response);
+                // $scope.uploaded({files: response});
+                $scope.uploaded({files: [{id: 21577}]});
             });
         }
     };

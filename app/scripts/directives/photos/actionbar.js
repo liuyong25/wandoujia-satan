@@ -17,6 +17,11 @@ return [function() {
             'delete':       '&onDelete',
             download:       '&onDownload',
             share:          '&onShare'
+        },
+        link: function($scope) {
+            $scope.onUploaded = function(files) {
+                $scope.upload({files: files});
+            };
         }
     };
 }];
