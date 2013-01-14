@@ -49,6 +49,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
             // $scope.photos = _.first(photos, 5);  // for debug...
         });
+
         $scope.$watch('photos', function() {
             $scope.groups.splice(0, $scope.groups.length);
             $scope.groups.push.apply($scope.groups, PhotoGroup.divide($scope.photos));
