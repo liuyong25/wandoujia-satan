@@ -13,7 +13,7 @@ return ['$window', function($window) {
     });
     return {
         getServer: function() {
-            return '//' + params['server'] || '';
+            return params['server'] ? ('//' + params['server']) : '';
         }
     };
 }];
