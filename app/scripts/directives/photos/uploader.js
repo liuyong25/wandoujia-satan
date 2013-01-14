@@ -34,7 +34,7 @@ return [function() {
                 console.log(err);
             });
             uploader.bind('FileUploaded', function(up, file, info) {
-                $scope.uploaded({file: file});
+                $scope.uploaded({file: info.response.id});
             });
         }
     };

@@ -98,8 +98,10 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
             $scope.selectedPhotos = [];
         };
-        $scope.upload = function() {
-
+        $scope.upload = function(file) {
+            Photos.get({id: file}, function(photo) {
+                $scope.photos.unshift(photo);
+            });
         };
     }]);
 
