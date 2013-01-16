@@ -9,11 +9,10 @@
     <title>豌豆荚 web</title>
     <meta name="viewport" content="width=device-width">
     <link rel="stylesheet" href="styles/main.css">
-    <script src="scripts/vendor/modernizr.min.js"></script>
+    <!-- <script src="scripts/vendor/modernizr.min.js"></script> -->
 </head>
 <body id="upload-drop-area" wd-window-event-watcher>
     <div bs-navbar ng-cloak>
-        <a class="brand"><i class="navbar-logo">Wandoujia</i></a>
         <ul class="nav nav-modules">
             <li  class="active"><a href=""><i class="navbar-icon-img"></i></a></li>
             <li><a href=""><i class="navbar-icon-sms"></i></a></li>
@@ -41,10 +40,6 @@
                         <div class="photo"
                             ng-style="photoDimensions()"
                             ng-click="preview(photo)">
-
-<!--
-                                style="width: {{photo.thumbnail_width}}px; height: {{photo.thumbnail_height}}px;background:black"
- -->
                             <img alt=""
                                 ng-src="{{photo.thumbnail_path}}"
                                 ng-style="photoPosition()">

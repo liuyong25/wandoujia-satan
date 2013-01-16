@@ -89,7 +89,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             //     });
             // });
             // group.photos.splice(_.indexOf(group.photos, photo), 1);
-            // photo.$remove();
+            photo.$remove();
         };
         $scope.deleteSelected = function() {
             _.each($scope.selectedPhotos, function(photo) {
