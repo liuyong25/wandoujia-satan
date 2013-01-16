@@ -37,8 +37,8 @@ return ['wdDev', function(wdDev) {
             });
             uploader.bind('FileUploaded', function(up, file, info) {
                 var response = jQuery.parseJSON(info.response);
-                // $scope.uploaded({files: response});
-                $scope.uploaded({files: [{id: 21577}]});
+                $scope.uploaded({files: response});
+                // $scope.uploaded({files: [{id: 21577}]});
             });
         }
     };
