@@ -10,9 +10,15 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
     return {
         template: template,
         replace: true,
-        controller: ['$scope', function($scope) {
+        controller: ['$scope', '$timeout', function($scope, $timeout) {
                 var self = this;
                 self.calImageDimensions = function() {};
+                self.getCurIndex = function() {
+                    return _.indexOf($scope.photos, $scope.current);
+                };
+
+                $scope.last = null;
+
                 $scope.playing = null;
                 $scope.play = function() {
                     if ($scope.playing !== null) {
@@ -20,11 +26,15 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                         return;
                     }
                     $scope.playing = setInterval(function() {
-                        if ($scope.index < $scope.photos.length - 1) {
-                            $scope.next();
+                        if (self.getCurIndex() < $scope.photos.length - 1) {
+                            $scope.$apply(function() {
+                                $scope.next();
+                            });
                         }
                         else {
-                            $scope.pause();
+                            $scope.$apply(function() {
+                                $scope.pause();
+                            });
                         }
                     }, WDP_PLAYING_INTERVAL);
                 };
@@ -33,16 +43,18 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     $scope.playing = null;
                 };
                 $scope.next = function() {
-                    $scope.current = $scope.photos[_.indexOf($scope.photos, $scope.current) + 1];
+                    $scope.last = $scope.current;
+                    $scope.current = $scope.photos[self.getCurIndex() + 1];
                 };
                 $scope.previous = function() {
-                    $scope.current = $scope.photos[_.indexOf($scope.photos, $scope.current) - 1];
+                    $scope.last = $scope.current;
+                    $scope.current = $scope.photos[self.getCurIndex() - 1];
                 };
                 $scope.hasNext = function() {
-                    return _.indexOf($scope.photos, $scope.current) < $scope.photos.length - 1;
+                    return self.getCurIndex() < $scope.photos.length - 1;
                 };
                 $scope.hasPrevious = function() {
-                    return _.indexOf($scope.photos, $scope.current) > 0;
+                    return self.getCurIndex() > 0;
                 };
                 $scope.close = function() {
                     $scope.current = null;
@@ -59,16 +71,8 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
             download: '&onDownload',
             share: '&onShare'
         },
-        link: function($scope, element, attr, controller) {
+        link: function($scope, element/*, attr, controller*/) {
             var frame = element.find('.frame');
-            $scope.$watch('current', function(newValue) {
-                if (newValue !== null) {
-                    open();
-                }
-                else {
-                    close();
-                }
-            });
 
             function layoutFrame() {
                 var frameWidth = frame.width();
@@ -78,7 +82,6 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                 var widthScale = imageWidth / frameWidth;
                 var heightScale = imageHeight / frameHeight;
                 var scale = Math.max(widthScale, heightScale);
-                var ratio = imageWidth / imageHeight;
                 if (scale > 1) {
                     imageWidth = imageWidth / scale;
                     imageHeight = imageHeight / scale;
@@ -96,8 +99,8 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
             }
 
             function updateDimensions(newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    layoutFrame();
+                if (newValue !== oldValue && $scope.current !== null) {
+                    $scope.$broadcast('resize');
                 }
             }
             $rootScope.$watch('viewport.width', updateDimensions);
@@ -105,11 +108,37 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
 
             function open() {
                 element.addClass('slides-active');
-                layoutFrame();
+                $scope.$broadcast('open');
             }
             function close() {
+                $scope.pause();
+                $scope.$broadcast('close');
                 element.removeClass('slides-active');
             }
+
+            $scope.$watch('current', function(newValue) {
+                if (newValue !== null) {
+                    open();
+                }
+                else {
+                    close();
+                }
+            });
+
+            // close slides when user click directly on the container
+            element.on('click', function(e) {
+                if (e.target === this) {
+                    close();
+                }
+            });
+            element.on('click', '.frame', function(e) {
+                if (e.target === this) {
+                    close();
+                }
+            });
+            element.find('img').on('load', function() {
+                console.log(arguments);
+            });
         }
     };
 }];

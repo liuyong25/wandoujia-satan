@@ -10,7 +10,8 @@ define([
         'directives/photos/slides',
         'services/photos/layout-algorithm',
         'directives/photos/block',
-        'directives/photos/uploader'
+        'directives/photos/uploader',
+        'directives/photos/frame'
     ], function(
         angular,
         showcase,
@@ -23,7 +24,8 @@ define([
         slides,
         layoutAlgorithm,
         block,
-        uploader
+        uploader,
+        frame
     ) {
 'use strict';
 
@@ -34,6 +36,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .directive('wdpBlock', block)
     .directive('wdpActionbar', actionbar)
     .directive('wdpSlides', slides)
+    .directive('wdpFrame', frame)
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window', 'wdSharing',

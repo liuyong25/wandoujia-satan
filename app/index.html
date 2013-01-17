@@ -26,12 +26,14 @@
     <div ng-cloak class="container-fluid wdj-photos" ng-controller="galleryController">
         <div class="timeline-container">
             <div class="showcases-container">
-                <div wdp-showcase
+                <!--
                     ng-repeat="group in groups"
                     data-date="group.date"
-                    data-photos="group.photos">
+                 -->
+                <div wdp-showcase
+                    data-photos="photos">
                     <div class="block"
-                        ng-repeat="photo in group.photos"
+                        ng-repeat="photo in photos"
                         wdp-block
                         data-index="$index"
                         data-selected="isSelected(photo)"
@@ -54,7 +56,6 @@
                                 ng-click="delete(photo)"><i class="photos-icon-del"></i></a>
                         </div>
                     </div>
-
                 </div>
             </div>
             <div wdp-actionbar

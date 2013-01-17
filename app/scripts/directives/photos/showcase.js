@@ -39,8 +39,8 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', function($rootScope, PhotosLayout
         transclude: true,
         controller: layoutController,
         scope: {
-            photos: '=',
-            date: '='
+            photos: '='
+            // date: '='
         },
         compile: function($scope, element) {
             return function($scope, element, attrs, controller) {
@@ -70,13 +70,12 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', function($rootScope, PhotosLayout
                         });
                     }
                     else {
-                        element.remove();
-                        $scope.$destroy();
+                        // element.remove();
+                        // $scope.$destroy();
                     }
                 }
 
-                $scope.$watch('photos', layout);
-                $scope.$watch('photos.length', layout);
+                $scope.$watch('photos', layout, true);
                 $rootScope.$watch('viewport.width', function(newWidth, oldWidth) {
                     if (newWidth !== oldWidth) {
                         layout();
