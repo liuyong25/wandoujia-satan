@@ -17,8 +17,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     return _.indexOf($scope.photos, $scope.current);
                 };
 
-                $scope.last = null;
-
+                $scope.loading = false;
                 $scope.playing = null;
                 $scope.play = function() {
                     if ($scope.playing !== null) {
@@ -28,7 +27,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     $scope.playing = setInterval(function() {
                         if (self.getCurIndex() < $scope.photos.length - 1) {
                             $scope.$apply(function() {
-                                $scope.next();
+                                $scope.current = $scope.photos[self.getCurIndex() + 1];
                             });
                         }
                         else {
@@ -43,11 +42,11 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     $scope.playing = null;
                 };
                 $scope.next = function() {
-                    $scope.last = $scope.current;
+                    $scope.pause();
                     $scope.current = $scope.photos[self.getCurIndex() + 1];
                 };
                 $scope.previous = function() {
-                    $scope.last = $scope.current;
+                    $scope.pause();
                     $scope.current = $scope.photos[self.getCurIndex() - 1];
                 };
                 $scope.hasNext = function() {
@@ -57,11 +56,23 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     return self.getCurIndex() > 0;
                 };
                 $scope.close = function() {
+                    $scope.pause();
                     $scope.current = null;
                 };
                 $scope.remove = function() {
                     $scope['delete']({photo: $scope.current});
-                    $scope.close();
+                    if ($scope.hasNext()) {
+                        $scope.next();
+                    }
+                    else if ($scope.hasPrevious()) {
+                        $scope.previous();
+                    }
+                    else {
+                        $scope.close();
+                    }
+                };
+                $scope.rotate = function() {
+                    $scope.$broadcast('rotate');
                 };
             }],
         scope: {
@@ -111,7 +122,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                 $scope.$broadcast('open');
             }
             function close() {
-                $scope.pause();
+                $scope.close();
                 $scope.$broadcast('close');
                 element.removeClass('slides-active');
             }
@@ -128,12 +139,12 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
             // close slides when user click directly on the container
             element.on('click', function(e) {
                 if (e.target === this) {
-                    close();
+                    $scope.$apply(close);
                 }
             });
             element.on('click', '.frame', function(e) {
                 if (e.target === this) {
-                    close();
+                    $scope.$apply(close);
                 }
             });
             element.find('img').on('load', function() {

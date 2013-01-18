@@ -48,7 +48,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
 
         Photos.query(function(photos) {
             $scope.photos = photos;
-            // $scope.photos = _.first(photos, 5);  // for debug...
+            $scope.photos = _.first(photos, 5);  // for debug...
         });
 
         $scope.$watch('photos', function() {

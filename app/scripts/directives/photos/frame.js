@@ -18,10 +18,16 @@ return [function() {
             var $current = null;
             var create = function(newPhoto) {
                 var $image = angular.element('<img>');
-                $image.data('photo', newPhoto)
+                $image
+                    .data('photo', newPhoto)
+                    .data('rotation', 0)
+                    .hide()
+                    .on('load', function() {
+                        $image.fadeIn();
+                    })
                     .attr('src', newPhoto.path);
                 layout($image);
-                return $image.fadeIn();
+                return $image;
             };
             var destroy = function($image) {
                 jQuery.when($image.fadeOut()).done(function() {
@@ -29,11 +35,12 @@ return [function() {
                 });
             };
             var layout = function($image) {
+                var horizontal = !($image.data('rotation') % 180);
                 var photo = $image.data('photo');
                 var frameWidth = element.width();
                 var frameHeight = element.height();
-                var imageWidth = photo.width;
-                var imageHeight = photo.height;
+                var imageWidth = horizontal ? photo.width : photo.height;
+                var imageHeight = horizontal ? photo.height : photo.width;
                 var widthScale = imageWidth / frameWidth;
                 var heightScale = imageHeight / frameHeight;
                 var scale = Math.max(widthScale, heightScale);
@@ -41,12 +48,12 @@ return [function() {
                     imageWidth = imageWidth / scale;
                     imageHeight = imageHeight / scale;
                 }
-                var offsetX = (frameWidth - imageWidth) / 2;
-                var offsetY = (frameHeight - imageHeight) / 2;
+                var offsetX = (frameWidth - (horizontal ? imageWidth : imageHeight)) / 2;
+                var offsetY = (frameHeight - (horizontal ? imageHeight : imageWidth)) / 2;
                 $image.css({
                     position: 'absolute',
-                    width: imageWidth,
-                    height: imageHeight,
+                    width: horizontal ? imageWidth : imageHeight,
+                    height: horizontal ? imageHeight : imageWidth,
                     left: offsetX,
                     top: offsetY
                 });
@@ -63,13 +70,33 @@ return [function() {
                     destroy($current);
                 }
                 if (newPhoto) {
+                    $scope.loading = true;
                     $current = create(newPhoto);
+                    $current.one('load', function() {
+                        $scope.$apply(function() {
+                            $scope.loading = false;
+                        });
+                    });
                     element.append($current);
                 }
             });
 
             $scope.$on('resize', relayoutAll);
             $scope.$on('open',   relayoutAll);
+
+            $scope.$on('rotate', function() {
+                if (!$current) {
+                    return;
+                }
+                var rotation = $current.data('rotation') - 90;
+                $current
+                    .css({
+                        transform: 'rotate(' + rotation + 'deg)',
+                        transition: '-webkit-transform 0.2s'
+                    })
+                    .data('rotation', rotation);
+                layout($current);
+            });
         }
     };
 }];
