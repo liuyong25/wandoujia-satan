@@ -30,7 +30,7 @@ define([
 'use strict';
 
 angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
-    .constant('WDP_PLAYING_INTERVAL', 1000)
+    .constant('WDP_PLAYING_INTERVAL', 3000)
     .directive('wdpUploader', uploader)
     .directive('wdpShowcase', showcase)
     .directive('wdpBlock', block)
@@ -85,6 +85,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             wdSharing.weibo(photo);
         };
         $scope.delete = function(photo) {
+            if (!$window.confirm('确定删除？')) {
+                return;
+            }
             $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
             // var group = _.find($scope.groups, function(group) {
             //     return _.any(group.photos, function(p) {
@@ -95,8 +98,14 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             photo.$remove();
         };
         $scope.deleteSelected = function() {
+            if (!$window.confirm('确定删除所有选中图片？')) {
+                return;
+            }
+
             _.each($scope.selectedPhotos, function(photo) {
-                $scope.delete(photo);
+                $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+                photo.$remove();
+                // $scope.delete(photo);
             });
             $scope.selectedPhotos = [];
         };

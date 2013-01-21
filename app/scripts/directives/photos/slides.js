@@ -10,44 +10,64 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
     return {
         template: template,
         replace: true,
-        controller: ['$scope', '$timeout', function($scope, $timeout) {
+        controller: ['$scope', function($scope) {
                 var self = this;
-                self.calImageDimensions = function() {};
+
+                // Return the current previewing photo's index of all photos in real time.
                 self.getCurIndex = function() {
                     return _.indexOf($scope.photos, $scope.current);
                 };
 
-                $scope.loading = false;
-                $scope.playing = null;
-                $scope.play = function() {
-                    if ($scope.playing !== null) {
-                        $scope.pause();
+                // Switch photos.
+                self.next = function() {
+                    $scope.current = $scope.photos[self.getCurIndex() + 1];
+                };
+                self.previous = function() {
+                    $scope.current = $scope.photos[self.getCurIndex() - 1];
+                };
+
+                // Start autoplay.
+                var autoplayTimer = null;
+                self.play = function() {
+                    // Do nothing if it has been autoplaying.
+                    if (autoplayTimer !== null) {
                         return;
                     }
-                    $scope.playing = setInterval(function() {
+                    autoplayTimer = setInterval(function() {
+                        // Keep playing straight forward, no loop.
                         if (self.getCurIndex() < $scope.photos.length - 1) {
                             $scope.$apply(function() {
-                                $scope.current = $scope.photos[self.getCurIndex() + 1];
+                                self.next();
                             });
                         }
                         else {
-                            $scope.$apply(function() {
-                                $scope.pause();
-                            });
+                            self.pause();
                         }
                     }, WDP_PLAYING_INTERVAL);
                 };
+                self.pause = function() {
+                    // Pause can be called without detecting autoplay state.
+                    clearInterval(autoplayTimer);
+                    autoplayTimer = null;
+                };
+
+                // Indicates whether there is something on loading state.
+                // If true, turn on loading animation.
+                $scope.loading = false;
+
+                $scope.play = function() {
+                    self.play();
+                };
                 $scope.pause = function() {
-                    clearInterval($scope.playing);
-                    $scope.playing = null;
+                    self.pause();
                 };
                 $scope.next = function() {
-                    $scope.pause();
-                    $scope.current = $scope.photos[self.getCurIndex() + 1];
+                    self.pause();
+                    self.next();
                 };
                 $scope.previous = function() {
-                    $scope.pause();
-                    $scope.current = $scope.photos[self.getCurIndex() - 1];
+                    self.pause();
+                    self.previous();
                 };
                 $scope.hasNext = function() {
                     return self.getCurIndex() < $scope.photos.length - 1;
@@ -56,7 +76,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     return self.getCurIndex() > 0;
                 };
                 $scope.close = function() {
-                    $scope.pause();
+                    self.pause();
                     $scope.current = null;
                 };
                 $scope.remove = function() {
@@ -83,52 +103,29 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
             share: '&onShare'
         },
         link: function($scope, element/*, attr, controller*/) {
-            var frame = element.find('.frame');
-
-            function layoutFrame() {
-                var frameWidth = frame.width();
-                var frameHeight = frame.height();
-                var imageWidth = $scope.current.width;
-                var imageHeight = $scope.current.height;
-                var widthScale = imageWidth / frameWidth;
-                var heightScale = imageHeight / frameHeight;
-                var scale = Math.max(widthScale, heightScale);
-                if (scale > 1) {
-                    imageWidth = imageWidth / scale;
-                    imageHeight = imageHeight / scale;
-                }
-                var offsetX = (frameWidth - imageWidth) / 2;
-                var offsetY = (frameHeight - imageHeight) / 2;
-                var image = frame.find('img');
-                image.css({
-                    position: 'absolute',
-                    width: imageWidth,
-                    height: imageHeight,
-                    left: offsetX,
-                    top: offsetY
-                });
-            }
-
-            function updateDimensions(newValue, oldValue) {
+            // Update dimensions when:
+            // 1. viewport dimensions changed.
+            var updateDimensions = function(newValue, oldValue) {
                 if (newValue !== oldValue && $scope.current !== null) {
                     $scope.$broadcast('resize');
                 }
-            }
+            };
             $rootScope.$watch('viewport.width', updateDimensions);
             $rootScope.$watch('viewport.height', updateDimensions);
 
-            function open() {
+            var open = function() {
                 element.addClass('slides-active');
                 $scope.$broadcast('open');
-            }
-            function close() {
-                $scope.close();
+            };
+            var close = function() {
                 $scope.$broadcast('close');
+                $scope.close();
                 element.removeClass('slides-active');
-            }
+            };
 
-            $scope.$watch('current', function(newValue) {
-                if (newValue !== null) {
+            // Watch 'current' to toggle open/close.
+            $scope.$watch('current', function(newPhoto) {
+                if (newPhoto !== null) {
                     open();
                 }
                 else {
@@ -137,19 +134,17 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
             });
 
             // close slides when user click directly on the container
-            element.on('click', function(e) {
-                if (e.target === this) {
-                    $scope.$apply(close);
-                }
-            });
-            element.on('click', '.frame', function(e) {
-                if (e.target === this) {
-                    $scope.$apply(close);
-                }
-            });
-            element.find('img').on('load', function() {
-                console.log(arguments);
-            });
+            element
+                .on('click', function(e) {
+                    if (e.target === this) {
+                        $scope.$apply(close);
+                    }
+                })
+                .on('click', '.frame', function(e) {
+                    if (e.target === this) {
+                        $scope.$apply(close);
+                    }
+                });
         }
     };
 }];

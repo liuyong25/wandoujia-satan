@@ -17,12 +17,14 @@ return [function() {
         link: function($scope, element, attrs) {
             var $current = null;
             var create = function(newPhoto) {
+                // Create an img tag, then set its dimensions according to frame's.
+                // At last, fade it in after the image resource being fully loaded.
                 var $image = angular.element('<img>');
                 $image
                     .data('photo', newPhoto)
                     .data('rotation', 0)
                     .hide()
-                    .on('load', function() {
+                    .one('load', function() {
                         $image.fadeIn();
                     })
                     .attr('src', newPhoto.path);
@@ -35,7 +37,7 @@ return [function() {
                 });
             };
             var layout = function($image) {
-                var horizontal = !($image.data('rotation') % 180);
+                var horizontal = $image.data('rotation') % 180 === 0;
                 var photo = $image.data('photo');
                 var frameWidth = element.width();
                 var frameHeight = element.height();
@@ -64,11 +66,15 @@ return [function() {
                 });
             };
 
-            // watch $scope to update images
+            // Watching $scope via 'photo' attribute to update images
             $scope.$watch(attrs.photo, function(newPhoto) {
+                // Destroy current image tag first.
+                // The tag may not be removed immediately, for sake of fading out may take some
+                // time.
                 if ($current) {
                     destroy($current);
                 }
+                // Create a new img tag, then append it to DOM.
                 if (newPhoto) {
                     $scope.loading = true;
                     $current = create(newPhoto);
@@ -81,20 +87,26 @@ return [function() {
                 }
             });
 
+            // Relayout triggering timming.
+            // 1. When parent container resized.
+            // 2. When parent container shown.
             $scope.$on('resize', relayoutAll);
             $scope.$on('open',   relayoutAll);
 
             $scope.$on('rotate', function() {
+                // Error-tolerate
                 if (!$current) {
                     return;
                 }
+                // Counter Clock-Wise, same as the icon.
                 var rotation = $current.data('rotation') - 90;
                 $current
+                    .data('rotation', rotation)
                     .css({
                         transform: 'rotate(' + rotation + 'deg)',
                         transition: '-webkit-transform 0.2s'
-                    })
-                    .data('rotation', rotation);
+                    });
+                // After rotation, need relayout to guarantee the image still fix to the viewport.
                 layout($current);
             });
         }
