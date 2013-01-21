@@ -30,6 +30,8 @@ define([
 'use strict';
 
 angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
+    .constant('WDP_LOAD_IMAGE_DELAY', 200)
+    .constant('WDP_PRELOAD_IMAGE_OFFSET', 100)
     .constant('WDP_PLAYING_INTERVAL', 3000)
     .directive('wdpUploader', uploader)
     .directive('wdpShowcase', showcase)
@@ -48,7 +50,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
 
         Photos.query(function(photos) {
             $scope.photos = photos;
-            $scope.photos = _.first(photos, 5);  // for debug...
+            // $scope.photos = _.first(photos, 5);  // for debug...
         });
 
         $scope.$watch('photos', function() {

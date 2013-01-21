@@ -26,10 +26,6 @@
     <div ng-cloak class="container-fluid wdj-photos" ng-controller="galleryController">
         <div class="timeline-container">
             <div class="showcases-container">
-                <!--
-                    ng-repeat="group in groups"
-                    data-date="group.date"
-                 -->
                 <div wdp-showcase
                     data-photos="photos">
                     <div class="block"
@@ -42,8 +38,8 @@
                         <div class="photo"
                             ng-style="photoDimensions()"
                             ng-click="preview(photo)">
-                            <img alt=""
-                                ng-src="{{photo.thumbnail_path}}"
+                            <img alt="{{photo.display_name}}"
+                                data-src="{{photo.thumbnail_path}}"
                                 ng-style="photoPosition()">
                         </div>
                         <div class="actions">
