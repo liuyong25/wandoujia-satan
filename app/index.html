@@ -26,21 +26,15 @@
     <div ng-cloak class="container-fluid wdj-photos" ng-controller="galleryController">
         <div class="timeline-container">
             <div class="showcases-container">
-                <div wdp-showcase
-                    data-photos="photos">
+                <div wdp-showcase>
                     <div class="block"
                         ng-repeat="photo in photos"
                         wdp-block
-                        data-index="$index"
                         data-selected="isSelected(photo)"
-                        ng-style="blockPosition()"
                         ng-class="{'block-active': selected}">
                         <div class="photo"
-                            ng-style="photoDimensions()"
                             ng-click="preview(photo)">
-                            <img alt="{{photo.display_name}}"
-                                data-src="{{photo.thumbnail_path}}"
-                                ng-style="photoPosition()">
+                            <img alt="{{photo.display_name}}" style="display:none;">
                         </div>
                         <div class="actions">
                             <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected" ng-change="toggleSelected(selected, photo)"></label>
@@ -58,7 +52,7 @@
                 data-photos="photos"
                 data-selected-photos="selectedPhotos"
                 data-on-select-all="selectAll()"
-                data-on-upload="upload(files)"
+                data-on-start-upload="startUpload(files)"
                 data-on-delete="deleteSelected()"
                 data-on-download="download(photo)"
                 data-on-share="share(photo)"

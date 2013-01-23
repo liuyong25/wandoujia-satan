@@ -2,6 +2,7 @@
     <!-- <a class="action-pick-date" ng-click="pickDate()"><i class="photos-icon-calendar"></i></a> -->
     <a class="action-upload-photo" id="-wdp-uploader-trigger"
         wdp-uploader
+        data-on-start-upload="onStartUpload(files)"
         data-on-uploaded="onUploaded(files)"
         data-browse-button-id="-wdp-uploader-trigger"
         data-container-id="-wdp-uploader-container"

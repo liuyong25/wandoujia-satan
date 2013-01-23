@@ -21,13 +21,13 @@ return ['$rootScope', function($rootScope) {
                 $rootScope.viewport.height = win.height();
             });
         }, 1000);
-        var onscroll = _.debounce(function() {
+        var onscroll = _.throttle(function() {
             $rootScope.$apply(function() {
                 $rootScope.viewport.scrollTop = win.scrollTop();
                 $rootScope.viewport.scrollLeft = win.scrollLeft();
             });
-        }, 1000);
-        win.scroll(onscroll);
+        }, 300);
+        // win.scroll(onscroll);
         win.resize(onresize);
         element.on('$destroy', function() {
             win.off('scroll', onscroll);

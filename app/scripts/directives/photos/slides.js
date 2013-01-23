@@ -110,8 +110,9 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     $scope.$broadcast('resize');
                 }
             };
-            $rootScope.$watch('viewport.width', updateDimensions);
-            $rootScope.$watch('viewport.height', updateDimensions);
+            $rootScope.$watch(function(scope) {
+                return scope.viewport.width + ' ' + scope.viewport.height;
+            }, updateDimensions);
 
             var open = function() {
                 element.addClass('slides-active');

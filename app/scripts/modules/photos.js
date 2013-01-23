@@ -49,14 +49,12 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         $scope.previewPhoto = null;
 
         Photos.query(function(photos) {
-            $scope.photos = photos;
+            $scope.photos = _.sortBy(photos, function(photo) {
+                return -photo.date_added;
+            });
             // $scope.photos = _.first(photos, 5);  // for debug...
         });
 
-        $scope.$watch('photos', function() {
-            $scope.groups.splice(0, $scope.groups.length);
-            $scope.groups.push.apply($scope.groups, PhotoGroup.divide($scope.photos));
-        }, true);
         $scope.isSelected = function(photo) {
             return _.indexOf($scope.selectedPhotos, photo) >= 0;
         };
@@ -91,12 +89,6 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 return;
             }
             $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
-            // var group = _.find($scope.groups, function(group) {
-            //     return _.any(group.photos, function(p) {
-            //         return p === photo;
-            //     });
-            // });
-            // group.photos.splice(_.indexOf(group.photos, photo), 1);
             photo.$remove();
         };
         $scope.deleteSelected = function() {
@@ -111,8 +103,26 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
             $scope.selectedPhotos = [];
         };
+        $scope.startUpload = function(files) {
+            _.each(files.reverse(), function(file, i) {
+                var photo;
+                file.data.then(function(data) {
+                    photo = new Photos({
+                        'thumbnail_path': data.dataURI,
+                        'thumbnail_width': data.width,
+                        'thumbnail_height': data.height,
+                        'deferred': file.uploading
+                    });
+                    $scope.photos.unshift(photo);
+                });
+                file.uploading.then(function(res) {
+                    Photos.get({id: res[i].id}, function(newPhoto) {
+                        angular.extend(photo, newPhoto);
+                    });
+                });
+            });
+        };
         $scope.upload = function(files) {
-            console.log(11111,files);
             _.each(files, function(file) {
                 Photos.get({id: file.id}, function(photo) {
                     $scope.photos.unshift(photo);

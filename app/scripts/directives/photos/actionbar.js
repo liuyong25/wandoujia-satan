@@ -12,16 +12,16 @@ return [function() {
             photos:         '=',
             selectedPhotos: '=',
             pickDate:       '&onPickDate',
-            upload:         '&onUpload',
+            startUpload:    '&onStartUpload',
             selectAll:      '&onSelectAll',
             'delete':       '&onDelete',
             download:       '&onDownload',
             share:          '&onShare'
         },
         link: function($scope) {
-            $scope.onUploaded = function(files) {
-                $scope.upload({files: files});
-            };
+            $scope.onStartUpload = function(files) {
+                $scope.startUpload({files: files});
+            }
         }
     };
 }];
