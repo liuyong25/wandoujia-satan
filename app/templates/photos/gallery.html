@@ -1,0 +1,44 @@
+<div ng-cloak class="container-fluid wdj-photos">
+    <div class="timeline-container">
+        <div class="showcases-container">
+            <div wdp-showcase>
+                <div class="block"
+                    ng-repeat="photo in photos"
+                    wdp-block
+                    data-selected="isSelected(photo)"
+                    ng-class="{'block-active': selected}">
+                    <div class="photo"
+                        ng-click="preview(photo)">
+                        <img alt="{{photo.display_name}}" style="display:none;">
+                    </div>
+                    <div class="actions">
+                        <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected" ng-change="toggleSelected(selected, photo)"></label>
+                        <a class="action-share" href=""
+                            ng-click="share(photo)"><i class="photos-icon-share"></i></a>
+                        <a class="action-download" href=""
+                            ng-click="download(photo)"><i class="photos-icon-dl"></i></a>
+                        <a class="action-delete" href=""
+                            ng-click="delete(photo)"><i class="photos-icon-del"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div wdp-actionbar
+            data-photos="photos"
+            data-selected-photos="selectedPhotos"
+            data-on-select-all="selectAll()"
+            data-on-start-upload="startUpload(files)"
+            data-on-delete="deleteSelected()"
+            data-on-download="download(photo)"
+            data-on-share="share(photo)"
+            ></div>
+    </div>
+    <div wdp-slides
+        data-current="previewPhoto"
+        data-photos="photos"
+        data-on-delete="delete(photo)"
+        data-on-download="download(photo)"
+        data-on-share="share(photo)"
+        ></div>
+    <div class="wd-loading" data-visible="photos.length == 0"></div>
+</div>

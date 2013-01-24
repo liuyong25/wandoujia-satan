@@ -1,0 +1,55 @@
+.wd-auth {
+    @include ui-layer-top;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: image-url("bg-pattern.png");
+
+    .panel {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: (316px / -2) 0 0 (244px / -2);
+        width: 244px;
+        height: 316px;
+        border-radius: 6px;
+        @include box-shadow(0 0 10px #ccc);
+        background: #f6f6f6;
+
+        .logo {
+            background: image-url("logo_light.png");
+            width: image-width("logo_light.png");
+            height: image-height("logo_light.png");
+            margin: 30px auto 0;
+            position: relative;
+
+            &:after {
+                position: absolute;
+                content: "";
+                width: 100%;
+                height: 1px;
+                @include background-image(linear-gradient(to right, #f6f6f6, #ccc, #f6f6f6));
+                bottom: -20px;
+                left: 0;
+            }
+        }
+
+        form {
+            position: absolute;
+            left: 0;
+            bottom: 20px;
+            width: 100%;
+            p {
+                color: #a6a6a6;
+                text-align: center;
+                font-size: 12px;
+            }
+            input, button {
+                display: block;
+                margin: 20px auto 0;
+            }
+        }
+    }
+}

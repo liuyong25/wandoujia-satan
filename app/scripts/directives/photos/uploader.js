@@ -74,25 +74,13 @@ return ['$q', 'wdDev', function($q, wdDev) {
                 up.start();
             });
             uploader.bind('UploadProgress', function(up, file) {
-                $scope.$apply(function() {
-                    $scope.$evalAsync(function() {
-                        file.deferred.notify(file.percent);
-                    });
-                });
+                file.deferred.notify(file.percent);
             });
             uploader.bind('FileUploaded', function(up, file, info) {
-                $scope.$apply(function() {
-                    $scope.$evalAsync(function() {
-                        file.deferred.resolve(jQuery.parseJSON(info.response));
-                    });
-                });
+                file.deferred.resolve(jQuery.parseJSON(info.response));
             });
             uploader.bind('Error', function(up, err) {
-                $scope.$apply(function() {
-                    $scope.$evalAsync(function() {
-                        err.file.deferred.reject(err);
-                    });
-                });
+                err.file.deferred.reject(err);
             });
         }
     };

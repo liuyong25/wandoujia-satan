@@ -4,11 +4,10 @@ define([
         angular
     ) {
 'use strict';
-return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFSET',
-    function($rootScope, $window, WDP_LOAD_IMAGE_DELAY, WDP_PRELOAD_IMAGE_OFFSET) {
+return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFSET', 'wdViewport',
+    function($rootScope, $window, WDP_LOAD_IMAGE_DELAY, WDP_PRELOAD_IMAGE_OFFSET, wdViewport) {
     return {
         link: function($scope, element, attrs) {
-            var scrollTop = $rootScope.viewport.scrollTop;
             $scope.selected = $scope.$eval(attrs.selected);
             $scope.$watch(attrs.selected, function(newValue) {
                 $scope.selected = newValue;
@@ -17,11 +16,11 @@ return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFS
             function shouldShow() {
                 var top = $scope.layout[$scope.$index].y + $scope.offsetTop;
                 var bottom = top + 180;
-                return (top < scrollTop + $rootScope.viewport.height - 85 + WDP_PRELOAD_IMAGE_OFFSET) && (bottom > scrollTop + 15 - WDP_PRELOAD_IMAGE_OFFSET);
+                return (top < wdViewport.top() + wdViewport.height() - 85 + WDP_PRELOAD_IMAGE_OFFSET) && (bottom > wdViewport.top() + 15 - WDP_PRELOAD_IMAGE_OFFSET);
             }
             function renderImage() {
                 var $img = element.find('.photo img');
-                var path =$scope.photo.thumbnail_path;
+                var path = $scope.photo.thumbnail_path;
                 if ($img.data('src') !== path) {
                     $img.data('src', path);
                     var image = new Image();
@@ -46,19 +45,8 @@ return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFS
                 }
             }
 
-            var positionChanged = false;
-            function detectVisibility() {
-                positionChanged = true;
-                $scope.$evalAsync(function() {
-                    if (!positionChanged) {
-                        return;
-                    }
-                    positionChanged = false;
-                    toggleBlock();
-                });
-            }
-
-            $scope.$watch('layout[$index]', function(layout) {
+            function relayout() {
+                var layout = $scope.layout[$scope.$index];
                 element
                     .css({
                         left: layout.x + 40,
@@ -74,21 +62,19 @@ return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFS
                                 left: layout.innerX,
                                 top: layout.innerY
                             });
-                detectVisibility();
-            }, true);
-
-            $rootScope.$watch('viewport.height + " " + viewport.scrollTop', function() {
-                detectVisibility();
-            }, true);
+            }
 
             $scope.$watch('photo.thumbnail_path', function() {
-                if (shouldShow()) {
-                    renderImage();
-                }
+                toggleBlock();
             });
 
-            $scope.$on('scroll', function(e, top) {
-                scrollTop = top;
+            $scope.$on('layout', function() {
+                relayout();
+                toggleBlock();
+            });
+
+            // TODO: This way is better than wdViewport.on('scroll'), weird...
+            $scope.$on('scroll', function() {
                 toggleBlock();
             });
 

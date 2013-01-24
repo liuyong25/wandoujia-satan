@@ -6,7 +6,7 @@ define([
         _
     ) {
 'use strict';
-return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $rootScope) {
+return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport) {
     return {
         template: template,
         replace: true,
@@ -110,9 +110,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', function(WDP_PLAYING_INTERVAL, $ro
                     $scope.$broadcast('resize');
                 }
             };
-            $rootScope.$watch(function(scope) {
-                return scope.viewport.width + ' ' + scope.viewport.height;
-            }, updateDimensions);
+            wdViewport.on('resize', updateDimensions);
 
             var open = function() {
                 element.addClass('slides-active');

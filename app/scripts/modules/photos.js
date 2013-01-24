@@ -41,17 +41,33 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .directive('wdpFrame', frame)
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
-    .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window', 'wdSharing',
-        function($scope, Photos, PhotoGroup, $window, wdSharing) {
+    .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window', 'wdSharing', '$routeParams',
+        function($scope, Photos, PhotoGroup, $window, wdSharing, $routeParams) {
         $scope.photos = [];
         $scope.groups = [];
         $scope.selectedPhotos = [];
         $scope.previewPhoto = null;
 
-        Photos.query(function(photos) {
-            $scope.photos = _.sortBy(photos, function(photo) {
+        function mergePhotos(photos) {
+            if (!angular.isArray(photos)) {
+                photos = [photos];
+            }
+            photos = _.sortBy($scope.photos.concat(photos), function(photo) {
                 return -photo.date_added;
             });
+            $scope.photos = _.uniq(photos, true, function(photo) {
+                return photo.id;
+            });
+        }
+
+        if ($routeParams.action === 'preview') {
+            Photos.get({id: $routeParams.id}, function(photo) {
+                mergePhotos(photo);
+                $scope.preview(photo);
+            });
+        }
+        Photos.query(function(photos) {
+            mergePhotos(photos);
             // $scope.photos = _.first(photos, 5);  // for debug...
         });
 
@@ -130,5 +146,4 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
         };
     }]);
-
 });

@@ -1,11 +1,11 @@
 define([
         'angular',
-        'modules/photos'
+        'modules/app'
     ], function(
         angular,
-        photos
+        app
     ) {
     'use strict';
-    angular.bootstrap(document, ['wdPhotos']);
+    angular.bootstrap(document, ['wdApp']);
     return 'Hello from Yeoman!';
 });
