@@ -3,7 +3,7 @@ define([], function() {
 return function() {
     var self = this;
     self.requestInterceptors = [];
-    self.$get = ['$http', '$q', '$rootScope', function($http, $q, $rootScope) {
+    self.$get = ['$http', '$q', '$rootScope', '$timeout', function($http, $q, $rootScope, $timeout) {
         return function http(config) {
             var failed = false;
             var i, l;
@@ -27,10 +27,8 @@ return function() {
                     });
                     return promise;
                 };
-                setTimeout(function() {
-                    $rootScope.$apply(function() {
-                        deferred.reject('requestInterceptor failed.');
-                    });
+                $timeout(function() {
+                    deferred.reject('requestInterceptor failed.');
                 }, 0);
                 return promise;
             }
