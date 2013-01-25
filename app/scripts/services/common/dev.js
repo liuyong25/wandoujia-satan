@@ -1,10 +1,6 @@
-define([
-        'underscore'
-    ], function(
-        _
-    ) {
+define([], function() {
 'use strict';
-return ['$window', function($window) {
+return function() {
     // var queries = $window.location.search.slice(1).split('&');
     // var params = {};
     // _.each(queries, function(query) {
@@ -15,7 +11,22 @@ return ['$window', function($window) {
     var ip = '';
     var port = '';
 
-    var parseAuthCode = function (input) {
+    function encodeServer(server) {
+        return server.replace(':', '\\:');
+    }
+
+    var self = this;
+    self.getServer = function() {
+        return ip ? ('//' + ip + ':' + (port || 80)) : '';
+    };
+    self.setServer = function(newIP, newPort) {
+        ip = newIP;
+        port = newPort;
+    };
+    self.getAPIPrefix = function() {
+        return '/api/v1';
+    };
+    self.parseAuthCode = function (input) {
         var type = parseInt(input.slice(0, 1), 10);
         var encryptedIp = parseInt(input.slice(3, input.length), 10);
         var ip;
@@ -45,18 +56,19 @@ return ['$window', function($window) {
 
         return ip;
     };
-    return {
-        getServer: function() {
-            return ip ? ('//' + ip + ':' + (port || 80)) : '';
-        },
-        setServer: function(newIP, newPort) {
-            ip = newIP;
-            port = newPort;
-        },
-        getAPIPrefix: function() {
-            return '/api/v1';
-        },
-        parseAuthCode: parseAuthCode
+    self.wrapURL = function(url, forResource) {
+        var server = self.getServer();
+        if (forResource) {
+            server = encodeServer(server);
+        }
+        var prefix = self.getAPIPrefix();
+        return server + prefix + url;
     };
-}];
+
+    self.$get = [function() {
+        return {
+            wrapURL: self.wrapURL
+        };
+    }];
+};
 });

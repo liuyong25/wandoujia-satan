@@ -5,7 +5,8 @@ define([
         'directives/common/strip',
         'services/common/sharing',
         'services/common/dev',
-        'services/common/viewport'
+        'services/common/viewport',
+        'services/common/http'
     ], function(
         angular,
         windowEventWatcher,
@@ -13,14 +14,16 @@ define([
         strip,
         sharing,
         dev,
-        viewport
+        viewport,
+        http
     ) {
 'use strict';
 angular.module('wdCommon', [])
     .directive('wdStrip', strip)
     .directive('wdWindowEventWatcher', windowEventWatcher)
     .directive('wdLoading', loading)
-    .factory('wdDev', dev)
+    .provider('wdHttp', http)
+    .provider('wdDev', dev)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing);
 });

@@ -41,8 +41,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .directive('wdpFrame', frame)
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
-    .controller('galleryController', ['$scope', 'Photos', 'PhotoGroup', '$window', 'wdSharing', '$routeParams',
-        function($scope, Photos, PhotoGroup, $window, wdSharing, $routeParams) {
+    .controller('galleryController', [
+        '$scope', '$window', 'wdSharing', '$routeParams', 'wdHttp', 'Photos',
+        function($scope, $window, wdSharing, $routeParams, wdHttp, Photos) {
         $scope.photos = [];
         $scope.groups = [];
         $scope.selectedPhotos = [];
@@ -66,7 +67,10 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 $scope.preview(photo);
             });
         }
-        Photos.query(function(photos) {
+        wdHttp({
+            method: 'GET',
+            url: '/resource/photos'
+        }).success(function(photos) {
             mergePhotos(photos);
             // $scope.photos = _.first(photos, 5);  // for debug...
         });

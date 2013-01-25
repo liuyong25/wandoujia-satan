@@ -16,7 +16,7 @@ return ['$q', 'wdDev', function($q, wdDev) {
         },
         link: function($scope, element, attrs) {
             var uploader = new plupload.Uploader({
-                url: wdDev.getServer() + wdDev.getAPIPrefix() + '/directive/photos/upload',
+                url: wdDev.wrapURL('/directive/photos/upload'),
                 runtimes: 'html5, html4',
                 container: attrs.containerId,
                 'browse_button': attrs.browseButtonId,
