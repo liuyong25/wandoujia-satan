@@ -15,22 +15,21 @@ define([
     ) {
 'use strict';
 angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
-    .config(['$routeProvider', '$httpProvider', 'wdHttpProvider', 'wdDevProvider',
-        function($routeProvider, $httpProvider, wdHttpProvider, wdDevProvider) {
+    .config(['$routeProvider', '$httpProvider', 'wdHttpProvider', 'wdDevProvider', 'wdAuthFilterProvider',
+        function($routeProvider, $httpProvider, wdHttpProvider, wdDevProvider, wdAuthFilterProvider) {
         $routeProvider.when('/portal', {
             template: PortalTemplate,
             controller: 'portalController'
         });
-        // $routeProvider.when('/', {
-        //     redirectTo: '/photos'
-        // });
+        $routeProvider.when('/', {
+            redirectTo: '/photos'
+        });
         $routeProvider.when('/photos', {
             template: PhotosTemplate,
-            controller: 'galleryController'
-        });
-        $routeProvider.when('/photos/:action/:id', {
-            template: PhotosTemplate,
-            controller: 'galleryController'
+            controller: 'galleryController',
+            resolve: {
+                delay: wdAuthFilterProvider.needAuth
+            }
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
@@ -39,15 +38,16 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
         // Prevent CORS error for accept-headers...
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
-        $httpProvider.responseInterceptors.push(['$rootScope', '$q', function($rootScope, $q) {
+        $httpProvider.responseInterceptors.push(['$rootScope', '$q', '$log', '$location', function($rootScope, $q, $log, $location) {
             function success(response) {
-                console.log(response.config.url, response.status);
+                $log.log(response.config.url, response.status);
                 return response;
             }
 
             function error(response) {
-                console.log(response.config.url, response.status);
+                $log.warn(response.config.url, response.status);
                 if (response.status === 401) {
+                    $location.url('/portal');
                 }
                 return $q.reject(response);
             }

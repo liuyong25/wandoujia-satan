@@ -6,7 +6,8 @@ define([
         'services/common/sharing',
         'services/common/dev',
         'services/common/viewport',
-        'services/common/http'
+        'services/common/http',
+        'directives/common/autofocus'
     ], function(
         angular,
         windowEventWatcher,
@@ -15,13 +16,15 @@ define([
         sharing,
         dev,
         viewport,
-        http
+        http,
+        autofocus
     ) {
 'use strict';
 angular.module('wdCommon', [])
     .directive('wdStrip', strip)
     .directive('wdWindowEventWatcher', windowEventWatcher)
     .directive('wdLoading', loading)
+    .directive('wdAutoFocus', autofocus)
     .provider('wdHttp', http)
     .provider('wdDev', dev)
     .factory('wdViewport', viewport)
