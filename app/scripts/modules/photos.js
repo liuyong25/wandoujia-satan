@@ -61,21 +61,24 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
         }
 
+        function fetchPhotos() {
+            Photos.query(function(photos) {
+                mergePhotos(photos);
+            });
+        }
+
         if ($routeParams.action === 'preview') {
             Photos.get({id: $routeParams.id}, function(photo) {
                 mergePhotos(photo);
                 $scope.preview(photo);
+                fetchPhotos();
+            }, function() {
+                fetchPhotos();
             });
         }
-        wdHttp({
-            method: 'GET',
-            url: '/resource/photos'
-        }).success(function(photos) {
-            mergePhotos(photos);
-            // $scope.photos = _.first(photos, 5);  // for debug...
-        }).error(function() {
-            // TODO: deal with MISTAKES...
-        });
+        else {
+            fetchPhotos();
+        }
 
         $scope.isSelected = function(photo) {
             return _.indexOf($scope.selectedPhotos, photo) >= 0;
