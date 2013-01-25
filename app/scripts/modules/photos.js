@@ -73,6 +73,8 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         }).success(function(photos) {
             mergePhotos(photos);
             // $scope.photos = _.first(photos, 5);  // for debug...
+        }).error(function() {
+            // TODO: deal with MISTAKES...
         });
 
         $scope.isSelected = function(photo) {
