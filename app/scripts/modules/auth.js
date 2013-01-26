@@ -10,7 +10,7 @@ angular.module('wdAuth', ['wdCommon'])
         var self = this;
         self.needAuth = ['$q', 'wdAuthToken', function($q, wdAuthToken) {
             var deferred = $q.defer();
-            if (wdAuthToken.getToken()) {
+            if (wdAuthToken.valid()) {
                 deferred.resolve('ok');
             }
             else {
@@ -23,16 +23,26 @@ angular.module('wdAuth', ['wdCommon'])
             };
         }];
     })
-    .factory('wdAuthToken', ['$window', function($window) {
+    .factory('wdAuthToken', ['$window', '$location', function($window, $location) {
+        var valid = false;
         return {
+            valid: function() {
+                return valid;
+            },
             getToken: function() {
                 return $window.localStorage.getItem('token');
             },
             setToken: function(newToken) {
                 $window.localStorage.setItem('token', newToken);
+                valid = true;
             },
             clearToken: function() {
                 $window.localStorage.removeItem('token');
+                valid = false;
+            },
+            signout: function() {
+                this.clearToken();
+                $location.path('/portal');
             },
             parse: function (input) {
                 var type = parseInt(input.slice(0, 1), 10);
@@ -70,6 +80,7 @@ angular.module('wdAuth', ['wdCommon'])
         function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken) {
 
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
+        $scope.buttonText = '连接';
         $scope.submit = function() {
             if (!$scope.authCode) {
                 return;
@@ -78,6 +89,7 @@ angular.module('wdAuth', ['wdCommon'])
             var port = 10208;
 
             if (ip) {
+                $scope.buttonText = '验证中...';
                 wdDev.setServer(ip, port);
                 wdHttp({
                     method: 'get',
@@ -89,12 +101,17 @@ angular.module('wdAuth', ['wdCommon'])
                     }
                 })
                 .success(function() {
+                    $scope.buttonText = '验证成功';
                     // TODO: Maybe expiration?
                     wdAuthToken.setToken($scope.authCode);
                     $location.url($route.current.params.ref || '/');
                 })
                 .error(function() {
                     console.log('error');
+                    $scope.buttonText = '验证失败';
+                    $timeout(function() {
+                        $scope.buttonText = '连接';
+                    }, 1000);
                     wdAuthToken.clearToken();
                 });
             }

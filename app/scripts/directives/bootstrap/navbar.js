@@ -9,7 +9,12 @@ return [function() {
         restrict: 'EAC',
         replace: true,
         transclude: true,
-        template: template
+        template: template,
+        controller: ['$scope', 'wdAuthToken', function($scope, wdAuthToken) {
+            $scope.signout = function() {
+                wdAuthToken.signout();
+            };
+        }]
     };
 }];
 });
