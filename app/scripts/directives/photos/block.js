@@ -49,7 +49,7 @@ return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFS
                 var layout = $scope.layout[$scope.$index];
                 element
                     .css({
-                        left: layout.x + 40,
+                        left: layout.x,
                         top:  layout.y
                     })
                     .children('.photo')

@@ -2,7 +2,7 @@
     padding-top: 35px;
     .showcase {
         @include position-container;
-        padding: 0 106px 0 30px;
+        // padding: 0 106px 0 30px;
         .date {
             @include box(60px);
             @include offset(-80px, 50px);

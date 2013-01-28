@@ -18,10 +18,10 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
                 var meta = PhotosLayoutAlgorithm['default']({
                     fixedHeight: 170,
                     minWidth: 120,
-                    gapWidth: 12,
-                    gapHeight: 35,
+                    gapWidth: 15,
+                    gapHeight: 15,
                     borderWidth: 5,
-                    containerWidth: wdViewport.width() - 120 - 40,
+                    containerWidth: wdViewport.width() - (70 + 20) * 2,
                     containerHeight: -1,
                     photos: _.map($scope.photos, function(photo) {
                         return {

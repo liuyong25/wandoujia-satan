@@ -42,11 +42,12 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', [
-        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route',
-        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route) {
+        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey',
+        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey) {
 
         $log.log('wdPhotos:galleryController initializing!');
 
+        $scope.loadead = false;
         $scope.photos = [];
         $scope.groups = [];
         $scope.selectedPhotos = [];
@@ -67,6 +68,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         function fetchPhotos() {
             Photos.query(function(photos) {
                 mergePhotos(photos);
+                $scope.loaded = true;
+            }, function() {
+                $scope.loaded = true;
             });
         }
 
@@ -157,5 +161,11 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 });
             });
         };
+
+        // Shortcuts destruction.
+        $scope.$on('$destroy', function() {
+            wdKey.setScope('all');
+            wdKey.deleteScope('photos');
+        });
     }]);
 });

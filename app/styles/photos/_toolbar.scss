@@ -17,10 +17,16 @@
     }
 
     %tool { @include float-left; }
+    .action-upload-photo {
+        @extend %tool, %has-icon-add;
+        padding: fill-height($toolbar-height) 10px;
+        margin-left: 10px;
+    }
     .counter {
-        @include offset(26px, fill-height($toolbar-height));
+        @extend %tool;
         @include box(auto, auto, 3px);
         padding: 0 6px;
+        margin: fill-height($toolbar-height) 0 0 30px;
         @include box-shadow(0 1px rgba(255,255,255,0.15), inset 0 1px 1px rgba(0,0,0,0.5));
         @include background-image(linear-gradient(#646464, #707070));
         font-size: 12px;
@@ -33,7 +39,7 @@
         @extend %tool;
         $padding-top: fill-height($click-height);
         padding: $padding-top 0 $padding-top 25px;
-        margin: fill-height($toolbar-height, $click-height) 0 0 66px;
+        margin: fill-height($toolbar-height, $click-height) 0 0 10px;
     }
     %tool-extra {
         @extend %tool;

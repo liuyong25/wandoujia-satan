@@ -8,23 +8,23 @@
         // right: 0;
         // top: 0;
         // bottom: 80px;
-        padding: 0 0 90px 60px;
+        padding: 0 70px 90px;
         // overflow: auto;
 
         // time"line", the real one...
-        &:before {
-            content: " ";
-            position: fixed;
-            left: 75px;
-            top: 0;
-            bottom: 0;
-            width: 5px;
-            background: #d7d7d7;
-        }
+        // &:before {
+        //     content: " ";
+        //     position: fixed;
+        //     left: 75px;
+        //     top: 0;
+        //     bottom: 0;
+        //     width: 5px;
+        //     background: #d7d7d7;
+        // }
 
         @import "showcase"; // showcase consists of group of photos
         @import "block";    // each photos is contained in a block
-        @import "actions";  // photos actions
+        // @import "actions";  // photos actions
     }
 
     @import "slide";    // image slide preview

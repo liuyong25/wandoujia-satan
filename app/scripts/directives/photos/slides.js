@@ -6,7 +6,8 @@ define([
         _
     ) {
 'use strict';
-return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport) {
+return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey',
+    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey) {
     return {
         template: template,
         replace: true,
@@ -115,8 +116,10 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', function(WDP_PLAYING
             var open = function() {
                 element.addClass('slides-active');
                 $scope.$broadcast('open');
+                wdKey.setScope('photos:preview');
             };
             var close = function() {
+                wdKey.setScope('photos');
                 $scope.$broadcast('close');
                 $scope.close();
                 element.removeClass('slides-active');
@@ -144,6 +147,28 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', function(WDP_PLAYING
                         $scope.$apply(close);
                     }
                 });
+
+            // Shortcuts
+            wdKey.$apply('left, up, j, h', 'photos:preview', function() {
+                if ($scope.hasPrevious()) {
+                    $scope.previous();
+                }
+                return false;
+            });
+            wdKey.$apply('right, down, k, l', 'photos:preview', function() {
+                if ($scope.hasNext()) {
+                    $scope.next();
+                }
+                return false;
+            });
+            wdKey.$apply('esc', 'photos:preview', function() {
+                close();
+                return false;
+            });
+            $scope.$on('$destroy', function() {
+                wdKey.setScope('photos');
+                wdKey.deleteScope('photos:preview');
+            });
         }
     };
 }];

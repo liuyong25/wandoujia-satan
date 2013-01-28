@@ -11,8 +11,6 @@
     }
     .action-upload-photo {
         @extend %action, %has-icon-add;
-        // top: 25px + $action-width + $action-padding * 2;
-        @include offset(0, 25px);
     }
     %action {
         $padding-top: $action-padding + ($action-height - $icon-height) / 2;
