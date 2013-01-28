@@ -62,7 +62,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
                 config.url = wdDevProvider.wrapURL(config.url);
             }
             if (angular.isUndefined(config.withCredentials)) {
-                // config.withCredentials = true;
+                config.withCredentials = true;
             }
         });
     }]);
