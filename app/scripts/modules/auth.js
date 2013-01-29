@@ -23,7 +23,7 @@ angular.module('wdAuth', ['wdCommon'])
             };
         }];
     })
-    .factory('wdAuthToken', ['$window', '$location', function($window, $location) {
+    .factory('wdAuthToken', ['$window', '$location', 'wdDev', function($window, $location, wdDev) {
         var valid = false;
         return {
             valid: function() {
@@ -42,7 +42,12 @@ angular.module('wdAuth', ['wdCommon'])
             },
             signout: function() {
                 this.clearToken();
-                $location.path('/portal');
+                if (wdDev.query('ac')) {
+                    $window.location = $window.location.pathname + '#/portal';
+                }
+                else {
+                    $location.path('/portal');
+                }
             },
             parse: function (input) {
                 var type = parseInt(input.slice(0, 1), 10);
