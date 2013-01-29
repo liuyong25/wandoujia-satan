@@ -542,6 +542,8 @@
                                 };
                             }
 
+                            xhr.withCredentials = true;
+
                             xhr.onreadystatechange = function() {
                                 var httpStatus, chunkArgs;
 
@@ -617,7 +619,6 @@
                                 plupload.each(up.settings.headers, function(value, name) {
                                     xhr.setRequestHeader(name, value);
                                 });
-
 
                                 // if has FormData support like Chrome 6+, Safari 5+, Firefox 4, use it
                                 if (typeof(bin) !== 'string' && !!window.FormData) {
