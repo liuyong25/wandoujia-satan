@@ -37,11 +37,15 @@ return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFS
             }
             function toggleBlock() {
                 if (shouldShow()) {
-                    // element.show();
+setTimeout(function() {
+                    element.show();
                     renderImage();
+}, 0);
                 }
                 else {
-                    // element.hide();
+setTimeout(function() {
+                    element.hide();
+}, 0);
                 }
             }
 

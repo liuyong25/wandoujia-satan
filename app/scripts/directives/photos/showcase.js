@@ -18,10 +18,10 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
                 var meta = PhotosLayoutAlgorithm['default']({
                     fixedHeight: 170,
                     minWidth: 120,
-                    gapWidth: 15,
-                    gapHeight: 15,
+                    gapWidth: 10,
+                    gapHeight: 10,
                     borderWidth: 5,
-                    containerWidth: wdViewport.width() - (70 + 20) * 2,
+                    containerWidth: wdViewport.width() - (30 + 20) * 2,
                     containerHeight: -1,
                     photos: _.map($scope.photos, function(photo) {
                         return {
@@ -32,13 +32,14 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
                     })
                 });
 
+setTimeout(function() {
                 element
                     .height(meta.height)
                     .children('.date')
                         .css({
                             top: meta.metas[0].height / 2 - 20 / 2
                         });
-
+}, 0);
                 $scope.layout = meta.metas;
                 $scope.offsetTop = element.offset().top;
             }

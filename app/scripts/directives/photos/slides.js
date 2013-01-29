@@ -45,22 +45,32 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey',
                             self.pause();
                         }
                     }, WDP_PLAYING_INTERVAL);
+                    $scope.playing = true;
                 };
                 self.pause = function() {
                     // Pause can be called without detecting autoplay state.
                     clearInterval(autoplayTimer);
                     autoplayTimer = null;
+                    $scope.playing = false;
                 };
 
                 // Indicates whether there is something on loading state.
                 // If true, turn on loading animation.
                 $scope.loading = false;
-
+                $scope.playing = false;
                 $scope.play = function() {
                     self.play();
                 };
                 $scope.pause = function() {
                     self.pause();
+                };
+                $scope.togglePlay = function() {
+                    if ($scope.playing) {
+                        $scope.pause();
+                    }
+                    else {
+                        $scope.play();
+                    }
                 };
                 $scope.next = function() {
                     self.pause();

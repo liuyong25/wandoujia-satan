@@ -1,52 +1,65 @@
-.wd-loading{
-position:fixed;
-left: 50%;
-top: 50%;
-margin: (-32px - 76px / 2) 0 0 -32px;
-width:64px;
-height:64px;
+.wd-loading {
+    $width: 48px;
+    position:fixed;
+    left: 50%;
+    top: 50%;
+    margin: (-32px - 76px / 2) 0 0 -32px;
+    width:$width;
+    height:$width;
+    @include transition(opacity $global-transition-duration);
+    opacity: 0.6;
 
-&.wd-loading-hide {
-    top: -64px;
-    opacity: 0;
-}
+    &.wd-loading-hide {
+        top: -$width;
+        opacity: 0;
+    }
 }
 
-.circularG{
+#floatingCirclesG{
+width:48px;
+height:48px;
+-moz-transform:scale(0.6);
+-webkit-transform:scale(0.6);
+-ms-transform:scale(0.6);
+-o-transform:scale(0.6);
+transform:scale(0.6);
+}
+
+.f_circleG{
 position:absolute;
-background-color:#6db800;
-width:15px;
-height:15px;
--moz-border-radius:10px;
--moz-animation-name:bounce_circularG;
+background-color:#FFFFFF;
+height:9px;
+width:9px;
+-moz-border-radius:4px;
+-moz-animation-name:f_fadeG;
 -moz-animation-duration:1.04s;
 -moz-animation-iteration-count:infinite;
 -moz-animation-direction:linear;
--webkit-border-radius:10px;
--webkit-animation-name:bounce_circularG;
+-webkit-border-radius:4px;
+-webkit-animation-name:f_fadeG;
 -webkit-animation-duration:1.04s;
 -webkit-animation-iteration-count:infinite;
 -webkit-animation-direction:linear;
--ms-border-radius:10px;
--ms-animation-name:bounce_circularG;
+-ms-border-radius:4px;
+-ms-animation-name:f_fadeG;
 -ms-animation-duration:1.04s;
 -ms-animation-iteration-count:infinite;
 -ms-animation-direction:linear;
--o-border-radius:10px;
--o-animation-name:bounce_circularG;
+-o-border-radius:4px;
+-o-animation-name:f_fadeG;
 -o-animation-duration:1.04s;
 -o-animation-iteration-count:infinite;
 -o-animation-direction:linear;
-border-radius:10px;
-animation-name:bounce_circularG;
+border-radius:4px;
+animation-name:f_fadeG;
 animation-duration:1.04s;
 animation-iteration-count:infinite;
 animation-direction:linear;
 }
 
-#circularG_1{
+#frotateG_01{
 left:0;
-top:25px;
+top:20px;
 -moz-animation-delay:0.39s;
 -webkit-animation-delay:0.39s;
 -ms-animation-delay:0.39s;
@@ -54,9 +67,9 @@ top:25px;
 animation-delay:0.39s;
 }
 
-#circularG_2{
-left:7px;
-top:7px;
+#frotateG_02{
+left:6px;
+top:6px;
 -moz-animation-delay:0.52s;
 -webkit-animation-delay:0.52s;
 -ms-animation-delay:0.52s;
@@ -64,9 +77,9 @@ top:7px;
 animation-delay:0.52s;
 }
 
-#circularG_3{
+#frotateG_03{
+left:20px;
 top:0;
-left:25px;
 -moz-animation-delay:0.65s;
 -webkit-animation-delay:0.65s;
 -ms-animation-delay:0.65s;
@@ -74,9 +87,9 @@ left:25px;
 animation-delay:0.65s;
 }
 
-#circularG_4{
-right:7px;
-top:7px;
+#frotateG_04{
+right:6px;
+top:6px;
 -moz-animation-delay:0.78s;
 -webkit-animation-delay:0.78s;
 -ms-animation-delay:0.78s;
@@ -84,9 +97,9 @@ top:7px;
 animation-delay:0.78s;
 }
 
-#circularG_5{
+#frotateG_05{
 right:0;
-top:25px;
+top:20px;
 -moz-animation-delay:0.91s;
 -webkit-animation-delay:0.91s;
 -ms-animation-delay:0.91s;
@@ -94,9 +107,9 @@ top:25px;
 animation-delay:0.91s;
 }
 
-#circularG_6{
-right:7px;
-bottom:7px;
+#frotateG_06{
+right:6px;
+bottom:6px;
 -moz-animation-delay:1.04s;
 -webkit-animation-delay:1.04s;
 -ms-animation-delay:1.04s;
@@ -104,8 +117,8 @@ bottom:7px;
 animation-delay:1.04s;
 }
 
-#circularG_7{
-left:25px;
+#frotateG_07{
+left:20px;
 bottom:0;
 -moz-animation-delay:1.17s;
 -webkit-animation-delay:1.17s;
@@ -114,9 +127,9 @@ bottom:0;
 animation-delay:1.17s;
 }
 
-#circularG_8{
-left:7px;
-bottom:7px;
+#frotateG_08{
+left:6px;
+bottom:6px;
 -moz-animation-delay:1.3s;
 -webkit-animation-delay:1.3s;
 -ms-animation-delay:1.3s;
@@ -124,47 +137,47 @@ bottom:7px;
 animation-delay:1.3s;
 }
 
-@-moz-keyframes bounce_circularG{
+@-moz-keyframes f_fadeG{
 0%{
--moz-transform:scale(1)}
+background-color:#000000}
 
 100%{
--moz-transform:scale(.3)}
+background-color:#FFFFFF}
 
 }
 
-@-webkit-keyframes bounce_circularG{
+@-webkit-keyframes f_fadeG{
 0%{
--webkit-transform:scale(1)}
+background-color:#000000}
 
 100%{
--webkit-transform:scale(.3)}
+background-color:#FFFFFF}
 
 }
 
-@-ms-keyframes bounce_circularG{
+@-ms-keyframes f_fadeG{
 0%{
--ms-transform:scale(1)}
+background-color:#000000}
 
 100%{
--ms-transform:scale(.3)}
+background-color:#FFFFFF}
 
 }
 
-@-o-keyframes bounce_circularG{
+@-o-keyframes f_fadeG{
 0%{
--o-transform:scale(1)}
+background-color:#000000}
 
 100%{
--o-transform:scale(.3)}
+background-color:#FFFFFF}
 
 }
 
-@keyframes bounce_circularG{
+@keyframes f_fadeG{
 0%{
-transform:scale(1)}
+background-color:#000000}
 
 100%{
-transform:scale(.3)}
+background-color:#FFFFFF}
 
 }

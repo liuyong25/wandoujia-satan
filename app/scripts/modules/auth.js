@@ -80,7 +80,7 @@ angular.module('wdAuth', ['wdCommon'])
         function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken) {
 
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
-        $scope.buttonText = '连接';
+        $scope.buttonText = '连接手机';
         $scope.submit = function() {
             if (!$scope.authCode) {
                 return;

@@ -1,10 +1,14 @@
 <div class="wd-auth">
     <div class="panel">
         <div class="logo"></div>
-        <form ng-submit="submit()">
-            <!-- <p>请输入连接验证码连接手机：</p> -->
-            <input type="text" ng-model="authCode" wd-auto-focus placeholder="请输入连接验证码连接手机">
-            <button type="submit" class="btn btn-success">{{buttonText}}</button>
-        </form>
+        <div class="auth">
+            <p>在网页中管理手机图片、短信、联系人和应用</p>
+            <form ng-submit="submit()" class="form-inline">
+                <input type="text" class="" ng-model="authCode" wd-auto-focus placeholder="请输入连接验证码">
+                &nbsp;&nbsp;
+                <button type="submit" class="btn btn-primary btn-large">{{buttonText}}</button>
+            </form>
+            <p><a href="">如何获取连接验证码？</a></p>
+        </div>
     </div>
 </div>

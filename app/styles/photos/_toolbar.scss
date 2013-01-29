@@ -2,48 +2,67 @@
     $toolbar-height: 43px;
     $click-height: 30px;
     $border-radius: 4px;
-    @include fix(-$border-radius, 40px);
+    @include fix(-$border-radius, 35px);
     @include box(auto, $toolbar-height, $border-radius);
-    padding-left: $border-radius;
+    padding-left: $border-radius + 4px;
     @include background-image(linear-gradient(#f6f6f6, #f5f5f5));
-    @include box-shadow(0 2px 5px rgba(0,0,0,0.4), inset 0 1px #fff);
-    @include transform3d(translateX(-100%));
-    opacity: 0;
-    @include transition(all 0.5s);
-    padding-right: 10px;
-    &.toolbar-active, &:hover {
-        @include transform3d(translateX(0));
-        opacity: 1;
+    @include box-shadow(0 2px 3px rgba(0,0,0,0.2), inset 0 1px #fff);
+    // padding-right: 10px;
+
+    .collapse {
+        @include inline-block;
+        @include nowrap;
+        width: 0;
+        height: $toolbar-height;
+        vertical-align: top;
+        @include transition(all 0.5s);
+    }
+    &.toolbar-active {
+        .collapse {
+            width: 212px;
+        }
     }
 
-    %tool { @include float-left; }
+    %tool {
+        @include inline-block;
+        vertical-align: top;
+        font-size: 12px;
+    }
     .action-upload-photo {
         @extend %tool, %has-icon-add;
-        padding: fill-height($toolbar-height) 10px;
-        margin-left: 10px;
+        padding: fill-height($toolbar-height) 4px;
+        margin: 0 -2px 0 2px;
     }
     .counter {
         @extend %tool;
         @include box(auto, auto, 3px);
         padding: 0 6px;
-        margin: fill-height($toolbar-height) 0 0 30px;
+        margin: fill-height($toolbar-height) 10px 0;
         @include box-shadow(0 1px rgba(255,255,255,0.15), inset 0 1px 1px rgba(0,0,0,0.5));
         @include background-image(linear-gradient(#646464, #707070));
-        font-size: 12px;
         color: #fff;
         @include text-shadow(0 1px 0 1px rgba(0,0,0,0.35));
         text-align: center;
         cursor: default;
     }
+
+    .group {
+        @include inline-block;
+        background: #5d9b02;
+        height: $toolbar-height;
+        padding: 0 10px;
+        margin-left: 5px;
+    }
     .action-select-all {
         @extend %tool;
-        $padding-top: fill-height($click-height);
-        padding: $padding-top 0 $padding-top 25px;
-        margin: fill-height($toolbar-height, $click-height) 0 0 10px;
+        margin: fill-height($toolbar-height, 26px) 0 0 0;
+    }
+    .action-delete {
+        @extend %tool;
+        margin: fill-height($toolbar-height, 26px) 0 0 2px;
     }
     %tool-extra {
         @extend %tool;
-        @include background-image(linear-gradient(#7bbe19, #5d9b02));
         $fill-padding: fill-height($toolbar-height);
         $padding-top: ceil($fill-padding);
         $padding-bottom: floor($fill-padding);
@@ -55,11 +74,6 @@
                 opacity: 1;
             }
         }
-    }
-    .action-delete {
-        @extend %tool-extra;
-        padding-left: 13px;
-        margin-left: 10px;
     }
     .action-download { @extend %tool-extra; }
     .action-share {

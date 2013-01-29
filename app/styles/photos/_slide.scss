@@ -8,7 +8,7 @@
     background: rgba(0, 0, 0, 0.95);
     overflow: hidden;
     opacity: 0;
-    $transition-duration: 0.3s;
+    $transition-duration: $global-transition-duration;
     @include transition(opacity $transition-duration,height 0 ease $transition-duration);
 
     &.slides-active {
@@ -30,7 +30,7 @@
         }
     }
 
-    $actions: "pre", "next", "play", "rotate", "delete", "dl", "share", "close";
+    $actions: "pre", "next", "play", "pause", "rotate", "delete", "dl", "share", "close";
     $action-padding: 10px;
     $action-margin: 10px;
     $action-width: photos-sprite-width("slide_play") + $action-padding;
@@ -47,7 +47,7 @@
                 width: $sprite-width;
                 height: $sprite-height;
             }
-            @include transition(opacity 0.1s);
+            @include transition(opacity $global-transition-duration);
             padding: $action-padding;
             opacity: 0.65;
             &:hover {
@@ -89,9 +89,9 @@
         left: 50%;
     }
     $action-space : $action-width + $action-margin * 2;
-    $position-left: $action-margin - ($action-space) * 2.5;
+    $position-left: $action-margin - ($action-space) * 2;
     .action-play {
-        @extend %action, %has-sprite-play;
+        @extend %action, %has-sprite-play, %has-sprite-pause;
         margin-left: $position-left + $action-space * 0;
     }
     .action-rotate {
@@ -113,8 +113,8 @@
     .action-close {
         @extend %has-sprite-close;
         position: absolute;
-        top: 0;
-        right: 0;
+        top: -10px;
+        right: -10px;
         padding: 20px;
     }
 }

@@ -15,6 +15,7 @@
     angular: 'vendor/angular/angular.wrapper',
     plupload: 'vendor/plupload/plupload.wrapper',
     keymaster: 'vendor/keymaster.amd',
+    bootstrap: 'vendor/bootstrap',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',

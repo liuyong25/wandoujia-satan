@@ -14,13 +14,13 @@
 <body id="upload-drop-area">
     <div bs-navbar ng-cloak>
         <ul class="nav nav-modules">
-            <li  class="active"><a href=""><i class="navbar-icon-img"></i></a></li>
-            <li><a href=""><i class="navbar-icon-sms"></i></a></li>
-            <li><a href=""><i class="navbar-icon-contact"></i></a></li>
-            <li><a href=""><i class="navbar-icon-app"></i></a></li>
+            <li  class="active"><a href="" bs-tooltip title="照片"><i class="navbar-icon-img"></i></a></li>
+            <li><a href="" bs-tooltip title="短信，敬请期待"><i class="navbar-icon-sms"></i></a></li>
+            <li><a href="" bs-tooltip title="通讯录，敬请期待"><i class="navbar-icon-contact"></i></a></li>
+            <li><a href="" bs-tooltip title="应用和游戏，敬请期待"><i class="navbar-icon-app"></i></a></li>
         </ul>
         <ul class="nav pull-right nav-settings">
-           <li><a href="" ng-click="signout()"><i class="navbar-icon-setting"></i></a></li>
+           <li><a href="" bs-tooltip title="退出" ng-click="signout()"><i class="navbar-icon-signout"></i></a></li>
         </ul>
     </div>
     <div ng-view></div>

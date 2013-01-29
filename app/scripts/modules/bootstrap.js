@@ -1,11 +1,14 @@
 define([
         'angular',
-        'directives/bootstrap/navbar'
+        'directives/bootstrap/navbar',
+        'directives/bootstrap/tooltip'
     ], function(
         angular,
-        navbar
+        navbar,
+        tooltip
     ) {
 'use strict';
-angular.module('bootstrap', []).
-    directive('bsNavbar', navbar);
+angular.module('bootstrap', [])
+    .directive('bsNavbar', navbar)
+    .directive('bsTooltip', tooltip);
 });

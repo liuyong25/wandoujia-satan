@@ -7,15 +7,16 @@
         position: fixed;
         left: 0;
         right: 0;
-        bottom: 76px;
-        height: 14px;
-        @include background-image(linear-gradient(top, rgba(235, 235, 235, 0) 0, rgba(235, 235, 235, 1) 10px));
+        bottom: 68px;
+        height: 5px;
+        // @include background-image(linear-gradient(top, rgba(235, 235, 235, 0) 0, rgba(235, 235, 235, 1) 10px));
+        background: image-url("bg-pattern.png");
     }
     .brand {
         margin: 0;
     }
     .nav {
-        $item-padding: 30px;
+        $item-padding: 26px;
         & > li > a {
             padding-left: $item-padding;
             padding-right: $item-padding;
@@ -39,32 +40,36 @@
         @include navbar-sprite(logo);
         width: navbar-sprite-width(logo);
         height: navbar-sprite-height(logo);
-        $margin: (20px - navbar-sprite-height(logo)) / 2 - 2px;
+        $margin: (20px - navbar-sprite-height(logo)) / 2;
         margin: $margin 0;
+        vertical-align: top;
     }
-    @each $icon in app, contact, img, sms, setting {
+    .nav > li > a {
+        @include transition(opacity $global-transition-duration);
+        opacity: 0.65;
+    }
+    .nav > .active > a {
+        &, &:active {
+            opacity: 1;
+        }
+    }
+    .nav > li > a {
+        &:hover, &:focus {
+            opacity: 1;
+        }
+        &:active {
+            opacity: 0.5;
+        }
+    }
+    @each $icon in app, contact, img, sms, setting, signout {
         i.navbar-icon-#{$icon} {
             @extend %icon;
-            @include navbar-sprite($icon);
+            @include navbar-sprite(#{$icon}_sel);
             $margin: (20px - navbar-sprite-height($icon)) / 2 - 1px;
             width: navbar-sprite-width($icon);
             height: navbar-sprite-height($icon);
             margin-top: $margin;
             margin-bottom: $margin;
-        }
-        .nav > .active > a {
-            &, &:hover, &:focus {
-                i.navbar-icon-#{$icon} {
-                    @include navbar-sprite(#{$icon}_sel);
-                }
-            }
-        }
-        .nav > li > a {
-            &:hover, &:focus {
-                i.navbar-icon-#{$icon} {
-                    @include navbar-sprite(#{$icon}_sel);
-                }
-            }
         }
     }
 }

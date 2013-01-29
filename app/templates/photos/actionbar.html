@@ -7,12 +7,21 @@
         data-on-uploaded="onUploaded(files)"
         data-browse-button-id="-wdp-uploader-trigger"
         data-container-id="-wdp-uploader-container"
+        bs-tooltip title="添加图片"
         ><i class="photos-icon-add"></i></a>
-        <label class="action-select-all checkbox"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length" ng-click="selectAll()"></label>
-        <a href="" class="action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i></a>
-        <a href="" class="action-download" ng-click="download()"><i class="photos-icon-dl-toolbar"></i></a>
-        <a href="" class="action-share" ng-click="share()"><i class="photos-icon-share-toolbar"></i></a>
-        <!-- <a href="" class="action-close-toolbar"><i class="photos-icon-close-toolbar"></i></a> -->
-        <span class="counter">{{selectedPhotos.length}}</span>
+        <!-- <label class="action-select-all checkbox"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length" ng-click="selectAll()"></label> -->
+        <!-- <a href="" class="action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i></a> -->
+        <!-- <a href="" class="action-download" ng-click="download()"><i class="photos-icon-dl-toolbar"></i></a> -->
+        <!-- <a href="" class="action-share" ng-click="share()"><i class="photos-icon-share-toolbar"></i></a> -->
+        <span class="collapse">
+            <span class="group">
+                <a href="" class="btn btn-small action-select-all" ng-click="selectAll()" ng-switch on="selectedPhotos.length == photos.length">
+                    <div ng-switch-when="false">选择全部</div>
+                    <div ng-switch-when="true">取消选择</div>
+                </a>
+                <a href="" class="btn btn-small action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i>删除</a>
+            </span>
+            <span class="counter" title="已选择 {{selectedPhotos.length}} 张图片">{{selectedPhotos.length}}</span>
+        </span>
     </div>
 </div>

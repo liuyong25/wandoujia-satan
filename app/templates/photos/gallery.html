@@ -3,6 +3,7 @@
         <div class="showcases-container">
             <div wdp-showcase>
                 <div class="block"
+                    style="display:none;"
                     ng-repeat="photo in photos"
                     wdp-block
                     data-selected="isSelected(photo)"
@@ -12,12 +13,13 @@
                         <img alt="{{photo.display_name}}" style="display:none;">
                     </div>
                     <div class="actions">
-                        <label class="action-select checkbox inline"><input type="checkbox" ng-model="selected" ng-change="toggleSelected(selected, photo)"></label>
-                        <a class="action-share" href=""
+                        <label class="action-select checkbox inline" bs-tooltip title="选择"><input type="checkbox" ng-model="selected" ng-change="toggleSelected(selected, photo)"></label>
+<!--                         <a class="action-share" href=""
                             ng-click="share(photo)"><i class="photos-icon-share"></i></a>
-                        <a class="action-download" href=""
+ -->
+                        <a class="action-download" href="" bs-tooltip title="下载"
                             ng-click="download(photo)"><i class="photos-icon-dl"></i></a>
-                        <a class="action-delete" href=""
+                        <a class="action-delete" href="" bs-tooltip title="删除"
                             ng-click="delete(photo)"><i class="photos-icon-del"></i></a>
                     </div>
                 </div>

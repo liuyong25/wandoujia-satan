@@ -1,5 +1,6 @@
 // Variables
 $global-line-height: 20px;
+$global-transition-duration: 0.4s;
 
 
 // http://docs.angularjs.org/api/ng.directive:ngCloak
@@ -7,6 +8,10 @@ $global-line-height: 20px;
 
 body {
     background: image-url("bg-pattern.png");
+}
+
+.tooltip-inner {
+    @include nowrap;
 }
 
 @import "loading";

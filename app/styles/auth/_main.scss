@@ -8,48 +8,80 @@
     background: image-url("bg-pattern.png");
 
     .panel {
+        $width: 700px;
+        $height: 300px;
         position: absolute;
         left: 50%;
         top: 50%;
-        margin: (316px / -2) 0 0 (244px / -2);
-        width: 244px;
-        height: 316px;
-        border-radius: 6px;
-        @include box-shadow(0 0 10px #ccc);
-        background: #f6f6f6;
+        margin: ($height / -2) 0 0 ($width / -2);
+        width: $width;
+        height: $height;
+        // border-radius: 6px;
+        // @include box-shadow(0 0 10px #ccc);
+        // background: #f6f6f6;
 
         .logo {
             background: image-url("logo_light.png");
-            width: image-width("logo_light.png");
-            height: image-height("logo_light.png");
-            margin: 30px auto 0;
-            position: relative;
+            $w: image-width("logo_light.png");
+            $h: image-height("logo_light.png");
+            position: absolute;
+            left: 0;
+            top: ($height - $h) / 2;
+            width: $w;
+            height: $h;
 
             &:after {
                 position: absolute;
+                right: -30px;
+                top: -50%;
                 content: "";
-                width: 100%;
-                height: 1px;
-                @include background-image(linear-gradient(left, #f6f6f6, #ccc, #f6f6f6));
-                bottom: -20px;
-                left: 0;
+                width: 1px;
+                height: 200%;
+                @include background-image(linear-gradient(#f6f6f6, #ccc, #f6f6f6));
+            }
+            &:before {
+                position: absolute;
+                right: -31px;
+                top: -25%;
+                content: "";
+                width: 1px;
+                height: 150%;
+                @include background-image(linear-gradient(#f6f6f6, #f9f9f9, #f6f6f6));
             }
         }
 
-        form {
+        .auth {
             position: absolute;
-            left: 0;
-            bottom: 20px;
-            width: 100%;
+            left: 310px;
+            top: 100px;
             p {
-                color: #a6a6a6;
-                text-align: center;
-                font-size: 12px;
+                color: #555;
+                @include text-shadow(0 1px 0 #fff);
+                a {
+                    color: #6a0;
+                    font-size: 12px;
+                }
             }
-            input, button {
-                display: block;
-                margin: 20px auto 0;
-                text-align: center;
+            form {
+                margin: 15px 0;
+                $height: 28px;
+                input {
+                    background-color: #f5f5f5;
+                    height: $height;
+                    line-height: $height;
+                    text-indent: 5px;
+                    &:focus {
+                        border-color: #bbb;
+                        background-color: #fff;
+                        @include box-shadow(0 1px 0 #fff);
+                    }
+                }
+                button {
+                    font-size: inherit;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                }
+                @include nowrap;
             }
         }
     }

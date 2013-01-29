@@ -1,5 +1,9 @@
 /*global jQuery:true*/
-define([], function() {
+define([
+        'bootstrap'
+    ], function(
+        bootstrap
+    ) {
 'use strict';
 return jQuery;
 });
