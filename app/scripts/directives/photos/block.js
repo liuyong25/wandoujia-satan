@@ -88,6 +88,15 @@ setTimeout(function() {
                 $scope.photo.deferred.progress(function(percent) {
                     progressBar.css('height', (100 - percent) + '%');
                 });
+                $scope.photo.deferred.done(function() {
+                    var tip = angular.element('<div style="position:absolute;left:0;right:0;top:50%;margin-top:-15px;text-align:center"><span style="display:inline-block;padding:5px;background:rgba(255,255,255,0.7);">上传成功</span></div>');
+                    tip
+                        .appendTo(element.find('.photo'))
+                        .fadeIn().delay(2000).fadeOut();
+                    tip.promise().then(function() {
+                        tip.remove();
+                    });
+                });
             }
         }
     };

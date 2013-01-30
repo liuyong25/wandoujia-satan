@@ -28,7 +28,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             template: PhotosTemplate,
             controller: 'galleryController',
             resolve: {
-                delay: wdAuthFilterProvider.needAuth
+                // delay: wdAuthFilterProvider.needAuth
             }
         });
         $routeProvider.otherwise({

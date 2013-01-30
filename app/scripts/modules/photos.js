@@ -42,8 +42,8 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', [
-        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey',
-        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey) {
+        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert',
+        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert) {
 
         $log.log('wdPhotos:galleryController initializing!');
 
@@ -117,23 +117,20 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             wdSharing.weibo(photo);
         };
         $scope.delete = function(photo) {
-            if (!$window.confirm('确定删除？')) {
-                return;
-            }
-            $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
-            photo.$remove();
-        };
-        $scope.deleteSelected = function() {
-            if (!$window.confirm('确定删除所有选中图片？')) {
-                return;
-            }
-
-            _.each($scope.selectedPhotos, function(photo) {
+            return wdAlert.confirm('确定删除？').then(function() {
                 $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                 photo.$remove();
-                // $scope.delete(photo);
             });
-            $scope.selectedPhotos = [];
+        };
+        $scope.deleteSelected = function() {
+            return wdAlert.confirm('确定删除所有选中图片？').then(function() {
+                _.each($scope.selectedPhotos, function(photo) {
+                    $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+                    photo.$remove();
+                    // $scope.delete(photo);
+                });
+                $scope.selectedPhotos = [];
+            });
         };
         $scope.startUpload = function(files) {
             _.each(files.reverse(), function(file, i) {

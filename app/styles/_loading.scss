@@ -9,20 +9,16 @@
     @include transition(opacity $global-transition-duration);
     opacity: 0.6;
 
+    -moz-transform:scale(0.6);
+    -webkit-transform:scale(0.6);
+    -ms-transform:scale(0.6);
+    -o-transform:scale(0.6);
+    transform:scale(0.6);
+
     &.wd-loading-hide {
         top: -$width;
         opacity: 0;
     }
-}
-
-#floatingCirclesG{
-width:48px;
-height:48px;
--moz-transform:scale(0.6);
--webkit-transform:scale(0.6);
--ms-transform:scale(0.6);
--o-transform:scale(0.6);
-transform:scale(0.6);
 }
 
 .f_circleG{

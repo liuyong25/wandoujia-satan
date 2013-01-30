@@ -91,16 +91,19 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey',
                     $scope.current = null;
                 };
                 $scope.remove = function() {
-                    $scope['delete']({photo: $scope.current});
-                    if ($scope.hasNext()) {
-                        $scope.next();
-                    }
-                    else if ($scope.hasPrevious()) {
-                        $scope.previous();
-                    }
-                    else {
-                        $scope.close();
-                    }
+                    self.pause();
+                    var index = self.getCurIndex();
+                    $scope['delete']({photo: $scope.current}).then(function() {
+                        if (index < $scope.photos.length) {
+                            $scope.current = $scope.photos[index];
+                        }
+                        else if ($scope.hasPrevious()) {
+                            $scope.current = $scope.photos[index - 1];
+                        }
+                        else {
+                            $scope.close();
+                        }
+                    });
                 };
                 $scope.rotate = function() {
                     $scope.$broadcast('rotate');

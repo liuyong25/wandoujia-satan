@@ -86,6 +86,8 @@ angular.module('wdAuth', ['wdCommon'])
 
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.buttonText = '连接手机';
+        $scope.errorText = '';
+        $scope.state = 'standby';
         $scope.submit = function() {
             if (!$scope.authCode) {
                 return;
@@ -94,7 +96,7 @@ angular.module('wdAuth', ['wdCommon'])
             var port = 10208;
 
             if (ip) {
-                $scope.buttonText = '验证中...';
+                $scope.state = 'loading';
                 wdDev.setServer(ip, port);
                 wdHttp({
                     method: 'get',
@@ -106,22 +108,27 @@ angular.module('wdAuth', ['wdCommon'])
                     }
                 })
                 .success(function() {
+                    $scope.state = 'standby';
                     $scope.buttonText = '验证成功';
                     // TODO: Maybe expiration?
                     wdAuthToken.setToken($scope.authCode);
                     $location.url($route.current.params.ref || '/');
                 })
                 .error(function() {
-                    console.log('error');
+                    $scope.state = 'standby';
                     $scope.buttonText = '验证失败';
+                    $scope.errorText = '请检查验证码或确保电脑和手机在同一 Wi-Fi 网络中';
                     $timeout(function() {
-                        $scope.buttonText = '连接';
-                    }, 1000);
+                        $scope.errorText = '';
+                    }, 5000);
                     wdAuthToken.clearToken();
                 });
             }
             else {
-                console.warn('invalid authcode');
+                $scope.errorText = '请检查验证码或确保电脑和手机在同一 Wi-Fi 网络中';
+                $timeout(function() {
+                    $scope.errorText = '';
+                }, 5000);
             }
         };
 

@@ -12,7 +12,7 @@
     <!-- <script src="scripts/vendor/modernizr.min.js"></script> -->
 </head>
 <body id="upload-drop-area">
-    <div bs-navbar ng-cloak>
+    <div bs-navbar ng-cloak ng-click="click()">
         <ul class="nav nav-modules">
             <li  class="active"><a href="" bs-tooltip title="照片"><i class="navbar-icon-img"></i></a></li>
             <li><a href="" bs-tooltip title="短信，敬请期待"><i class="navbar-icon-sms"></i></a></li>
@@ -24,6 +24,8 @@
         </ul>
     </div>
     <div ng-view></div>
+
+    <div bs-modal data-header="提示" data-toggle="toggle" data-ok="ok()" data-cancel="cancel()" ng-controller="alertController"></div>
 
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>

@@ -2,12 +2,191 @@
     <div class="panel">
         <div class="logo"></div>
         <div class="auth">
+<style>
+#floatingCirclesG{
+    display: inline-block;
+    vertical-align: top;
+
+position:relative;
+width:20px;
+height:20px;
+-moz-transform:scale(0.6);
+-webkit-transform:scale(0.6);
+-ms-transform:scale(0.6);
+-o-transform:scale(0.6);
+transform:scale(0.6);
+}
+
+.f_circleG{
+position:absolute;
+background-color:#ffffff;
+height:4px;
+width:4px;
+-moz-border-radius:2px;
+-moz-animation-name:f_fadeG;
+-moz-animation-duration:1.04s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:linear;
+-webkit-border-radius:2px;
+-webkit-animation-name:f_fadeG;
+-webkit-animation-duration:1.04s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:linear;
+-ms-border-radius:2px;
+-ms-animation-name:f_fadeG;
+-ms-animation-duration:1.04s;
+-ms-animation-iteration-count:infinite;
+-ms-animation-direction:linear;
+-o-border-radius:2px;
+-o-animation-name:f_fadeG;
+-o-animation-duration:1.04s;
+-o-animation-iteration-count:infinite;
+-o-animation-direction:linear;
+border-radius:2px;
+animation-name:f_fadeG;
+animation-duration:1.04s;
+animation-iteration-count:infinite;
+animation-direction:linear;
+}
+
+#frotateG_01{
+left:0;
+top:8px;
+-moz-animation-delay:0.39s;
+-webkit-animation-delay:0.39s;
+-ms-animation-delay:0.39s;
+-o-animation-delay:0.39s;
+animation-delay:0.39s;
+}
+
+#frotateG_02{
+left:2px;
+top:2px;
+-moz-animation-delay:0.52s;
+-webkit-animation-delay:0.52s;
+-ms-animation-delay:0.52s;
+-o-animation-delay:0.52s;
+animation-delay:0.52s;
+}
+
+#frotateG_03{
+left:8px;
+top:0;
+-moz-animation-delay:0.65s;
+-webkit-animation-delay:0.65s;
+-ms-animation-delay:0.65s;
+-o-animation-delay:0.65s;
+animation-delay:0.65s;
+}
+
+#frotateG_04{
+right:2px;
+top:2px;
+-moz-animation-delay:0.78s;
+-webkit-animation-delay:0.78s;
+-ms-animation-delay:0.78s;
+-o-animation-delay:0.78s;
+animation-delay:0.78s;
+}
+
+#frotateG_05{
+right:0;
+top:8px;
+-moz-animation-delay:0.91s;
+-webkit-animation-delay:0.91s;
+-ms-animation-delay:0.91s;
+-o-animation-delay:0.91s;
+animation-delay:0.91s;
+}
+
+#frotateG_06{
+right:2px;
+bottom:2px;
+-moz-animation-delay:1.04s;
+-webkit-animation-delay:1.04s;
+-ms-animation-delay:1.04s;
+-o-animation-delay:1.04s;
+animation-delay:1.04s;
+}
+
+#frotateG_07{
+left:8px;
+bottom:0;
+-moz-animation-delay:1.17s;
+-webkit-animation-delay:1.17s;
+-ms-animation-delay:1.17s;
+-o-animation-delay:1.17s;
+animation-delay:1.17s;
+}
+
+#frotateG_08{
+left:2px;
+bottom:2px;
+-moz-animation-delay:1.3s;
+-webkit-animation-delay:1.3s;
+-ms-animation-delay:1.3s;
+-o-animation-delay:1.3s;
+animation-delay:1.3s;
+}
+
+@-moz-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@-webkit-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@-ms-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@-o-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+</style>
+
             <p>在网页中管理手机图片、短信、联系人和应用</p>
             <form ng-submit="submit()" class="form-inline">
                 <input type="text" class="" ng-model="authCode" wd-auto-focus placeholder="请输入连接验证码">
                 &nbsp;&nbsp;
-                <button type="submit" class="btn btn-primary btn-large">{{buttonText}}</button>
+                <button type="submit" class="btn btn-primary btn-large" ng-switch on="state">
+                    <span ng-switch-when="loading" id="floatingCirclesG"><span class="f_circleG" id="frotateG_01"></span><span class="f_circleG" id="frotateG_02"></span><span class="f_circleG" id="frotateG_03"></span><span class="f_circleG" id="frotateG_04"></span><span class="f_circleG" id="frotateG_05"></span><span class="f_circleG" id="frotateG_06"></span><span class="f_circleG" id="frotateG_07"></span><span class="f_circleG" id="frotateG_08"></span>
+                    </span>
+                    <span ng-switch-when="standby">{{buttonText}}</span>
+                </button>
             </form>
+            <p style="color:#b94a48;font-size:12px;" ng-show="errorText">{{errorText}}</p>
             <p><a href="">如何获取连接验证码？</a></p>
         </div>
     </div>
