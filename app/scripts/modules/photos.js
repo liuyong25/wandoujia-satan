@@ -117,13 +117,13 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             wdSharing.weibo(photo);
         };
         $scope.delete = function(photo) {
-            return wdAlert.confirm('确定删除？').then(function() {
+            return wdAlert.confirm('删除图片', '确定在手机中删除这张图片吗？').then(function() {
                 $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                 photo.$remove();
             });
         };
         $scope.deleteSelected = function() {
-            return wdAlert.confirm('确定删除所有选中图片？').then(function() {
+            return wdAlert.confirm('删除图片', '确定删除所选中的图片吗？').then(function() {
                 _.each($scope.selectedPhotos, function(photo) {
                     $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                     photo.$remove();

@@ -4,15 +4,18 @@ return [function() {
     var noop = function() {};
     return {
         scope: {},
-        controller: ['wdAlert', '$scope', '$q', function(wdAlert, $scope, $q) {
+        controller: ['wdAlert', '$scope', '$q', '$attrs', function(wdAlert, $scope, $q, $attrs) {
             $scope.toggle = false;
             $scope.ok = noop;
             $scope.cancel = noop;
+            $scope.header = '提示';
             $scope.content = '';
 
             wdAlert.registerModal({
-                open: function(content) {
+                open: function(header, content) {
                     var deferred = $q.defer();
+
+                    $attrs.$set('header', header);
 
                     $scope.content = content;
                     $scope.toggle = true;

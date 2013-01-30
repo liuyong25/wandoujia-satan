@@ -14,4 +14,20 @@ body {
     @include nowrap;
 }
 
+// TODO: temp
+.modal {
+    width: 350px;
+    margin-left: -175px;
+
+    .modal-header h3 {
+        font-size: 14px;
+    }
+    .modal-body {
+        min-height: 50px;
+    }
+    .modal-footer {
+        padding: 7px 15px 8px;
+    }
+}
+
 @import "loading";
