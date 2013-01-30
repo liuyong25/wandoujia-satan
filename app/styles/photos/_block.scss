@@ -22,7 +22,7 @@
     $actions-height: 26px;
     &.block-active, &:hover {
         .actions {
-            @include transition(opacity 0.2s linear 0.1s);
+            @include transition(opacity $global-transition-duration linear 0.1s);
             opacity: 1;
         }
     }
@@ -30,14 +30,14 @@
         background: #52aa30;
     }
     .actions {
-        @include transition(opacity 0.2s linear 0.1s);
+        @include transition(opacity $global-transition-duration linear 0.1s);
         @include pie-clearfix;
         position: absolute;
         left: $padding;
         bottom: $padding;
         right: $padding;
         height: $actions-height;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.7);
         padding-right: 5px;
         opacity: 0;
 

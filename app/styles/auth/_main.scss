@@ -12,7 +12,7 @@
         $height: 300px;
         position: absolute;
         left: 50%;
-        top: 50%;
+        top: 45%;
         margin: ($height / -2) 0 0 ($width / -2);
         width: $width;
         height: $height;
@@ -70,6 +70,9 @@
                     height: $height;
                     line-height: $height;
                     text-indent: 5px;
+
+                    @include transition(all $global-transition-duration);
+
                     &:focus {
                         border-color: #bbb;
                         background-color: #fff;

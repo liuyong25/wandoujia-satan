@@ -89,12 +89,21 @@ setTimeout(function() {
                     progressBar.css('height', (100 - percent) + '%');
                 });
                 $scope.photo.deferred.done(function() {
-                    var tip = angular.element('<div style="position:absolute;left:0;right:0;top:50%;margin-top:-15px;text-align:center"><span style="display:inline-block;padding:5px;background:rgba(255,255,255,0.7);">上传成功</span></div>');
+                    var tip = angular.element('<div style="z-index:101;position:absolute;left:0;right:0;bottom:0;text-align:center;padding: 3px 0;font-size:12px;color:#fff;background:rgba(109, 184, 0, 0.7);"><span style="display:inline-block;"><i class="icon-ok icon-white" style="vertical-align:top;margin:3px 0;"></i> 上传成功</span></div>');
                     tip
                         .appendTo(element.find('.photo'))
                         .fadeIn().delay(2000).fadeOut();
                     tip.promise().then(function() {
                         tip.remove();
+                    });
+                }).fail(function() {
+                    var tip = angular.element('<div style="z-index:101;position:absolute;left:0;right:0;bottom:0;text-align:center;padding: 3px 0;font-size:12px;color:#fff;background:rgba(181, 61, 1, 0.7);"><span style="display:inline-block;"><i class="icon-remove icon-white" style="vertical-align:top;margin:3px 0;"></i> 上传失败</span></div>');
+                    tip
+                        .appendTo(element.find('.photo'))
+                        .fadeIn().delay(2000);
+                    tip.promise().then(function() {
+                        tip.remove();
+                        $scope.$apply('removeFailed(photo)');
                     });
                 });
             }

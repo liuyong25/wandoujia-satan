@@ -132,6 +132,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 $scope.selectedPhotos = [];
             });
         };
+        $scope.removeFailed = function(photo) {
+            $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+        };
         $scope.startUpload = function(files) {
             _.each(files.reverse(), function(file, i) {
                 var photo;
