@@ -9,7 +9,8 @@ define([
         'services/common/http',
         'directives/common/autofocus',
         'services/common/key',
-        'services/common/alert'
+        'services/common/alert',
+        'directives/common/alert'
     ], function(
         angular,
         windowEventWatcher,
@@ -21,7 +22,8 @@ define([
         http,
         autofocus,
         key,
-        alert
+        alert,
+        alertDirecitve
     ) {
 'use strict';
 angular.module('wdCommon', [])
@@ -29,29 +31,11 @@ angular.module('wdCommon', [])
     .directive('wdWindowEventWatcher', windowEventWatcher)
     .directive('wdLoading', loading)
     .directive('wdAutoFocus', autofocus)
+    .directive('wdAlert', alertDirecitve)
     .provider('wdHttp', http)
     .provider('wdDev', dev)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
     .factory('wdKey', key)
-    .factory('wdAlert', alert)
-    .controller('alertController', ['wdAlert', '$scope', '$q', '$rootScope', function(wdAlert, $scope, $q, $rootScope) {
-        $scope.toggle = false;
-        wdAlert.registerModal({
-            open: function(content) {
-                var deferred = $q.defer();
-                $scope.content = content;
-                $scope.toggle = true;
-                $scope.ok = function() {
-                    $scope.toggle = false;
-                    deferred.resolve();
-                };
-                $scope.cancel = function() {
-                    $scope.toggle = false;
-                    deferred.reject();
-                };
-                return deferred.promise;
-            }
-        });
-    }]);
+    .factory('wdAlert', alert);
 });

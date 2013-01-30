@@ -12,42 +12,43 @@ return ['$q', 'wdKey', function($q, wdKey) {
         replace: true,
         transclude: true,
         template: template,
-        // scope: {
-        //     header: '@',
-        //     toggle: '=',
-        //     ok: '&',
-        //     cancel: '&'
-        // },
-        scope: true,
         link: function($scope, element, attrs) {
+            // Unique ID for keyboard shortcuts 'Scope' indication.
             var uid = _.uniqueId('modal_');
+            // @options, no watch
             var options = $scope.$eval(attrs.options);
             element.modal(_.defaults(options || {}, {
                 show: false,
+                // Manage shortcuts by wdKey
                 keyboard: false,
                 backdrop: 'static'
             }));
 
-            var parentScope = 'all';
             function open() {
-                parentScope = wdKey.getScope();
-                wdKey.setScope(uid);
                 element.modal('show');
             }
             function close() {
-                wdKey.setScope(parentScope);
                 element.modal('hide');
             }
 
+            // @header
             attrs.$observe('header', function(header) {
                 $scope.header = header;
             });
-            $scope.$watch(attrs.toggle, function(value) {
+
+            var keyboardScope = null;
+            $scope.$watch(attrs.toggle, function(value, oldValue) {
+                if (value === oldValue) {
+                    return;
+                }
                 if (value) {
+                    keyboardScope = $q.defer();
+                    wdKey.push(uid, keyboardScope.promise);
                     open();
                 }
                 else {
                     close();
+                    keyboardScope.resolve();
                 }
             });
 

@@ -6,8 +6,8 @@ define([
         _
     ) {
 'use strict';
-return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey',
-    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey) {
+return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q',
+    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey, $q) {
     return {
         template: template,
         replace: true,
@@ -129,22 +129,31 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey',
             var open = function() {
                 element.addClass('slides-active');
                 $scope.$broadcast('open');
-                wdKey.setScope('photos:preview');
             };
             var close = function() {
-                wdKey.setScope('photos');
+                // wdKey.setScope('photos');
                 $scope.$broadcast('close');
                 $scope.close();
                 element.removeClass('slides-active');
             };
 
             // Watch 'current' to toggle open/close.
-            $scope.$watch('current', function(newPhoto) {
+            var keyboardScope = null;
+            $scope.$watch('current', function(newPhoto, oldPhoto) {
+                if (newPhoto === oldPhoto) {
+                    return;
+                }
                 if (newPhoto !== null) {
+                    if (keyboardScope === null) {
+                        keyboardScope = $q.defer();
+                        wdKey.push('photos:preview', keyboardScope.promise);
+                    }
                     open();
                 }
                 else {
                     close();
+                    keyboardScope.resolve();
+                    keyboardScope = null;
                 }
             });
 
@@ -178,10 +187,10 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey',
                 close();
                 return false;
             });
-            $scope.$on('$destroy', function() {
-                wdKey.setScope('photos');
-                wdKey.deleteScope('photos:preview');
-            });
+            // $scope.$on('$destroy', function() {
+            //     wdKey.setScope('photos');
+            //     wdKey.deleteScope('photos:preview');
+            // });
         }
     };
 }];
