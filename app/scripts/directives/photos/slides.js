@@ -74,6 +74,16 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q', 'GA',
                         GA('photos:slide:play');
                     }
                 };
+                $scope.togglePlayKeyboard = function() {
+                    if ($scope.playing) {
+                        $scope.pause();
+                        GA('photos:slide:pause_key');
+                    }
+                    else {
+                        $scope.play();
+                        GA('photos:slide:play_key');
+                    }
+                };
                 $scope.next = function() {
                     self.pause();
                     self.next();
@@ -191,6 +201,21 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q', 'GA',
                     GA('photos:slide:next_key');
                 }
                 return false;
+            });
+            wdKey.$apply('space', 'photos:preview', function() {
+                $scope.togglePlayKeyboard();
+            });
+            wdKey.$apply('r', 'photos:preview', function() {
+                $scope.rotate();
+                GA('photos:slide:rotate_key');
+            });
+            wdKey.$apply('d', 'photos:preview', function() {
+                $scope.remove();
+                GA('photos:slide:delete_key');
+            });
+            wdKey.$apply('s', 'photos:preview', function() {
+                $scope.download({photo: $scope.current});
+                GA('photos:slide:download_key');
             });
             wdKey.$apply('esc', 'photos:preview', function() {
                 close();

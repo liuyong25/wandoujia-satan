@@ -4,7 +4,7 @@ $icon-height: $global-line-height;
 // icons have hover & active style
 $full-icons-list  : "add", "calendar", "close-toolbar";
 // icons only have one style at any situation
-$single-icons-list: "del-toolbar", "dl-toolbar", "date", "del", "dl", "share";
+$single-icons-list: "del-toolbar", "dl-toolbar", "date", "del", "dl", "share", "feedback";
 $all-icons-list   : join($full-icons-list, $single-icons-list);
 
 @each $icon in $all-icons-list {

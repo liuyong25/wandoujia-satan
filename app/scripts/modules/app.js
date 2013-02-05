@@ -72,16 +72,19 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
         }]);
 
         // Log and global exception handling.
-        $httpProvider.responseInterceptors.push(['$rootScope', '$q', '$log', '$location', function($rootScope, $q, $log, $location) {
+        $httpProvider.responseInterceptors.push(['$rootScope', '$q', '$log', '$location', 'wdAuthToken', function($rootScope, $q, $log, $location, wdAuthToken) {
+            var loopDetection = 0;
             function success(response) {
                 $log.log(response.config.url, response.status);
+                loopDetection = 0;
                 return response;
             }
             function error(response) {
                 $log.warn(response.config.url, response.status);
-                // If auth error, always redirect to '/portal'.
+                // If auth error, always signout.
+                // 401 for auth invalid, 0 for server no response.
                 if (response.status === 401 || response.status === 0) {
-                    $location.url('/portal');
+                    wdAuthToken.signout();
                 }
                 return $q.reject(response);
             }
