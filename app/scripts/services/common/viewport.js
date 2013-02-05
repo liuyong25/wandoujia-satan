@@ -9,6 +9,7 @@ define([
 return ['$window', function($window) {
     var $watcher = jQuery({});
     var $win = jQuery($window);
+    var $doc = jQuery($window.document);
 
     var width = null;
     var height = null;
@@ -82,6 +83,12 @@ return ['$window', function($window) {
                 left = $win.scrollLeft();
             }
             return left;
+        },
+        docWidth: function() {
+            return $doc.width();
+        },
+        docHeight: function() {
+            return $doc.height();
         },
         on: function() {
             $watcher.on.apply($watcher, arguments);

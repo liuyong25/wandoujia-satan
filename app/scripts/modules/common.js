@@ -1,6 +1,5 @@
 define([
         'angular',
-        'directives/common/window-event-watcher',
         'directives/common/loading',
         'directives/common/strip',
         'services/common/sharing',
@@ -14,7 +13,6 @@ define([
         'services/common/keeper'
     ], function(
         angular,
-        windowEventWatcher,
         loading,
         strip,
         sharing,
@@ -30,7 +28,6 @@ define([
 'use strict';
 angular.module('wdCommon', [])
     .directive('wdStrip', strip)
-    .directive('wdWindowEventWatcher', windowEventWatcher)
     .directive('wdLoading', loading)
     .directive('wdAutoFocus', autofocus)
     .directive('wdAlert', alertDirecitve)

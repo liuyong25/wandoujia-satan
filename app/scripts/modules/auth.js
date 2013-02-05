@@ -140,6 +140,9 @@ angular.module('wdAuth', ['wdCommon'])
                         $scope.errorText = '';
                     }, 5000);
                     wdAuthToken.clearToken();
+                    if ($scope.autoAuth) {
+                        $route.reload();
+                    }
                 });
             }
             // Invalid auth code.

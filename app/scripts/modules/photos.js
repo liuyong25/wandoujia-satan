@@ -42,8 +42,8 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', [
-        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert',
-        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert) {
+        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert', 'wdViewport',
+        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert, wdViewport) {
 
         $log.log('wdPhotos:galleryController initializing!');
 
@@ -60,13 +60,20 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             photos = _.sortBy($scope.photos.concat(photos), function(photo) {
                 return -photo.date_added;
             });
-            $scope.photos = _.uniq(photos, true, function(photo) {
+            $scope.photos = _.uniq(photos, function(photo) {
                 return photo.id;
             });
         }
 
         function fetchPhotos() {
-            Photos.query(function(photos) {
+            var params = {
+                length: '10',
+                direction: 'backward'
+            };
+            if ($scope.photos.length && $scope.photos[$scope.photos.length - 1].date_added) {
+                params.since = $scope.photos[$scope.photos.length - 1].date_added;
+            }
+            Photos.query(params, function(photos) {
                 mergePhotos(photos);
                 $scope.loaded = true;
             }, function() {
@@ -164,6 +171,19 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 });
             });
         };
+
+        // function loadMore() {
+        //     var bottom = wdViewport.top() + wdViewport.height();
+        //     console.log(bottom > wdViewport.docHeight() - 50);
+        //     if ($scope.loaded && bottom > wdViewport.docHeight() - 50) {
+        //         $scope.$apply(function() {
+        //             $scope.loaded = false;
+        //             fetchPhotos();
+        //         });
+        //     }
+        // }
+        // wdViewport.on('scroll', loadMore);
+        // wdViewport.on('resize', loadMore);
 
         // Shortcuts destruction.
         $scope.$on('$destroy', function() {

@@ -80,7 +80,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             function error(response) {
                 $log.warn(response.config.url, response.status);
                 // If auth error, always redirect to '/portal'.
-                if (response.status === 401) {
+                if (response.status === 401 || response.status === 0) {
                     $location.url('/portal');
                 }
                 return $q.reject(response);
