@@ -32,16 +32,6 @@
 
         <!-- Add your site or application content here -->
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="scripts/vendor/jquery.min.js"><\/script>')</script>
-        <!--
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js"></script>
-        -->
-        <script>window.angular || document.write('<script src="scripts/vendor/angular/angular.min.js"><\/script>')</script>
-
-
-
-
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
 <!--
         <script>
@@ -51,7 +41,10 @@
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
 -->
-
+    <!-- build:js scripts/framework.js -->
+    <script src="scripts/vendor/jquery.min.js"></script>
+    <script src="scripts/vendor/angular/angular.min.js"></script>
+    <!-- endbuild -->
     <!-- build:js scripts/amd-app.js -->
     <script data-main="scripts/main" src="scripts/vendor/require.js"></script>
     <!-- endbuild -->
