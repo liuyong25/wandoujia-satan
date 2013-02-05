@@ -4,17 +4,17 @@
     <div class="wd-loading" data-visible="loading"></div>
     <a href="" class="action-previous"
         ng-show="hasPrevious()"
-        ng-click="previous()"><i class="photos-slide-icon-pre"></i></a>
+        ng-click="previous();$root.GA('photos:slide:previous')"><i class="photos-slide-icon-pre"></i></a>
     <a href="" class="action-next"
         ng-show="hasNext()"
-        ng-click="next()"><i class="photos-slide-icon-next"></i></a>
+        ng-click="next();$root.GA('photos:slide:next')"><i class="photos-slide-icon-next"></i></a>
     <a href="" class="action-play" ng-click="togglePlay()" ng-switch on="playing">
         <i class="photos-slide-icon-play" ng-switch-when="false"></i>
         <i class="photos-slide-icon-pause" ng-switch-when="true"></i>
     </a>
-    <a href="" class="action-rotate" ng-click="rotate()"><i class="photos-slide-icon-rotate"></i></a>
-    <a href="" class="action-delete" ng-click="remove()"><i class="photos-slide-icon-delete"></i></a>
-    <a href="" class="action-download" ng-click="download({photo: current})"><i class="photos-slide-icon-dl"></i></a>
+    <a href="" class="action-rotate" ng-click="rotate();$root.GA('photos:slide:rotate')"><i class="photos-slide-icon-rotate"></i></a>
+    <a href="" class="action-delete" ng-click="remove();$root.GA('photos:slide:delete')"><i class="photos-slide-icon-delete"></i></a>
+    <a href="" class="action-download" ng-click="download({photo: current});$root.GA('photos:slide:download')"><i class="photos-slide-icon-dl"></i></a>
     <!-- <a href="" class="action-share" ng-click="share({photo: current})"><i class="photos-slide-icon-share"></i></a> -->
-    <a href="" class="action-close" ng-click="close()"><i class="photos-slide-icon-close"></i></a>
+    <a href="" class="action-close" ng-click="close();$root.GA('photos:slide:close')"><i class="photos-slide-icon-close"></i></a>
 </div>

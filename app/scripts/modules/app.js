@@ -102,7 +102,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             }
         }]);
     }])
-    .run(['$window', '$rootScope', 'wdKeeper', function($window, $rootScope, wdKeeper) {
+    .run(['$window', '$rootScope', 'wdKeeper', 'GA', function($window, $rootScope, wdKeeper, GA) {
         // Tip users when leaving.
         $window.onbeforeunload = function (e) {
           e = e || window.event;
@@ -120,5 +120,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
 
         $rootScope.$on('ajaxStart', function() {});
         $rootScope.$on('ajaxStop',  function() {});
+
+        // GA support
+        $rootScope.GA = GA;
     }]);
 });

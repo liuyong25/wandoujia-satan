@@ -187,8 +187,47 @@ background-color:#ffffff}
                 </button>
             </form>
             <p style="font-size:12px;border-radius:3px;background:#fff;box-shadow: 0 1px 1px rgba(0, 0,0,0.1);padding:3px 8px;" ng-show="errorText"><i class="icon-info-sign"></i> {{errorText}}</p>
-            <p><a href="">如何获取连接验证码？</a></p>
+            <p><a href="" ng-click="showHelp=true;$root.GA('login:help')">如何获取连接验证码？</a></p>
+            <div class="bottom">
+                <div class="apk-guide">
+                    <img src="images/qrbar.png" alt="豌豆荚">
+                    <p>豌豆荚 web 需要手机上安装最新测试版豌豆荚才可以使用。<br>请使用手机访问 next.wandoujia.com/m 下载后安装。</p>
+                </div>
+            </div>
+        </div>
+        <div class="help" ng-class="{active: showHelp}">
+            <a href="" class="btn-back" ng-click="showHelp=false"><i class="help-icon-back"></i></a>
+            <div class="hd">如何获取连接验证码</div>
+            <div class="bd">
+                <ol class="unstyled">
+                    <li class="step-1">
+                        <div class="figure-1"></div>
+                        <div class="desc">
+                            <span class="order">1</span>在手机上打开豌豆荚，向左滑动或点击左上角豌豆荚图标展开侧栏。
+                        </div>
+                    </li>
+                    <li class="step-2">
+                        <div class="figure-2"></div>
+                        <div class="desc">
+                            <span class="order">2</span>展开测栏后向下滚动，找到「电脑连接」项。
+                        </div>
+                    </li>
+                    <li class="step-3">
+                        <div class="figure-3"></div>
+                        <div class="desc">
+                            <span class="order">3</span>图中所示位置显示的字符即为您手机的连接验证码。
+                        </div>
+                    </li>
+                </ol>
+            </div>
+            <div class="ft">
+                <div class="apk-guide">
+                    <img src="images/qrbar.png" alt="豌豆荚">
+                    <p>豌豆荚 web 需要手机上安装最新测试版豌豆荚才可以使用。<br>请使用手机访问 next.wandoujia.com/m 下载后安装。</p>
+                </div>
+            </div>
         </div>
     </div>
+
     <div class="wd-loading" ng-switch-when="true" data-visible="true"></div>
 </div>

@@ -42,8 +42,8 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
     .controller('galleryController', [
-        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert', 'wdViewport',
-        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert, wdViewport) {
+        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert', 'wdViewport', 'GA',
+        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert, wdViewport, GA) {
 
         $log.log('wdPhotos:galleryController initializing!');
 
@@ -68,16 +68,19 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         function fetchPhotos() {
             var params = {
                 // length: '10',
-                direction: 'backward'
+                // direction: 'backward'
             };
-            if ($scope.photos.length && $scope.photos[$scope.photos.length - 1].date_added) {
-                params.since = $scope.photos[$scope.photos.length - 1].date_added;
-            }
+            // if ($scope.photos.length && $scope.photos[$scope.photos.length - 1].date_added) {
+            //     params.since = $scope.photos[$scope.photos.length - 1].date_added;
+            // }
+            var timeStart = (new Date()).getTime();
             Photos.query(params, function(photos) {
                 mergePhotos(photos);
                 $scope.loaded = true;
+                GA('perf:photos_query_duration:success:' + ((new Date()).getTime() - timeStart));
             }, function() {
                 $scope.loaded = true;
+                GA('perf:photos_query_duration:fail:' + ((new Date()).getTime() - timeStart));
             });
         }
 
@@ -99,13 +102,21 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         };
         $scope.selectAll = function() {
             if ($scope.selectedPhotos.length === $scope.photos.length) {
+                GA('photos:toolbar:deselect_all');
                 $scope.selectedPhotos = [];
             }
             else {
+                GA('photos:toolbar:select_all');
                 $scope.selectedPhotos = $scope.photos.slice();
             }
         };
         $scope.toggleSelected = function(selected, photo) {
+            if (selected) {
+                GA('photos:photo:select');
+            }
+            else {
+                GA('photos:photo:deselect');
+            }
             $scope[selected ? 'select' : 'deselect'](photo);
         };
         $scope.select = function(photo) {

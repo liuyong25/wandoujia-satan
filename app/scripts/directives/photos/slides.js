@@ -6,8 +6,8 @@ define([
         _
     ) {
 'use strict';
-return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q',
-    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey, $q) {
+return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q', 'GA',
+    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey, $q, GA) {
     return {
         template: template,
         replace: true,
@@ -67,9 +67,11 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q',
                 $scope.togglePlay = function() {
                     if ($scope.playing) {
                         $scope.pause();
+                        GA('photos:slide:pause');
                     }
                     else {
                         $scope.play();
+                        GA('photos:slide:play');
                     }
                 };
                 $scope.next = function() {
@@ -126,15 +128,18 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q',
             };
             wdViewport.on('resize', updateDimensions);
 
+            var timeStart = null;
             var open = function() {
                 element.addClass('slides-active');
                 $scope.$broadcast('open');
+                timeStart = (new Date()).getTime();
             };
             var close = function() {
                 // wdKey.setScope('photos');
                 $scope.$broadcast('close');
                 $scope.close();
                 element.removeClass('slides-active');
+                GA('photos:slide:stay:' + ((new Date()).getTime() - timeStart));
             };
 
             // Watch 'current' to toggle open/close.
@@ -162,29 +167,34 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q',
                 .on('click', function(e) {
                     if (e.target === this) {
                         $scope.$apply(close);
+                        GA('photos:slide:empty');
                     }
                 })
                 .on('click', '.frame', function(e) {
                     if (e.target === this) {
                         $scope.$apply(close);
+                        GA('photos:slide:empty');
                     }
                 });
 
             // Shortcuts
-            wdKey.$apply('left, up, j, h', 'photos:preview', function() {
+            wdKey.$apply('left, up, k, h', 'photos:preview', function() {
                 if ($scope.hasPrevious()) {
                     $scope.previous();
+                    GA('photos:slide:previous_key');
                 }
                 return false;
             });
-            wdKey.$apply('right, down, k, l', 'photos:preview', function() {
+            wdKey.$apply('right, down, j, l', 'photos:preview', function() {
                 if ($scope.hasNext()) {
                     $scope.next();
+                    GA('photos:slide:next_key');
                 }
                 return false;
             });
             wdKey.$apply('esc', 'photos:preview', function() {
                 close();
+                GA('photos:slide:close_key');
                 return false;
             });
             // $scope.$on('$destroy', function() {

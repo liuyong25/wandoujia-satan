@@ -8,6 +8,7 @@
         data-browse-button-id="-wdp-uploader-trigger"
         data-container-id="-wdp-uploader-container"
         bs-tooltip title="添加图片" data-options="{placement:'right'}"
+        ng-click="$root.GA('photos:toolbar:add_photo')"
         ><i class="photos-icon-add"></i></a>
         <!-- <label class="action-select-all checkbox"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length" ng-click="selectAll()"></label> -->
         <!-- <a href="" class="action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i></a> -->
@@ -16,10 +17,10 @@
         <span class="collapse">
             <span class="group">
                 <a href="" class="btn btn-small action-select-all" ng-click="selectAll()" ng-switch on="selectedPhotos.length == photos.length">
-                    <div ng-switch-when="false">选择全部</div>
-                    <div ng-switch-when="true">取消选择</div>
+                    <span ng-switch-when="false">选择全部</span>
+                    <span ng-switch-when="true">取消选择</span>
                 </a>
-                <a href="" class="btn btn-small action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i>删除</a>
+                <a href="" class="btn btn-small action-delete" ng-click="delete();$root.GA('photos:delete_selected')"><i class="photos-icon-del-toolbar"></i>删除</a>
             </span>
             <span class="counter" title="已选择 {{selectedPhotos.length}} 张图片">{{selectedPhotos.length}}</span>
         </span>

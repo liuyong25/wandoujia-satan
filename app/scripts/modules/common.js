@@ -10,7 +10,8 @@ define([
         'services/common/key',
         'services/common/alert',
         'directives/common/alert',
-        'services/common/keeper'
+        'services/common/keeper',
+        'services/common/ga'
     ], function(
         angular,
         loading,
@@ -23,7 +24,8 @@ define([
         key,
         alert,
         alertDirecitve,
-        keeper
+        keeper,
+        ga
     ) {
 'use strict';
 angular.module('wdCommon', [])
@@ -37,5 +39,6 @@ angular.module('wdCommon', [])
     .factory('wdSharing', sharing)
     .factory('wdKey', key)
     .factory('wdAlert', alert)
-    .factory('wdKeeper', keeper);
+    .factory('wdKeeper', keeper)
+    .factory('GA', ga);
 });

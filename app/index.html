@@ -14,13 +14,13 @@
 <body id="upload-drop-area">
     <div bs-navbar ng-cloak ng-click="click()">
         <ul class="nav nav-modules">
-            <li  class="active"><a href="" bs-tooltip title="照片"><i class="navbar-icon-img"></i></a></li>
-            <li><a href="" bs-tooltip title="短信，敬请期待"><i class="navbar-icon-sms"></i></a></li>
-            <li><a href="" bs-tooltip title="通讯录，敬请期待"><i class="navbar-icon-contact"></i></a></li>
-            <li><a href="" bs-tooltip title="应用和游戏，敬请期待"><i class="navbar-icon-app"></i></a></li>
+            <li  class="active"><a href="" bs-tooltip title="照片" ng-click="$root.GA('navbar:photos')"><i class="navbar-icon-img"></i></a></li>
+            <li><a href="" bs-tooltip title="短信，敬请期待" ng-click="$root.GA('navbar:sms')"><i class="navbar-icon-sms"></i></a></li>
+            <li><a href="" bs-tooltip title="通讯录，敬请期待" ng-click="$root.GA('navbar:contacts')"><i class="navbar-icon-contact"></i></a></li>
+            <li><a href="" bs-tooltip title="应用和游戏，敬请期待" ng-click="$root.GA('navbar:apps')"><i class="navbar-icon-app"></i></a></li>
         </ul>
         <ul class="nav pull-right nav-settings">
-           <li><a href="" bs-tooltip title="退出" ng-click="signout()"><i class="navbar-icon-signout"></i></a></li>
+           <li><a href="" bs-tooltip title="退出" ng-click="signout();$root.GA('navbar:signout')"><i class="navbar-icon-signout"></i></a></li>
         </ul>
     </div>
     <div ng-view></div>
@@ -33,14 +33,14 @@
         <!-- Add your site or application content here -->
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-<!--
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
--->
+
+    <script>
+        var _gaq=[['_setAccount','UA-15790641-12'],['_trackPageview']];
+        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(g,s)}(document,'script'));
+    </script>
+
     <!-- build:js scripts/framework.js -->
     <script src="scripts/vendor/jquery.min.js"></script>
     <script src="scripts/vendor/angular/angular.min.js"></script>

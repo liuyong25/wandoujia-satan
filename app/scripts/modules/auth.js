@@ -81,14 +81,15 @@ angular.module('wdAuth', ['wdCommon'])
             }
         };
     }])
-    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper',
-        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken, wdKeeper) {
+    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA',
+        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA) {
 
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;
         $scope.buttonText = '连接手机';
         $scope.errorText = '';
         $scope.state = 'standby';
+        $scope.showHelp = false;
         $scope.userInput = function() {
             if ($scope.state !== 'standby') {
                 return;
@@ -97,7 +98,11 @@ angular.module('wdAuth', ['wdCommon'])
         };
         $scope.submit = function() {
             if (!$scope.authCode) {
+                GA('login:enter_authcode:empty');
                 return;
+            }
+            if ($scope.autoAuth) {
+                GA('login:auto');
             }
             // Parse data source.
             var ip = wdAuthToken.parse($scope.authCode);
@@ -107,10 +112,17 @@ angular.module('wdAuth', ['wdCommon'])
 
             // Valid auth code.
             if (ip) {
+                if ($scope.autoAuth) {
+                    GA('login:auto_authcode:valid');
+                }
+                else {
+                    GA('login:enter_authcode:valid');
+                }
                 // Send auth request.
                 $scope.state = 'loading';
                 wdDev.setServer(ip, port);
                 keeper = wdKeeper.push('仍在发送验证码');
+                var timeStart = (new Date()).getTime();
                 wdHttp({
                     method: 'get',
                     url: '/directive/auth',
@@ -129,6 +141,8 @@ angular.module('wdAuth', ['wdCommon'])
                     // TODO: Maybe expiration?
                     wdAuthToken.setToken($scope.authCode);
                     $location.url($route.current.params.ref || '/');
+                    GA('login:success');
+                    GA('perf:auth_duration:success:' + ((new Date()).getTime() - timeStart));
                 })
                 .error(function() {
                     keeper.done();
@@ -143,10 +157,18 @@ angular.module('wdAuth', ['wdCommon'])
                     if ($scope.autoAuth) {
                         $route.reload();
                     }
+                    GA('login:fail');
+                    GA('perf:auth_duration:fail:' + ((new Date()).getTime() - timeStart));
                 });
             }
             // Invalid auth code.
             else {
+                if ($scope.autoAuth) {
+                    GA('login:auto_authcode:invalid');
+                }
+                else {
+                    GA('login:enter_authcode:invalid');
+                }
                 $scope.errorText = '请检查验证码或确保电脑和手机在同一 Wi-Fi 网络中';
                 $timeout(function() {
                     $scope.errorText = '';

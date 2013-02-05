@@ -1,4 +1,5 @@
 .wd-auth {
+    @import "auth/*.png";
     @include ui-layer-top;
     position: fixed;
     left: 0;
@@ -87,6 +88,130 @@
                 }
                 @include nowrap;
             }
+        }
+        .bottom {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding-bottom: 100px;
+            .apk-guide {
+                border-radius: 3px;
+                background: #e6e6e6;
+                @include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1),
+                                    0 1px 1px #fff);
+            }
+        }
+    }
+
+    .help {
+        position: fixed;
+        left: 100%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: image-url('bg-pattern.png');
+        overflow: auto;
+        @include transition(all $global-transition-duration);
+        opacity: 0;
+
+        &.active {
+            left: 0;
+            opacity: 1;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: 30px;
+            top: 20px;
+            $icon-name: "icon_back";
+            i.help-icon-back {
+                display: block;
+                width: auth-sprite-width($icon-name);
+                height: auth-sprite-height($icon-name);
+                @include auth-sprite($icon-name);
+                &:hover {
+                    @include auth-sprite("#{$icon-name}_h");
+                }
+                &:active {
+                    @include auth-sprite("#{$icon-name}_p");
+                }
+            }
+        }
+        .hd {
+            height: 70px;
+            line-height: 70px;
+            font-size: 18px;
+            text-align: center;
+            @include text-shadow(0 1px 0 #fff);
+        }
+        .bd {
+            padding: 1px 0;
+            background: #dedede;
+            ol {
+                @include clearfix;
+                width: 940px;
+                margin: 32px auto;
+            }
+            li {
+                @include float-left;
+                width: 240px;
+                margin-left: 110px;
+                .desc {
+                    @include text-shadow(0 1px 0 #fff);
+                    @include clearfix;
+                    font-size: 12px;
+                    color: #555;
+                    margin-top: 15px;
+                    .order {
+                        float: left;
+                        height: 40px;
+                        line-height: 40px;
+                        color: #aaa;
+                        font-size: 32px;
+                        margin: 0 10px 0 0;
+                    }
+                }
+            }
+            .step-1 {
+                margin-left: 0;
+            }
+            .figure-1 {
+                @include auth-sprite("help1");
+                width: auth-sprite-width("help1");
+                height: auth-sprite-height("help1");
+            }
+            .figure-2 {
+                @include auth-sprite("help2");
+                width: auth-sprite-width("help2");
+                height: auth-sprite-height("help2");
+            }
+            .figure-3 {
+                @include auth-sprite("help3");
+                width: auth-sprite-width("help3");
+                height: auth-sprite-height("help3");
+            }
+        }
+        .ft {
+            .apk-guide {
+                margin-top: 10px;
+            }
+        }
+    }
+    .apk-guide {
+        @include clearfix;
+        margin: 0 auto;
+        width: 400px;
+        padding: 15px;
+        img {
+            float: left;
+            margin-right: 10px;
+        }
+        p {
+            font-size: 12px;
+            overflow: hidden;
+            margin: 10px 0 0 0;
+            @include text-shadow(0 1px 0 #fff);
         }
     }
 }
