@@ -108,7 +108,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             $scope.selectedPhotos.splice(_.indexOf($scope.selectedPhotos, photo), 1);
         };
         $scope.preview = function(photo) {
-            $scope.previewPhoto = photo;
+            if (photo.path) {
+                $scope.previewPhoto = photo;
+            }
         };
         $scope.download = function(photo) {
             $window.open(photo.path);
