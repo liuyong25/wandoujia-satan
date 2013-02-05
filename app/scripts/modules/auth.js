@@ -81,8 +81,8 @@ angular.module('wdAuth', ['wdCommon'])
             }
         };
     }])
-    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken',
-        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken) {
+    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper',
+        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken, wdKeeper) {
 
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;
@@ -103,14 +103,18 @@ angular.module('wdAuth', ['wdCommon'])
             var ip = wdAuthToken.parse($scope.authCode);
             var port = 10208;
 
+            var keeper = null;
+
             // Valid auth code.
             if (ip) {
                 // Send auth request.
                 $scope.state = 'loading';
                 wdDev.setServer(ip, port);
+                keeper = wdKeeper.push('仍在发送验证码');
                 wdHttp({
                     method: 'get',
                     url: '/directive/auth',
+                    timeout: 3000,
                     params: {
                         authcode: $scope.authCode,
                         'client_time': (new Date()).getTime(),
@@ -119,6 +123,7 @@ angular.module('wdAuth', ['wdCommon'])
                     }
                 })
                 .success(function() {
+                    keeper.done();
                     $scope.state = 'standby';
                     $scope.buttonText = '验证成功';
                     // TODO: Maybe expiration?
@@ -126,6 +131,7 @@ angular.module('wdAuth', ['wdCommon'])
                     $location.url($route.current.params.ref || '/');
                 })
                 .error(function() {
+                    keeper.done();
                     $scope.state = 'standby';
                     $scope.buttonText = '验证失败';
                     $scope.errorText = '请检查验证码或确保电脑和手机在同一 Wi-Fi 网络中';

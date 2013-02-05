@@ -10,7 +10,8 @@ define([
         'directives/common/autofocus',
         'services/common/key',
         'services/common/alert',
-        'directives/common/alert'
+        'directives/common/alert',
+        'services/common/keeper'
     ], function(
         angular,
         windowEventWatcher,
@@ -23,7 +24,8 @@ define([
         autofocus,
         key,
         alert,
-        alertDirecitve
+        alertDirecitve,
+        keeper
     ) {
 'use strict';
 angular.module('wdCommon', [])
@@ -37,5 +39,6 @@ angular.module('wdCommon', [])
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
     .factory('wdKey', key)
-    .factory('wdAlert', alert);
+    .factory('wdAlert', alert)
+    .factory('wdKeeper', keeper);
 });

@@ -9,7 +9,7 @@ define([
     ) {
 'use strict';
 
-return ['$q', 'wdDev', function($q, wdDev) {
+return ['$q', 'wdDev', 'wdKeeper', function($q, wdDev, wdKeeper) {
     return {
         scope: {
             startUpload: '&onStartUpload'
@@ -27,6 +27,8 @@ return ['$q', 'wdDev', function($q, wdDev) {
                 ]
             });
             uploader.init();
+            var keeper = null;
+            var counter = 0;
             uploader.bind('FilesAdded', function(up, files) {
                 files = _.map(files, function(file) {
                     var deferred = $q.defer();
@@ -74,15 +76,28 @@ return ['$q', 'wdDev', function($q, wdDev) {
                     };
                 });
                 $scope.startUpload({files: files});
+                if (keeper) {
+                    keeper.done();
+                }
+                keeper = wdKeeper.push('仍有图片在上传中');
+                counter = files.length;
                 up.start();
             });
             uploader.bind('UploadProgress', function(up, file) {
                 file.deferred.notify(file.percent);
             });
             uploader.bind('FileUploaded', function(up, file, info) {
+                counter -= 1;
+                if (counter === 0) {
+                    keeper.done();
+                }
                 file.deferred.resolve(jQuery.parseJSON(info.response));
             });
             uploader.bind('Error', function(up, err) {
+                counter -= 1;
+                if (counter === 0) {
+                    keeper.done();
+                }
                 err.file.deferred.reject(err);
             });
         }

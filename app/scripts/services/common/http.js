@@ -3,12 +3,12 @@ define([], function() {
 return function() {
     var self = this;
     self.requestInterceptors = [];
-    self.$get = ['$http', '$q', '$rootScope', '$timeout', function($http, $q, $rootScope, $timeout) {
+    self.$get = ['$http', '$q', '$rootScope', '$timeout', '$injector', function($http, $q, $rootScope, $timeout, $injector) {
         function http(config) {
             var failed = false;
             var i, l;
             for (i = 0, l = self.requestInterceptors.length; i < l; i += 1) {
-                if (self.requestInterceptors[i].call(null, config) === false) {
+                if ($injector.invoke(self.requestInterceptors[i], null, {config: config}) === false) {
                     failed = true;
                     break;
                 }
