@@ -67,7 +67,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
 
         function fetchPhotos() {
             var params = {
-                length: '10',
+                // length: '10',
                 direction: 'backward'
             };
             if ($scope.photos.length && $scope.photos[$scope.photos.length - 1].date_added) {
@@ -172,16 +172,16 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
         };
 
-        // function loadMore() {
-        //     var bottom = wdViewport.top() + wdViewport.height();
-        //     console.log(bottom > wdViewport.docHeight() - 50);
-        //     if ($scope.loaded && bottom > wdViewport.docHeight() - 50) {
-        //         $scope.$apply(function() {
-        //             $scope.loaded = false;
-        //             fetchPhotos();
-        //         });
-        //     }
-        // }
+        function loadMore() {
+            var bottom = wdViewport.top() + wdViewport.height();
+            console.log(bottom > wdViewport.docHeight() - 50);
+            if ($scope.loaded && bottom > wdViewport.docHeight() - 50) {
+                $scope.$apply(function() {
+                    $scope.loaded = false;
+                    fetchPhotos();
+                });
+            }
+        }
         // wdViewport.on('scroll', loadMore);
         // wdViewport.on('resize', loadMore);
 

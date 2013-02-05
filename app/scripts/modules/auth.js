@@ -114,7 +114,7 @@ angular.module('wdAuth', ['wdCommon'])
                 wdHttp({
                     method: 'get',
                     url: '/directive/auth',
-                    timeout: 3000,
+                    timeout: 5000,
                     params: {
                         authcode: $scope.authCode,
                         'client_time': (new Date()).getTime(),
