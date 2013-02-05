@@ -178,9 +178,9 @@ background-color:#ffffff}
 
             <p>在网页中管理手机图片、短信、联系人和应用</p>
             <form ng-submit="submit()" class="form-inline">
-                <input type="text" class="" ng-model="$parent.authCode" wd-auto-focus placeholder="请输入连接验证码">
+                <input type="text" class="" ng-model="$parent.authCode" wd-auto-focus placeholder="请输入连接验证码" ng-change="userInput()" ng-disabled="state != 'standby'">
                 &nbsp;&nbsp;
-                <button type="submit" class="btn btn-primary btn-large" ng-switch on="state">
+                <button type="submit" class="btn btn-primary btn-large" ng-switch on="state" ng-disabled="state != 'standby'">
                     <span ng-switch-when="loading" id="floatingCirclesG"><span class="f_circleG" id="frotateG_01"></span><span class="f_circleG" id="frotateG_02"></span><span class="f_circleG" id="frotateG_03"></span><span class="f_circleG" id="frotateG_04"></span><span class="f_circleG" id="frotateG_05"></span><span class="f_circleG" id="frotateG_06"></span><span class="f_circleG" id="frotateG_07"></span><span class="f_circleG" id="frotateG_08"></span>
                     </span>
                     <span ng-switch-when="standby">{{buttonText}}</span>

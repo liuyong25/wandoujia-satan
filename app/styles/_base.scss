@@ -16,6 +16,7 @@ body {
 
 // TODO: temp
 .modal {
+    @include user-select(none);
     width: 350px;
     margin-left: -175px;
 

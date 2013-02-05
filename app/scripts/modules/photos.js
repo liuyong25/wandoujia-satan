@@ -119,6 +119,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         $scope.delete = function(photo) {
             return wdAlert.confirm('删除图片', '确定在手机中删除这张图片吗？').then(function() {
                 $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+                $scope.deselect(photo);
                 photo.$remove();
             });
         };
@@ -136,7 +137,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
         };
         $scope.startUpload = function(files) {
-            _.each(files.reverse(), function(file, i) {
+            _.each(files.reverse(), function(file) {
                 var photo;
                 file.data.then(function(data) {
                     photo = new Photos({
@@ -148,7 +149,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                     $scope.photos.unshift(photo);
                 });
                 file.uploading.then(function(res) {
-                    Photos.get({id: res[i].id}, function(newPhoto) {
+                    Photos.get({id: res[0].id}, function(newPhoto) {
                         angular.extend(photo, newPhoto);
                     });
                 });

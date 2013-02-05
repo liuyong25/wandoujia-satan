@@ -21,7 +21,10 @@ return ['$q', 'wdDev', function($q, wdDev) {
                 container: attrs.containerId,
                 'browse_button': attrs.browseButtonId,
                 'drop_element': element.attr('id'),
-                'multi_selection': false
+                'multi_selection': true,
+                filters : [
+                    {title : 'Image files', extensions : 'jpg,gif,png'}
+                ]
             });
             uploader.init();
             uploader.bind('FilesAdded', function(up, files) {

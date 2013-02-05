@@ -4,7 +4,7 @@ return function() {
     var self = this;
     self.requestInterceptors = [];
     self.$get = ['$http', '$q', '$rootScope', '$timeout', function($http, $q, $rootScope, $timeout) {
-        return function http(config) {
+        function http(config) {
             var failed = false;
             var i, l;
             for (i = 0, l = self.requestInterceptors.length; i < l; i += 1) {
@@ -35,7 +35,8 @@ return function() {
             else {
                 return $http(config);
             }
-        };
+        }
+        return http;
     }];
 };
 });
