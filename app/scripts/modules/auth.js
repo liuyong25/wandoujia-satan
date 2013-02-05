@@ -1,7 +1,9 @@
 define([
-        'angular'
+        'angular',
+        'jquery'
     ], function(
-        angular
+        angular,
+        jQuery
     ) {
 'use strict';
 
@@ -81,15 +83,19 @@ angular.module('wdAuth', ['wdCommon'])
             }
         };
     }])
-    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA',
-        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA) {
+    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
+        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
 
+        $scope.isSafari = jQuery.browser.safari;
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;
         $scope.buttonText = '连接手机';
         $scope.errorText = '';
         $scope.state = 'standby';
         $scope.showHelp = false;
+        $scope.safariHelp = function() {
+            wdAlert.alert('无法连接？', '连接手机失败，请前往设置/隐私中，将「阻止 cookie」一项设为「永不」。');
+        };
         $scope.userInput = function() {
             if ($scope.state !== 'standby') {
                 return;

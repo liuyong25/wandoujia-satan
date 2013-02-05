@@ -13,7 +13,7 @@
     .collapse {
         @include inline-block;
         @include nowrap;
-        width: 0;
+        width: 1px; // Safari will bug when set to '0'...
         height: $toolbar-height;
         vertical-align: top;
         @include transition(all 0.5s);

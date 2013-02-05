@@ -4,7 +4,8 @@ return [function() {
     var noop = function() {};
     return {
         scope: {},
-        controller: ['wdAlert', '$scope', '$q', '$attrs', function(wdAlert, $scope, $q, $attrs) {
+        controller: ['wdAlert', '$scope', '$q', '$attrs', '$element',
+        function(wdAlert, $scope, $q, $attrs, $element) {
             $scope.toggle = false;
             $scope.ok = noop;
             $scope.cancel = noop;
@@ -12,7 +13,7 @@ return [function() {
             $scope.content = '';
 
             wdAlert.registerModal({
-                open: function(header, content) {
+                open: function(header, content, onlyOk) {
                     var deferred = $q.defer();
 
                     $attrs.$set('header', header);
@@ -28,6 +29,8 @@ return [function() {
                         $scope.toggle = false;
                         deferred.reject();
                     };
+
+                    $element.find('.modal-footer [bs-modal-cancel]').toggle(!onlyOk);
 
                     return deferred.promise;
                 }

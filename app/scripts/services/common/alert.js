@@ -10,7 +10,7 @@ return ['$q', function($q) {
             if (modal === null) {
                 throw new Error('Not Found bsModal');
             }
-            return $q.when(modal.open(header, content));
+            return $q.when(modal.open(header, content, true));
         },
         confirm: function(header, content) {
             if (modal === null) {
