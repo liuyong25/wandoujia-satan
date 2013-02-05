@@ -156,14 +156,13 @@ angular.module('wdAuth', ['wdCommon'])
         }
     }])
     .run(['$rootScope', '$location', function($rootScope, $location) {
-        $rootScope.$on('$routeChangeStart', function() {
-            console.log('start', arguments);
-        });
-        $rootScope.$on('$routeChangeSuccess', function() {
-            console.log('success', arguments);
-        });
+        // $rootScope.$on('$routeChangeStart', function() {
+        //     console.log('start', arguments);
+        // });
+        // $rootScope.$on('$routeChangeSuccess', function() {
+        //     console.log('success', arguments);
+        // });
         $rootScope.$on('$routeChangeError', function() {
-            console.log('error', arguments, $location.url());
             $location.url('/portal?ref=' + encodeURIComponent($location.url()));
         });
     }]);
