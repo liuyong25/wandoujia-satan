@@ -31,15 +31,16 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
                         };
                     })
                 });
-
+                if ('height' in meta) {
 setTimeout(function() {
-                element
-                    .height(meta.height)
-                    .children('.date')
-                        .css({
-                            top: meta.metas[0].height / 2 - 20 / 2
-                        });
+                    element
+                        .height(meta.height)
+                        .children('.date')
+                            .css({
+                                top: meta.metas[0].height / 2 - 20 / 2
+                            });
 }, 0);
+                }
                 $scope.layout = meta.metas;
                 $scope.offsetTop = element.offset().top;
             }

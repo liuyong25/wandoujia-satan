@@ -48,7 +48,7 @@ angular.module('wdAuth', ['wdCommon'])
                     $window.location = $window.location.pathname + '#/portal';
                 }
                 else {
-                    $location.url('/portal');
+                    $location.path('/portal');
                 }
             },
             parse: function (input) {
