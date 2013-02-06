@@ -99,6 +99,10 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             if (config.url) {
                 config.url = wdDevProvider.wrapURL(config.url);
             }
+            // Global timeout
+            if (angular.isUndefined(config.timeout)) {
+                config.timeout = 60 * 1000;
+            }
             // By default, all request using withCredentials to support cookies in CORS.
             if (angular.isUndefined(config.withCredentials)) {
                 config.withCredentials = true;
