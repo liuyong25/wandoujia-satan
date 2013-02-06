@@ -94,7 +94,7 @@ angular.module('wdAuth', ['wdCommon'])
         $scope.state = 'standby';
         $scope.showHelp = false;
         $scope.safariHelp = function() {
-            wdAlert.alert('无法正常使用？', '连接手机失败，请前往设置/隐私中，将「阻止 cookie」一项设为「永不」。');
+            wdAlert.alert('更改您的 Safari 设置', '连接手机失败，请前往设置/隐私中，将「阻止 cookie」一项设为「永不」。');
         };
         $scope.userInput = function() {
             if ($scope.state !== 'standby') {
