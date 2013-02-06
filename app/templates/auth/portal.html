@@ -187,7 +187,7 @@ background-color:#ffffff}
                 </button>
             </form>
             <p style="font-size:12px;border-radius:3px;background:#fff;box-shadow: 0 1px 1px rgba(0, 0,0,0.1);padding:3px 8px;" ng-show="errorText"><i class="icon-info-sign"></i> {{errorText}}</p>
-            <p><a href="" ng-click="showHelp=true;$root.GA('login:help')">如何获取连接验证码？</a><br><a href="" ng-click="safariHelp()" ng-show="isSafari">Safari 用户需要更改 cookie 设置才可以正常使用</a></p>
+            <p><a href="" ng-click="safariHelp()" ng-show="isSafari" style="display:block;">Safari 用户需要更改 cookie 设置才可以正常使用</a><a style="display:block;" href="" ng-click="showHelp=true;$root.GA('login:help')">如何获取连接验证码？</a></p>
             <div class="bottom">
                 <div class="apk-guide">
                     <img src="images/qrbar.png" alt="豌豆荚">
