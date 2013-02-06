@@ -144,7 +144,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
             });
         };
         $scope.deleteSelected = function() {
-            return wdAlert.confirm('删除图片', '确定删除所选中的图片吗？').then(function() {
+            return wdAlert.confirm('删除图片', '确定在手机中删除所选中的图片吗？').then(function() {
                 _.each($scope.selectedPhotos, function(photo) {
                     $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                     photo.$remove();
