@@ -6,17 +6,25 @@ define([
 'use strict';
 return function() {
     var self = this;
-    self.requestInterceptors = [];
+    var providerRequestInterceptors = self.requestInterceptors = [];
     self.$get = [
                 '$http', '$q', '$rootScope', '$timeout', '$injector',
         function($http,   $q,   $rootScope,   $timeout,   $injector) {
 
+        var requestInterceptors = [];
+
+        _(providerRequestInterceptors).each(function(interceptor) {
+            requestInterceptors.push(
+                _.isString(interceptor) ? $injector.get(interceptor) : $injector.invoke(interceptor)
+            );
+        });
+
         function http(config) {
             function failRequestInterceptor(requestInterceptor) {
-                return $injector.invoke(requestInterceptor, null, {config: config}) === false;
+                return requestInterceptor(config) === false;
             }
 
-            if (_(self.requestInterceptors).any(failRequestInterceptor)) {
+            if (_(requestInterceptors).any(failRequestInterceptor)) {
                 var deferred = $q.defer();
                 var promise = deferred.promise;
                 // This promise will never success...

@@ -12,11 +12,13 @@ files = [
   JASMINE_ADAPTER,
   REQUIRE,
   REQUIRE_ADAPTER,
-  'app/scripts/vendor/angular.min.js',
+  'app/scripts/vendor/jquery.min.js',
+  'app/scripts/vendor/angular/angular.min.js',
+  'app/scripts/vendor/angular/angular-resource.js',
   'test/lib/angular-mocks.js',
+  {pattern: 'app/scripts/**', included: false},
+  {pattern: 'test/spec/**', included: false},
   'test/main.js',
-  {pattern: 'app/**/*.js', included: false},
-  {pattern: 'test/**/*.js', included: false}
 ];
 
 

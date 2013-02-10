@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "grunt-shell": "~0.1.4",
-    "testacular": "0.5.6",
+    "testacular": "0.5.8",
     "grunt": "0.4.0rc3"
   },
 
