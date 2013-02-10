@@ -1,19 +1,22 @@
-define([], function() {
+define([
+        'underscore'
+    ], function(
+        _
+    ) {
 'use strict';
 return function() {
     var self = this;
     self.requestInterceptors = [];
-    self.$get = ['$http', '$q', '$rootScope', '$timeout', '$injector', function($http, $q, $rootScope, $timeout, $injector) {
+    self.$get = [
+                '$http', '$q', '$rootScope', '$timeout', '$injector',
+        function($http,   $q,   $rootScope,   $timeout,   $injector) {
+
         function http(config) {
-            var failed = false;
-            var i, l;
-            for (i = 0, l = self.requestInterceptors.length; i < l; i += 1) {
-                if ($injector.invoke(self.requestInterceptors[i], null, {config: config}) === false) {
-                    failed = true;
-                    break;
-                }
+            function failRequestInterceptor(requestInterceptor) {
+                return $injector.invoke(requestInterceptor, null, {config: config}) === false;
             }
-            if (failed) {
+
+            if (_(self.requestInterceptors).any(failRequestInterceptor)) {
                 var deferred = $q.defer();
                 var promise = deferred.promise;
                 // This promise will never success...
@@ -27,6 +30,7 @@ return function() {
                     });
                     return promise;
                 };
+                // Keep same as $http, always asyncly.
                 $timeout(function() {
                     deferred.reject('requestInterceptor failed.');
                 }, 0);
