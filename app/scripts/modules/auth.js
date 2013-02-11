@@ -83,8 +83,8 @@ angular.module('wdAuth', ['wdCommon'])
             }
         };
     }])
-    .controller('portalController', ['$scope', '$location', 'wdHttp', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
-        function($scope, $location, wdHttp, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
+    .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
+        function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
 
         $scope.isSafari = jQuery.browser.safari;
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
@@ -129,7 +129,7 @@ angular.module('wdAuth', ['wdCommon'])
                 wdDev.setServer(ip, port);
                 keeper = wdKeeper.push('仍在发送验证码');
                 var timeStart = (new Date()).getTime();
-                wdHttp({
+                $http({
                     method: 'get',
                     url: '/directive/auth',
                     timeout: 5000,

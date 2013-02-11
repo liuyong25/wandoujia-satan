@@ -212,8 +212,8 @@
       </doc:scenario>
     </doc:example>
  */
-angular.module('ngResource', ['ng', 'wdCommon']).
-  factory('$resource', ['wdHttp', '$parse', function($http, $parse) {
+angular.module('ngResource', ['ng']).
+  factory('$resource', ['$http', '$parse', function($http, $parse) {
     var DEFAULT_ACTIONS = {
       'get':    {method:'GET'},
       'save':   {method:'POST'},

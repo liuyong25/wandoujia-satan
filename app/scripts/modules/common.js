@@ -28,11 +28,14 @@ define([
         ga
     ) {
 'use strict';
+// Common Module is the collection of most used or global functions.
 angular.module('wdCommon', [])
+    // Directives
     .directive('wdStrip', strip)
     .directive('wdLoading', loading)
     .directive('wdAutoFocus', autofocus)
     .directive('wdAlert', alertDirecitve)
+    // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)
     .factory('wdViewport', viewport)
@@ -40,5 +43,9 @@ angular.module('wdCommon', [])
     .factory('wdKey', key)
     .factory('wdAlert', alert)
     .factory('wdKeeper', keeper)
-    .factory('GA', ga);
+    .factory('GA', ga)
+    // Configuration
+    .config(['$provide', 'wdHttpProvider', function($provide, wdHttpProvider) {
+        $provide.decorator('$http', wdHttpProvider.httpDecorator);
+    }]);
 });

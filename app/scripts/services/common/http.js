@@ -7,9 +7,9 @@ define([
 return function() {
     var self = this;
     var providerRequestInterceptors = self.requestInterceptors = [];
-    self.$get = [
-                '$http', '$q', '$rootScope', '$timeout', '$injector',
-        function($http,   $q,   $rootScope,   $timeout,   $injector) {
+    self.httpDecorator = [
+                '$delegate', '$q', '$rootScope', '$timeout', '$injector',
+        function($delegate,   $q,   $rootScope,   $timeout,   $injector) {
 
         var requestInterceptors = [];
 
@@ -45,10 +45,11 @@ return function() {
                 return promise;
             }
             else {
-                return $http(config);
+                return $delegate(config);
             }
         }
         return http;
     }];
+    self.$get = function() {};
 };
 });
