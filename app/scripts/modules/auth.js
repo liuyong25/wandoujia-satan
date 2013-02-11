@@ -1,88 +1,16 @@
 define([
         'angular',
-        'jquery'
+        'jquery',
+        'services/auth/token'
     ], function(
         angular,
-        jQuery
+        jQuery,
+        authToken
     ) {
 'use strict';
 
 angular.module('wdAuth', ['wdCommon'])
-    .provider('wdAuthFilter', function() {
-        var self = this;
-        self.needAuth = ['$q', 'wdAuthToken', function($q, wdAuthToken) {
-            var deferred = $q.defer();
-            if (wdAuthToken.valid()) {
-                deferred.resolve('ok');
-            }
-            else {
-                deferred.reject('wd_auth_failed');
-            }
-            return deferred.promise;
-        }];
-        self.$get = [function() {
-            return {
-            };
-        }];
-    })
-    .factory('wdAuthToken', ['$window', '$location', 'wdDev', function($window, $location, wdDev) {
-        var valid = false;
-        return {
-            valid: function() {
-                return valid;
-            },
-            getToken: function() {
-                return $window.localStorage.getItem('token');
-            },
-            setToken: function(newToken) {
-                $window.localStorage.setItem('token', newToken);
-                valid = true;
-            },
-            clearToken: function() {
-                $window.localStorage.removeItem('token');
-                valid = false;
-            },
-            signout: function() {
-                this.clearToken();
-                if (wdDev.query('ac')) {
-                    $window.location = $window.location.pathname + '#/portal';
-                }
-                else {
-                    $location.path('/portal');
-                }
-            },
-            parse: function (input) {
-                var type = parseInt(input.slice(0, 1), 10);
-                var encryptedIp = parseInt(input.slice(3, input.length), 10);
-                var ip;
-                switch (type) {
-                case 2:
-                    ip = '192.168.' + [
-                        Math.floor(encryptedIp / 256),
-                        encryptedIp % 256
-                    ].join('.');
-                    break;
-                case 3:
-                    ip = '172.' + [
-                        Math.floor(encryptedIp / Math.pow(256, 2)),
-                        Math.floor((encryptedIp % Math.pow(256, 2)) / 256),
-                        encryptedIp % 256
-                    ].join('.');
-                    break;
-                case 4:
-                    ip = [
-                        Math.floor(encryptedIp / Math.pow(256, 3)),
-                        Math.floor((encryptedIp % Math.pow(256, 3)) / Math.pow(256, 2)),
-                        Math.floor((encryptedIp % Math.pow(256, 2)) / 256),
-                        encryptedIp % 256
-                    ].join('.');
-                    break;
-                }
-
-                return ip;
-            }
-        };
-    }])
+    .provider('wdAuthToken', authToken)
     .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
         function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
 
@@ -138,7 +66,8 @@ angular.module('wdAuth', ['wdCommon'])
                         'client_time': (new Date()).getTime(),
                         'client_name': 'Browser',
                         'client_type': 3
-                    }
+                    },
+                    disableErrorControl: !$scope.autoAuth
                 })
                 .success(function() {
                     keeper.done();
@@ -185,17 +114,6 @@ angular.module('wdAuth', ['wdCommon'])
         if ($scope.authCode) {
             $timeout($scope.submit, 0);
         }
-    }])
-    .run(['$rootScope', '$location', function($rootScope, $location) {
-        // $rootScope.$on('$routeChangeStart', function() {
-        //     console.log('start', arguments);
-        // });
-        // $rootScope.$on('$routeChangeSuccess', function() {
-        //     console.log('success', arguments);
-        // });
-        $rootScope.$on('$routeChangeError', function() {
-            $location.url('/portal?ref=' + encodeURIComponent($location.url()));
-        });
     }]);
 
 });
