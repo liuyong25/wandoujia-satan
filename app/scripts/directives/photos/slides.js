@@ -6,8 +6,8 @@ define([
         _
     ) {
 'use strict';
-return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q', 'GA',
-    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey, $q, GA) {
+return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
+    function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey, GA) {
     return {
         template: template,
         replace: true,
@@ -160,14 +160,13 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', '$q', 'GA',
                 }
                 if (newPhoto !== null) {
                     if (keyboardScope === null) {
-                        keyboardScope = $q.defer();
-                        wdKey.push('photos:preview', keyboardScope.promise);
+                        keyboardScope = wdKey.push('photos:preview');
                     }
                     open();
                 }
                 else {
                     close();
-                    keyboardScope.resolve();
+                    keyboardScope.done();
                     keyboardScope = null;
                 }
             });

@@ -6,21 +6,26 @@ define([
         _
     ) {
 'use strict';
-return ['$rootScope', '$log', function($rootScope, $log) {
+return ['$rootScope', '$log', '$q', function($rootScope, $log, $q) {
     var stack = [];
     var key = keymaster.key;
 
-    key.push = function(scope, promise) {
+    key.push = function(scope) {
+        var deferred = $q.defer();
         stack.unshift(scope);
         key.setScope(scope);
         $log.log('Shortcuts scope changed to: ' + key.getScope() + '. Total ' + stack.length);
-        promise.then(function() {
+        deferred.promise.then(function() {
             stack.shift();
             var scope = stack[0] || 'all';
             key.setScope(scope);
             $log.log('Shortcuts scope changed to: ' + key.getScope() + '. Total ' + stack.length);
         });
-        return stack.length;
+        return {
+            done: function() {
+                deferred.resolve();
+            }
+        };
     };
 
     key.$apply = function() {

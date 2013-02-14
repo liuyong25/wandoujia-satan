@@ -6,7 +6,7 @@ define([
         template
     ) {
 'use strict';
-return ['$q', 'wdKey', function($q, wdKey) {
+return ['wdKey', function(wdKey) {
     return {
         restrict: 'EAC',
         replace: true,
@@ -29,14 +29,13 @@ return ['$q', 'wdKey', function($q, wdKey) {
             }));
 
             function open() {
-                keyboardScope = $q.defer();
-                wdKey.push(uid, keyboardScope.promise);
+                keyboardScope = wdKey.push(uid);
                 element.modal('show');
             }
 
             function close() {
                 element.modal('hide');
-                keyboardScope.resolve();
+                keyboardScope.done();
                 keyboardScope = null;
             }
 
