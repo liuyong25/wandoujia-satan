@@ -16,7 +16,9 @@ return [function() {
                 open: function(header, content, onlyOk) {
                     var deferred = $q.defer();
 
-                    $attrs.$set('header', header);
+                    if (header) {
+                        $attrs.$set('header', header);
+                    }
 
                     $scope.content = content;
                     $scope.toggle = true;
@@ -42,9 +44,11 @@ return [function() {
             attrs.$set('ok', 'ok()');
             attrs.$set('cancel', 'cancel()');
             // Inject text content.
-            element.find('[ng-transclude]').text('{{content}}');
+            element.find('[ng-transclude]')
+                .removeAttr('ng-transclude')
+                .text('{{content}}');
             // No need for linking, just depends on bsModal.
-            return function() {};
+            return function(scope) {};
         }
     };
 }];
