@@ -8,6 +8,8 @@ return function() {
     var ip = '';
     var port = '';
 
+    // $resouce service support :name in url as parameter.
+    // If target url need : for presenting port, it should be encoded.
     function encodeServer(server) {
         return server.replace(':', '\\:');
     }
