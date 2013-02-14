@@ -38,6 +38,14 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             template: PortalTemplate,
             controller: 'portalController'
         });
+        $routeProvider.when('/signout', {
+            resolve: {
+                signout: ['wdAuthToken', '$q', function(wdAuthToken, $q) {
+                    wdAuthToken.signout();
+                    return $q.reject('signout');
+                }]
+            }
+        });
         $routeProvider.when('/', {
             redirectTo: '/photos'
         });
