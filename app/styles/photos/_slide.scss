@@ -1,0 +1,121 @@
+.slides-container {
+    @include user-select(none);
+    @include ui-layer-top;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 0;
+    background: rgba(0, 0, 0, 0.95);
+    overflow: hidden;
+    opacity: 0;
+    $transition-duration: $global-transition-duration;
+    @include transition(opacity $transition-duration,height 0 ease $transition-duration);
+
+    &.slides-active {
+        @include transition(opacity $transition-duration, height 0 ease 0);
+        height: 100%;
+        opacity: 1;
+    }
+
+    .frame {
+        position: absolute;
+        left: 90px;
+        right: 90px;
+        top: 30px;
+        bottom: 80px;
+        text-align: center;
+        img {
+            max-width: none;
+            max-height: none;
+        }
+    }
+
+    $actions: "pre", "next", "play", "pause", "rotate", "delete", "dl", "share", "close";
+    $action-padding: 10px;
+    $action-margin: 10px;
+    $action-width: photos-sprite-width("slide_play") + $action-padding;
+
+    @each $action in $actions {
+        $sprite-name: "slide_" + $action;
+        $sprite-width: photos-sprite-width($sprite-name);
+        $sprite-height: photos-sprite-height($sprite-name);
+        %has-sprite-#{$action} {
+            i.photos-slide-icon-#{$action} {
+                @include photos-sprite($sprite-name);
+                @include inline-block;
+                vertical-align: top;
+                width: $sprite-width;
+                height: $sprite-height;
+            }
+            @include transition(opacity $global-transition-duration);
+            padding: $action-padding;
+            opacity: 0.65;
+            &:hover {
+                opacity: 1;
+            }
+            &:active {
+                opacity: 0.5;
+            }
+        }
+    }
+
+    .action-previous {
+        @extend %has-sprite-pre;
+        position: absolute;
+        left: 0;
+        top: 80px;
+        bottom: 80px;
+        width: 70px;
+        i {
+            @include offset(50%, 50%);
+            margin: (- photos-sprite-height("slide_pre") / 2) 0 0 (- photos-sprite-width("slide_pre") / 2);
+        }
+    }
+    .action-next {
+        @extend %has-sprite-next;
+        position: absolute;
+        right: 0;
+        top: 80px;
+        bottom: 80px;
+        width: 70px;
+        i {
+            @include offset(50%, 50%);
+            margin: (- photos-sprite-height("slide_next") / 2) 0 0 (- photos-sprite-width("slide_next") / 2);
+        }
+    }
+    %action {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+    }
+    $action-space : $action-width + $action-margin * 2;
+    $position-left: $action-margin - ($action-space) * 2;
+    .action-play {
+        @extend %action, %has-sprite-play, %has-sprite-pause;
+        margin-left: $position-left + $action-space * 0;
+    }
+    .action-rotate {
+        @extend %action, %has-sprite-rotate;
+        margin-left: $position-left + $action-space * 1;
+    }
+    .action-delete {
+        @extend %action, %has-sprite-delete;
+        margin-left: $position-left + $action-space * 2;
+    }
+    .action-download {
+        @extend %action, %has-sprite-dl;
+        margin-left: $position-left + $action-space * 3;
+    }
+    .action-share {
+        @extend %action, %has-sprite-share;
+        margin-left: $position-left + $action-space * 4;
+    }
+    .action-close {
+        @extend %has-sprite-close;
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        padding: 20px;
+    }
+}

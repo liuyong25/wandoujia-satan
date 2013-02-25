@@ -1,0 +1,66 @@
+@mixin box($width: nil, $height: nil, $border-radius: nil) {
+    @if $width != nil {
+        width: $width;
+    }
+    @if $height != nil {
+        height: $height;
+    }
+    @if $border-radius != nil {
+        border-radius: $border-radius;
+    }
+}
+@mixin square($width: nil, $border-radius: nil) {
+    @include box($width, $width, $border-radius);
+}
+@mixin position-container {
+    position: relative;
+}
+@mixin position($x:nil, $y:nil) {
+    position: relative;
+    @if $x != nil {
+        left: $x;
+    }
+    @if $y != nil {
+        top: $y;
+    }
+}
+@mixin offset($x:nil, $y:nil) {
+    position: absolute;
+    @if $x != nil {
+        left: $x;
+    }
+    @if $y != nil {
+        top: $y;
+    }
+}
+@mixin fix($x:nil, $y:nil) {
+    position: fixed;
+    @if $x != nil {
+        left: $x;
+    }
+    @if $y != nil {
+        top: $y;
+    }
+}
+
+// z-index
+@mixin ui-layer-top {
+    // greater than bootstrap FixedNavbar, less than bootstrap ModalDrop
+    z-index: 1031;
+}
+@mixin ui-layer-content-top($z: 900) {
+    // below all bootstrap ui components
+    @if $z < 900 {
+        z-index: 900;
+    }
+    @else if $z > 999 {
+        z-index: 999;
+    }
+    @else {
+        z-index: $z;
+    }
+}
+
+@function fill-height($target-height, $base-height: $global-line-height) {
+    @return ($target-height - $base-height) / 2;
+}

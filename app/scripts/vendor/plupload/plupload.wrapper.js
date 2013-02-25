@@ -1,4 +1,4 @@
 define([], function() {
 'use strict';
-return window.angular;
+return window.plupload;
 });

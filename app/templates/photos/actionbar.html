@@ -1,0 +1,31 @@
+<div class="actions-container" id="-wdp-uploader-container">
+    <!-- <a class="action-pick-date" ng-click="pickDate()"><i class="photos-icon-calendar"></i></a> -->
+    <div class="toolbar" ng-class="{'toolbar-active': selectedPhotos.length}">
+        <a class="action-upload-photo" id="-wdp-uploader-trigger"
+        wdp-uploader
+        data-on-start-upload="onStartUpload(files)"
+        data-on-uploaded="onUploaded(files)"
+        data-browse-button-id="-wdp-uploader-trigger"
+        data-container-id="-wdp-uploader-container"
+        bs-tooltip title="添加图片" data-options="{placement:'right'}"
+        ng-click="$root.GA('photos:toolbar:add_photo')"
+        ><i class="photos-icon-add"></i></a>
+        <!-- <label class="action-select-all checkbox"><input type="checkbox" ng-checked="selectedPhotos.length == photos.length" ng-click="selectAll()"></label> -->
+        <!-- <a href="" class="action-delete" ng-click="delete()"><i class="photos-icon-del-toolbar"></i></a> -->
+        <!-- <a href="" class="action-download" ng-click="download()"><i class="photos-icon-dl-toolbar"></i></a> -->
+        <!-- <a href="" class="action-share" ng-click="share()"><i class="photos-icon-share-toolbar"></i></a> -->
+        <span class="collapse">
+            <span class="group">
+                <a href="" class="btn btn-small action-select-all" ng-click="selectAll()" ng-switch on="selectedPhotos.length == photos.length">
+                    <span ng-switch-when="false">选择全部</span>
+                    <span ng-switch-when="true">取消选择</span>
+                </a>
+                <a href="" class="btn btn-small action-delete" ng-click="delete();$root.GA('photos:delete_selected')"><i class="photos-icon-del-toolbar"></i>删除</a>
+            </span>
+            <span class="counter" title="已选择 {{selectedPhotos.length}} 张图片">{{selectedPhotos.length}}</span>
+        </span>
+    </div>
+    <a target="_blank" href="http://www.diaochapai.com/survey/dd863ce5-ab9d-41e6-a63c-4f88ac5a5a3f" class="send-feedback"
+        bs-tooltip title="意见反馈" data-options="{placement:'right'}"
+        ><i class="photos-icon-feedback"></i></a>
+</div>

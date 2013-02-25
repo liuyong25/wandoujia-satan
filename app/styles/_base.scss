@@ -1,0 +1,34 @@
+// Variables
+$global-line-height: 20px;
+$global-transition-duration: 0.4s;
+
+
+// http://docs.angularjs.org/api/ng.directive:ngCloak
+[ng\:cloak], [ng-cloak], .ng-cloak { display: none; }
+
+body {
+    background: image-url("bg-pattern.png");
+}
+
+.tooltip-inner {
+    @include nowrap;
+}
+
+// TODO: temp
+.modal {
+    @include user-select(none);
+    width: 350px;
+    margin-left: -175px;
+
+    .modal-header h3 {
+        font-size: 14px;
+    }
+    .modal-body {
+        min-height: 50px;
+    }
+    .modal-footer {
+        padding: 7px 15px 8px;
+    }
+}
+
+@import "loading";

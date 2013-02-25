@@ -1,0 +1,233 @@
+<div class="wd-auth" ng-switch on="autoAuth">
+    <div class="panel" ng-switch-when="false">
+        <div class="logo"></div>
+        <div class="auth">
+<style>
+#floatingCirclesG{
+    display: inline-block;
+    vertical-align: top;
+    margin: -4px 0;
+position:relative;
+width:28px;
+height:28px;
+-moz-transform:scale(0.6);
+-webkit-transform:scale(0.6);
+-ms-transform:scale(0.6);
+-o-transform:scale(0.6);
+transform:scale(0.6);
+}
+
+.f_circleG{
+position:absolute;
+background-color:#ffffff;
+height:5px;
+width:5px;
+-moz-border-radius:3px;
+-moz-animation-name:f_fadeG;
+-moz-animation-duration:1.04s;
+-moz-animation-iteration-count:infinite;
+-moz-animation-direction:linear;
+-webkit-border-radius:3px;
+-webkit-animation-name:f_fadeG;
+-webkit-animation-duration:1.04s;
+-webkit-animation-iteration-count:infinite;
+-webkit-animation-direction:linear;
+-ms-border-radius:3px;
+-ms-animation-name:f_fadeG;
+-ms-animation-duration:1.04s;
+-ms-animation-iteration-count:infinite;
+-ms-animation-direction:linear;
+-o-border-radius:3px;
+-o-animation-name:f_fadeG;
+-o-animation-duration:1.04s;
+-o-animation-iteration-count:infinite;
+-o-animation-direction:linear;
+border-radius:3px;
+animation-name:f_fadeG;
+animation-duration:1.04s;
+animation-iteration-count:infinite;
+animation-direction:linear;
+}
+
+#frotateG_01{
+left:0;
+top:11px;
+-moz-animation-delay:0.39s;
+-webkit-animation-delay:0.39s;
+-ms-animation-delay:0.39s;
+-o-animation-delay:0.39s;
+animation-delay:0.39s;
+}
+
+#frotateG_02{
+left:3px;
+top:3px;
+-moz-animation-delay:0.52s;
+-webkit-animation-delay:0.52s;
+-ms-animation-delay:0.52s;
+-o-animation-delay:0.52s;
+animation-delay:0.52s;
+}
+
+#frotateG_03{
+left:11px;
+top:0;
+-moz-animation-delay:0.65s;
+-webkit-animation-delay:0.65s;
+-ms-animation-delay:0.65s;
+-o-animation-delay:0.65s;
+animation-delay:0.65s;
+}
+
+#frotateG_04{
+right:3px;
+top:3px;
+-moz-animation-delay:0.78s;
+-webkit-animation-delay:0.78s;
+-ms-animation-delay:0.78s;
+-o-animation-delay:0.78s;
+animation-delay:0.78s;
+}
+
+#frotateG_05{
+right:0;
+top:11px;
+-moz-animation-delay:0.91s;
+-webkit-animation-delay:0.91s;
+-ms-animation-delay:0.91s;
+-o-animation-delay:0.91s;
+animation-delay:0.91s;
+}
+
+#frotateG_06{
+right:3px;
+bottom:3px;
+-moz-animation-delay:1.04s;
+-webkit-animation-delay:1.04s;
+-ms-animation-delay:1.04s;
+-o-animation-delay:1.04s;
+animation-delay:1.04s;
+}
+
+#frotateG_07{
+left:11px;
+bottom:0;
+-moz-animation-delay:1.17s;
+-webkit-animation-delay:1.17s;
+-ms-animation-delay:1.17s;
+-o-animation-delay:1.17s;
+animation-delay:1.17s;
+}
+
+#frotateG_08{
+left:3px;
+bottom:3px;
+-moz-animation-delay:1.3s;
+-webkit-animation-delay:1.3s;
+-ms-animation-delay:1.3s;
+-o-animation-delay:1.3s;
+animation-delay:1.3s;
+}
+
+@-moz-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@-webkit-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@-ms-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@-o-keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+@keyframes f_fadeG{
+0%{
+background-color:#5AB60c}
+
+100%{
+background-color:#ffffff}
+
+}
+
+</style>
+
+            <p>在网页中管理手机图片、短信、联系人和应用</p>
+            <form ng-submit="submit()" class="form-inline">
+                <input type="text" class="" ng-model="$parent.authCode" wd-auto-focus placeholder="请输入连接验证码" ng-change="userInput()" ng-disabled="state != 'standby'">
+                &nbsp;&nbsp;
+                <button type="submit" class="btn btn-primary btn-large" ng-switch on="state" ng-disabled="state != 'standby'">
+                    <span ng-switch-when="loading" id="floatingCirclesG"><span class="f_circleG" id="frotateG_01"></span><span class="f_circleG" id="frotateG_02"></span><span class="f_circleG" id="frotateG_03"></span><span class="f_circleG" id="frotateG_04"></span><span class="f_circleG" id="frotateG_05"></span><span class="f_circleG" id="frotateG_06"></span><span class="f_circleG" id="frotateG_07"></span><span class="f_circleG" id="frotateG_08"></span>
+                    </span>
+                    <span ng-switch-when="standby">{{buttonText}}</span>
+                </button>
+            </form>
+            <p style="font-size:12px;border-radius:3px;background:#fff;box-shadow: 0 1px 1px rgba(0, 0,0,0.1);padding:3px 8px;" ng-show="errorText"><i class="icon-info-sign"></i> {{errorText}}</p>
+            <p><a href="" ng-click="safariHelp()" ng-show="isSafari" style="display:block;">Safari 用户需要更改 cookie 设置才可以正常使用</a><a style="display:block;" href="" ng-click="showHelp=true;$root.GA('login:help')">如何获取连接验证码？</a></p>
+            <div class="bottom">
+                <div class="apk-guide">
+                    <img src="images/qrbar.png" alt="豌豆荚">
+                    <p>豌豆荚 web 需要手机上安装最新测试版豌豆荚才可以使用。<br>请使用手机访问 next.wandoujia.com/m 下载后安装。</p>
+                </div>
+            </div>
+        </div>
+        <div class="help" ng-class="{active: showHelp}">
+            <a href="" class="btn-back" ng-click="showHelp=false"><i class="help-icon-back"></i></a>
+            <div class="hd">如何获取连接验证码</div>
+            <div class="bd">
+                <ol class="unstyled">
+                    <li class="step-1">
+                        <div class="figure-1"></div>
+                        <div class="desc">
+                            <span class="order">1</span>在手机上打开豌豆荚，滑动左侧或点击左上角豌豆荚图标展开侧栏。
+                        </div>
+                    </li>
+                    <li class="step-2">
+                        <div class="figure-2"></div>
+                        <div class="desc">
+                            <span class="order">2</span>展开侧栏后向下滚动，找到「电脑连接」项。
+                        </div>
+                    </li>
+                    <li class="step-3">
+                        <div class="figure-3"></div>
+                        <div class="desc">
+                            <span class="order">3</span>图中所示位置显示的字符即为您手机的连接验证码。
+                        </div>
+                    </li>
+                </ol>
+            </div>
+            <div class="ft">
+                <div class="apk-guide">
+                    <img src="images/qrbar.png" alt="豌豆荚">
+                    <p>豌豆荚 web 需要手机上安装最新测试版豌豆荚才可以使用。<br>请使用手机访问 next.wandoujia.com/m 下载后安装。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wd-loading" ng-switch-when="true" data-visible="true"></div>
+</div>

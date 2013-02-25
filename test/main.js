@@ -1,5 +1,6 @@
 require.config({
   baseUrl: '/base/app/scripts',
+
   shim: {
     'underscore': {
         exports: '_'
@@ -9,21 +10,22 @@ require.config({
   paths: {
     // lib
     jquery: 'vendor/jquery.wrapper',
+    bootstrap: 'vendor/bootstrap',
     underscore: 'vendor/underscore',
+    angular: 'vendor/angular/angular.wrapper',
+    templates: '../templates',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
-    cs: 'vendor/requirejs-plugins/cs',
-    i18n: 'vendor/requirejs-plugins/i18n',
     // test
-    test: '../../test',
     spec: '../../test/spec'
-  }
+  },
+  urlArgs: 'bust=' +  (new Date()).getTime()
 });
 
 // bootstrap - require, once loaded, kick off test run
 require([
   // you gotta list all spec that you wanna test...
-  'spec/exampleSpec'
+  'spec/common/httpSpec',
 ], function() {
   'use strict';
   window.__testacular__.start();

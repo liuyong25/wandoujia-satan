@@ -1,0 +1,98 @@
+.block {
+    $border-radius: 3px;
+    $padding: 5px;
+    @include transition(all 0.1s);
+    position: absolute;
+    background: #fff;
+    border-radius: $border-radius;
+    @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+
+    .photo {
+        margin: $padding;
+        overflow: hidden;
+        @include position-container;
+        cursor: pointer;
+        img {
+            position: absolute;
+            // revert bootstrap img style
+            max-width: none;
+        }
+    }
+
+    $actions-height: 26px;
+    &.block-active, &:hover {
+        .actions {
+            @include transition(opacity $global-transition-duration linear 0.1s);
+            opacity: 1;
+        }
+    }
+    &.block-active {
+        background: #52aa30;
+    }
+    .actions {
+        @include transition(opacity $global-transition-duration linear 0.1s);
+        @include pie-clearfix;
+        position: absolute;
+        left: $padding;
+        bottom: $padding;
+        right: $padding;
+        height: $actions-height;
+        background: rgba(0, 0, 0, 0.7);
+        padding-right: 5px;
+        opacity: 0;
+
+        .action-select {
+            @include float-left;
+            position: relative;
+            padding-top: 2px;
+            padding-left: 25px;
+
+            input[type=checkbox] {
+                position: relative;
+                top:2px;
+                $left: -1px;
+                $top: -3px;
+                &:not(:checked):after {
+                    content: "";
+                    position: absolute;
+                    left: $left;
+                    top: $top;
+                    width: photos-sprite-width("check");
+                    height: photos-sprite-height("check");
+                    @include photos-sprite("check");
+                }
+                &:checked:after{
+                    content: "";
+                    position: absolute;
+                    left: $left;
+                    top: $top;
+                    width: photos-sprite-width("check");
+                    height: photos-sprite-height("check");
+                    @include photos-sprite("checked");
+                }
+            }
+        }
+        %action {
+            @include float-right;
+            $padding-top: ($actions-height - $icon-height) / 2;
+            padding: $padding-top 4px;
+            opacity: 0.65;
+            &:hover {
+                opacity: 1;
+            }
+            &:active {
+                opacity: 0.5;
+            }
+            @include transition(opacity $global-transition-duration);
+        }
+        .action-delete {
+            @extend %action;
+        }
+        .action-download {
+            @extend %action;
+        }
+        .action-share {
+            @extend %action;
+        }
+    }
+}

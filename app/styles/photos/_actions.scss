@@ -1,0 +1,26 @@
+.actions-container {
+    @include box(0, 0);
+    @include fix(77px, 0);
+
+    $action-width: photos-sprite-width(add);
+    $action-height: photos-sprite-height(add);
+    $action-padding: 10px;
+    .action-pick-date {
+        @extend %action, %has-icon-calendar;
+        @include offset(0, 25px);
+    }
+    .action-upload-photo {
+        @extend %action, %has-icon-add;
+    }
+    %action {
+        $padding-top: $action-padding + ($action-height - $icon-height) / 2;
+        $padding-left: $action-padding;
+        padding: $padding-top $padding-left;
+        margin: (-$action-padding - $action-height / 2) (-$action-padding - $action-width / 2);
+    }
+    .plupload {
+        width: 1px;
+        height: 1px;
+        line-height: 0;
+    }
+}

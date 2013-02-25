@@ -1,0 +1,26 @@
+.showcases-container {
+    padding-top: 25px;
+    .showcase {
+        @include position-container;
+        // padding: 0 106px 0 30px;
+        .date {
+            @include box(60px);
+            @include offset(-80px, 50px);
+            font-size: 12px;
+            text-align: right;
+            @include text-shadow(#fff 0 1px);
+            i {
+                position: absolute;
+                // top: (20px - $sprite-height) / 2;
+                right: -20px - photos-sprite-width(date) / 2 + 3px;
+            }
+        }
+    }
+    // .showcase-today .action-upload-photo {
+    //     @extend %has-icon-add;
+    //     padding: 10px;
+    //     position: absolute;
+    //     top: -15px;
+    //     right: -42px;
+    // }
+}
