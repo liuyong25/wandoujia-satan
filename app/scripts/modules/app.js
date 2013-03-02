@@ -4,18 +4,20 @@ define([
         'modules/photos',
         'text!templates/auth/portal.html',
         'text!templates/photos/gallery.html',
-        'modules/common'
+        'modules/common',
+        'modules/language'
     ], function(
         angular,
         auth,
         photos,
         PortalTemplate,
         PhotosTemplate,
-        common
+        common,
+        language
     ) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
         // Prevent CORS error for accept-headers...
@@ -131,8 +133,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             };
         }]);
     }])
-    .run([      '$window', '$rootScope', 'wdKeeper', 'GA',
-        function($window,   $rootScope,   wdKeeper,   GA) {
+    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
+        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
 
         // $rootScope.$on('$routeChangeStart', function(next) {
         //     console.log('start', next, $location.url());
@@ -162,5 +164,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
 
         // GA support
         $rootScope.GA = GA;
+        // i18n word table
+        $rootScope.DICT = wdWordTable;
     }]);
 });
