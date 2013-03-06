@@ -3,6 +3,9 @@
     'vendor/plupload/plupload.html5': ['vendor/plupload/plupload'],
     'vendor/plupload/plupload.html4': ['vendor/plupload/plupload'],
     'plupload': ['vendor/plupload/plupload', 'vendor/plupload/plupload.html5', 'vendor/plupload/plupload.html4'],
+    'fineuploader': {
+        exports: 'qq'
+    },
     'underscore': {
         exports: '_'
     }
@@ -16,6 +19,7 @@
     plupload: 'vendor/plupload/plupload.wrapper',
     keymaster: 'vendor/keymaster.amd',
     bootstrap: 'vendor/bootstrap',
+    fineuploader: 'vendor/fineuploader/fineuploader',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',

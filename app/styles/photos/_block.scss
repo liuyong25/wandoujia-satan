@@ -1,49 +1,60 @@
-.block {
-    $border-radius: 3px;
-    $padding: 5px;
-    @include transition(all 0.1s);
-    position: absolute;
-    background: #fff;
-    border-radius: $border-radius;
-    @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.1));
+.wdp-block {
+    $padding: 0px;
+    @include position(absolute, 0px 0 0 0px);
+    @include transform(translateZ(0));
+
+    &.anim {
+        @include transition(all $global-transition-duration ease $global-transition-duration,
+                            opacity $global-transition-duration ease 0);
+    }
 
     .photo {
+        @include position;
+        @include transform(translateZ(0));
         margin: $padding;
         overflow: hidden;
-        @include position-container;
         cursor: pointer;
+
+        &.anim {
+            @include transition(all $global-transition-duration ease $global-transition-duration);
+        }
+
         img {
-            position: absolute;
+            @include transition(opacity $global-transition-duration ease 0);
+            @include position(absolute);
+            @include transform(translateZ(0));
             // revert bootstrap img style
             max-width: none;
+
+            &.anim {
+                @include transition(all $global-transition-duration ease $global-transition-duration);
+            }
         }
     }
 
     $actions-height: 26px;
-    &.block-active, &:hover {
+    &.active, &:hover {
         .actions {
-            @include transition(opacity $global-transition-duration linear 0.1s);
+            @include transition(opacity $global-transition-duration ease 0.1s);
             opacity: 1;
         }
     }
-    &.block-active {
+    &.active {
         background: #52aa30;
     }
     .actions {
-        @include transition(opacity $global-transition-duration linear 0.1s);
+        @include transition(opacity $global-transition-duration ease 0.1s);
         @include pie-clearfix;
-        position: absolute;
-        left: $padding;
-        bottom: $padding;
-        right: $padding;
+        @include position(absolute, 0 $padding $padding $padding);
+        @include transform(translateZ(0));
         height: $actions-height;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(#000, 0.7);
         padding-right: 5px;
         opacity: 0;
 
         .action-select {
             @include float-left;
-            position: relative;
+            @include position;
             padding-top: 2px;
             padding-left: 25px;
 
@@ -72,27 +83,48 @@
                 }
             }
         }
-        %action {
-            @include float-right;
-            $padding-top: ($actions-height - $icon-height) / 2;
-            padding: $padding-top 4px;
-            opacity: 0.65;
-            &:hover {
-                opacity: 1;
-            }
-            &:active {
-                opacity: 0.5;
-            }
-            @include transition(opacity $global-transition-duration);
-        }
-        .action-delete {
-            @extend %action;
-        }
-        .action-download {
-            @extend %action;
-        }
+        .action-delete,
+        .action-download,
         .action-share {
-            @extend %action;
+            $padding-top: ($actions-height - $icon-height) / 2;
+            @include float-right;
+            padding: $padding-top 4px;
+            @include button-effect;
         }
+    }
+}
+
+.wdp-progress {
+    @include position(absolute, 0px 0 0 0px);
+    width: 100%;
+    height: 100%;
+    background: rgba(#fff, 0.5);
+    color: #fff;
+    &:before {
+        @include position(absolute, 0 0 0px 0px);
+        width: 100%;
+        height: 9px;
+        content: "";
+        background: #555;
+    }
+    .bar {
+        @include position(absolute, 0 0 0px 0px);
+        width: 100%;
+        height: 9px;
+        background: #6eb800;
+        @include transform(scaleX(0));
+        @include transform-origin(left);
+        @include transition-all;
+        font-size: 12px;
+        text-indent: 6px;
+    }
+    .failed > span {
+        @include position(absolute, 0 6px 0px 0);
+        text-decoration: underline;
+        cursor: pointer;
+    }
+    .cancel {
+        @include position(absolute, 0px 0px 0 0);
+        padding: 5px;
     }
 }

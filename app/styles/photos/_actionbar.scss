@@ -1,0 +1,28 @@
+.wdp-actionbar {
+    @include user-select(none);
+    @include position(fixed, 0px 0px 0 0px);
+    padding: 10px 50px;
+    background: rgba(#fff, 0.8);
+    .btn {
+        font-size: 12px;
+    }
+    .btn.action-select {
+        min-width: 80px;
+    }
+}
+
+.send-feedback {
+    position: fixed;
+    top: 75px;
+    left: 0;
+    padding: 10px;
+    @include transition(opacity $global-transition-duration);
+    opacity: 0.65;
+
+    &:hover {
+        opacity: 1;
+    }
+    &:active {
+        opacity: 0.5;
+    }
+}

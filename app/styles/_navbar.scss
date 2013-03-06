@@ -64,7 +64,7 @@
     @each $icon in app, contact, img, sms, setting, signout {
         i.navbar-icon-#{$icon} {
             @extend %icon;
-            @include navbar-sprite(#{$icon}_sel);
+            @include navbar-sprite($icon);
             $margin: (20px - navbar-sprite-height($icon)) / 2 - 1px;
             width: navbar-sprite-width($icon);
             height: navbar-sprite-height($icon);

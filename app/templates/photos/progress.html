@@ -1,0 +1,15 @@
+<div>
+    <!-- <div class="bar-bg"></div> -->
+    <div class="bar" data-bar>
+        <div class="done" data-done>{{$root.DICT.photos.UPLOAD_DONE}}</div>
+        <div class="failed" data-failed>
+            {{$root.DICT.photos.UPLOAD_FAILED}}
+            <span
+                ng-click="retry()"
+                >{{$root.DICT.photos.UPLOAD_RETRY}}</span>
+        </div>
+    </div>
+    <a href="" class="cancel"
+        ng-click="cancel()"
+        ><i class="photos-icon-cancel"></i></a>
+</div>

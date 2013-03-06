@@ -13,6 +13,7 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
         template: template,
         replace: true,
         transclude: true,
+        restrict: 'CA',
         link: function($scope, element) {
             function layout() {
                 var meta = PhotosLayoutAlgorithm['default']({
@@ -20,7 +21,7 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
                     minWidth: 120,
                     gapWidth: 10,
                     gapHeight: 10,
-                    borderWidth: 5,
+                    borderWidth: 0,
                     containerWidth: wdViewport.width() - (30 + 20) * 2,
                     containerHeight: -1,
                     photos: _.map($scope.photos, function(photo) {
@@ -32,14 +33,7 @@ return ['$rootScope', 'PhotosLayoutAlgorithm', 'wdViewport',
                     })
                 });
                 if ('height' in meta) {
-setTimeout(function() {
-                    element
-                        .height(meta.height)
-                        .children('.date')
-                            .css({
-                                top: meta.metas[0].height / 2 - 20 / 2
-                            });
-}, 0);
+                    element.height(meta.height);
                 }
                 $scope.layout = meta.metas;
                 $scope.offsetTop = element.offset().top;
@@ -55,6 +49,9 @@ setTimeout(function() {
                     $scope.$evalAsync(function() {
                         $scope.$broadcast('layout');
                     });
+                    if (element.height() < wdViewport.height()) {
+                        $scope.$emit('wdpShowcase:fetch');
+                    }
                 }
             });
 
@@ -62,9 +59,6 @@ setTimeout(function() {
                 .on('resize', function() {
                     layout();
                     $scope.$broadcast('layout');
-                })
-                .on('scroll', function() {
-                    $scope.$broadcast('scroll', wdViewport.top());
                 });
         }
     };

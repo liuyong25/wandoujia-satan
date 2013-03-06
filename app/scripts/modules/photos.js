@@ -11,7 +11,10 @@ define([
         'services/photos/layout-algorithm',
         'directives/photos/block',
         'directives/photos/uploader',
-        'directives/photos/frame'
+        'directives/photos/frame',
+        'directives/photos/progress',
+        'directives/photos/repeat',
+        'services/photos/image-helper'
     ], function(
         angular,
         showcase,
@@ -25,7 +28,10 @@ define([
         layoutAlgorithm,
         block,
         uploader,
-        frame
+        frame,
+        progress,
+        repeat,
+        imageHelper
     ) {
 'use strict';
 
@@ -39,8 +45,11 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .directive('wdpActionbar', actionbar)
     .directive('wdpSlides', slides)
     .directive('wdpFrame', frame)
+    .directive('wdpProgress', progress)
+    .directive('wdpRepeat', repeat)
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
+    .factory('wdpImageHelper', imageHelper)
     .controller('galleryController', [
         '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert', 'wdViewport', 'GA',
         function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert, wdViewport, GA) {
@@ -67,12 +76,12 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
 
         function fetchPhotos() {
             var params = {
-                // length: '10',
-                // direction: 'backward'
+                offset: 0,
+                length: '5'
             };
-            // if ($scope.photos.length && $scope.photos[$scope.photos.length - 1].date_added) {
-            //     params.since = $scope.photos[$scope.photos.length - 1].date_added;
-            // }
+            if ($scope.photos.length && $scope.photos[$scope.photos.length - 1].date_added) {
+                params.cursor = $scope.photos[$scope.photos.length - 1].id;
+            }
             var timeStart = (new Date()).getTime();
             Photos.query(params, function(photos) {
                 mergePhotos(photos);
@@ -96,6 +105,11 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         else {
             fetchPhotos();
         }
+
+        $scope.$on('wdpShowcase:fetch', function(event) {
+            event.stopPropagation();
+            fetchPhotos();
+        });
 
         $scope.isSelected = function(photo) {
             return _.indexOf($scope.selectedPhotos, photo) >= 0;
@@ -136,7 +150,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         $scope.share = function(photo) {
             wdSharing.weibo(photo);
         };
-        $scope.delete = function(photo) {
+        $scope['delete'] = function(photo) {
             return wdAlert.confirm('删除图片', '确定在手机中删除这张图片吗？').then(function() {
                 $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                 $scope.deselect(photo);
@@ -156,22 +170,20 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         $scope.removeFailed = function(photo) {
             $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
         };
-        $scope.startUpload = function(files) {
-            _.each(files.reverse(), function(file) {
-                var photo;
-                file.data.then(function(data) {
-                    photo = new Photos({
-                        'thumbnail_path': data.dataURI,
-                        'thumbnail_width': data.width,
-                        'thumbnail_height': data.height,
-                        'deferred': file.uploading
-                    });
-                    $scope.photos.unshift(photo);
+        $scope.startUpload = function(file) {
+            var photo;
+            file.photo.then(function(data) {
+                photo = new Photos({
+                    'thumbnail_path': data.dataURI,
+                    'thumbnail_width': data.width,
+                    'thumbnail_height': data.height,
+                    'deferred': file.upload
                 });
-                file.uploading.then(function(res) {
-                    Photos.get({id: res[0].id}, function(newPhoto) {
-                        angular.extend(photo, newPhoto);
-                    });
+                $scope.photos.unshift(photo);
+            });
+            file.upload.then(function(res) {
+                Photos.get({id: res[0].id}, function(newPhoto) {
+                    angular.extend(photo, newPhoto);
                 });
             });
         };
@@ -182,19 +194,9 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 });
             });
         };
-
-        function loadMore() {
-            var bottom = wdViewport.top() + wdViewport.height();
-            console.log(bottom > wdViewport.docHeight() - 50);
-            if ($scope.loaded && bottom > wdViewport.docHeight() - 50) {
-                $scope.$apply(function() {
-                    $scope.loaded = false;
-                    fetchPhotos();
-                });
-            }
-        }
-        // wdViewport.on('scroll', loadMore);
-        // wdViewport.on('resize', loadMore);
+        $scope.fetch = function() {
+            fetchPhotos();
+        };
 
         // Shortcuts destruction.
         $scope.$on('$destroy', function() {

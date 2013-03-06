@@ -1,31 +1,19 @@
 <div ng-cloak class="container-fluid wdj-photos">
-    <div class="timeline-container">
-        <div class="showcases-container">
-            <div wdp-showcase>
-                <div class="block"
-                    style="display:none;"
-                    ng-repeat="photo in photos"
-                    wdp-block
+    <div class="wdp-timeline-container">
+        <div class="wdp-showcases-container">
+            <div class="wdp-showcase">
+                <div class="wdp-block"
                     data-selected="isSelected(photo)"
-                    ng-class="{'block-active': selected}">
-                    <div class="photo"
-                        ng-click="preview(photo);$root.GA('photos:photo:click')">
-                        <img alt="{{photo.display_name}}" style="display:none;">
-                    </div>
-                    <div class="actions">
-                        <label class="action-select checkbox inline" bs-tooltip title="选择"><input type="checkbox" ng-model="selected" ng-change="toggleSelected(selected, photo)"></label>
-<!--                         <a class="action-share" href=""
-                            ng-click="share(photo)"><i class="photos-icon-share"></i></a>
- -->
-                        <a class="action-download" href="" bs-tooltip title="保存"
-                            ng-click="download(photo);$root.GA('photos:photo:download')"><i class="photos-icon-dl"></i></a>
-                        <a class="action-delete" href="" bs-tooltip title="删除"
-                            ng-click="delete(photo);$root.GA('photos:photo:delete')"><i class="photos-icon-del"></i></a>
-                    </div>
-                </div>
+                    wdp-repeat="photo in photos"
+                ></div>
+            </div>
+            <div style="text-align:center;margin-top: 20px;">
+                <div class="btn btn-large"
+                    ng-click="fetch()"
+                    >Load more...</div>
             </div>
         </div>
-        <div wdp-actionbar
+        <div class="wdp-actionbar"
             data-photos="photos"
             data-selected-photos="selectedPhotos"
             data-on-select-all="selectAll()"
@@ -34,7 +22,10 @@
             data-on-download="download(photo)"
             data-on-share="share(photo)"
             ></div>
-    </div>
+<!--         <a target="_blank" href="http://www.diaochapai.com/survey/dd863ce5-ab9d-41e6-a63c-4f88ac5a5a3f" class="send-feedback"
+            bs-tooltip title="意见反馈" data-options="{placement:'right'}"
+            ><i class="photos-icon-feedback"></i></a>
+ -->    </div>
     <div wdp-slides
         data-current="previewPhoto"
         data-photos="photos"
