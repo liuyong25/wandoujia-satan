@@ -1,3 +1,4 @@
+define(function(require, exports, module) {
 /**
  * http://github.com/Valums-File-Uploader/file-uploader
  *
@@ -2657,3 +2658,6 @@ qq.UploadHandlerXhr = function(o, uploadCompleteCallback, logCallback) {
 
     return api;
 };
+
+module.exports = qq;
+});

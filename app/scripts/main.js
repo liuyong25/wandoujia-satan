@@ -3,9 +3,6 @@
     'vendor/plupload/plupload.html5': ['vendor/plupload/plupload'],
     'vendor/plupload/plupload.html4': ['vendor/plupload/plupload'],
     'plupload': ['vendor/plupload/plupload', 'vendor/plupload/plupload.html5', 'vendor/plupload/plupload.html4'],
-    'fineuploader': {
-        exports: 'qq'
-    },
     'underscore': {
         exports: '_'
     }
