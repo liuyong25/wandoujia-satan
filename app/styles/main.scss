@@ -1,6 +1,6 @@
-// @import "bootstrap";    // mostly bootstrap in css form
-
 @import "compass";      // compass
+@import "animation";    // animation mixins
+@import "animation/animate"; // Animate.css
 @import "compass/css3/user-interface"; // user-select support
 @import "mixin";        // custom mixins & functions
 @import "base";         // platform level styles

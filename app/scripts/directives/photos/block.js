@@ -85,7 +85,7 @@ return [function() {
                 var layout = $scope.layout[$scope.$index];
                 element.css({
                         left: layout.x,
-                        top: layout.y,
+                        top: layout.y
                     });
                 photo.css({
                         width: layout.width,

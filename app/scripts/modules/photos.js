@@ -125,7 +125,8 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                     if (photo) {
                         $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                         $scope.deselect(photo);
-                        photo.$remove();
+                        $scope.$apply();
+                        // photo.$remove();
                     }
                 });
             })
