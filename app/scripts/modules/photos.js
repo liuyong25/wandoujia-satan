@@ -14,7 +14,8 @@ define([
         'directives/photos/frame',
         'directives/photos/progress',
         'directives/photos/repeat',
-        'services/photos/image-helper'
+        'services/photos/image-helper',
+        'services/photos/message-pusher'
     ], function(
         angular,
         showcase,
@@ -31,7 +32,8 @@ define([
         frame,
         progress,
         repeat,
-        imageHelper
+        imageHelper,
+        messagePusher
     ) {
 'use strict';
 
@@ -50,9 +52,10 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
     .factory('PhotoGroup', PhotoGroup)
     .factory('wdpImageHelper', imageHelper)
+    .factory('wdpMessagePusher', messagePusher)
     .controller('galleryController', [
-        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert', 'wdViewport', 'GA',
-        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert, wdViewport, GA) {
+        '$scope', '$window', 'wdSharing', 'wdHttp', 'Photos', '$log', '$route', 'wdKey', 'wdAlert', 'wdViewport', 'GA', 'wdpMessagePusher',
+        function($scope, $window, wdSharing, wdHttp, Photos, $log, $route, wdKey, wdAlert, wdViewport, GA, wdpMessagePusher) {
 
         $log.log('wdPhotos:galleryController initializing!');
 
@@ -105,6 +108,28 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         else {
             fetchPhotos();
         }
+        // Temp
+        wdpMessagePusher
+            .channel('photos.add', function(message) {
+                _.each(message.data, function(id) {
+                    Photos.get({id: id}, function(photo) {
+                        mergePhotos(photo);
+                    });
+                });
+            })
+            .channel('photos.remove', function(message) {
+                _.each(message.data, function(id) {
+                    var photo = _.find($scope.photos, function(photo) {
+                        return photo.id === id;
+                    });
+                    if (photo) {
+                        $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+                        $scope.deselect(photo);
+                        photo.$remove();
+                    }
+                });
+            })
+            .start();
 
         $scope.$on('wdpShowcase:fetch', function(event) {
             event.stopPropagation();
@@ -202,6 +227,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         $scope.$on('$destroy', function() {
             wdKey.setScope('all');
             wdKey.deleteScope('photos');
+            wdpMessagePusher.clear().stop();
         });
     }]);
 });

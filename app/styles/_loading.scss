@@ -6,6 +6,7 @@
     margin: (-32px - 76px / 2) 0 0 -32px;
     width:$width;
     height:$width;
+    background: image-url("loading.gif") center center no-repeat;
     @include transition(opacity $global-transition-duration);
     opacity: 0.6;
 
@@ -20,7 +21,7 @@
         opacity: 0;
     }
 }
-
+/*
 .f_circleG{
 position:absolute;
 background-color:#FFFFFF;
@@ -177,3 +178,4 @@ background-color:#000000}
 background-color:#FFFFFF}
 
 }
+*/
