@@ -112,9 +112,14 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
         wdpMessagePusher
             .channel('photos.add', function(message) {
                 _.each(message.data, function(id) {
-                    Photos.get({id: id}, function(photo) {
-                        mergePhotos(photo);
+                    var photo = _.find($scope.photos, function(photo) {
+                        return photo.id === id;
                     });
+                    if (!photo) {
+                        Photos.get({id: id}, function(photo) {
+                            mergePhotos(photo);
+                        });
+                    }
                 });
             })
             .channel('photos.remove', function(message) {
@@ -126,7 +131,6 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                         $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
                         $scope.deselect(photo);
                         $scope.$apply();
-                        // photo.$remove();
                     }
                 });
             })
@@ -208,6 +212,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
                 $scope.photos.unshift(photo);
             });
             file.upload.then(function(res) {
+                photo.id = res[0].id;
                 Photos.get({id: res[0].id}, function(newPhoto) {
                     angular.extend(photo, newPhoto);
                 });

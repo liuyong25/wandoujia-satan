@@ -2,9 +2,10 @@ define([], function() {
 'use strict';
 return function() {
     var self = this;
-    self.$get = ['$window', '$location', 'wdDev',
-        function($window, $location, wdDev) {
+    self.$get = ['$window', '$location', 'wdDev', '$rootScope',
+        function($window, $location, wdDev, $rootScope) {
         var valid = false;
+        var signoutDetectionTimer = null;
         return {
             valid: function() {
                 return valid;
@@ -28,6 +29,20 @@ return function() {
                 else {
                     $location.url('/portal');
                 }
+            },
+            startSignoutDetection: function() {
+                var self = this;
+                signoutDetectionTimer = setInterval(function() {
+                    if (!self.getToken()) {
+                        self.stopSignoutDetection();
+                        $rootScope.$apply(function() {
+                            self.signout();
+                        });
+                    }
+                }, 1000);
+            },
+            stopSignoutDetection: function() {
+                clearInterval(signoutDetectionTimer);
             },
             parse: function (input) {
                 var type = parseInt(input.slice(0, 1), 10);

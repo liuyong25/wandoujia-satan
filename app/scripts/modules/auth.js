@@ -75,6 +75,7 @@ angular.module('wdAuth', ['wdCommon'])
                     $scope.buttonText = '验证成功';
                     // TODO: Maybe expiration?
                     wdAuthToken.setToken($scope.authCode);
+                    wdAuthToken.startSignoutDetection();
                     $location.url($route.current.params.ref || '/');
                     GA('login:success');
                     GA('perf:auth_duration:success:' + ((new Date()).getTime() - timeStart));

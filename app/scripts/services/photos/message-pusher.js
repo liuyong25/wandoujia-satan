@@ -17,7 +17,6 @@ return {
             $log.log('socket', e.data);
             var message = JSON.parse(e.data);
             var channel = channels[message.type];
-console.log(channels, channel, message);
             if (channel) {
                 channel.forEach(function(callback) {
                     callback(message);

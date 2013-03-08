@@ -86,6 +86,21 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
                 }
             });
 
+            var dnd = new fineuploader.DragAndDrop({
+                dropArea: document.body,
+                multiple: true,
+                hideDropzones: false,
+                callbacks: {
+                    dropProcessing: function(isProcessing, files) {
+                        console.log(arguments);
+                        uploader.addFiles(files);
+                    },
+                    error: function(code, filename) {},
+                    log: function(message, level) {}
+                }
+            });
+            dnd.setup();
+
             function loadLocalPhoto(file) {
                 var defer = $q.defer();
                 var reader = new FileReader();
