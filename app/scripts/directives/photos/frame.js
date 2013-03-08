@@ -22,7 +22,10 @@ return [function() {
                 var $image = angular.element('<img>');
                 $image
                     .data('photo', newPhoto)
-                    .data('rotation', 0)
+                    .data('rotation', newPhoto.orientation)
+                    .css({
+                        transform: 'rotate(' + newPhoto.orientation + 'deg)'
+                    })
                     .hide()
                     .one('load', function() {
                         $image.fadeIn();
