@@ -11,9 +11,6 @@ define([
 return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
     function($q,   wdDev,   wdKeeper,   wdpImageHelper) {
     return {
-        scope: {
-            startUpload: '&onStartUpload'
-        },
         link: function(scope, element) {
             var keeper = null;
             var counter = 0;
@@ -48,10 +45,8 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
                         count();
 
                         scope.startUpload({
-                            file: {
-                                photo: photoPromise,
-                                upload: uploadPromise
-                            }
+                            photo: photoPromise,
+                            upload: uploadPromise
                         });
 
                     },

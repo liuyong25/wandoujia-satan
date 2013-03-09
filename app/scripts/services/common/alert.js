@@ -6,17 +6,27 @@ return ['$q', function($q) {
         registerModal: function(newModal) {
             modal = newModal;
         },
-        alert: function(header, content) {
+        alert: function(header, content, ok) {
             if (modal === null) {
                 throw new Error('Not Found bsModal');
             }
-            return $q.when(modal.open(header, content, true));
+            return $q.when(modal.open({
+                header: header,
+                content: content,
+                ok: ok,
+                onlyOk: true
+            }));
         },
-        confirm: function(header, content) {
+        confirm: function(header, content, ok, cancel) {
             if (modal === null) {
                 throw new Error('Not Found bsModal');
             }
-            return $q.when(modal.open(header, content));
+            return $q.when(modal.open({
+                header: header,
+                content: content,
+                ok: ok,
+                cancel: cancel
+            }));
         }
     };
 }];

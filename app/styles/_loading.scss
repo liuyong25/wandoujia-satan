@@ -14,6 +14,17 @@ $wd-loading-foreground-color: #000;
     opacity: 0.6;
     @include transform(scale(0.6));
 
+    &.wd-loading-inline {
+        $scale: 20/48;
+        @include position(static);
+        @include transform(scale($scale));
+        opacity: 1;
+        display: inline-block;
+        margin: -14px;
+        line-height: 20px;
+        vertical-align: top;
+    }
+
     &.wd-loading-hide {
         // Hideout without display:none to keep transition.
         top: -$width;

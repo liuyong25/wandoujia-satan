@@ -1,7 +1,6 @@
-<div id="-wdp-uploader-container">
+<div>
     <div class="btn btn-primary"
         wdp-uploader
-        data-on-start-upload="onStartUpload(file)"
         ng-click="$root.GA('photos:toolbar:add_photo')"
         ><i class="photos-icon-ab-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
     <div class="btn action-select"
@@ -14,11 +13,14 @@
     </div>
     <div class="btn-group">
         <div class="btn"
-            ng-click="delete();$root.GA('photos:delete_selected')"
+            ng-hide="!selectedPhotos.length && photos.length != 0"
+            ng-click="deleteSelected();$root.GA('photos:delete_selected')"
             ><i class="photos-icon-ab-del"></i> {{$root.DICT.photos.ACTIONBAR_DELETE}}</div>
+<!--
         <div class="btn"
             ><i class="photos-icon-ab-dl"></i> {{$root.DICT.photos.ACTIONBAR_DOWNLOAD}}</div>
         <div class="btn"
             ><i class="photos-icon-ab-sh"></i> {{$root.DICT.photos.ACTIONBAR_SHARE}}</div>
+-->
     </div>
 </div>

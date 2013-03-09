@@ -8,22 +8,7 @@ return [function() {
     return {
         replace: true,
         template: template,
-        restrict: 'CA',
-        scope: {
-            photos:         '=',
-            selectedPhotos: '=',
-            pickDate:       '&onPickDate',
-            startUpload:    '&onStartUpload',
-            selectAll:      '&onSelectAll',
-            'delete':       '&onDelete',
-            download:       '&onDownload',
-            share:          '&onShare'
-        },
-        link: function($scope) {
-            $scope.onStartUpload = function(files) {
-                $scope.startUpload({files: files});
-            };
-        }
+        restrict: 'CA'
     };
 }];
 });

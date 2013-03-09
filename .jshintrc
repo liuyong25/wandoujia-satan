@@ -1,5 +1,5 @@
 {
-    "node": true,
+    // "node": true,
     "browser": true,
     "es5": true,
     "esnext": true,
@@ -23,6 +23,7 @@
     "white": false,
 
     "globals": {
-        "define": true
+        "define": true,
+        "require": true
     }
 }

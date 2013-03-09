@@ -1,4 +1,7 @@
 .wdp-block {
+    .fadeIn {
+        @include animation(fadeIn 1s);
+    }
     $padding: 0px;
     @include position(absolute, 0px 0 0 0px);
     @include transform(translateZ(0));
@@ -14,6 +17,7 @@
         margin: $padding;
         overflow: hidden;
         cursor: pointer;
+        background: #f5f5f5;
 
         &.anim {
             @include transition(all $global-transition-duration ease $global-transition-duration);

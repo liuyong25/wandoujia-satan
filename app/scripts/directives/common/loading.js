@@ -15,12 +15,9 @@ return [function() {
                 '<div></div>' +
             '</div>',
         replace: true,
-        scope: {
-            visible: '&'
-        },
-        link: function(scope, element) {
+        link: function(scope, element, attributes) {
             var firstLoopTimeout = null;
-            scope.$watch('visible()', function(visible) {
+            scope.$watch(attributes.visible, function(visible) {
                 if (!visible) {
                     if (firstLoopTimeout != null) {
                         element.addClass('wd-loading-hide wd-loading-animation-pause');

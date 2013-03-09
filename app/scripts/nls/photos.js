@@ -20,8 +20,8 @@ return {
         CONFIRM_DELETE_TITLE: 'Delete photos',
         CONFIRM_DELETE_CONTENT: 'Delete the selected photos from your phone?',
 
-        MODAL_OK: 'Delete',
-        MODAL_CANCEL: 'Cancel'
+        CONFIRM_DELETE_OK: 'Delete',
+        CONFIRM_DELETE_CANCEL: 'Cancel'
     },
     'zh-cn': true
 };

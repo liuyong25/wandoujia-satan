@@ -131,12 +131,11 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
         link: function($scope, element/*, attr, controller*/) {
             // Update dimensions when:
             // 1. viewport dimensions changed.
-            var updateDimensions = function(newValue, oldValue) {
-                if (newValue !== oldValue && $scope.current !== null) {
+            wdViewport.on('resize', function() {
+                if ($scope.current !== null) {
                     $scope.$broadcast('resize');
                 }
-            };
-            wdViewport.on('resize', updateDimensions);
+            });
 
             var timeStart = null;
             var open = function() {

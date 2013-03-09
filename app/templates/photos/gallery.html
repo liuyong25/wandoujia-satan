@@ -3,24 +3,18 @@
         <div class="wdp-showcases-container">
             <div class="wdp-showcase">
                 <div class="wdp-block"
-                    data-selected="isSelected(photo)"
                     wdp-repeat="photo in photos"
                 ></div>
             </div>
             <div style="text-align:center;margin-top: 20px;">
                 <div class="btn btn-large"
+                    ng-show="loaded"
                     ng-click="fetch()"
                     >Load more...</div>
             </div>
         </div>
         <div class="wdp-actionbar"
-            data-photos="photos"
-            data-selected-photos="selectedPhotos"
             data-on-select-all="selectAll()"
-            data-on-start-upload="startUpload(files)"
-            data-on-delete="deleteSelected()"
-            data-on-download="download(photo)"
-            data-on-share="share(photo)"
             ></div>
 <!--         <a target="_blank" href="http://www.diaochapai.com/survey/dd863ce5-ab9d-41e6-a63c-4f88ac5a5a3f" class="send-feedback"
             bs-tooltip title="意见反馈" data-options="{placement:'right'}"

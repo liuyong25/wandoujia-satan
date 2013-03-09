@@ -13,14 +13,21 @@ return [function() {
             $scope.content = '';
 
             wdAlert.registerModal({
-                open: function(header, content, onlyOk) {
+                open: function(options) {
+                    options = options || {};
                     var deferred = $q.defer();
 
-                    if (header) {
-                        $attrs.$set('header', header);
+                    if (options.header) {
+                        $attrs.$set('header', options.header);
+                    }
+                    if (options.ok) {
+                        $attrs.$set('buttonOkText', options.ok);
+                    }
+                    if (options.cancel) {
+                        $attrs.$set('buttonCancelText', options.cancel);
                     }
 
-                    $scope.content = content;
+                    $scope.content = options.content;
                     $scope.toggle = true;
 
                     $scope.ok = function() {
@@ -32,7 +39,7 @@ return [function() {
                         deferred.reject();
                     };
 
-                    $element.find('.modal-footer [bs-modal-cancel]').toggle(!onlyOk);
+                    $element.find('.modal-footer [bs-modal-cancel]').toggle(!options.onlyOk);
 
                     return deferred.promise;
                 }
@@ -48,7 +55,7 @@ return [function() {
                 .removeAttr('ng-transclude')
                 .text('{{content}}');
             // No need for linking, just depends on bsModal.
-            return function(scope) {};
+            return function() {};
         }
     };
 }];
