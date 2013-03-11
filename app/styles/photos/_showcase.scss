@@ -1,4 +1,7 @@
 .wdp-showcases-container {
+    .load-more-hide {
+        visibility: hidden;
+    }
 }
 .wdp-showcase {
     @include position;

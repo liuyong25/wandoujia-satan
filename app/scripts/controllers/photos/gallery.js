@@ -13,6 +13,7 @@ function($scope,  $window,    wdSharing,   Photos,   $log,   $route,   wdAlert,
 $log.log('wdPhotos:galleryController initializing!');
 
 $scope.loaded = false;
+$scope.noMore = false;
 $scope.photos = [];
 $scope.layout = { height: 0 };
 $scope.selectedPhotos = [];
@@ -166,14 +167,30 @@ function loadScreen() {
     (function fetchLoop(defer, viewportHeight, lastLayoutHeight) {
         var photosLengthBeforeFetch = $scope.photos.length;
         fetchPhotos(50).then(function done() {
-            $scope.layout = calculateLayout();
-            if ($scope.photos.length !== photosLengthBeforeFetch &&
-                $scope.layout.height - lastLayoutHeight < viewportHeight) {
-                fetchLoop(defer, viewportHeight, lastLayoutHeight);
+            var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
+            calculateLayout();
+            if (newPhotosLength === 50) {
+                if ($scope.layout.height - lastLayoutHeight < viewportHeight) {
+                    fetchLoop(defer, viewportHeight, lastLayoutHeight);
+                }
+                else {
+                    defer.resolve();
+                }
             }
             else {
+                $scope.noMore = true;
                 defer.resolve();
             }
+            // if ($scope.photos.length > photosLengthBeforeFetch &&
+            //     $scope.layout.height - lastLayoutHeight < viewportHeight) {
+            //     fetchLoop(defer, viewportHeight, lastLayoutHeight);
+            // }
+            // else {
+            //     if ($scope.photos.length === photosLengthBeforeFetch) {
+            //         $scope.noMore = true;
+            //     }
+            //     defer.resolve();
+            // }
         }, function fail() {
             defer.reject();
         });
@@ -228,7 +245,7 @@ function mergePhotos(photos) {
 }
 
 function calculateLayout() {
-    return PhotosLayoutAlgorithm['default']({
+    $scope.layout = PhotosLayoutAlgorithm['default']({
         fixedHeight: 170,
         minWidth: 120,
         gapWidth:  10,
@@ -248,6 +265,7 @@ function calculateLayout() {
 
 function layout() {
     if (!$scope.photos.length) { return; }
+    calculateLayout();
     $scope.$evalAsync(function() {
         $scope.$broadcast('wdp:showcase:layout', $scope.layout);
     });

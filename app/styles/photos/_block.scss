@@ -1,6 +1,10 @@
 .wdp-block {
     .fadeIn {
-        @include animation(fadeIn 1s);
+        @include animation(fadeIn $global-transition-duration);
+    }
+    .fadeOut {
+        @include animation(fadeOut $global-transition-duration);
+        @include animation-fill-mode(forwards);
     }
     $padding: 0px;
     @include position(absolute, 0px 0 0 0px);

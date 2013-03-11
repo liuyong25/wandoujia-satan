@@ -24,17 +24,11 @@ link: function($scope, element) {
     // Selection
     $scope.$watch('isSelected(photo)', function(newValue) {
         $scope.selected = newValue;
+        $scope.checkboxTipText = newValue ? $scope.$root.DICT.photos.BLOCK_DESELECT : $scope.$root.DICT.photos.BLOCK_SELECT;
     });
     // Update thumbnail
     $scope.$watch('photo.thumbnail_path', function() {
         photo.addClass('fadeIn');
-        // setTimeout(function repeat() {
-        //     photo.removeClass('fadeIn');
-        //     setTimeout(function() {
-        //         photo.addClass('fadeIn');
-        //         setTimeout(repeat, 2000);
-        //     }, 0);
-        // }, 2000);
         renderImage();
     });
     // Update layout
@@ -69,7 +63,7 @@ link: function($scope, element) {
                         .show()
                         .end()
                     .children('.wdp-progress')
-                        .fadeOut();
+                        .addClass('fadeOut');
             }, 2000);
         });
     }

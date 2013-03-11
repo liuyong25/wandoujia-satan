@@ -2,7 +2,7 @@ define([
         'angular',
         'modules/auth',
         'modules/photos',
-        'text!templates/auth/portal.new.html',
+        'text!templates/auth/portal.html',
         'text!templates/photos/gallery.html',
         'modules/common',
         'modules/language'

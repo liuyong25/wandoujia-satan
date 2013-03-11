@@ -11,9 +11,8 @@
         <span ng-switch-when="false">{{$root.DICT.photos.ACTIONBAR_SELECT_ALL}}</span>
         <span ng-switch-when="true">{{$root.DICT.photos.ACTIONBAR_DESELECT_ALL}}</span>
     </div>
-    <div class="btn-group">
+    <div class="btn-group" ng-hide="!selectedPhotos.length">
         <div class="btn"
-            ng-hide="!selectedPhotos.length && photos.length != 0"
             ng-click="deleteSelected();$root.GA('photos:delete_selected')"
             ><i class="photos-icon-ab-del"></i> {{$root.DICT.photos.ACTIONBAR_DELETE}}</div>
 <!--
