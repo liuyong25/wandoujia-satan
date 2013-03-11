@@ -2,7 +2,7 @@ define([], function() {
 'use strict';
 return {
     root: {
-        SIGN_IN: 'Sign In',
+        SIGN_IN: 'Sign in',
         AUTH_SUCCESS: 'Successful',
         AUTH_FAILED: 'Failed',
         AUTH_ERROR_TIP: 'Pleas check that your computer and phone are both in the same Wi-Fi.',

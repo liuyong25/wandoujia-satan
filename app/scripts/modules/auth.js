@@ -22,6 +22,10 @@ angular.module('wdAuth', ['wdCommon'])
         $scope.errorText = '';
         $scope.state = 'standby';
         $scope.showHelp = false;
+
+        $scope.openHelp = function() {
+            $scope.showHelp = true;
+        };
         $scope.safariHelp = function() {
             wdAlert.alert($scope.$root.DICT.portal.SAFARI_TITLE, $scope.$root.DICT.portal.SAFARI_CONTENT);
         };

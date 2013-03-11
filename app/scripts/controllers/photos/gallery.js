@@ -19,6 +19,8 @@ $scope.layout = { height: 0 };
 $scope.selectedPhotos = [];
 $scope.previewPhoto = null;
 
+var isPreviewAction = false;
+
 $scope.$watch('photos.length', layout);
 
 wdViewport.on('resize', function() {
@@ -31,7 +33,9 @@ if ($route.current.params.preview) {
         function(photo) {
             mergePhotos(photo);
             $scope.preview(photo);
+            isPreviewAction = true;
             loadScreen();
+            isPreviewAction = false;
         }, function() {
             loadScreen();
         });
@@ -169,7 +173,11 @@ function loadScreen() {
         fetchPhotos(50).then(function done() {
             var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
             calculateLayout();
-            if (newPhotosLength === 50) {
+            if (newPhotosLength === 0) {
+                $scope.noMore = true;
+                defer.resolve();
+            }
+            else {
                 if ($scope.layout.height - lastLayoutHeight < viewportHeight) {
                     fetchLoop(defer, viewportHeight, lastLayoutHeight);
                 }
@@ -177,20 +185,6 @@ function loadScreen() {
                     defer.resolve();
                 }
             }
-            else {
-                $scope.noMore = true;
-                defer.resolve();
-            }
-            // if ($scope.photos.length > photosLengthBeforeFetch &&
-            //     $scope.layout.height - lastLayoutHeight < viewportHeight) {
-            //     fetchLoop(defer, viewportHeight, lastLayoutHeight);
-            // }
-            // else {
-            //     if ($scope.photos.length === photosLengthBeforeFetch) {
-            //         $scope.noMore = true;
-            //     }
-            //     defer.resolve();
-            // }
         }, function fail() {
             defer.reject();
         });
@@ -211,7 +205,7 @@ function fetchPhotos(amount) {
         length: amount.toString()
     };
     var lastPhoto = $scope.photos[$scope.photos.length - 1];
-    if (lastPhoto && lastPhoto.id) {
+    if (!isPreviewAction && lastPhoto && lastPhoto.id) {
         params.cursor = lastPhoto.id;
         params.offset = 1;
     }

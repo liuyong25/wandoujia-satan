@@ -15,7 +15,7 @@
                 <p class="error" ng-show="errorText"><i class="icon-info-sign"></i> {{errorText}}</p>
                 <p>
                     <span class="btn-safari" ng-click="safariHelp()" ng-show="isSafari">{{$root.DICT.portal.SAFARI}}</span>
-                    <span class="btn-getstarted" ng-click="showHelp=true;$root.GA('login:help')">{{$root.DICT.portal.GET_STARTED}}</span>
+                    <span class="btn-getstarted" ng-click="openHelp();$root.GA('login:help')">{{$root.DICT.portal.GET_STARTED}}</span>
                 </p>
             </div>
             <div class="container" ng-switch-when="false">
