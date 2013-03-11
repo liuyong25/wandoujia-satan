@@ -14,12 +14,13 @@ angular.module('wdAuth', ['wdCommon'])
     .provider('wdAuthToken', authToken)
     .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
         function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
+
         $scope.isSupport = Modernizr.cors && Modernizr.websockets;
         $scope.isSafari = jQuery.browser.safari;
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;
         $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
-        $scope.errorText = '';
+        $scope.error = '';
         $scope.state = 'standby';
         $scope.showHelp = false;
 
@@ -89,10 +90,10 @@ angular.module('wdAuth', ['wdCommon'])
                     keeper.done();
                     $scope.state = 'standby';
                     $scope.buttonText = $scope.$root.DICT.portal.AUTH_FAILED;
-                    $scope.errorText = $scope.$root.DICT.portal.AUTH_ERROR_TIP;
+                    $scope.error = true;
                     $timeout(function() {
                         $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
-                        $scope.errorText = '';
+                        $scope.error = false;
                     }, 5000);
                     wdAuthToken.clearToken();
                     if ($scope.autoAuth) {
@@ -110,9 +111,9 @@ angular.module('wdAuth', ['wdCommon'])
                 else {
                     GA('login:enter_authcode:invalid');
                 }
-                $scope.errorText = $scope.$root.DICT.portal.AUTH_ERROR_TIP;
+                $scope.error = true;
                 $timeout(function() {
-                    $scope.errorText = '';
+                    $scope.error = false;
                 }, 5000);
             }
         };

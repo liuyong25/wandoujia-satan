@@ -5,21 +5,19 @@ define([
     ) {
 'use strict';
 return [
-        '$scope', '$window', 'wdSharing', 'Photos', '$log', '$route', 'wdAlert',
+        '$scope', '$window', 'Photos', '$log', '$route', '$location',
         'wdViewport', 'GA', 'wdpMessagePusher', 'PhotosLayoutAlgorithm', '$q',
-function($scope,  $window,    wdSharing,   Photos,   $log,   $route,   wdAlert,
+function($scope,  $window,    Photos,   $log,   $route,   $location,
          wdViewport,   GA,   wdpMessagePusher,   PhotosLayoutAlgorithm,   $q) {
 
 $log.log('wdPhotos:galleryController initializing!');
 
+$scope.firstScreenLoaded = false;
 $scope.loaded = false;
-$scope.noMore = false;
+$scope.allLoaded = false;
 $scope.photos = [];
 $scope.layout = { height: 0 };
-$scope.selectedPhotos = [];
 $scope.previewPhoto = null;
-
-var isPreviewAction = false;
 
 $scope.$watch('photos.length', layout);
 
@@ -28,14 +26,14 @@ wdViewport.on('resize', function() {
 });
 
 if ($route.current.params.preview) {
+    console.log(11111)
     Photos.get(
         { id: $route.current.params.preview },
         function(photo) {
+            $location.search('preview', null).replace();
             mergePhotos(photo);
             $scope.preview(photo);
-            isPreviewAction = true;
             loadScreen();
-            isPreviewAction = false;
         }, function() {
             loadScreen();
         });
@@ -63,84 +61,38 @@ wdpMessagePusher
                 return photo.id === id;
             });
             if (photo) {
-                $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
-                $scope.deselect(photo);
-                $scope.$apply();
+                $scope.$apply(function() {
+                    exclude($scope.photos, photo);
+                    $scope.$broadcast('wdp:photos:deselect', [photo]);
+                });
             }
         });
     })
     .start();
 
-$scope.isSelected = function(photo) {
-    return _.indexOf($scope.selectedPhotos, photo) >= 0;
-};
-$scope.selectAll = function() {
-    if ($scope.selectedPhotos.length === $scope.photos.length) {
-        GA('photos:toolbar:deselect_all');
-        $scope.selectedPhotos = [];
-    }
-    else {
-        GA('photos:toolbar:select_all');
-        $scope.selectedPhotos = $scope.photos.slice();
-    }
-};
-$scope.toggleSelected = function(selected, photo) {
-    if (selected) {
-        GA('photos:photo:select');
-    }
-    else {
-        GA('photos:photo:deselect');
-    }
-    $scope[selected ? 'select' : 'deselect'](photo);
-};
-$scope.select = function(photo) {
-    $scope.selectedPhotos.push(photo);
-};
-$scope.deselect = function(photo) {
-    $scope.selectedPhotos.splice(_.indexOf($scope.selectedPhotos, photo), 1);
-};
 $scope.preview = function(photo) {
     if (photo.path) {
         $scope.previewPhoto = photo;
     }
 };
 $scope.download = function(photo) {
-    $window.open(photo.path);
+    $window.open(photo.path, '_self');
 };
-$scope.share = function(photo) {
-    wdSharing.weibo(photo);
-};
-$scope['delete'] = function(photo) {
-    return wdAlert.confirm(
-            $scope.$root.DICT.photos.CONFIRM_DELETE_TITLE,
-            $scope.$root.DICT.photos.CONFIRM_DELETE_CONTENT,
-            $scope.$root.DICT.photos.CONFIRM_DELETE_OK,
-            $scope.$root.DICT.photos.CONFIRM_DELETE_CANCEL
-        ).then(function() {
-        $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
-        $scope.deselect(photo);
+$scope.removePhotos = function(photos) {
+    if (!_.isArray(photos)) {
+        photos = [photos];
+    }
+    _.each(photos, function(photo) {
+        exclude($scope.photos, photo);
         photo.$remove();
     });
 };
-$scope.deleteSelected = function() {
-    return wdAlert.confirm(
-            $scope.$root.DICT.photos.CONFIRM_DELETE_TITLE,
-            $scope.$root.DICT.photos.CONFIRM_DELETE_CONTENT,
-            $scope.$root.DICT.photos.CONFIRM_DELETE_OK,
-            $scope.$root.DICT.photos.CONFIRM_DELETE_CANCEL
-        ).then(function() {
-        _.each($scope.selectedPhotos, function(photo) {
-            $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
-            photo.$remove();
-        });
-        $scope.selectedPhotos = [];
-    });
-};
 $scope.removeFailed = function(photo) {
-    $scope.photos.splice(_.indexOf($scope.photos, photo), 1);
+    exclude($scope.photos, photo);
 };
 $scope.startUpload = function(file) {
     var photo;
+    // Insert a photo placeholder.
     file.photo.then(function(data) {
         photo = new Photos({
             'thumbnail_path': data.dataURI,
@@ -150,6 +102,7 @@ $scope.startUpload = function(file) {
         });
         $scope.photos.unshift(photo);
     });
+    // After uploaded, fetch the real photo data and merge into placeholder.
     file.upload.then(function(res) {
         photo.id = res[0].id;
         Photos.get({id: res[0].id}, function(newPhoto) {
@@ -161,7 +114,6 @@ $scope.fetch = function() {
     loadScreen();
 };
 
-// Shortcuts destruction.
 $scope.$on('$destroy', function() {
     wdpMessagePusher.clear().stop();
 });
@@ -174,7 +126,7 @@ function loadScreen() {
             var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
             calculateLayout();
             if (newPhotosLength === 0) {
-                $scope.noMore = true;
+                $scope.allLoaded = true;
                 defer.resolve();
             }
             else {
@@ -191,6 +143,7 @@ function loadScreen() {
         return defer.promise;
     })($q.defer(), wdViewport.height(), $scope.layout.height)
     .then(function done() {
+        $scope.firstScreenLoaded = true;
         $scope.loaded = true;
     }, function fail() {
         $scope.loaded = false;
@@ -205,7 +158,11 @@ function fetchPhotos(amount) {
         length: amount.toString()
     };
     var lastPhoto = $scope.photos[$scope.photos.length - 1];
-    if (!isPreviewAction && lastPhoto && lastPhoto.id) {
+    // If photos.length equals 1.
+    // It may be preview mode which will load 1 photo first.
+    // Or there may be only 1 photo of user, on which situation,
+    // loading from first does not matter.
+    if ($scope.photos.length > 1 && lastPhoto.id) {
         params.cursor = lastPhoto.id;
         params.offset = 1;
     }
@@ -263,6 +220,10 @@ function layout() {
     $scope.$evalAsync(function() {
         $scope.$broadcast('wdp:showcase:layout', $scope.layout);
     });
+}
+
+function exclude(collection, item) {
+    return collection.splice(_.indexOf(collection, item), 1);
 }
 
 }];

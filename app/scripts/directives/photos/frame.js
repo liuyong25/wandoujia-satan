@@ -12,7 +12,7 @@ define([
 
     photo: photo to show
 */
-return [function() {
+return ['wdpImageHelper', function(wdpImageHelper) {
     return {
         link: function($scope, element, attrs) {
             var $current = null;
@@ -22,20 +22,31 @@ return [function() {
                 var $image = angular.element('<img>');
                 $image
                     .data('photo', newPhoto)
-                    .data('rotation', newPhoto.orientation)
+                    .data('rotation', 0)
                     .css({
                         transform: 'rotate(' + newPhoto.orientation + 'deg)'
                     })
-                    .hide()
-                    .one('load', function() {
+                    // .hide()
+                    .on('load', function() {
                         $image.fadeIn();
                     })
-                    .attr('src', newPhoto.path);
+                    .attr('src', newPhoto.thumbnail_path);
                 layout($image);
+                wdpImageHelper.preload(newPhoto.path).then(function() {
+                    $image
+                        .attr('src', newPhoto.path)
+                        .data('rotation', $image.data('rotation') + newPhoto.orientation)
+                        .css({
+                            transition: 'none',
+                            transform: 'rotate(' + $image.data('rotation') + 'deg)'
+                        });
+                        layout($image);
+                });
+
                 return $image;
             };
             var destroy = function($image) {
-                jQuery.when($image.fadeOut()).done(function() {
+                $image.fadeOut().promise().done(function() {
                     $image.remove();
                 });
             };

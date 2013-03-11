@@ -15,7 +15,8 @@ define([
         'controllers/photos/gallery',
         'modules/common',
         'modules/bootstrap',
-        'modules/resources'
+        'modules/resources',
+        'directives/photos/gallery'
     ], function(
         angular,
         showcase,
@@ -33,7 +34,8 @@ define([
         galleryController,
         common,
         bootstrap,
-        resources
+        resources,
+        gallery
     ) {
 'use strict';
 
@@ -42,6 +44,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources', 'bootstrap'])
     .constant('WDP_PRELOAD_IMAGE_OFFSET', 100)
     .constant('WDP_PLAYING_INTERVAL', 3000)
     .directive('wdpUploader', uploader)
+    .directive('wdpGallery', gallery)
     .directive('wdpShowcase', showcase)
     .directive('wdpBlock', block)
     .directive('wdpActionbar', actionbar)

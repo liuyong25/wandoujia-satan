@@ -21,7 +21,7 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
                     endpoint: wdDev.wrapURL('/directive/photos/upload')
                 },
                 validation: {
-                    allowedExtensions:['jpg', 'gif', 'png', 'jpeg']
+                    acceptFiles: 'image/*'
                 },
                 cors: {
                     expected: true,

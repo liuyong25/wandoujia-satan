@@ -2301,7 +2301,8 @@ qq.UploadHandlerXhr = function(o, uploadCompleteCallback, logCallback) {
         }
         catch(error) {
             log('Error when attempting to parse xhr response text (' + error + ')', 'error');
-            response = {};
+            // response = {};
+            throw error;
         }
 
         return response;
@@ -2349,10 +2350,16 @@ qq.UploadHandlerXhr = function(o, uploadCompleteCallback, logCallback) {
 
         log("xhr - server response received for " + id);
         log("responseText = " + xhr.responseText);
-        response = {
-            success: xhr.status === 200,
-            result: parseResponse(xhr)
-        };
+
+        try {
+            response = {
+                success: xhr.status === 200,
+                result: parseResponse(xhr)
+            };
+        }
+        catch (error) {
+            response = {};
+        }
 
         if (isErrorResponse(xhr, response)) {
             if (response.reset) {

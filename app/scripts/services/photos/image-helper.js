@@ -30,10 +30,10 @@ return [function() {
 
         image.src = url;
 
-        timeout = setTimeout(function() {
-            image.onerror = image.onload = null;
-            defer.reject('timeout');
-        }, TIMEOUT);
+        // timeout = setTimeout(function() {
+        //     image.onerror = image.onload = null;
+        //     defer.reject('timeout');
+        // }, TIMEOUT);
 
         return promise;
     }

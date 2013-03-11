@@ -76,9 +76,7 @@ link: function($scope, element) {
 
     function renderImage() {
         preloadImage($scope.photo.thumbnail_path, function(path) {
-            image
-                .attr('src', path)
-                .addClass('fadeIn');
+            image.attr('src', path).addClass('fadeIn');
         });
     }
     function preloadImage(path, callback) {
@@ -103,9 +101,6 @@ link: function($scope, element) {
             left: layout.innerX,
             top: layout.innerY
         });
-        // _.defer(function() {
-        //     element.add(photo).add(image).addClass('anim');
-        // });
     }
 }
 

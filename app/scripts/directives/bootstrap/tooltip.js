@@ -10,7 +10,7 @@ return [function() {
         link: function($scope, element, attributes) {
             attributes.$observe('bsTooltip', function(value) {
                 var options = _.extend({
-                    // container: 'body',
+                    container: 'body',
                     title: value,
                     delay: { show: 200, hide: 0 }
                 }, $scope.$eval(attributes.options));

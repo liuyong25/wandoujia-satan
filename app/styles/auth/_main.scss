@@ -1,4 +1,4 @@
-    @import "auth/*.png";
+@import "auth/*.png";
 .wd-portal {
     @include position(fixed, 0px 0px 0px 0px);
     @include ui-layer-top;
@@ -11,7 +11,7 @@
     .a:before {
         content: "";
         $name: "icon_logo_white";
-        @include position(fixed, 20px 0 0 20px);
+        @include position(fixed, 20px 0 0 30px);
         @include auth-sprite($name);
         width: auth-sprite-width($name);
         height: auth-sprite-height($name);
@@ -23,12 +23,17 @@
     }
 
     .a {
+        @include position(fixed, 0px 0px 234px 0px);
+        .container {
+            @include position(absolute, 50% 0 0 50%);
+            margin: -124px 0 0 -480px;
+        }
         h1, p, span {
             @extend %font-roboto;
             color: #fff;
         }
         h1 {
-            margin-top: 175px;
+            // margin-top: 175px;
             font-weight: 100;
             font-size: 42px;
         }
@@ -38,16 +43,17 @@
         }
         form {
             margin-top: 70px;
+            margin-bottom: 10px;
             input {
                 @extend %font-roboto;
-                height: 34px;
-                line-height: 34px;
+                height: 32px;
+                line-height: 32px;
                 font-size: 18px;
                 border-color: transparent;
                 padding-left: 10px;
                 padding-right: 10px;
                 @include box-shadow(none);
-                opacity: 0.7;
+                opacity: 0.8;
                 @include transition(opacity $global-transition-duration);
                 &:focus {
                     opacity: 1;
@@ -63,16 +69,22 @@
             }
         }
         .error {
-            display: inline-block;
+            width: 250px;
             font-size: 12px;
             border-radius: 3px;
             background: #fff;
             padding: 3px 8px;
             color: #333;
+            margin-bottom: 5px;
             @include text-shadow(0 1px 0 rgba(#fff, 0.2));
+            ul {
+                margin-bottom: 0;
+            }
+            a {
+                color: #6eb800;
+            }
         }
         .btn-safari, .btn-getstarted {
-            display: block;
             cursor: pointer;
             text-decoration: underline;
             opacity: 0.7;

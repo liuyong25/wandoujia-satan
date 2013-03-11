@@ -128,15 +128,8 @@ var ngRepeatDirective = {
                         array = lastOrder[key];
                         while(array.length) {
                             value = array.pop();
-                            // value.element.remove();
-                            value.element
-                                .css('opacity', 0)
-                                .delay(400)
-                                .promise()
-                                .done(function() {
-                                    angular.element(this).remove();
-                                });
                             value.scope.$destroy();
+                            value.element.remove();
                         }
                     }
                 }

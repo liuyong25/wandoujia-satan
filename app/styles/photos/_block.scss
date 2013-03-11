@@ -8,12 +8,7 @@
     }
     $padding: 0px;
     @include position(absolute, 0px 0 0 0px);
-    @include transform(translateZ(0));
-
-    &.anim {
-        @include transition(all $global-transition-duration ease $global-transition-duration,
-                            opacity $global-transition-duration ease 0);
-    }
+    // @include transform(translateZ(0));
 
     .photo {
         @include position;
@@ -23,27 +18,19 @@
         cursor: pointer;
         background: #f5f5f5;
 
-        &.anim {
-            @include transition(all $global-transition-duration ease $global-transition-duration);
-        }
-
         img {
-            @include transition(opacity $global-transition-duration ease 0);
+            // @include transition(opacity $global-transition-duration ease 0);
             @include position(absolute);
-            @include transform(translateZ(0));
+            // @include transform(translateZ(0));
             // revert bootstrap img style
             max-width: none;
-
-            &.anim {
-                @include transition(all $global-transition-duration ease $global-transition-duration);
-            }
         }
     }
 
     $actions-height: 26px;
     &.active, &:hover {
         .actions {
-            @include transition(opacity $global-transition-duration ease 0.1s);
+            // @include transition(opacity $global-transition-duration ease 0.1s);
             opacity: 1;
         }
     }
@@ -51,10 +38,10 @@
         background: #52aa30;
     }
     .actions {
-        @include transition(opacity $global-transition-duration ease 0.1s);
+        // @include transition(opacity $global-transition-duration ease 0.1s);
         @include pie-clearfix;
         @include position(absolute, 0 $padding $padding $padding);
-        @include transform(translateZ(0));
+        // @include transform(translateZ(0));
         height: $actions-height;
         background: rgba(#000, 0.7);
         padding-right: 5px;

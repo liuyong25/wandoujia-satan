@@ -1,25 +1,22 @@
-<div ng-cloak class="container-fluid wdj-photos">
-    <div class="wdp-timeline-container">
+<div class="container-fluid wdj-photos">
+    <div class="wdp-timeline-container" wdp-gallery>
         <div class="wdp-showcases-container">
             <div class="wdp-showcase">
                 <div class="wdp-block"
                     wdp-repeat="photo in photos"
                 ></div>
             </div>
-            <div style="text-align:center;margin-top: 10px;">
-                <div class="load-more"
-                    ng-class="{'load-more-hide': noMore || !loaded}"
-                    ng-click="fetch()"
-                    >Load more...</div>
+            <div class="load-more"
+                ng-class="{'load-more-hide': allLoaded || !firstScreenLoaded}"
+                ng-click="fetch()"
+                ng-switch on="loaded">
+                    <span ng-switch-when="true">{{$root.DICT.photos.BTN_LOAD}}</span>
+                    <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>
             </div>
         </div>
-        <div class="wdp-actionbar"
-            data-on-select-all="selectAll()"
-            ></div>
-<!--         <a target="_blank" href="http://www.diaochapai.com/survey/dd863ce5-ab9d-41e6-a63c-4f88ac5a5a3f" class="send-feedback"
-            bs-tooltip title="意见反馈" data-options="{placement:'right'}"
-            ><i class="photos-icon-feedback"></i></a>
- -->    </div>
+        <div class="wdp-actionbar"></div>
+        <div class="wd-loading" data-visible="!firstScreenLoaded"></div>
+    </div>
     <div wdp-slides
         data-current="previewPhoto"
         data-photos="photos"
@@ -27,5 +24,4 @@
         data-on-download="download(photo)"
         data-on-share="share(photo)"
         ></div>
-    <div class="wd-loading" data-visible="!loaded"></div>
 </div>

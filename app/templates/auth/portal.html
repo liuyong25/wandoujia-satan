@@ -12,9 +12,16 @@
                         <span ng-switch-when="standby">{{buttonText}}</span>
                     </button>
                 </form>
-                <p class="error" ng-show="errorText"><i class="icon-info-sign"></i> {{errorText}}</p>
+                <div class="error" ng-show="error"><i class="icon-info-sign"></i>
+                    &nbsp;&nbsp;{{$root.DICT.portal.AUTH_ERROR_TITLE}}
+                    <ul>
+                        <li>{{$root.DICT.portal.AUTH_ERROR_TIP_1}}</li>
+                        <li>{{$root.DICT.portal.AUTH_ERROR_TIP_2}}</li>
+                    </ul>
+                    <div><a href="http://snappea.zendesk.com/entries/23341488--Official-How-do-I-sign-in-to-SnapPea-for-Web-">{{$root.DICT.portal.AUTH_ERROR_LINK}}</a></div>
+                 </div>
                 <p>
-                    <span class="btn-safari" ng-click="safariHelp()" ng-show="isSafari">{{$root.DICT.portal.SAFARI}}</span>
+                    <span class="btn-safari" ng-click="safariHelp()" ng-show="isSafari">{{$root.DICT.portal.SAFARI}}<br></span>
                     <span class="btn-getstarted" ng-click="openHelp();$root.GA('login:help')">{{$root.DICT.portal.GET_STARTED}}</span>
                 </p>
             </div>

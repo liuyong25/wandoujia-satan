@@ -61,7 +61,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
             controller: 'galleryController',
             resolve: {
                 auth: validateToken
-            }
+            },
+            reloadOnSearch: false
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'

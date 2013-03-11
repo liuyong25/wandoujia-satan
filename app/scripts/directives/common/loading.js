@@ -15,6 +15,7 @@ return [function() {
                 '<div></div>' +
             '</div>',
         replace: true,
+        scope: true,
         link: function(scope, element, attributes) {
             var firstLoopTimeout = null;
             scope.$watch(attributes.visible, function(visible) {

@@ -25,6 +25,8 @@ return {
         SLIDES_DOWNLOAD: 'Download',
         SLIDES_CLOSE: 'Close',
 
+        BTN_LOAD: 'Load more...',
+
         CONFIRM_DELETE_TITLE: 'Delete photos',
         CONFIRM_DELETE_CONTENT: 'Delete the selected photos from your phone?',
 

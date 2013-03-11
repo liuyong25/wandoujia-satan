@@ -23,6 +23,9 @@ return {
                 });
             }
         };
+        // websocket.onerror = function(e) {
+        //     console.log(arguments);
+        // };
         return this;
     },
     stop: function() {

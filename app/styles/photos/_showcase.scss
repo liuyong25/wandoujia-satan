@@ -1,11 +1,14 @@
 .wdp-showcases-container {
     .load-more {
-        display: inline-block;
-        background: #eee;
-        border-radius: 20px;
+        display: block;
+        width: 80px;
         padding: 10px 40px;
-        cursor: pointer;
+        margin: 10px auto;
+        border-radius: 20px;
+        background: #e6e6e6;
+        text-align: center;
         opacity: 0.7;
+        cursor: pointer;
         &:hover {
             opacity: 1;
         }
