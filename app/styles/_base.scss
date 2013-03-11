@@ -23,7 +23,7 @@ body {
     margin-left: -175px;
 
     .modal-header h3 {
-        font-size: 14px;
+        font-size: 16px;
     }
     .modal-body {
         min-height: 50px;
@@ -31,6 +31,9 @@ body {
     .modal-footer {
         padding: 7px 15px 8px;
     }
+}
+.close {
+    @include button-effect-light;
 }
 
 @import "loading";

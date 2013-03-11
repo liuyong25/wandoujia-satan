@@ -133,6 +133,6 @@
     }
     .cancel {
         @include position(absolute, 0px 0px 0 0);
-        padding: 5px;
+        padding: 0 5px;
     }
 }

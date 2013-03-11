@@ -245,7 +245,7 @@ function calculateLayout() {
         gapWidth:  10,
         gapHeight: 10,
         borderWidth: 0,
-        containerWidth: wdViewport.width() - (30 + 20) * 2,
+        containerWidth: wdViewport.width() - 20 * 2,
         containerHeight: -1,
         photos: _.map($scope.photos, function(photo) {
             return {

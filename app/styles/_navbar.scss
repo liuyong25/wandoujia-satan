@@ -8,9 +8,10 @@
         left: 0;
         right: 0;
         bottom: 68px;
-        height: 5px;
+        height: 8px;
         // @include background-image(linear-gradient(top, rgba(235, 235, 235, 0) 0, rgba(235, 235, 235, 1) 10px));
-        background: image-url("bg-pattern.png");
+        // background: image-url("bg-pattern.png");
+        background: #fff;
     }
     .brand {
         margin: 0;
