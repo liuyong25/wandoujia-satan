@@ -1,3 +1,4 @@
+/*global Modernizr*/
 define([
         'angular',
         'jquery',
@@ -13,7 +14,7 @@ angular.module('wdAuth', ['wdCommon'])
     .provider('wdAuthToken', authToken)
     .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
         function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
-
+        $scope.isSupport = Modernizr.cors && Modernizr.websockets;
         $scope.isSafari = jQuery.browser.safari;
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;

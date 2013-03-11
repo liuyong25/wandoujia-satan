@@ -1,7 +1,7 @@
 <div ng-switch on="autoAuth">
     <div class="wd-portal" ng-switch-when="false">
-        <div class="a">
-            <div class="container">
+        <div class="a" ng-switch on="isSupport">
+            <div class="container" ng-switch-when="true">
                 <h1>{{$root.DICT.portal.H1}}</h1>
                 <p>{{$root.DICT.portal.H1_P}}</p>
                 <form ng-submit="submit()" class="form-inline">
@@ -17,6 +17,11 @@
                     <span class="btn-safari" ng-click="safariHelp()" ng-show="isSafari">{{$root.DICT.portal.SAFARI}}</span>
                     <span class="btn-getstarted" ng-click="showHelp=true;$root.GA('login:help')">{{$root.DICT.portal.GET_STARTED}}</span>
                 </p>
+            </div>
+            <div class="container" ng-switch-when="false">
+                <h1>{{$root.DICT.portal.UNSUPPORTED_H1}}</h1>
+                <p>{{$root.DICT.portal.UNSUPPORTED_H1_P}}</p>
+                <a href="http://www.google.com/chrome/" class="btn btn-primary btn-large" style="margin-top: 60px;">{{$root.DICT.portal.DOWNLOAD_CHROME}}</a>
             </div>
         </div>
         <div class="b">

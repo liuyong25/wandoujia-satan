@@ -16,7 +16,11 @@ return {
         H2: 'New to SnapPea?',
         H2_P: 'You should install SnapPea on your phone before sign in. It\'s free.',
         GP_ALT: 'SnapPea on Google Play',
-        KEEPER: 'Still sending passcode.'
+        KEEPER: 'Still sending passcode.',
+
+        UNSUPPORTED_H1: 'SnapPea don\'t support your browser.',
+        UNSUPPORTED_H1_P: 'Sorry, SnapPea current don\'t support your browser. We strongly recommend you use Google Chrome.',
+        DOWNLOAD_CHROME: 'Download Chrome'
     }
 };
 });
