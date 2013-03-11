@@ -42,7 +42,9 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                             });
                         }
                         else {
-                            self.pause();
+                            $scope.$apply(function() {
+                                self.pause();
+                            });
                         }
                     }, WDP_PLAYING_INTERVAL);
                     $scope.playing = true;
