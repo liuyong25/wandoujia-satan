@@ -4,8 +4,8 @@
             <div class="container" ng-switch-when="true">
                 <h1>{{$root.DICT.portal.H1}}</h1>
                 <p>{{$root.DICT.portal.H1_P}}</p>
-                <form ng-submit="submit()" class="form-inline">
-                    <input type="text" class="" ng-model="$parent.authCode" wd-auto-focus placeholder="{{$root.DICT.portal.PASSCODE_PLACEHOLDER}}" ng-change="userInput()" ng-disabled="state != 'standby'">
+                <form ng-submit="submit(authCode)" class="form-inline">
+                    <input type="text" class="" ng-model="authCode" wd-auto-focus placeholder="{{$root.DICT.portal.PASSCODE_PLACEHOLDER}}" ng-change="userInput()" ng-disabled="state != 'standby'">
                     &nbsp;&nbsp;
                     <button type="submit" class="btn btn-primary btn-large" ng-switch on="state" ng-disabled="state != 'standby'">
                         <span ng-switch-when="loading" class="wd-loading wd-loading-inline" data-visible="true"></span>

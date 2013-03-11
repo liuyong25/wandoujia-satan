@@ -31,8 +31,8 @@ angular.module('wdAuth', ['wdCommon'])
             }
             $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
         };
-        $scope.submit = function() {
-            if (!$scope.authCode) {
+        $scope.submit = function(authCode) {
+            if (!authCode) {
                 GA('login:enter_authcode:empty');
                 return;
             }
@@ -40,7 +40,7 @@ angular.module('wdAuth', ['wdCommon'])
                 GA('login:auto');
             }
             // Parse data source.
-            var ip = wdAuthToken.parse($scope.authCode);
+            var ip = wdAuthToken.parse(authCode);
             var port = 10208;
 
             var keeper = null;
@@ -63,7 +63,7 @@ angular.module('wdAuth', ['wdCommon'])
                     url: '/directive/auth',
                     timeout: 5000,
                     params: {
-                        authcode: $scope.authCode,
+                        authcode: authCode,
                         'client_time': (new Date()).getTime(),
                         'client_name': 'Browser',
                         'client_type': 3
@@ -75,7 +75,7 @@ angular.module('wdAuth', ['wdCommon'])
                     $scope.state = 'standby';
                     $scope.buttonText = $scope.$root.DICT.portal.AUTH_SUCCESS;
                     // TODO: Maybe expiration?
-                    wdAuthToken.setToken($scope.authCode);
+                    wdAuthToken.setToken(authCode);
                     wdAuthToken.startSignoutDetection();
                     $location.url($route.current.params.ref || '/');
                     GA('login:success');
@@ -119,7 +119,9 @@ angular.module('wdAuth', ['wdCommon'])
             }, 0);
         }
         else if ($scope.authCode) {
-            $timeout($scope.submit, 0);
+            $timeout(function() {
+                $scope.submit($scope.authCode);
+            }, 0);
         }
     }]);
 

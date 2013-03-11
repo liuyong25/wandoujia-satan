@@ -63,7 +63,13 @@ link: function($scope, element) {
                         .show()
                         .end()
                     .children('.wdp-progress')
-                        .addClass('fadeOut');
+                        .addClass('fadeOut')
+                        .one('webkitAnimationEnd', function() {
+                            angular.element(this).hide();
+                        });
+                setTimeout(function() {
+                    element.children('.wdp-progress').remove();
+                }, 400);
             }, 2000);
         });
     }
