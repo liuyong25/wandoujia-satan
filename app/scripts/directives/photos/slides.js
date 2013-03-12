@@ -60,10 +60,13 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                 // If true, turn on loading animation.
                 $scope.loading = false;
                 $scope.playing = false;
+                $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PLAY;
                 $scope.play = function() {
+                    $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PAUSE;
                     self.play();
                 };
                 $scope.pause = function() {
+                    $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PLAY;
                     self.pause();
                 };
                 $scope.togglePlay = function() {

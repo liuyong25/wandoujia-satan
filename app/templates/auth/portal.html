@@ -11,7 +11,6 @@
                         <span ng-switch-when="loading" class="wd-loading wd-loading-inline" data-visible="true"></span>
                         <span ng-switch-when="standby">{{buttonText}}</span>
                     </button>
-                    <button type="button" ng-click="hack(authCode)">xxxx</button>
                 </form>
                 <div class="error" ng-show="error">{{$root.DICT.portal.AUTH_ERROR_TITLE}}
                     <ul>
@@ -28,7 +27,7 @@
             <div class="container" ng-switch-when="false">
                 <h1>{{$root.DICT.portal.UNSUPPORTED_H1}}</h1>
                 <p>{{$root.DICT.portal.UNSUPPORTED_H1_P}}</p>
-                <a href="http://www.google.com/chrome/" target="_blank" class="btn btn-primary btn-large" style="margin-top: 60px;">{{$root.DICT.portal.DOWNLOAD_CHROME}}</a>
+                <a href="http://www.google.com/chrome/" ng-click="$root.GA('login:to_chrome')" target="_blank" class="btn btn-primary btn-large" style="margin-top: 60px;">{{$root.DICT.portal.DOWNLOAD_CHROME}}</a>
             </div>
         </div>
         <div class="b">
@@ -36,12 +35,19 @@
                 <div class="row">
                     <div class="span6">
                         <h2>{{$root.DICT.portal.H2}}</h2>
-                        <p>{{$root.DICT.portal.H2_P}}</p>
+                        <p ng-bind-html-unsafe="$root.DICT.portal.H2_P"></p>
                     </div>
                     <div class="span5">
                         <a href="https://play.google.com/store/apps/details?id=com.snappea" class="link-to-gp" target="_blank"></a>
+                        <a href="http://snappea.zendesk.com/entries/23345336--Official-Security-for-SnapPea-Web"></a>
                     </div>
                 </div>
+                <ul class="inline">
+                    <li>{{$root.DICT.portal.LINK_COPYRIGHT}}</li>
+                    <li><a href="http://www.snappea.com/about.html">{{$root.DICT.portal.LINK_ABOUT}}</a></li>
+                    <li><a href="http://www.snappea.com/terms.html">{{$root.DICT.portal.LINK_TERMS}}</a></li>
+                    <li><a href="http://snappea.zendesk.com/entries/23345336--Official-Security-for-SnapPea-Web">{{$root.DICT.portal.LINK_PRIVACY}}</a></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -54,7 +60,7 @@
         <div class="row-fluid">
             <div class="span4 step1">
                 <div class="figure"></div>
-                <p>1. Install SnapPea from <a href="https://play.google.com/store/apps/details?id=com.snappea" target="_blank">Google Play</a>.</p>
+                <p>1. Install SnapPea from <a href="https://play.google.com/store/apps/details?id=com.snappea" target="_blank" ng-click="$root.GA('login:to_play')">Google Play</a>.</p>
             </div>
             <div class="span4 step2">
                 <div class="figure"></div>

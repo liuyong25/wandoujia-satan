@@ -105,7 +105,7 @@
         h2 {
             font-weight: 100;
             font-size: 24px;
-            margin-top: 75px;
+            margin-top: 44px;
             margin-bottom: 2px;
         }
         p {
@@ -113,12 +113,32 @@
             font-size: 13px;
         }
         .link-to-gp {
-            margin-top: 83px;
+            margin-top: 52px;
             $name: "googleplay";
             @include auth-sprite($name);
             display: block;
             width: auth-sprite-width($name);
             height: auth-sprite-height($name);
+        }
+        ul.inline {
+            margin-top: 55px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            li:first-child {
+                display: block;
+            }
+            li a {
+                padding-right: 0;
+                color: #999;
+                &:hover {
+                    color: #6db800;
+                    text-decoration: none;
+                }
+                &:active {
+                    color: #3c7800;
+                }
+            }
         }
     }
 }

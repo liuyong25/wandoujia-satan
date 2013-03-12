@@ -24,6 +24,14 @@ angular.module('wdAuth', ['wdCommon'])
         $scope.state = 'standby';
         $scope.showHelp = false;
 
+        var acFromQuery = !!wdDev.query('ac');
+        var acFromInput = false;
+        var acFromCache = !!wdAuthToken.getToken();
+
+        if (!$scope.isSupport) {
+            GA('login:not_support')
+        }
+
         $scope.openHelp = function() {
             $scope.showHelp = true;
         };
@@ -43,6 +51,9 @@ angular.module('wdAuth', ['wdCommon'])
             }
             if ($scope.autoAuth) {
                 GA('login:auto');
+            }
+            else {
+                acFromInput = true;
             }
             // Parse data source.
             var ip = wdAuthToken.parse(authCode);
@@ -83,7 +94,15 @@ angular.module('wdAuth', ['wdCommon'])
                     wdAuthToken.setToken(authCode);
                     wdAuthToken.startSignoutDetection();
                     $location.url($route.current.params.ref || '/');
-                    GA('login:success');
+                    if (acFromInput) {
+                        GA('login:success:user_input');
+                    }
+                    if (acFromQuery) {
+                        GA('login:success:query');
+                    }
+                    else if (acFromCache) {
+                        GA('login:success:cache');
+                    }
                     GA('perf:auth_duration:success:' + ((new Date()).getTime() - timeStart));
                 })
                 .error(function() {
@@ -99,7 +118,15 @@ angular.module('wdAuth', ['wdCommon'])
                     if ($scope.autoAuth) {
                         $route.reload();
                     }
-                    GA('login:fail');
+                    if (acFromInput) {
+                        GA('login:fail:user_input');
+                    }
+                    else if (acFromQuery) {
+                        GA('login:fail:query');
+                    }
+                    if (acFromCache) {
+                        GA('login:fail:cache');
+                    }
                     GA('perf:auth_duration:fail:' + ((new Date()).getTime() - timeStart));
                 });
             }
@@ -119,6 +146,7 @@ angular.module('wdAuth', ['wdCommon'])
         };
 
         if ($location.search().help === 'getstarted') {
+            $scope.autoAuth = false;
             $timeout(function() {
                 $scope.showHelp = true;
             }, 0);

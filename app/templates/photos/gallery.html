@@ -8,7 +8,7 @@
             </div>
             <div class="load-more"
                 ng-class="{'load-more-hide': allLoaded || !firstScreenLoaded}"
-                ng-click="fetch()"
+                ng-click="fetch();$root.GA('photos:loadmore')"
                 ng-switch on="loaded">
                     <span ng-switch-when="true">{{$root.DICT.photos.BTN_LOAD}}</span>
                     <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>

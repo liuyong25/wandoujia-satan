@@ -13,17 +13,18 @@
 }
 
 .send-feedback {
-    position: fixed;
-    top: 75px;
-    left: 0;
-    padding: 10px;
-    @include transition(opacity $global-transition-duration);
-    opacity: 0.65;
-
+    @extend %has-icon-feedback;
+    @include position(absolute, 10px 20px 0 0);
+    min-width: 100px;
+    @include nowrap;
+    text-align: right;
+    color: #555;
+    font-size: 12px;
     &:hover {
-        opacity: 1;
+        color: #6db800;
+        text-decoration: none;
     }
     &:active {
-        opacity: 0.5;
+        color: #3c7800;
     }
 }

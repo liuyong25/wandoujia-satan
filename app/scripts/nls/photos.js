@@ -8,6 +8,7 @@ return {
         ACTIONBAR_DELETE: 'Delete',
         ACTIONBAR_DOWNLOAD: 'Download',
         ACTIONBAR_SHARE: 'Share',
+        ACTIONBAR_FEEDBACK: 'Feedback',
         BLOCK_SELECT: 'Select',
         BLOCK_DESELECT: 'Deselect',
         BLOCK_DELETE: 'Delete',
