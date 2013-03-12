@@ -22,11 +22,9 @@ return ['wdpImageHelper', function(wdpImageHelper) {
                 var $image = angular.element('<img>');
                 $image
                     .data('photo', newPhoto)
+                    .data('width', newPhoto.orientation % 180 === 0 ? newPhoto.width : newPhoto.height)
+                    .data('height', newPhoto.orientation % 180 === 0 ? newPhoto.height : newPhoto.width)
                     .data('rotation', 0)
-                    .css({
-                        transform: 'rotate(' + newPhoto.orientation + 'deg)'
-                    })
-                    // .hide()
                     .on('load', function() {
                         $image.fadeIn();
                     })
@@ -36,6 +34,8 @@ return ['wdpImageHelper', function(wdpImageHelper) {
                     $image
                         .attr('src', newPhoto.path)
                         .data('rotation', $image.data('rotation') + newPhoto.orientation)
+                        .data('width', newPhoto.width)
+                        .data('height', newPhoto.height)
                         .css({
                             transition: 'none',
                             transform: 'rotate(' + $image.data('rotation') + 'deg)'
@@ -55,8 +55,8 @@ return ['wdpImageHelper', function(wdpImageHelper) {
                 var photo = $image.data('photo');
                 var frameWidth = element.width();
                 var frameHeight = element.height();
-                var imageWidth = horizontal ? photo.width : photo.height;
-                var imageHeight = horizontal ? photo.height : photo.width;
+                var imageWidth = horizontal ? $image.data('width') : $image.data('height');
+                var imageHeight = horizontal ? $image.data('height') : $image.data('width');
                 var widthScale = imageWidth / frameWidth;
                 var heightScale = imageHeight / frameHeight;
                 var scale = Math.max(widthScale, heightScale);

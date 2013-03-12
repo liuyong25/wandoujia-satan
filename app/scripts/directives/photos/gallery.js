@@ -41,22 +41,13 @@ controller: ['$scope', 'GA', 'wdAlert', function($scope, GA, wdAlert) {
     $scope.deselect = function(photo) {
         $scope.selectedPhotos.splice(_.indexOf($scope.selectedPhotos, photo), 1);
     };
-    $scope.$on('wdp:photos:deselect', function(e, photos) {
+    $scope.$on('wdp:photos:remove', function(e, photos) {
         _.each(photos, function(photo) {
             $scope.deselect(photo);
         });
     });
-    $scope.$on('wdp:photos:select', function(e, photos) {
-        _.each(photos, $scope.select);
-    });
 
     // Removal logic, delegate real removal to $scope.removePhotos.
-    $scope['delete'] = function(photo) {
-        return confirm().then(function() {
-            $scope.removePhotos(photo);
-            $scope.deselect(photo);
-        });
-    };
     $scope.deleteSelected = function() {
         return confirm().then(function() {
             $scope.removePhotos($scope.selectedPhotos);

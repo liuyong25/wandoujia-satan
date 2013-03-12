@@ -5,9 +5,9 @@ define([
     ) {
 'use strict';
 return [
-        '$scope', '$window', 'Photos', '$log', '$route', '$location',
+        '$scope', '$window', 'Photos', '$log', '$route', '$location', 'wdAlert',
         'wdViewport', 'GA', 'wdpMessagePusher', 'PhotosLayoutAlgorithm', '$q',
-function($scope,  $window,    Photos,   $log,   $route,   $location,
+function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,
          wdViewport,   GA,   wdpMessagePusher,   PhotosLayoutAlgorithm,   $q) {
 
 $log.log('wdPhotos:galleryController initializing!');
@@ -26,7 +26,6 @@ wdViewport.on('resize', function() {
 });
 
 if ($route.current.params.preview) {
-    console.log(11111)
     Photos.get(
         { id: $route.current.params.preview },
         function(photo) {
@@ -63,7 +62,7 @@ wdpMessagePusher
             if (photo) {
                 $scope.$apply(function() {
                     exclude($scope.photos, photo);
-                    $scope.$broadcast('wdp:photos:deselect', [photo]);
+                    $scope.$broadcast('wdp:photos:remove', [photo]);
                 });
             }
         });
@@ -77,6 +76,17 @@ $scope.preview = function(photo) {
 };
 $scope.download = function(photo) {
     $window.open(photo.path, '_self');
+};
+$scope['delete'] = function(photo) {
+    return wdAlert.confirm(
+            $scope.$root.DICT.photos.CONFIRM_DELETE_TITLE,
+            $scope.$root.DICT.photos.CONFIRM_DELETE_CONTENT,
+            $scope.$root.DICT.photos.CONFIRM_DELETE_OK,
+            $scope.$root.DICT.photos.CONFIRM_DELETE_CANCEL
+        ).then(function() {
+        $scope.removePhotos(photo);
+        $scope.$broadcast('wdp:photos:remove', [photo]);
+    });
 };
 $scope.removePhotos = function(photos) {
     if (!_.isArray(photos)) {
