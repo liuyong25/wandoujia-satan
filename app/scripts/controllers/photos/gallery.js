@@ -16,7 +16,7 @@ $scope.firstScreenLoaded = false;
 $scope.loaded = false;
 $scope.allLoaded = false;
 $scope.photos = [];
-$scope.layout = { height: 0 };
+$scope.layout = null;
 $scope.previewPhoto = null;
 
 $scope.$watch('photos.length', layout);
@@ -105,6 +105,7 @@ $scope.startUpload = function(file) {
     // Insert a photo placeholder.
     file.photo.then(function(data) {
         photo = new Photos({
+            'id': _.uniqueId('WDP_MERGE_'),
             'thumbnail_path': data.dataURI,
             'thumbnail_width': data.width,
             'thumbnail_height': data.height,
@@ -151,7 +152,7 @@ function loadScreen() {
             defer.reject();
         });
         return defer.promise;
-    })($q.defer(), wdViewport.height(), $scope.layout.height)
+    })($q.defer(), wdViewport.height(), $scope.layout ? $scope.layout.height : 0)
     .then(function done() {
         $scope.firstScreenLoaded = true;
         $scope.loaded = true;
@@ -225,8 +226,12 @@ function calculateLayout() {
 }
 
 function layout() {
-    if (!$scope.photos.length) { return; }
-    calculateLayout();
+    if (!$scope.photos.length) {
+        $scope.layout = { height: 0};
+    }
+    else {
+        calculateLayout();
+    }
     $scope.$evalAsync(function() {
         $scope.$broadcast('wdp:showcase:layout', $scope.layout);
     });

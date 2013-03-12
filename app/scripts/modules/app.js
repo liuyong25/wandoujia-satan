@@ -128,14 +128,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
     .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
         function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
         // Tip users when leaving.
-        $window.onbeforeunload = function (e) {
-          e = e || $window.event;
-          // For IE<8 and Firefox prior to version 4
-          if (e) {
-            e.returnValue = wdKeeper.getTip();
-          }
-          // For Chrome, Safari, IE8+ and Opera 12+
-          return wdKeeper.getTip();
+        $window.onbeforeunload = function () {
+            return wdKeeper.getTip();
         };
 
         (function(keeper) {

@@ -5,6 +5,7 @@
         ><i class="photos-icon-ab-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
     <div class="btn action-select"
         ng-click="selectAll()"
+        ng-show="photos.length"
         ng-switch on="selectedPhotos.length == photos.length && photos.length != 0"
         >
         <i class="photos-icon-ab-sel"></i>

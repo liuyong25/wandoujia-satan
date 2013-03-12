@@ -11,14 +11,14 @@
                         <span ng-switch-when="loading" class="wd-loading wd-loading-inline" data-visible="true"></span>
                         <span ng-switch-when="standby">{{buttonText}}</span>
                     </button>
+                    <button type="button" ng-click="hack(authCode)">xxxx</button>
                 </form>
-                <div class="error" ng-show="error"><i class="icon-info-sign"></i>
-                    &nbsp;&nbsp;{{$root.DICT.portal.AUTH_ERROR_TITLE}}
+                <div class="error" ng-show="error">{{$root.DICT.portal.AUTH_ERROR_TITLE}}
                     <ul>
                         <li>{{$root.DICT.portal.AUTH_ERROR_TIP_1}}</li>
                         <li>{{$root.DICT.portal.AUTH_ERROR_TIP_2}}</li>
                     </ul>
-                    <div><a href="http://snappea.zendesk.com/entries/23341488--Official-How-do-I-sign-in-to-SnapPea-for-Web-">{{$root.DICT.portal.AUTH_ERROR_LINK}}</a></div>
+                    <div style="text-align:right;"><a href="http://snappea.zendesk.com/entries/23341488--Official-How-do-I-sign-in-to-SnapPea-for-Web-">{{$root.DICT.portal.AUTH_ERROR_LINK}} &#187;</a></div>
                  </div>
                 <p>
                     <span class="btn-safari" ng-click="safariHelp()" ng-show="isSafari">{{$root.DICT.portal.SAFARI}}<br></span>

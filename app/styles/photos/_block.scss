@@ -1,6 +1,7 @@
 .wdp-block {
     .fadeIn {
         @include animation(fadeIn $global-transition-duration);
+        @include animation-fill-mode(forwards);
     }
     .fadeOut {
         @include animation(fadeOut $global-transition-duration);
@@ -24,6 +25,7 @@
             // @include transform(translateZ(0));
             // revert bootstrap img style
             max-width: none;
+            opacity: 0;
         }
     }
 

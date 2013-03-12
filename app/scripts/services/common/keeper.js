@@ -17,7 +17,7 @@ return [function() {
             return stack[0];
         },
         getTip: function() {
-            return stack.length && stack[0].tip || null;
+            return (stack.length && stack[0].tip) || (void 0);
         }
     };
 }];
