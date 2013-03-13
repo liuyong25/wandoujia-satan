@@ -6,8 +6,8 @@ define([
         jQuery
     ) {
 'use strict';
-return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
-    function($q,   wdDev,   wdKeeper,   wdpImageHelper) {
+return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
+    function($q,   wdDev,   wdKeeper,   wdpImageHelper,   GA) {
     return {
         link: function(scope, element) {
             var keeper = null;
@@ -63,11 +63,13 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
 
                         if (response.success) {
                             file.defer.resolve(response.result);
+                            GA('photos:upload:success');
                         }
                         else {
                             file.defer.notify({
                                 status: 'failed'
                             });
+                            GA('photos:upload:fail');
                         }
                     },
                     onManualRetry: function() {
