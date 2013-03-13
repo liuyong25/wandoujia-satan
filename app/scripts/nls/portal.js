@@ -8,7 +8,7 @@ return {
         AUTH_ERROR_TITLE: 'Sign in failed!',
         AUTH_ERROR_TIP: 'xxx',
         AUTH_ERROR_TIP_1: 'Re-enter your passcode.',
-        AUTH_ERROR_TIP_2: 'Make sure phone and computer are on the same Wi-Fi network.',
+        AUTH_ERROR_TIP_2: 'Make sure your phone and computer are on the same Wi-Fi network.',
         AUTH_ERROR_LINK: 'More help',
         PASSCODE_PLACEHOLDER: 'Passcode',
         GET_STARTED: 'Where\'s my passcode?',

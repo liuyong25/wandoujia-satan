@@ -121,10 +121,15 @@
             height: auth-sprite-height($name);
         }
         ul.inline {
-            margin-top: 55px;
+            margin-top: 50px;
+            padding-top: 15px;
             text-align: center;
-            font-size: 12px;
+            font-size: 11px;
             color: #999;
+            border-top: 1px solid #f0f0f0;
+            li {
+                line-height: 14px;
+            }
             li:first-child {
                 display: block;
             }
