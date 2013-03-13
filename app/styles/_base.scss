@@ -22,14 +22,21 @@ body {
     width: 350px;
     margin-left: -175px;
 
-    .modal-header h3 {
-        font-size: 16px;
+    .modal-header {
+        border: 0;
+        padding-bottom: 0;
+        h3 {
+            font-size: 16px;
+        }
     }
     .modal-body {
-        min-height: 50px;
+        // min-height: 50px;
+        padding: 3px 15px 25px;
+        color: #999;
     }
     .modal-footer {
         padding: 7px 15px 8px;
+        border: 0;
     }
 }
 .close {
