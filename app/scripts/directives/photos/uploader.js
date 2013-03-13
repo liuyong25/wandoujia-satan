@@ -1,10 +1,8 @@
 define([
         'fineuploader',
-        'angular',
         'jquery'
     ], function(
         fineuploader,
-        angular,
         jQuery
     ) {
 'use strict';
@@ -87,7 +85,6 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper',
                 hideDropzones: false,
                 callbacks: {
                     dropProcessing: function(isProcessing, files) {
-                        console.log(arguments);
                         uploader.addFiles(files);
                     },
                     error: function(code, filename) {},

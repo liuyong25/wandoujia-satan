@@ -129,6 +129,7 @@ $scope.startUpload = function(file) {
         photo.id = res[0].id;
         Photos.get({id: res[0].id}, function(newPhoto) {
             _.extend(photo, newPhoto);
+            mergePhotos(newPhoto);
         });
     });
 };
@@ -144,7 +145,7 @@ function loadScreen() {
     $scope.loaded = false;
     (function fetchLoop(defer, viewportHeight, lastLayoutHeight) {
         var photosLengthBeforeFetch = $scope.photos.length;
-        fetchPhotos(50).then(function done() {
+        fetchPhotos(30).then(function done() {
             var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
             calculateLayout();
             if (newPhotosLength === 0) {
@@ -210,7 +211,7 @@ function mergePhotos(photos) {
         photos = [photos];
     }
     photos = _.sortBy($scope.photos.concat(photos), function(photo) {
-        return -photo.date_added;
+        return 'date_added' in photo ? -photo.date_added : Number.NEGATIVE_INFINITY;
     });
     $scope.photos = _.uniq(photos, function(photo) {
         return photo.id;
