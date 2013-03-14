@@ -25,6 +25,9 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
                     expected: true,
                     sendCredentials: true
                 },
+                messages: {
+                    onLeave: scope.$root.DICT.photos.UPLOAD_RELOAD
+                },
                 callbacks: {
                     onSubmit: function(id) {
                         var file = uploader.getFile(id);

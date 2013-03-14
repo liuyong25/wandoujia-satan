@@ -1,32 +1,34 @@
 define([
-        'angular',
-        'directives/common/loading',
-        'directives/common/strip',
-        'services/common/sharing',
-        'services/common/dev',
-        'services/common/viewport',
-        'services/common/http',
-        'directives/common/autofocus',
-        'services/common/key',
-        'services/common/alert',
-        'directives/common/alert',
-        'services/common/keeper',
-        'services/common/ga'
-    ], function(
-        angular,
-        loading,
-        strip,
-        sharing,
-        dev,
-        viewport,
-        http,
-        autofocus,
-        key,
-        alert,
-        alertDirecitve,
-        keeper,
-        ga
-    ) {
+    'angular',
+    'directives/common/loading',
+    'directives/common/strip',
+    'services/common/sharing',
+    'services/common/dev',
+    'services/common/viewport',
+    'services/common/http',
+    'directives/common/autofocus',
+    'services/common/key',
+    'services/common/alert',
+    'directives/common/alert',
+    'services/common/keeper',
+    'services/common/ga',
+    'services/common/notification'
+], function(
+    angular,
+    loading,
+    strip,
+    sharing,
+    dev,
+    viewport,
+    http,
+    autofocus,
+    key,
+    alert,
+    alertDirecitve,
+    keeper,
+    ga,
+    notification
+) {
 'use strict';
 // Common Module is the collection of most used or global functions.
 angular.module('wdCommon', [])
@@ -44,6 +46,7 @@ angular.module('wdCommon', [])
     .factory('wdAlert', alert)
     .factory('wdKeeper', keeper)
     .factory('GA', ga)
+    .factory('wdNotification', notification)
     // Configuration
     .config(['$provide', 'wdHttpProvider', function($provide, wdHttpProvider) {
         $provide.decorator('$http', wdHttpProvider.httpDecorator);

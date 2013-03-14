@@ -14,7 +14,7 @@
 
 .send-feedback {
     @extend %has-icon-feedback;
-    @include position(absolute, 10px 20px 0 0);
+    @include position(absolute, 15px 20px 0 0);
     min-width: 100px;
     @include nowrap;
     text-align: right;

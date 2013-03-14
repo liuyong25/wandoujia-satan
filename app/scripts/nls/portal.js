@@ -15,12 +15,12 @@ return {
         SAFARI: 'Safari users need to change cookie settings for SnapPea to function normally.',
         SAFARI_TITLE: 'Change your Safari settings',
         SAFARI_CONTENT: 'Go to Settings > Privacy > Block cookies and select "Never".',
-        H1: 'Manage your Android phone from your browser.',
+        H1: 'Manage your Android phone from the web.',
         H1_P: 'Your photos, in your web browser. Messages, contacts and apps coming soon.',
         H2: 'New to SnapPea?',
-        H2_P: 'You should <a href="https://play.google.com/store/apps/details?id=com.snappea" target="_blank" style="color:#3c7800">install SnapPea</a> on your phone before sign in. It\'s free.',
+        H2_P: 'To get your passcode, <a href="https://play.google.com/store/apps/details?id=com.snappea" target="_blank" style="color:#3c7800">install SnapPea</a> on your phone. It\'s free.',
         GP_ALT: 'SnapPea on Google Play',
-        KEEPER: 'Still sending passcode.',
+        KEEPER: 'Still sending passcode. If you reload now, sign in will be cancelled.',
 
 
         LINK_COPYRIGHT: 'Copyright © 2013 SnapPea',

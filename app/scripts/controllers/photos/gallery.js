@@ -6,9 +6,9 @@ define([
 'use strict';
 return [
         '$scope', '$window', 'Photos', '$log', '$route', '$location', 'wdAlert',
-        'wdViewport', 'GA', 'wdpMessagePusher', 'PhotosLayoutAlgorithm', '$q',
+        'wdViewport', 'GA', 'wdpMessagePusher', 'PhotosLayoutAlgorithm', '$q', 'wdNotification',
 function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,
-         wdViewport,   GA,   wdpMessagePusher,   PhotosLayoutAlgorithm,   $q) {
+         wdViewport,   GA,   wdpMessagePusher,   PhotosLayoutAlgorithm,   $q,   wdNotification) {
 
 $log.log('wdPhotos:galleryController initializing!');
 
@@ -251,6 +251,14 @@ function layout() {
 
 function exclude(collection, item) {
     return collection.splice(_.indexOf(collection, item), 1);
+}
+
+if (!localStorage.getItem('photosExtInstalled')) {
+    setTimeout(function() {
+        wdNotification.notify().then(function() {
+            localStorage.setItem('photosExtInstalled', true);
+        });
+    }, 1000);
 }
 
 }];
