@@ -10,8 +10,12 @@ return {
 template: template,
 replace: true,
 transclude: true,
-link: function(scope) {
-
+controller: [function() {}],
+link: function(scope, element) {
+    element.alert();
+    element.on('click', '[bs-alert-dismiss]', function() {
+        element.alert('close');
+    });
 }
 
 

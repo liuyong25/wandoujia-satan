@@ -12,7 +12,8 @@ define([
     'directives/common/alert',
     'services/common/keeper',
     'services/common/ga',
-    'services/common/notification'
+    'services/common/notification',
+    'directives/common/notification'
 ], function(
     angular,
     loading,
@@ -27,7 +28,8 @@ define([
     alertDirecitve,
     keeper,
     ga,
-    notification
+    notification,
+    notificationDirective
 ) {
 'use strict';
 // Common Module is the collection of most used or global functions.
@@ -37,6 +39,7 @@ angular.module('wdCommon', [])
     .directive('wdLoading', loading)
     .directive('wdAutoFocus', autofocus)
     .directive('wdAlert', alertDirecitve)
+    .directive('wdNotification', notificationDirective)
     // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)

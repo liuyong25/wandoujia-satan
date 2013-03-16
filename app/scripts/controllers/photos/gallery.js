@@ -1,8 +1,12 @@
 define([
-        'underscore'
-    ], function(
-        _
-    ) {
+    'underscore',
+    'text!templates/photos/extension-notification.html',
+    'angular'
+], function(
+    _,
+    extensionNotificationTemplate,
+    angular
+) {
 'use strict';
 return [
         '$scope', '$window', 'Photos', '$log', '$route', '$location', 'wdAlert',
@@ -253,12 +257,21 @@ function exclude(collection, item) {
     return collection.splice(_.indexOf(collection, item), 1);
 }
 
-if (!localStorage.getItem('photosExtInstalled')) {
+
+$scope.installChromeExtension = function() {
+    $window.chrome.webstore.install();
+};
+
+if ($window.chrome &&
+    $window.chrome.webstore &&
+    !localStorage.getItem('photosExtensionInstalled') &&
+    !angular.element($window.document.documentElement).hasClass('photos-extension-installed')) {
     setTimeout(function() {
-        wdNotification.notify().then(function() {
-            localStorage.setItem('photosExtInstalled', true);
-        });
-    }, 1000);
+        wdNotification.notify($scope, extensionNotificationTemplate)
+            .then(null, function() {
+                localStorage.setItem('photosExtensionInstalled', true);
+            });
+    }, 3000);
 }
 
 }];

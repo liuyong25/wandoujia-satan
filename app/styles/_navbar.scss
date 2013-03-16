@@ -1,5 +1,6 @@
 // Global Navbar.
 // Basic styles are modified in bootstrap submodule.
+$navbar-layout: smart;
 @import "navbar/*.png";
 .navbar {
     &:after {

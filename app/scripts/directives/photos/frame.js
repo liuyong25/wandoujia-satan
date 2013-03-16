@@ -25,9 +25,6 @@ return ['wdpImageHelper', function(wdpImageHelper) {
                     .data('width', newPhoto.orientation % 180 === 0 ? newPhoto.width : newPhoto.height)
                     .data('height', newPhoto.orientation % 180 === 0 ? newPhoto.height : newPhoto.width)
                     .data('rotation', 0)
-                    .on('load', function() {
-                        $image.fadeIn();
-                    })
                     .attr('src', newPhoto.thumbnail_path);
                 layout($image);
                 wdpImageHelper.preload(newPhoto.path).then(function() {
@@ -46,7 +43,7 @@ return ['wdpImageHelper', function(wdpImageHelper) {
                 return $image;
             };
             var destroy = function($image) {
-                $image.fadeOut().promise().done(function() {
+                return $image.stop().fadeOut(200).promise().done(function() {
                     $image.remove();
                 });
             };
@@ -85,19 +82,22 @@ return ['wdpImageHelper', function(wdpImageHelper) {
                 // Destroy current image tag first.
                 // The tag may not be removed immediately, for sake of fading out may take some
                 // time.
+                var promise = null;
                 if ($current) {
-                    destroy($current);
+                    promise = destroy($current);
                 }
                 // Create a new img tag, then append it to DOM.
                 if (newPhoto) {
-                    $scope.loading = true;
                     $current = create(newPhoto);
-                    $current.one('load', function() {
-                        $scope.$apply(function() {
-                            $scope.loading = false;
+                    $current.hide().appendTo(element);
+                    if (promise) {
+                        promise.done(function() {
+                            $current.fadeIn(200);
                         });
-                    });
-                    element.append($current);
+                    }
+                    else {
+                        $current.show();
+                    }
                 }
             });
 

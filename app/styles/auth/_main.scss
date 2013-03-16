@@ -1,3 +1,4 @@
+$auth-spacing: 4px;
 @import "auth/*.png";
 .wd-portal {
     @include position(fixed, 0px 0px 0px 0px);

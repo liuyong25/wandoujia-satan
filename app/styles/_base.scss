@@ -45,6 +45,7 @@ a, a:hover {
     padding-left: 25px;
     background: #fff;
     border: 0;
+    border-radius: 5px;
     @include box-shadow(0 5px 25px rgba(#000, 0.3));
     @include transform(translateY(-110%));
     @include transition(all $global-transition-duration);

@@ -34,7 +34,13 @@ return {
         CONFIRM_DELETE_CONTENT: 'Delete the selected photos from your phone?',
 
         CONFIRM_DELETE_OK: 'Delete',
-        CONFIRM_DELETE_CANCEL: 'Cancel'
+        CONFIRM_DELETE_CANCEL: 'Cancel',
+
+        REC_TITLE: 'Access your photos faster!',
+        REC_CONTENT: 'Our Chrome extension makes it even easier to view the photos on your phone. ',
+        REC_ADD_TO_CHROME: 'Add to Chrome',
+        REC_MORE_INFO: 'Learn more'
+
     },
     'zh-cn': true
 };

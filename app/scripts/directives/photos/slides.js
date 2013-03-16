@@ -58,7 +58,6 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
 
                 // Indicates whether there is something on loading state.
                 // If true, turn on loading animation.
-                $scope.loading = false;
                 $scope.playing = false;
                 $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PLAY;
                 $scope.play = function() {
