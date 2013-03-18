@@ -1,8 +1,5 @@
  require.config({
   shim: {
-    'vendor/plupload/plupload.html5': ['vendor/plupload/plupload'],
-    'vendor/plupload/plupload.html4': ['vendor/plupload/plupload'],
-    'plupload': ['vendor/plupload/plupload', 'vendor/plupload/plupload.html5', 'vendor/plupload/plupload.html4'],
     'underscore': {
         exports: '_'
     }
@@ -13,7 +10,6 @@
     jquery: 'vendor/jquery.wrapper',
     underscore: 'vendor/underscore',
     angular: 'vendor/angular/angular.wrapper',
-    plupload: 'vendor/plupload/plupload.wrapper',
     keymaster: 'vendor/keymaster.amd',
     bootstrap: 'vendor/bootstrap',
     fineuploader: 'vendor/fineuploader/fineuploader',
@@ -26,7 +22,4 @@
   }
 });
 
-require(['app'], function(app) {
-    'use strict';
-    // use app here
-});
+require(['app'], function() {});

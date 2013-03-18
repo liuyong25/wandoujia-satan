@@ -1,19 +1,21 @@
 define([
     'angular',
-    'directives/common/loading',
-    'directives/common/strip',
-    'services/common/sharing',
-    'services/common/dev',
-    'services/common/viewport',
-    'services/common/http',
-    'directives/common/autofocus',
-    'services/common/key',
-    'services/common/alert',
-    'directives/common/alert',
-    'services/common/keeper',
-    'services/common/ga',
-    'services/common/notification',
-    'directives/common/notification'
+    'common/directives/loading',
+    'common/directives/strip',
+    'common/services/sharing',
+    'common/services/dev',
+    'common/services/viewport',
+    'common/services/http',
+    'common/directives/autofocus',
+    'common/services/key',
+    'common/services/alert',
+    'common/directives/alert',
+    'common/services/keeper',
+    'common/services/ga',
+    'common/services/notification',
+    'common/directives/notification',
+    'common/services/browser',
+    'common/bootstrap'
 ], function(
     angular,
     loading,
@@ -29,11 +31,14 @@ define([
     keeper,
     ga,
     notification,
-    notificationDirective
+    notificationDirective,
+    browser,
+    bootstrap
 ) {
+// jshint unused:false
 'use strict';
 // Common Module is the collection of most used or global functions.
-angular.module('wdCommon', [])
+angular.module('wdCommon', ['wdBootstrap'])
     // Directives
     .directive('wdStrip', strip)
     .directive('wdLoading', loading)
@@ -43,6 +48,7 @@ angular.module('wdCommon', [])
     // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)
+    .factory('wdBrowser', browser)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
     .factory('wdKey', key)
