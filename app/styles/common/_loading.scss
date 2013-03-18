@@ -34,7 +34,7 @@ $wd-loading-foreground-color: #000;
         @include animation-play-state(paused);
     }
 
-    %dot {
+    %wd-loading-dot {
         @include position(absolute);
         background-color: $wd-loading-background-color;
         width:  $dot-width;
@@ -47,7 +47,7 @@ $wd-loading-foreground-color: #000;
     }
     @for $i from 1 through $n {
         & > :nth-child(#{$i}) {
-            @extend %dot;
+            @extend %wd-loading-dot;
             left: $width / 2 - cos(pi() * 2 / $n * $i) * $width / 2 - $dot-width / 2;
             top:  $width / 2 - sin(pi() * 2 / $n * $i) * $width / 2 - $dot-width / 2;
             @include animation-delay((-1 + $i) * $duration);

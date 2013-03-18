@@ -32,13 +32,13 @@ $navbar-layout: smart;
     }
 
     // logo & icons
-    %icon {
+    %wd-navbar-icon {
         @include inline-block;
         @include hide-text;
         line-height: 0;
     }
     i.navbar-logo {
-        @extend %icon;
+        @extend %wd-navbar-icon;
         @include navbar-sprite(logo);
         width: navbar-sprite-width(logo);
         height: navbar-sprite-height(logo);
@@ -63,13 +63,13 @@ $navbar-layout: smart;
             opacity: 0.5;
         }
     }
-    @each $icon in app, contact, img, sms, setting, signout {
+    @each $icon in "app", "contact", "img", "sms", "setting", "signout" {
         i.navbar-icon-#{$icon} {
-            @extend %icon;
+            @extend %wd-navbar-icon;
             @include navbar-sprite($icon);
-            $margin: (20px - navbar-sprite-height($icon)) / 2 - 1px;
             width: navbar-sprite-width($icon);
             height: navbar-sprite-height($icon);
+            $margin: ($global-line-height - navbar-sprite-height($icon)) / 2 - 1px;
             margin-top: $margin;
             margin-bottom: $margin;
         }

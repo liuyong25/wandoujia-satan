@@ -83,7 +83,7 @@
         .action-delete,
         .action-download,
         .action-share {
-            $padding-top: ($actions-height - $icon-height) / 2;
+            $padding-top: ($actions-height - $global-line-height) / 2;
             @include float-right;
             padding: $padding-top 4px;
             @include button-effect;
@@ -111,7 +111,7 @@
         background: #6eb800;
         @include transform(scaleX(0));
         @include transform-origin(left);
-        @include transition-all;
+        @include transition(all $global-transition-duration);
         font-size: 12px;
         text-indent: 6px;
     }

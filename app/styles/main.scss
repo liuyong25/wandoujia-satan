@@ -1,9 +1,11 @@
 @import "compass";      // compass
+@import "compass/css3/user-interface"; // user-select support
 @import "animation";    // animation mixins
 @import "animation/animate"; // Animate.css
-@import "compass/css3/user-interface"; // user-select support
+
 @import "mixin";        // custom mixins & functions
 @import "base";         // platform level styles
-@import "navbar";       // platform level navbar
+@import "common/main";  // common styles
 @import "photos/main";  // photos module styles
 @import "auth/main";    // auth module styles
+@import "messages/main";
