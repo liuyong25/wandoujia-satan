@@ -1,113 +1,109 @@
 define([
-        'angular'
+        'angular',
+        'text!templates/photos/block.html',
+        'jquery',
+        'underscore'
     ], function(
-        angular
+        angular,
+        template,
+        jQuery,
+        _
     ) {
 'use strict';
-return ['$rootScope', '$window', 'WDP_LOAD_IMAGE_DELAY', 'WDP_PRELOAD_IMAGE_OFFSET', 'wdViewport',
-    function($rootScope, $window, WDP_LOAD_IMAGE_DELAY, WDP_PRELOAD_IMAGE_OFFSET, wdViewport) {
-    return {
-        link: function($scope, element, attrs) {
-            $scope.selected = $scope.$eval(attrs.selected);
-            $scope.$watch(attrs.selected, function(newValue) {
-                $scope.selected = newValue;
-            });
+return [function() {
+return {
 
-            function shouldShow() {
-                var top = $scope.layout[$scope.$index].y + $scope.offsetTop;
-                var bottom = top + 180;
-                return (top < wdViewport.top() + wdViewport.height() - 85 + WDP_PRELOAD_IMAGE_OFFSET) && (bottom > wdViewport.top() + 15 - WDP_PRELOAD_IMAGE_OFFSET);
-            }
-            function renderImage() {
-                var $img = element.find('.photo img');
-                var path = $scope.photo.thumbnail_path;
-                if ($img.data('src') !== path) {
-                    $img.data('src', path);
-                    var image = new Image();
-                    image.onload = function() {
-                        image.onload = null;
-                        var hasSrc = !!$img.attr('src');
-                        $img.attr('src', path);
-                        if (!hasSrc) {
-                            $img.fadeIn();
-                        }
-                    };
-                    image.src = path;
-                }
-            }
-            function toggleBlock() {
-                if (shouldShow()) {
-setTimeout(function() {
-                    element.show();
-                    renderImage();
-}, 0);
-                }
-                else {
-setTimeout(function() {
-                    element.hide();
-}, 0);
-                }
-            }
+template: template,
+replace: true,
+restrict: 'CA',
+link: function($scope, element) {
+    // Element cache
+    var photo = element.children('.photo');
+    var image = angular.element(new Image()).appendTo(photo);
 
-            function relayout() {
-                var layout = $scope.layout[$scope.$index];
-                element
-                    .css({
-                        left: layout.x,
-                        top:  layout.y
-                    })
-                    .children('.photo')
-                        .css({
-                            width: layout.width,
-                            height: layout.height
-                        })
-                        .children('img')
-                            .css({
-                                left: layout.innerX,
-                                top: layout.innerY
-                            });
-            }
+    // Selection
+    $scope.$watch('isSelected(photo)', function(newValue) {
+        $scope.selected = newValue;
+        $scope.checkboxTipText = newValue ? $scope.$root.DICT.photos.BLOCK_DESELECT : $scope.$root.DICT.photos.BLOCK_SELECT;
+    });
+    // Update thumbnail
+    $scope.$watch('photo.thumbnail_path', function() {
+        photo.addClass('fadeIn');
+        renderImage();
+    });
+    // Update layout
+    $scope.$on('wdp:showcase:layout', function(e, layout) {
+        relayout(layout.metas);
+    });
 
-            $scope.$watch('photo.thumbnail_path', function() {
-                toggleBlock();
-            });
-
-            $scope.$on('layout', function() {
-                relayout();
-                toggleBlock();
-            });
-
-            // TODO: This way is better than wdViewport.on('scroll'), weird...
-            $scope.$on('scroll', function() {
-                toggleBlock();
-            });
-
-            if ($scope.photo.deferred) {
-                var progressBar = angular.element('<div style="position:absolute;bottom:0;left:0;background:rgba(255,255,255,0.7);width:100%;height:100%;"></div>');
-                progressBar.appendTo(element.find('.photo'));
-                $scope.photo.deferred.progress(function(percent) {
-                    progressBar.css('height', (100 - percent) + '%');
-                });
-                $scope.photo.deferred.done(function() {
-                    var tip = angular.element('<div style="z-index:101;position:absolute;left:0;right:0;bottom:0;text-align:center;padding: 3px 0;font-size:12px;color:#fff;background:rgba(109, 184, 0, 0.7);"><span style="display:inline-block;"><i class="icon-ok icon-white" style="vertical-align:top;margin:3px 0;"></i> 添加成功</span></div>');
-                    tip
-                        .appendTo(element.find('.photo'))
-                        .fadeIn().delay(2000).fadeOut();
-                    tip.promise().then(function() {
-                        tip.remove();
-                    });
-                }).fail(function() {
-                    var tip = angular.element('<div style="z-index:101;position:absolute;left:0;right:0;bottom:0;text-align:center;padding: 3px 0;font-size:12px;color:#fff;background:rgba(181, 61, 1, 0.7);"><span style="display:inline-block;"><i class="icon-remove icon-white" style="vertical-align:top;margin:3px 0;"></i> 添加失败</span></div>');
-                    tip
-                        .appendTo(element.find('.photo'))
-                        .fadeIn().delay(2000);
-                    tip.promise().then(function() {
-                        tip.remove();
-                        $scope.$apply('removeFailed(photo)');
-                    });
-                });
-            }
+    var success = false;
+    $scope.cancelUpload = function() {
+        if (!success) {
+            $scope.photo.deferred.cancelUpload();
         }
+        $scope.removeFailed($scope.photo);
     };
+    $scope.retryUpload = function() {
+        $scope.photo.deferred.retryUpload();
+    };
+
+    var isUpload = !!$scope.photo.deferred;
+    element
+        .children('.actions')
+            .toggle(!isUpload)
+            .end()
+        .children('.wdp-progress')
+            .toggle(isUpload);
+    if (isUpload) {
+        $scope.photo.deferred.done(function() {
+            success = true;
+            setTimeout(function() {
+                element
+                    .children('.actions')
+                        .show()
+                        .end()
+                    .children('.wdp-progress')
+                        .addClass('fadeOut')
+                        .one('webkitAnimationEnd', function() {
+                            angular.element(this).hide();
+                        });
+                setTimeout(function() {
+                    element.children('.wdp-progress').remove();
+                }, 400);
+            }, 2000);
+        });
+    }
+
+    function renderImage() {
+        preloadImage($scope.photo.thumbnail_path, function(path) {
+            image.attr('src', path).addClass('fadeIn');
+        });
+    }
+    function preloadImage(path, callback) {
+        var temp = new Image();
+        temp.onload = function() {
+            temp = temp.onload = null;
+            callback(path);
+        };
+        temp.src = path;
+    }
+    function relayout(layout) {
+        layout = layout[$scope.$index];
+        element.css({
+                left: layout.x,
+                top: layout.y
+            });
+        photo.css({
+                width: layout.width,
+                height: layout.height
+            });
+        image.css({
+            left: layout.innerX,
+            top: layout.innerY
+        });
+    }
+}
+
+};
 }];
 });

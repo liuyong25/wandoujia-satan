@@ -4,25 +4,29 @@ define([
         'modules/photos',
         'text!templates/auth/portal.html',
         'text!templates/photos/gallery.html',
-        'modules/common'
+        'modules/common',
+        'modules/language'
     ], function(
         angular,
         auth,
         photos,
         PortalTemplate,
         PhotosTemplate,
-        common
+        common,
+        language
     ) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
+
         // Prevent CORS error for accept-headers...
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
         // Used for filter route changing which need auth.
-        var validateToken = ['$q', 'wdAuthToken', '$rootScope', '$location',
-            function($q, wdAuthToken, $rootScope, $location) {
+        var validateToken = ['$q', 'wdAuthToken', '$location',
+            function($q, wdAuthToken, $location) {
             if (wdAuthToken.valid()) {
                 return true;
             }
@@ -34,6 +38,9 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
         }];
 
         // Routers configurations.
+        $routeProvider.when('/portal/:help', {
+            redirectTo: '/portal'
+        });
         $routeProvider.when('/portal', {
             template: PortalTemplate,
             controller: 'portalController'
@@ -54,67 +61,15 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
             controller: 'galleryController',
             resolve: {
                 auth: validateToken
-            }
+            },
+            reloadOnSearch: false
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
         });
 
-        // Count active requests amount, then fire 'ajaxStart' or 'ajaxStop' events like jQuery.ajax
-        var activeRequest = 0;
-        function pushActiveRequest($scope) {
-            activeRequest += 1;
-            if (activeRequest === 1) {
-                $scope.$broadcast('ajaxStart');
-            }
-        }
-        function popActiveRequest($scope) {
-            activeRequest -= 1;
-            if (activeRequest === 0) {
-                $scope.$broadcast('ajaxStop');
-            }
-        }
-        wdHttpProvider.requestInterceptors.push([
-                    '$rootScope',
-            function($rootScope) {
-            return function() {
-                pushActiveRequest($rootScope);
-            };
-        }]);
-        $httpProvider.responseInterceptors.push([
-                    '$q', '$rootScope', '$log',
-            function($q,   $rootScope,   $log) {
-            return function(promise) {
-                return promise.then(function success(response) {
-                    $log.log(response.config.url, response.status);
-                    popActiveRequest($rootScope);
-                    return response;
-                }, function error(response) {
-                    $log.warn(response.config.url, response.status);
-                    popActiveRequest($rootScope);
-                    return $q.reject(response);
-                });
-            };
-        }]);
-
         // Global exception handling.
-        $httpProvider.responseInterceptors.push([
-                     '$rootScope', '$q', '$location', 'wdAuthToken',
-            function( $rootScope,   $q,   $location,   wdAuthToken) {
-            return function(promise) {
-                return promise.then(null, function error(response) {
-                    // If auth error, always signout.
-                    // 401 for auth invalid, 0 for server no response.
-                    if (!response.config.disableErrorControl &&
-                        (response.status === 401 || response.status === 0)) {
-                        wdAuthToken.signout();
-                    }
-                    return $q.reject(response);
-                });
-            };
-        }]);
-
-        wdHttpProvider.requestInterceptors.push(['wdDev', function(wdDev) {
+        wdHttpProvider.requestInterceptors.push(['wdDev', '$rootScope', function(wdDev, $rootScope) {
             return function(config) {
                 // Using realtime data source url.
                 if (config.url) {
@@ -128,39 +83,69 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos'])
                 if (angular.isUndefined(config.withCredentials)) {
                     config.withCredentials = true;
                 }
+                pushActiveRequest($rootScope);
             };
         }]);
+
+        $httpProvider.responseInterceptors.push([
+                     '$q', 'wdAuthToken', '$rootScope', '$log',
+            function( $q,   wdAuthToken,   $rootScope,   $log) {
+            return function(promise) {
+                return promise.then(
+                    function success(response) {
+                        $log.log(response.config.url, response.status);
+                        popActiveRequest($rootScope);
+                        return response;
+                    },
+                    function error(response) {
+                        $log.warn(response.config.url, response.status);
+                        popActiveRequest($rootScope);
+                        // If auth error, always signout.
+                        // 401 for auth invalid, 0 for server no response.
+                        if (!response.config.disableErrorControl &&
+                            (response.status === 401 || response.status === 0)) {
+                            wdAuthToken.signout();
+                        }
+                        return $q.reject(response);
+                    });
+            };
+        }]);
+
+        var activeRequest = 0;
+        function pushActiveRequest($scope) {
+            activeRequest += 1;
+            if (activeRequest === 1) {
+                $scope.$broadcast('ajaxStart');
+            }
+        }
+        function popActiveRequest($scope) {
+            activeRequest -= 1;
+            if (activeRequest === 0) {
+                $scope.$broadcast('ajaxStop');
+            }
+        }
     }])
-    .run([      '$window', '$rootScope', 'wdKeeper', 'GA',
-        function($window,   $rootScope,   wdKeeper,   GA) {
-
-        // $rootScope.$on('$routeChangeStart', function(next) {
-        //     console.log('start', next, $location.url());
-        // });
-        // $rootScope.$on('$routeChangeSuccess', function(next) {
-        //     console.log('success', next, $location.url());
-        // });
-        // $rootScope.$on('$routeChangeError', function(next) {
-        //     console.log('error', next, $location.url());
-        // });
-
+    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
+        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
         // Tip users when leaving.
-        $window.onbeforeunload = function (e) {
-          e = e || window.event;
-          // var ret = activeRequest === 0 ? null : leavingTip;
-          var ret = wdKeeper.getTip();
-          // For IE<8 and Firefox prior to version 4
-          if (e) {
-            e.returnValue = ret;
-          }
-          // For Chrome, Safari, IE8+ and Opera 12+
-          return ret;
+        $window.onbeforeunload = function () {
+            return wdKeeper.getTip();
         };
 
-        // $rootScope.$on('ajaxStart', function() {});
-        // $rootScope.$on('ajaxStop',  function() {});
+        (function(keeper) {
+            $rootScope.$on('ajaxStart', function() {
+                keeper = wdKeeper.push($rootScope.DICT.app.UNLOAD_NETWORK_TIP);
+            });
+            $rootScope.$on('ajaxStop',  function() {
+                keeper.done();
+            });
+        })();
 
         // GA support
         $rootScope.GA = GA;
+        // i18n word table
+        $rootScope.DICT = wdWordTable;
     }]);
+
+(function() {})(common, language, photos, auth);
 });

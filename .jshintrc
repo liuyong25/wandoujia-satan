@@ -1,5 +1,5 @@
 {
-    "node": true,
+    // "node": true,
     "browser": true,
     "es5": true,
     "esnext": true,
@@ -7,9 +7,9 @@
     // "camelcase": true,
     "curly": true,
     "eqeqeq": true,
+    "eqnull": true,
     "immed": true,
-    "indent": 4,
-    "latedef": true,
+    // "latedef": true,
     "newcap": true,
     "noarg": true,
     "quotmark": "single",
@@ -23,6 +23,7 @@
     "white": false,
 
     "globals": {
-        "define": true
+        "define": true,
+        "require": true
     }
 }

@@ -12,7 +12,7 @@ define([
 
     photo: photo to show
 */
-return [function() {
+return ['wdpImageHelper', function(wdpImageHelper) {
     return {
         link: function($scope, element, attrs) {
             var $current = null;
@@ -22,17 +22,28 @@ return [function() {
                 var $image = angular.element('<img>');
                 $image
                     .data('photo', newPhoto)
+                    .data('width', newPhoto.orientation % 180 === 0 ? newPhoto.width : newPhoto.height)
+                    .data('height', newPhoto.orientation % 180 === 0 ? newPhoto.height : newPhoto.width)
                     .data('rotation', 0)
-                    .hide()
-                    .one('load', function() {
-                        $image.fadeIn();
-                    })
-                    .attr('src', newPhoto.path);
+                    .attr('src', newPhoto.thumbnail_path);
                 layout($image);
+                wdpImageHelper.preload(newPhoto.path).then(function() {
+                    $image
+                        .attr('src', newPhoto.path)
+                        .data('rotation', $image.data('rotation') + newPhoto.orientation)
+                        .data('width', newPhoto.width)
+                        .data('height', newPhoto.height)
+                        .css({
+                            transition: 'none',
+                            transform: 'rotate(' + $image.data('rotation') + 'deg)'
+                        });
+                        layout($image);
+                });
+
                 return $image;
             };
             var destroy = function($image) {
-                jQuery.when($image.fadeOut()).done(function() {
+                return $image.stop().fadeOut(200).promise().done(function() {
                     $image.remove();
                 });
             };
@@ -41,8 +52,8 @@ return [function() {
                 var photo = $image.data('photo');
                 var frameWidth = element.width();
                 var frameHeight = element.height();
-                var imageWidth = horizontal ? photo.width : photo.height;
-                var imageHeight = horizontal ? photo.height : photo.width;
+                var imageWidth = horizontal ? $image.data('width') : $image.data('height');
+                var imageHeight = horizontal ? $image.data('height') : $image.data('width');
                 var widthScale = imageWidth / frameWidth;
                 var heightScale = imageHeight / frameHeight;
                 var scale = Math.max(widthScale, heightScale);
@@ -71,19 +82,22 @@ return [function() {
                 // Destroy current image tag first.
                 // The tag may not be removed immediately, for sake of fading out may take some
                 // time.
+                var promise = null;
                 if ($current) {
-                    destroy($current);
+                    promise = destroy($current);
                 }
                 // Create a new img tag, then append it to DOM.
                 if (newPhoto) {
-                    $scope.loading = true;
                     $current = create(newPhoto);
-                    $current.one('load', function() {
-                        $scope.$apply(function() {
-                            $scope.loading = false;
+                    $current.hide().appendTo(element);
+                    if (promise) {
+                        promise.done(function() {
+                            $current.fadeIn(200);
                         });
-                    });
-                    element.append($current);
+                    }
+                    else {
+                        $current.show();
+                    }
                 }
             });
 

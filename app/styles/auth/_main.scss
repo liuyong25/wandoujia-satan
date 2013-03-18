@@ -1,219 +1,178 @@
-.wd-auth {
-    @import "auth/*.png";
+$auth-spacing: 4px;
+@import "auth/*.png";
+.wd-portal {
+    @include position(fixed, 0px 0px 0px 0px);
     @include ui-layer-top;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background: image-url("bg-pattern.png");
+    background: #6eb800;
+    %font-roboto {
+        font-family: 'Roboto', sans-serif;
+        @include text-shadow(0 1px 0 rgba(#000, 0.2));
+    }
 
-    .panel {
-        $width: 700px;
-        $height: 300px;
-        position: absolute;
-        left: 50%;
-        top: 45%;
-        margin: ($height / -2) 0 0 ($width / -2);
-        width: $width;
-        height: $height;
-        // border-radius: 6px;
-        // @include box-shadow(0 0 10px #ccc);
-        // background: #f6f6f6;
+    .a:before {
+        content: "";
+        $name: "icon_logo_white";
+        @include position(fixed, 20px 0 0 30px);
+        @include auth-sprite($name);
+        width: auth-sprite-width($name);
+        height: auth-sprite-height($name);
+    }
 
-        .logo {
-            background: image-url("logo_light.png");
-            $w: image-width("logo_light.png");
-            $h: image-height("logo_light.png");
-            position: absolute;
-            left: 0;
-            top: ($height - $h) / 2;
-            width: $w;
-            height: $h;
+    .container {
+        padding-left: 40px;
+        width: 900px;
+    }
 
-            &:after {
-                position: absolute;
-                right: -30px;
-                top: -50%;
-                content: "";
-                width: 1px;
-                height: 200%;
-                @include background-image(linear-gradient(#f6f6f6, #ccc, #f6f6f6));
-            }
-            &:before {
-                position: absolute;
-                right: -31px;
-                top: -25%;
-                content: "";
-                width: 1px;
-                height: 150%;
-                @include background-image(linear-gradient(#f6f6f6, #f9f9f9, #f6f6f6));
-            }
+    .a {
+        @include position(fixed, 0px 0px 234px 0px);
+        .container {
+            @include position(absolute, 50% 0 0 50%);
+            margin: -124px 0 0 -480px;
         }
-
-        .auth {
-            position: absolute;
-            left: 310px;
-            top: 100px;
+        h1, p, span {
+            @extend %font-roboto;
+            color: #fff;
+        }
+        h1 {
+            // margin-top: 175px;
+            font-weight: 100;
+            font-size: 42px;
+        }
+        h1 + p {
+            margin-top: 13px;
+            opacity: 0.7;
+        }
+        form {
+            margin-top: 70px;
+            margin-bottom: 10px;
+            input {
+                @extend %font-roboto;
+                height: 34px;
+                line-height: 34px;
+                font-size: 18px;
+                border-color: transparent;
+                padding-left: 10px;
+                padding-right: 10px;
+                @include box-shadow(none);
+                opacity: 0.8;
+                @include transition(opacity $global-transition-duration);
+                &:focus {
+                    opacity: 1;
+                }
+            }
+            button {
+                @extend %font-roboto;
+                @include box-shadow(none);
+                width: 96px;
+            }
             p {
-                color: #555;
-                @include text-shadow(0 1px 0 #fff);
-                a {
-                    color: #6a0;
-                    font-size: 12px;
-                }
-            }
-            form {
-                margin: 15px 0;
-                $height: 28px;
-                input {
-                    background-color: #f5f5f5;
-                    height: $height;
-                    line-height: $height;
-                    text-indent: 5px;
-
-                    @include transition(all $global-transition-duration);
-
-                    &:focus {
-                        border-color: #bbb;
-                        background-color: #fff;
-                        @include box-shadow(0 1px 0 #fff);
-                    }
-                }
-                button {
-                    font-size: inherit;
-                    padding-top: 8px;
-                    padding-bottom: 8px;
-                    width: 96px;
-                }
-                @include nowrap;
+                margin-top: 12px;
             }
         }
-        .bottom {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            padding-bottom: 100px;
-            .apk-guide {
-                border-radius: 3px;
-                background: #e6e6e6;
-                @include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1),
-                                    0 1px 1px #fff);
+        .error {
+            width: 306px;
+            font-size: 12px;
+            border-radius: 3px;
+            background: rgba(#fff, 0.5);
+            padding: 12px 15px;
+            color: #333;
+            margin-bottom: 5px;
+            @include text-shadow(0 1px 0 rgba(#fff, 0.4));
+            ul {
+                margin-bottom: 0;
+            }
+            a {
+                color: #3c7800;
+            }
+        }
+        .btn-safari, .btn-getstarted {
+            cursor: pointer;
+            text-decoration: underline;
+            opacity: 0.7;
+            &:hover {
+                opacity: 0.95;
             }
         }
     }
 
-    .help {
-        position: fixed;
-        right: 100%;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: image-url('bg-pattern.png');
-        overflow: auto;
-        @include transition(all $global-transition-duration);
-        opacity: 0;
-
-        &.active {
-            right: 0;
-            opacity: 1;
+    .b {
+        @include position(fixed, 0 0px 0px 0px);
+        height: 234px;
+        background: #fff;
+        h2, p {
+            @extend %font-roboto;
+            @include text-shadow(0 1px 0 rgba(#fff, 0.2));
         }
-
-        .btn-back {
-            position: absolute;
-            left: 30px;
-            top: 20px;
-            $icon-name: "icon_back";
-            i.help-icon-back {
-                display: block;
-                width: auth-sprite-width($icon-name);
-                height: auth-sprite-height($icon-name);
-                @include auth-sprite($icon-name);
-                &:hover {
-                    @include auth-sprite("#{$icon-name}_h");
-                }
-                &:active {
-                    @include auth-sprite("#{$icon-name}_p");
-                }
-            }
-        }
-        .hd {
-            height: 70px;
-            line-height: 70px;
-            font-size: 18px;
-            text-align: center;
-            @include text-shadow(0 1px 0 #fff);
-        }
-        .bd {
-            padding: 1px 0;
-            background: #dedede;
-            @include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1),
-                                    0 1px 1px #fff);
-            ol {
-                @include clearfix;
-                width: 940px;
-                margin: 32px auto;
-            }
-            li {
-                @include float-left;
-                width: 240px;
-                margin-left: 110px;
-                .desc {
-                    @include text-shadow(0 1px 0 #fff);
-                    @include clearfix;
-                    font-size: 12px;
-                    color: #555;
-                    margin-top: 15px;
-                    .order {
-                        float: left;
-                        height: 40px;
-                        line-height: 40px;
-                        color: #aaa;
-                        font-size: 32px;
-                        margin: 0 10px 0 0;
-                    }
-                }
-            }
-            .step-1 {
-                margin-left: 0;
-            }
-            .figure-1 {
-                @include auth-sprite("help1");
-                width: auth-sprite-width("help1");
-                height: auth-sprite-height("help1");
-            }
-            .figure-2 {
-                @include auth-sprite("help2");
-                width: auth-sprite-width("help2");
-                height: auth-sprite-height("help2");
-            }
-            .figure-3 {
-                @include auth-sprite("help3");
-                width: auth-sprite-width("help3");
-                height: auth-sprite-height("help3");
-            }
-        }
-        .ft {
-            .apk-guide {
-                margin-top: 10px;
-            }
-        }
-    }
-    .apk-guide {
-        @include clearfix;
-        margin: 0 auto;
-        width: 400px;
-        padding: 15px;
-        img {
-            float: left;
-            margin-right: 10px;
+        h2 {
+            font-weight: 300;
+            font-size: 24px;
+            margin-top: 44px;
+            margin-bottom: 2px;
         }
         p {
-            font-size: 12px;
-            overflow: hidden;
-            margin: 10px 0 0 0;
-            @include text-shadow(0 1px 0 #fff);
+            color: #999;
+            font-size: 13px;
         }
+        .link-to-gp {
+            margin-top: 52px;
+            $name: "googleplay";
+            @include auth-sprite($name);
+            display: block;
+            width: auth-sprite-width($name);
+            height: auth-sprite-height($name);
+        }
+        ul.inline {
+            margin-top: 50px;
+            padding-top: 15px;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            border-top: 1px solid #f0f0f0;
+            li {
+                line-height: 14px;
+            }
+            li:first-child {
+                display: block;
+            }
+            li a {
+                padding-right: 0;
+                color: #999;
+                &:hover {
+                    color: #6db800;
+                    text-decoration: none;
+                }
+                &:active {
+                    color: #3c7800;
+                }
+            }
+        }
+    }
+}
+.wd-portal-getstarted {
+    // @import "auth/*.png";
+    $width: auth-sprite-width("step1") * 3 + 20px * 3;
+    width: $width;
+    margin-left: -$width/2 - 1px;
+    @for $i from 1 through 3 {
+        .step#{$i} {
+            .figure {
+                $name: "step#{$i}";
+                @include auth-sprite($name);
+                display: block;
+                width: auth-sprite-width($name);
+                height: auth-sprite-height($name);
+                margin: 0 auto;
+            }
+            p {
+                margin-top: 10px;
+                font-size: 12px;
+                a {
+                    color: #6eb800;
+                }
+            }
+        }
+    }
+    .modal-footer {
+        display: none;
     }
 }

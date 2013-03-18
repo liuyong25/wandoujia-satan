@@ -1,105 +1,154 @@
 define([
-        'plupload',
-        'jquery',
-        'underscore'
+        'fineuploader',
+        'jquery'
     ], function(
-        plupload,
-        jQuery,
-        _
+        fineuploader,
+        jQuery
     ) {
 'use strict';
-
-return ['$q', 'wdDev', 'wdKeeper', function($q, wdDev, wdKeeper) {
+return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
+    function($q,   wdDev,   wdKeeper,   wdpImageHelper,   GA) {
     return {
-        scope: {
-            startUpload: '&onStartUpload'
-        },
-        link: function($scope, element, attrs) {
-            var uploader = new plupload.Uploader({
-                url: wdDev.wrapURL('/directive/photos/upload'),
-                runtimes: 'html5, html4',
-                container: attrs.containerId,
-                'browse_button': attrs.browseButtonId,
-                'drop_element': element.attr('id'),
-                'multi_selection': true,
-                filters : [
-                    {title : 'Image files', extensions : 'jpg,gif,png'}
-                ]
-            });
-            uploader.init();
+        link: function(scope, element) {
             var keeper = null;
             var counter = 0;
-            uploader.bind('FilesAdded', function(up, files) {
-                files = _.map(files, function(file) {
-                    var deferred = $q.defer();
-                    var data = {};
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        reader.onload = null;
-                        var image = new Image();
-                        image.onload = function() {
-                            image.onload = null;
-                            data.width = image.width;
-                            data.height = image.height;
-                            if (data.height > 170) {
-                                data.width *= 170 / data.height;
-                                data.height = 170;
-                                var canvas = document.createElement('canvas');
-                                canvas.width = data.width;
-                                canvas.height = data.height;
-                                var ctx = canvas.getContext('2d');
-                                ctx.drawImage(image, 0, 0, data.width, data.height);
-                                data.dataURI = canvas.toDataURL('image/jpeg');
-                            }
-                            else {
-                                data.dataURI = e.target.result;
-                            }
 
-                            $scope.$apply(function() {
-                                deferred.resolve(data);
-                            });
+            var uploader = new fineuploader.FineUploaderBasic({
+                button: element[0],
+                request: {
+                    endpoint: wdDev.wrapURL('/directive/photos/upload')
+                },
+                validation: {
+                    acceptFiles: 'image/*'
+                },
+                cors: {
+                    expected: true,
+                    sendCredentials: true
+                },
+                messages: {
+                    onLeave: scope.$root.DICT.photos.UPLOAD_RELOAD
+                },
+                callbacks: {
+                    onSubmit: function(id) {
+                        var file = uploader.getFile(id);
+                        var photoPromise = loadLocalPhoto(file);
+
+                        file.defer = jQuery.Deferred();
+                        var uploadPromise = file.defer.promise();
+
+                        uploadPromise.cancelUpload = function() {
+                            uploader.cancel(id);
                         };
-                        image.src = e.target.result;
-                    };
-                    reader.onerror = function() {
-                        reader.onerror = null;
-                        $scope.$apply(function() {
-                            deferred.reject('something wrong.');
+                        uploadPromise.retryUpload = function() {
+                            uploader.retry(id);
+                        };
+
+                        count();
+
+                        scope.startUpload({
+                            photo: photoPromise,
+                            upload: uploadPromise
                         });
-                    };
-                    reader.readAsDataURL(file.nativeFile);
-                    file.deferred = jQuery.Deferred();
-                    return {
-                        file: file,
-                        data: deferred.promise,
-                        uploading: file.deferred.promise()
-                    };
-                });
-                $scope.startUpload({files: files});
-                if (keeper) {
-                    keeper.done();
+
+                    },
+                    onProgress: function(id, name, uploadedBytes, totalBytes) {
+                        var file = uploader.getFile(id);
+                        var percent = Math.round((uploadedBytes / totalBytes) * 100);
+                        file.defer.notify({
+                            status: 'uploading',
+                            percent: percent
+                        });
+                    },
+                    onComplete: function(id, name, response) {
+                        var file = uploader.getFile(id);
+
+                        uncount();
+
+                        if (response.success) {
+                            file.defer.resolve(response.result);
+                            GA('photos:upload:success');
+                        }
+                        else {
+                            file.defer.notify({
+                                status: 'failed'
+                            });
+                            GA('photos:upload:fail');
+                        }
+                    },
+                    onManualRetry: function() {
+                        count();
+                    },
+                    onCancel: function() {
+                        uncount();
+                    }
                 }
-                keeper = wdKeeper.push('仍有图片在上传中');
-                counter = files.length;
-                up.start();
             });
-            uploader.bind('UploadProgress', function(up, file) {
-                file.deferred.notify(file.percent);
+
+            var dnd = new fineuploader.DragAndDrop({
+                dropArea: document.body,
+                multiple: true,
+                hideDropzones: false,
+                callbacks: {
+                    dropProcessing: function(isProcessing, files) {
+                        uploader.addFiles(files);
+                    },
+                    error: function(code, filename) {},
+                    log: function(message, level) {}
+                }
             });
-            uploader.bind('FileUploaded', function(up, file, info) {
+            dnd.setup();
+
+            function loadLocalPhoto(file) {
+                var defer = $q.defer();
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    reader.onload = reader.onerror = null;
+
+                    wdpImageHelper.preload(e.target.result).done(function(image) {
+                        var width = image.width;
+                        var height = image.height;
+                        if (height > 170) {
+                            width *= 170 / height;
+                            height = 170;
+                        }
+                        wdpImageHelper.canvasResize(image, width, height).done(function(dataURI) {
+                            scope.$apply(function() {
+                                defer.resolve({
+                                    width: width,
+                                    height: height,
+                                    dataURI: dataURI
+                                });
+                            });
+                        });
+
+                    });
+                };
+                reader.onerror = function() {
+                    reader.onload = reader.onerror = null;
+                    scope.$apply(function() {
+                        defer.reject('something wrong.');
+                    });
+                };
+
+                reader.readAsDataURL(file);
+
+                return defer.promise;
+            }
+
+            function count() {
+                counter += 1;
+                if (counter > 0 && !keeper) {
+                    keeper = wdKeeper.push('仍有图片在上传中');
+                }
+            }
+            function uncount() {
                 counter -= 1;
                 if (counter === 0) {
                     keeper.done();
+                    keeper = null;
                 }
-                file.deferred.resolve(jQuery.parseJSON(info.response));
-            });
-            uploader.bind('Error', function(up, err) {
-                counter -= 1;
-                if (counter === 0) {
-                    keeper.done();
-                }
-                err.file.deferred.reject(err);
-            });
+            }
         }
     };
 }];

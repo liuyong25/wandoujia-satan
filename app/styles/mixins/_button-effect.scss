@@ -1,0 +1,25 @@
+@mixin button-effect($transition: true) {
+    opacity: 0.65;
+    &:hover {
+        opacity: 1;
+    }
+    &:active {
+        opacity: 0.5;
+    }
+    @if $transition {
+        @include transition(opacity $global-transition-duration);
+    }
+}
+@mixin button-effect-light($transition: true) {
+    opacity: 0.4;
+    &:hover {
+        opacity: 0.6;
+    }
+    &:active {
+        opacity: 0.8;
+    }
+    @if $transition {
+        @include transition(opacity $global-transition-duration);
+    }
+}
+

@@ -1,3 +1,9 @@
+@import "mixins/position";
+@import "mixins/button-effect";
+
+@mixin transition-all {
+    @include transition(all $global-transition-duration);
+}
 @mixin box($width: nil, $height: nil, $border-radius: nil) {
     @if $width != nil {
         width: $width;
@@ -11,18 +17,6 @@
 }
 @mixin square($width: nil, $border-radius: nil) {
     @include box($width, $width, $border-radius);
-}
-@mixin position-container {
-    position: relative;
-}
-@mixin position($x:nil, $y:nil) {
-    position: relative;
-    @if $x != nil {
-        left: $x;
-    }
-    @if $y != nil {
-        top: $y;
-    }
 }
 @mixin offset($x:nil, $y:nil) {
     position: absolute;
@@ -42,6 +36,7 @@
         top: $y;
     }
 }
+
 
 // z-index
 @mixin ui-layer-top {

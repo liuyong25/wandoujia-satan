@@ -1,0 +1,30 @@
+.wdp-actionbar {
+    @include user-select(none);
+    @include position(fixed, 0px 0px 0 0px);
+    padding: 10px 20px;
+    background: rgba(#fff, 0.9);
+    .btn {
+        font-size: 12px;
+        margin-right: 5px;
+        min-width: 80px;
+    }
+    .btn.action-select {
+    }
+}
+
+.send-feedback {
+    @extend %has-icon-feedback;
+    @include position(absolute, 15px 20px 0 0);
+    min-width: 100px;
+    @include nowrap;
+    text-align: right;
+    color: #555;
+    font-size: 12px;
+    &:hover {
+        color: #6db800;
+        text-decoration: none;
+    }
+    &:active {
+        color: #3c7800;
+    }
+}

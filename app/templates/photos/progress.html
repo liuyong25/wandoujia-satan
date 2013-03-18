@@ -1,0 +1,15 @@
+<div>
+    <div class="bar" data-bar>
+        <div class="done" data-done>{{$root.DICT.photos.UPLOAD_DONE}}</div>
+        <div class="failed" data-failed>
+            {{$root.DICT.photos.UPLOAD_FAILED}}
+            <span
+                ng-click="retry()"
+                >{{$root.DICT.photos.UPLOAD_RETRY}}</span>
+        </div>
+    </div>
+    <button type="button" class="close cancel"
+        ng-click="cancel()"
+        bs-tooltip="{{$root.DICT.photos.UPLOAD_CANCEL}}"
+        >&times;</button>
+</div>

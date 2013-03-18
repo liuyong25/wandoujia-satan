@@ -19,6 +19,8 @@ return ['wdKey', function(wdKey) {
             // @options, no watch
             var options = $scope.$eval(attrs.options);
             var $header = element.find('.modal-header > h3');
+            var $buttonOk = element.find('.modal-footer > [bs-modal-ok]');
+            var $buttonCancel = element.find('.modal-footer > [bs-modal-cancel]');
 
             // Initialize modal widget.
             element.modal(_.defaults(options || {}, {
@@ -41,6 +43,12 @@ return ['wdKey', function(wdKey) {
 
             attrs.$observe('header', function(header) {
                 $header.text(header);
+            });
+            attrs.$observe('buttonOkText', function(ok) {
+                $buttonOk.text(ok);
+            });
+            attrs.$observe('buttonCancelText', function(cancel) {
+                $buttonCancel.text(cancel);
             });
 
             $scope.$watch(attrs.toggle, function(value, oldValue) {

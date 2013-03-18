@@ -42,7 +42,9 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                             });
                         }
                         else {
-                            self.pause();
+                            $scope.$apply(function() {
+                                self.pause();
+                            });
                         }
                     }, WDP_PLAYING_INTERVAL);
                     $scope.playing = true;
@@ -56,12 +58,14 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
 
                 // Indicates whether there is something on loading state.
                 // If true, turn on loading animation.
-                $scope.loading = false;
                 $scope.playing = false;
+                $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PLAY;
                 $scope.play = function() {
+                    $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PAUSE;
                     self.play();
                 };
                 $scope.pause = function() {
+                    $scope.playButtonText = $rootScope.DICT.photos.SLIDES_PLAY;
                     self.pause();
                 };
                 $scope.togglePlay = function() {
@@ -131,12 +135,11 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
         link: function($scope, element/*, attr, controller*/) {
             // Update dimensions when:
             // 1. viewport dimensions changed.
-            var updateDimensions = function(newValue, oldValue) {
-                if (newValue !== oldValue && $scope.current !== null) {
+            wdViewport.on('resize', function() {
+                if ($scope.current !== null) {
                     $scope.$broadcast('resize');
                 }
-            };
-            wdViewport.on('resize', updateDimensions);
+            });
 
             var timeStart = null;
             var open = function() {

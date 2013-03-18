@@ -1,3 +1,4 @@
+/*global Modernizr*/
 define([
         'angular',
         'jquery',
@@ -14,32 +15,48 @@ angular.module('wdAuth', ['wdCommon'])
     .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
         function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
 
+        $scope.isSupport = Modernizr.cors && Modernizr.websockets;
         $scope.isSafari = jQuery.browser.safari;
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;
-        $scope.buttonText = '连接手机';
-        $scope.errorText = '';
+        $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
+        $scope.error = '';
         $scope.state = 'standby';
         $scope.showHelp = false;
+
+        var acFromQuery = !!wdDev.query('ac');
+        var acFromInput = false;
+        var acFromCache = !!wdAuthToken.getToken();
+
+        if (!$scope.isSupport) {
+            GA('login:not_support')
+        }
+
+        $scope.openHelp = function() {
+            $scope.showHelp = true;
+        };
         $scope.safariHelp = function() {
-            wdAlert.alert('更改您的 Safari 设置', '连接手机失败，请前往设置/隐私中，将「阻止 cookie」一项设为「永不」。');
+            wdAlert.alert($scope.$root.DICT.portal.SAFARI_TITLE, $scope.$root.DICT.portal.SAFARI_CONTENT);
         };
         $scope.userInput = function() {
             if ($scope.state !== 'standby') {
                 return;
             }
-            $scope.buttonText = '连接手机';
+            $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
         };
-        $scope.submit = function() {
-            if (!$scope.authCode) {
+        $scope.submit = function(authCode) {
+            if (!authCode) {
                 GA('login:enter_authcode:empty');
                 return;
             }
             if ($scope.autoAuth) {
                 GA('login:auto');
             }
+            else {
+                acFromInput = true;
+            }
             // Parse data source.
-            var ip = wdAuthToken.parse($scope.authCode);
+            var ip = wdAuthToken.parse(authCode);
             var port = 10208;
 
             var keeper = null;
@@ -55,14 +72,14 @@ angular.module('wdAuth', ['wdCommon'])
                 // Send auth request.
                 $scope.state = 'loading';
                 wdDev.setServer(ip, port);
-                keeper = wdKeeper.push('仍在发送验证码');
+                keeper = wdKeeper.push($scope.$root.DICT.portal.KEEPER);
                 var timeStart = (new Date()).getTime();
                 $http({
                     method: 'get',
                     url: '/directive/auth',
                     timeout: 5000,
                     params: {
-                        authcode: $scope.authCode,
+                        authcode: authCode,
                         'client_time': (new Date()).getTime(),
                         'client_name': 'Browser',
                         'client_type': 3
@@ -72,27 +89,44 @@ angular.module('wdAuth', ['wdCommon'])
                 .success(function() {
                     keeper.done();
                     $scope.state = 'standby';
-                    $scope.buttonText = '验证成功';
+                    $scope.buttonText = $scope.$root.DICT.portal.AUTH_SUCCESS;
                     // TODO: Maybe expiration?
-                    wdAuthToken.setToken($scope.authCode);
+                    wdAuthToken.setToken(authCode);
+                    wdAuthToken.startSignoutDetection();
                     $location.url($route.current.params.ref || '/');
-                    GA('login:success');
+                    if (acFromInput) {
+                        GA('login:success:user_input');
+                    }
+                    if (acFromQuery) {
+                        GA('login:success:query');
+                    }
+                    else if (acFromCache) {
+                        GA('login:success:cache');
+                    }
                     GA('perf:auth_duration:success:' + ((new Date()).getTime() - timeStart));
                 })
                 .error(function() {
                     keeper.done();
                     $scope.state = 'standby';
-                    $scope.buttonText = '验证失败';
-                    $scope.errorText = '请检查验证码或确保电脑和手机在同一 Wi-Fi 网络中';
+                    $scope.buttonText = $scope.$root.DICT.portal.AUTH_FAILED;
+                    $scope.error = true;
                     $timeout(function() {
-                        $scope.buttonText = '连接手机';
-                        $scope.errorText = '';
+                        $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
+                        $scope.error = false;
                     }, 5000);
                     wdAuthToken.clearToken();
                     if ($scope.autoAuth) {
                         $route.reload();
                     }
-                    GA('login:fail');
+                    if (acFromInput) {
+                        GA('login:fail:user_input');
+                    }
+                    else if (acFromQuery) {
+                        GA('login:fail:query');
+                    }
+                    if (acFromCache) {
+                        GA('login:fail:cache');
+                    }
                     GA('perf:auth_duration:fail:' + ((new Date()).getTime() - timeStart));
                 });
             }
@@ -104,15 +138,23 @@ angular.module('wdAuth', ['wdCommon'])
                 else {
                     GA('login:enter_authcode:invalid');
                 }
-                $scope.errorText = '请检查验证码或确保电脑和手机在同一 Wi-Fi 网络中';
+                $scope.error = true;
                 $timeout(function() {
-                    $scope.errorText = '';
+                    $scope.error = false;
                 }, 5000);
             }
         };
 
-        if ($scope.authCode) {
-            $timeout($scope.submit, 0);
+        if ($location.search().help === 'getstarted') {
+            $scope.autoAuth = false;
+            $timeout(function() {
+                $scope.showHelp = true;
+            }, 0);
+        }
+        else if ($scope.authCode) {
+            $timeout(function() {
+                $scope.submit($scope.authCode);
+            }, 0);
         }
     }]);
 

@@ -9,79 +9,60 @@ define([
 return ['$window', function($window) {
     var $watcher = jQuery({});
     var $win = jQuery($window);
-    var $doc = jQuery($window.document);
+    var $doc = jQuery($window.document.body);
 
     var width = null;
     var height = null;
     var top = null;
     var left = null;
 
-    var cachedWidth = width;
-    var cachedHeight = height;
-    var cachedTop = top;
-    var cachedLeft = left;
+    var resizeDirty = true;
+    var scrollDirty = true;
 
     $win
         .on('resize', _.debounce(function() {
-            var dirty = false;
-            cachedWidth = width;
-            width = $win.width();
-            cachedHeight = height;
-            height = $win.height();
-            if (width !== cachedWidth) {
-                dirty = true;
-                $watcher.trigger('width', [width]);
-            }
-            if (height !== cachedHeight) {
-                dirty = true;
-                $watcher.trigger('height', [height]);
-            }
-            if (dirty) {
-                $watcher.trigger('resize', [width, height]);
-            }
+            resizeDirty = true;
+            $watcher.trigger('width', [width]);
+            $watcher.trigger('height', [height]);
+            $watcher.trigger('resize', [width, height]);
         }, 1000))
         .on('scroll', _.throttle(function() {
-            var dirty = false;
-            cachedTop = top;
-            top = $win.scrollTop();
-            cachedLeft = left;
-            left = $win.scrollLeft();
-            if (top !== cachedTop) {
-                dirty = true;
-                $watcher.trigger('top', [top]);
-            }
-            if (left !== cachedLeft) {
-                dirty = true;
-                $watcher.trigger('left', [left]);
-            }
-            if (dirty) {
-                $watcher.trigger('scroll', [top, left]);
-            }
+            scrollDirty = true;
+            $watcher.trigger('top', [top]);
+            $watcher.trigger('left', [left]);
+            $watcher.trigger('scroll', [top, left]);
         }, 300));
+
+    function updateDimensions() {
+        if (resizeDirty) {
+            resizeDirty = false;
+            width = $win.width();
+            height = $win.height();
+        }
+    }
+    function updateOffset() {
+        if (scrollDirty) {
+            scrollDirty = false;
+            left = $win.scrollLeft();
+            top = $win.scrollTop();
+        }
+    }
 
     return {
         width: function() {
-            if (width === null) {
-                width = $win.width();
-            }
+            updateDimensions();
             return width;
         },
         height: function() {
-            if (height === null) {
-                height = $win.height();
-            }
+            updateDimensions();
             return height;
         },
         top: function() {
-            if (top === null) {
-                top = $win.scrollTop();
-            }
+            updateOffset();
             return top;
         },
         left: function() {
-            if (left === null) {
-                left = $win.scrollLeft();
-            }
+            updateOffset();
             return left;
         },
         docWidth: function() {

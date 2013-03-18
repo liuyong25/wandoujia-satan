@@ -16,6 +16,7 @@
     plupload: 'vendor/plupload/plupload.wrapper',
     keymaster: 'vendor/keymaster.amd',
     bootstrap: 'vendor/bootstrap',
+    fineuploader: 'vendor/fineuploader/fineuploader',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',
