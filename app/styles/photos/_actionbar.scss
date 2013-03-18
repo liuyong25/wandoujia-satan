@@ -13,18 +13,27 @@
 }
 
 .send-feedback {
-    @extend %has-icon-feedback;
+    $sprite-name: "feedback";
+    cursor: pointer;
+    width: photos-sprite-width($sprite-name);
+    height: photos-sprite-height($sprite-name);
     @include position(absolute, 15px 20px 0 0);
     min-width: 100px;
     @include nowrap;
     text-align: right;
     color: #555;
     font-size: 12px;
-    &:hover {
+    &:hover, &:focus {
         color: #6db800;
         text-decoration: none;
+        i {
+            @include photos-sprite("#{$sprite-name}_h");
+        }
     }
     &:active {
         color: #3c7800;
+        i {
+            @include photos-sprite("#{$sprite-name}_p");
+        }
     }
 }

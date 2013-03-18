@@ -1,0 +1,41 @@
+.wd-notification {
+    @include position(fixed, 10px 10px 0 0);
+    width: 300px;
+    padding-left: 25px;
+    background: #fff;
+    border: 0;
+    border-radius: 5px;
+    @include box-shadow(0 5px 25px rgba(#000, 0.3));
+    @include transform(translateY(-110%));
+    @include transition(all $global-transition-duration);
+
+    &.in {
+        @include transform(translateY(0));
+    }
+
+    h4 {
+        margin-top: 4px;
+        margin-bottom: 12px;
+    }
+    h4 + p {
+        font-size: 12px;
+        line-height: 1.2;
+        margin-bottom: 15px;
+        color: #999;
+        & ~ a {
+            font-size: 12px;
+            margin-right: 10px;
+        }
+    }
+    &.chrome-ext {
+        overflow: hidden;
+        &:before {
+            $name: "chrome.png";
+            content: "";
+            @include position(absolute, 0 -15px -15px 0);
+            width: image-width($name);
+            height: image-height($name);
+            background: image-url($name) 0 0 no-repeat;
+        }
+    }
+}
