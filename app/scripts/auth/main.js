@@ -1,22 +1,20 @@
 /*global Modernizr*/
 define([
-        'angular',
-        'jquery',
-        'services/auth/token'
-    ], function(
-        angular,
-        jQuery,
-        authToken
-    ) {
+    'angular',
+    'auth/services/token'
+], function(
+    angular,
+    authToken
+) {
 'use strict';
 
 angular.module('wdAuth', ['wdCommon'])
     .provider('wdAuthToken', authToken)
-    .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert',
-        function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert) {
+    .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert', 'wdBrowser',
+        function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert, wdBrowser) {
 
         $scope.isSupport = Modernizr.cors && Modernizr.websockets;
-        $scope.isSafari = jQuery.browser.safari;
+        $scope.isSafari = wdBrowser.safari;
         $scope.authCode = wdDev.query('ac') || wdAuthToken.getToken() || '';
         $scope.autoAuth = !!$scope.authCode;
         $scope.buttonText = $scope.$root.DICT.portal.SIGN_IN;
@@ -29,7 +27,7 @@ angular.module('wdAuth', ['wdCommon'])
         var acFromCache = !!wdAuthToken.getToken();
 
         if (!$scope.isSupport) {
-            GA('login:not_support')
+            GA('login:not_support');
         }
 
         $scope.openHelp = function() {

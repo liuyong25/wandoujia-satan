@@ -1,9 +1,9 @@
 define([
     'angular',
-    'directives/bootstrap/navbar',
-    'directives/bootstrap/tooltip',
-    'directives/bootstrap/modal',
-    'directives/bootstrap/alert'
+    'common/directives/bootstrap/navbar',
+    'common/directives/bootstrap/tooltip',
+    'common/directives/bootstrap/modal',
+    'common/directives/bootstrap/alert'
 ], function(
     angular,
     navbar,
@@ -12,7 +12,7 @@ define([
     alert
 ) {
 'use strict';
-angular.module('bootstrap', [])
+angular.module('wdBootstrap', [])
     .directive('bsNavbar', navbar)
     .directive('bsTooltip', tooltip)
     .directive('bsAlert', alert)
