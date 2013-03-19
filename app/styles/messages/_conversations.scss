@@ -1,0 +1,94 @@
+.wdm-conversations {
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin-right: -1px;
+    @include user-select(none);
+    cursor: default;
+}
+
+.wdmc-row {
+    @include display-box;
+    @include box-align(center);
+    height: 64px;
+    border: 1px solid $wdm-border-color;
+    margin-bottom: -1px;
+    @include transition(background-color, $global-transition-duration / 4);
+    line-height: 24px;
+
+    .badge {
+        display: inline-block;
+        vertical-align: top;
+        padding: 0 6px;
+        line-height: 16px;
+        margin: 2px 0;
+        border-radius: 4px;
+        background: #6db800;
+        font-size: 11px;
+        @include box-shadow(inset 0 1px 1px rgba(#000, 0.1));
+        color: #fff;
+        @include text-shadow(0 1px rgba(#000, 0.1));
+    }
+
+    &:hover, &.selected {
+        background: #f5f5f5;
+    }
+    &.highlight {
+        $highlight-bg-color: #444;
+        background: $highlight-bg-color;
+        border-color: $highlight-bg-color;
+        .wdmcr-c * {
+            color: #fff;
+        }
+        .wdmcr-icon-alert {
+            @extend .messages-icon-alert-r;
+        }
+        .wdmcr-icon-running {
+            @extend .messages-icon-running-r;
+        }
+    }
+}
+
+.wdmcr-a {
+    width: 43px;
+    text-align: center;
+}
+
+.wdmcr-b {
+    $avatar-width: 48px;
+    width: $avatar-width;
+    img {
+        width: $avatar-width;
+        height: $avatar-width;
+        background: #000;
+        display: block;
+    }
+}
+
+.wdmcr-c {
+    @include box-flex(1);
+    margin: 0 9px;
+}
+.wdmcr-c-a {
+    font-size: 16px;
+    color: $wdm-main-text-color;
+    @include nowrap;
+    @include ellipsis;
+}
+.wdmcr-c-b {
+    font-size: 12px;
+    color: $wdm-sub-text-color;
+    @include nowrap;
+    @include ellipsis;
+}
+.wdmcr-d {
+    color: $wdm-sub-text-color;
+    margin-right: 16px;
+    text-align: right;
+}
+
+.wdmcr-icon-alert {
+    @extend .messages-icon-alert;
+}
+.wdmcr-icon-running {
+    @extend .messages-icon-running;
+}

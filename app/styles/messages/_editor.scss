@@ -1,0 +1,27 @@
+.wdm-editor {
+    form {
+        @include display-box;
+        @include box-align(center);
+        margin: 0;
+    }
+    input {
+        display: block;
+        @include box-flex(1);
+        padding: 7px 10px;
+        margin: 10px;
+        @include box-shadow(none);
+        background: #f5f5f5;
+        font-size: 12px;
+        &:focus {
+            background: #fff;
+            border-color: #ccc;
+        }
+        @include transition(background-color $global-transition-duration);
+    }
+    button {
+        display: block;
+        margin-right: 10px;
+        padding: 7px 30px;
+        font-size: 12px;
+    }
+}

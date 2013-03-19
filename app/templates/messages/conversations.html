@@ -1,0 +1,60 @@
+<section class="wdj-messages">
+    <section class="wdm-sub">
+        <section class="wdm-actions">
+            <div class="btn btn-primary"><i class="messages-icon-ab-add"></i> New message</div>
+            <div class="btn"><i class="messages-icon-ab-sel"></i> Select all</div>
+            <div class="btn"><i class="messages-icon-ab-del"></i> Delete</div>
+        </section>
+        <ol class="wdm-conversations unstyled">
+            <li class="wdmc-row"
+                ng-repeat="c in conversations"
+                ng-init="selected=false;active=false"
+                ng-class="{ selected: selected, highlight: active }">
+                <label class="wdmcr-a">
+                    <input type="checkbox" ng-model="selected">
+                </label>
+                <div class="wdmcr-b">
+                    <img>
+                </div>
+                <div class="wdmcr-c" ng-click="active=!active">
+                    <div class="wdmcr-c-a">{{ c.contact_names.toString() || c.addresses.toString() }}</div>
+                    <div class="wdmcr-c-b">{{ c.snippet }}</div>
+                </div>
+                <div class="wdmcr-d">
+                    <div class="status">
+                        <i ng-show="true || c.has_error" class="wdmcr-icon-alert"></i>
+                        <i class="wdmcr-icon-running"></i>
+                        <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
+                    </div>
+                    <div>
+                        {{ c.date | date:'MMM d' }}
+                    </div>
+                </div>
+            </li>
+        </ol>
+    </section>
+    <section class="wdm-main">
+        <section class="wdm-contact">
+            <div class="wdmct-a">John</div>
+            <div class="wdmct-b"><i class="messages-icon-contact"></i></div>
+        </section>
+        <ol class="wdm-entries unstyled">
+            <li class="wdme-row">
+                <div class="wdmer-a">what the fuck!</div>
+                <i class="messages-icon-alert"></i>
+                <i class="messages-icon-running"></i>
+            </li>
+            <li class="wdme-row wdme-row-self">
+                <div class="wdmer-a">what the fuck!</div>
+                <i class="messages-icon-alert"></i>
+                <i class="messages-icon-running"></i>
+            </li>
+        </ol>
+        <section class="wdm-editor">
+            <form>
+                <input type="text" placeholder="Reply to...">
+                <button class="btn" type="submit">Send</button>
+            </form>
+        </section>
+    </section>
+</section>

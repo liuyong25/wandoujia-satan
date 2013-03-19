@@ -1,12 +1,15 @@
 define([
     'angular',
-    'common/main'
+    'common/main',
+    'messages/controllers/conversation'
 ], function(
     angular,
-    common
+    common,
+    conversationController
 ) {
 'use strict';
 // jshint unused:false
-angular.module('wdMessages', ['wdCommon']);
+angular.module('wdMessages', ['wdCommon'])
+    .controller('wdmConversationController', conversationController);
 
 });

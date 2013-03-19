@@ -1,2 +1,44 @@
 .wdj-messages {
+    @import "icons";
+
+    @include position(fixed, 0px 0px 76px 0px);
+    @include display-box;
+    font-size: 12px;
+
+    $wdm-border-color: #e7e7e7;
+    $wdm-main-text-color: #000;
+    $wdm-sub-text-color: #999;
+
+    .wdm-sub {
+        @include display-box;
+        @include box-orient(vertical);
+        width: 428px;
+        border-right: 1px solid $wdm-border-color;
+    }
+    .wdm-main {
+        @include display-box;
+        @include box-flex(1);
+        @include box-orient(vertical);
+    }
+
+    .wdm-actions {
+        height: 53px;
+    }
+    .wdm-conversations {
+        @include box-flex(1);
+    }
+
+    .wdm-contact {
+        height: 53px;
+        border-bottom: 1px solid $wdm-border-color;
+    }
+    .wdm-entries {
+        @include box-flex(1);
+    }
+
+    @import "actions";
+    @import "conversations";
+    @import "contact";
+    @import "entries";
+    @import "editor";
 }

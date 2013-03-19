@@ -1,0 +1,13 @@
+.wdm-contact {
+    @include display-box;
+    @include box-align(center);
+    @include box-pack(center);
+    @include position;
+}
+
+.wdmct-b {
+    @include position(absolute, 8px 0px 0 0);
+    padding: 10px;
+    cursor: pointer;
+    @include button-effect;
+}

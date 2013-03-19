@@ -1,0 +1,12 @@
+.wdm-actions {
+    @include display-box;
+    @include box-align(center);
+
+    & > .btn:first-of-type {
+        margin-left: 10px;
+    }
+    & > .btn {
+        font-size: 12px;
+        margin-right: 5px;
+    }
+}

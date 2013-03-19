@@ -1,23 +1,27 @@
 define([
-        'angular',
-        'auth/main',
-        'photos/main',
-        'text!templates/auth/portal.html',
-        'text!templates/photos/gallery.html',
-        'common/main',
-        'common/language'
-    ], function(
-        angular,
-        auth,
-        photos,
-        PortalTemplate,
-        PhotosTemplate,
-        common,
-        language
-    ) {
+    'angular',
+    'auth/main',
+    'photos/main',
+    'text!templates/auth/portal.html',
+    'text!templates/photos/gallery.html',
+    'common/main',
+    'common/language',
+    'text!templates/messages/conversations.html',
+    'messages/main'
+], function(
+    angular,
+    auth,
+    photos,
+    PortalTemplate,
+    PhotosTemplate,
+    common,
+    language,
+    MessagesTemplate,
+    messages
+) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
 
@@ -54,7 +58,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
             }
         });
         $routeProvider.when('/', {
-            redirectTo: '/photos'
+            redirectTo: '/messages'
         });
         $routeProvider.when('/photos', {
             template: PhotosTemplate,
@@ -63,6 +67,13 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
                 auth: validateToken
             },
             reloadOnSearch: false
+        });
+        $routeProvider.when('/messages', {
+            template: MessagesTemplate,
+            controller: 'wdmConversationController',
+            resolve: {
+                auth: validateToken
+            }
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
@@ -149,5 +160,5 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
 
 angular.bootstrap(document, ['wdApp']);
 
-(function() {})(common, language, photos, auth);
+(function() {})(common, language, photos, auth, messages);
 });
