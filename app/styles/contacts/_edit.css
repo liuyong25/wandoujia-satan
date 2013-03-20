@@ -1,0 +1,51 @@
+.contacts-edit{
+
+    .photo{
+        float: left;
+    }
+
+    .info{
+        margin-top:75px;
+        margin-left:30px;
+        width: 500px;
+        float: left;
+
+        hr{
+            border: 0px;
+            height: 5px;
+            background-color: #ededed;
+        }
+
+        .name{
+            font-size: 28px;
+        }
+
+        .remark{
+            color: #cccccc;
+            font-size:13px;
+        }
+
+        dl{
+            margin-top: 25px;
+
+            dt{
+                font-size: 18px;
+            }
+
+            dd{
+                margin-top: 10px;
+
+                p{
+                    display: inline-block;
+                    font-size: 15px;
+                }
+
+                p.des{
+                    color: #b3b3b3;
+                    width: 85px;
+                }
+
+            }
+        }
+    }
+}

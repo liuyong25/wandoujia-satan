@@ -4,6 +4,7 @@ define([
         'photos/main',
         'text!templates/auth/portal.html',
         'text!templates/photos/gallery.html',
+        'text!templates/contacts/index.html',
         'common/main',
         'common/language'
     ], function(
@@ -12,6 +13,7 @@ define([
         photos,
         PortalTemplate,
         PhotosTemplate,
+        ContactsTemplate,
         common,
         language
     ) {
@@ -66,6 +68,16 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
+        });
+
+        //添加联系人模块
+        $routeProvider.when('/contacts', {
+            template: ContactsTemplate,
+            //controller: 'galleryController',
+            resolve: {
+                auth: validateToken
+            },
+            reloadOnSearch: false
         });
 
         // Global exception handling.
