@@ -2,28 +2,36 @@
     <section class="wdm-sub">
         <section class="wdm-actions">
             <div class="btn btn-primary"><i class="messages-icon-ab-add"></i> New message</div>
-            <div class="btn"><i class="messages-icon-ab-sel"></i> Select all</div>
-            <div class="btn"><i class="messages-icon-ab-del"></i> Delete</div>
+            <div class="btn"
+                ng-click="toggleSelectedAll()"
+                ng-switch on="isSelectedAll()">
+                <i class="messages-icon-ab-sel"></i>
+                <span ng-switch-when="false">Select all</span>
+                <span ng-switch-when="true">Deselect all</span>
+            </div>
+            <div class="btn"
+                ng-click="removeSelected()"
+                ng-show="hasSelected()"><i class="messages-icon-ab-del"></i> Delete</div>
         </section>
         <ol class="wdm-conversations unstyled">
             <li class="wdmc-row"
                 ng-repeat="c in conversations"
-                ng-init="selected=false;active=false"
-                ng-class="{ selected: selected, highlight: active }">
+                ng-init="status=cvsCache.get(c)"
+                ng-class="{ selected: status.selected, highlight: status.active }">
                 <label class="wdmcr-a">
-                    <input type="checkbox" ng-model="selected">
+                    <input type="checkbox" ng-model="status.selected">
                 </label>
                 <div class="wdmcr-b">
                     <img>
                 </div>
-                <div class="wdmcr-c" ng-click="active=!active">
+                <div class="wdmcr-c" ng-click="deactiveAll();active(c);showConversation(c)">
                     <div class="wdmcr-c-a">{{ c.contact_names.toString() || c.addresses.toString() }}</div>
                     <div class="wdmcr-c-b">{{ c.snippet }}</div>
                 </div>
                 <div class="wdmcr-d">
                     <div class="status">
-                        <i ng-show="true || c.has_error" class="wdmcr-icon-alert"></i>
-                        <i class="wdmcr-icon-running"></i>
+                        <i ng-show="c.has_error || hasFailedMsg(c)" class="wdmcr-icon-alert"></i>
+                        <i ng-show="hasPendingMsg(c)" class="wdmcr-icon-running"></i>
                         <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
                     </div>
                     <div>
@@ -31,30 +39,36 @@
                     </div>
                 </div>
             </li>
+            <li wdm-load-more="loadConversations()"></li>
         </ol>
     </section>
     <section class="wdm-main">
         <section class="wdm-contact">
-            <div class="wdmct-a">John</div>
+            <div class="wdmct-a">{{ activeConversation.contact_names.toString() || activeConversation.addresses.toString() }}</div>
             <div class="wdmct-b"><i class="messages-icon-contact"></i></div>
         </section>
-        <ol class="wdm-entries unstyled">
-            <li class="wdme-row">
-                <div class="wdmer-a">what the fuck!</div>
-                <i class="messages-icon-alert"></i>
-                <i class="messages-icon-running"></i>
-            </li>
-            <li class="wdme-row wdme-row-self">
-                <div class="wdmer-a">what the fuck!</div>
-                <i class="messages-icon-alert"></i>
-                <i class="messages-icon-running"></i>
-            </li>
-        </ol>
-        <section class="wdm-editor">
-            <form>
-                <input type="text" placeholder="Reply to...">
+        <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
+            <ol class="unstyled">
+                <li wdm-load-more="loadMessages(activeConversation)"></li>
+                <li class="wdme-row"
+                    ng-class="{'wdme-row-self': m.type == 2}"
+                    ng-repeat="(d, m) in cvsCache.get(activeConversation, 'messages') | orderBy:'date':true">
+                    <div class="wdmer-a">{{ m.body }}</div>
+                    <div class="wdmer-b" ng-switch on="m.status">
+                        <span ng-switch-when="64"><i class="messages-icon-alert"></i> Send Failed. <a href="">Retry</a></span>
+                        <i ng-switch-when="32" class="messages-icon-running"></i>
+                        <span ng-switch-when="0">{{ m.date | date:'MMM d' }}</span>
+                        <span ng-switch-when="-1">{{ m.date | date:'MMM d' }}</span>
+                    </div>
+                </li>
+            </ol>
+        </section>
+        <section class="wdm-editor" ng-init="sms">
+            <form ng-submit="this.$broadcast('wdm:editor:focus')">
+                <input type="text" placeholder="Reply to..." ng-model="sms">
                 <button class="btn" type="submit">Send</button>
             </form>
         </section>
+        <div class="wd-loading" data-visible="cvsChanging"></div>
     </section>
 </section>

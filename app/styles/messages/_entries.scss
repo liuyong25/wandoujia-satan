@@ -1,7 +1,13 @@
 .wdme-row {
     @include display-box;
     @include box-align(end);
-    padding: 0 48px;
+    padding: 0 40px;
+    margin: 10px 0;
+
+    & > * {
+        margin-left: 8px;
+        margin-right: 8px;
+    }
 
     .wdmer-a {
         @include position;

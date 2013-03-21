@@ -1,0 +1,7 @@
+{
+  "name": "satan",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular-ui": "~0.4.0"
+  }
+}
