@@ -56,10 +56,16 @@
 .wdmcr-b {
     $avatar-width: 48px;
     width: $avatar-width;
+    height: $avatar-width;
+    @include messages-sprite("avatar");
+
+    &.multiple {
+        @include messages-sprite("avatar-c");
+    }
+
     img {
         width: $avatar-width;
         height: $avatar-width;
-        background: #000;
         display: block;
     }
 }

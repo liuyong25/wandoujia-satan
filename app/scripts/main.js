@@ -13,6 +13,7 @@
     keymaster: 'vendor/keymaster.amd',
     bootstrap: 'vendor/bootstrap',
     fineuploader: 'vendor/fineuploader/fineuploader',
+    moment: '../components/moment/moment',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',

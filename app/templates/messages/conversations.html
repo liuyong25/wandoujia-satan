@@ -21,11 +21,11 @@
                 <label class="wdmcr-a">
                     <input type="checkbox" ng-model="status.selected">
                 </label>
-                <div class="wdmcr-b">
-                    <img>
+                <div class="wdmcr-b" ng-class="{ multiple: c.addresses.length > 1 }">
+                    <img ng-show="c.photo_path" ng-src="{{c.photo_path}}">
                 </div>
                 <div class="wdmcr-c" ng-click="deactiveAll();active(c);showConversation(c)">
-                    <div class="wdmcr-c-a">{{ c.contact_names.toString() || c.addresses.toString() }}</div>
+                    <div class="wdmcr-c-a">{{ c | displayName }}</div>
                     <div class="wdmcr-c-b">{{ c.snippet }}</div>
                 </div>
                 <div class="wdmcr-d">
@@ -35,7 +35,7 @@
                         <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
                     </div>
                     <div>
-                        {{ c.date | date:'MMM d' }}
+                        {{ c.date | messageDate:'MMM d' }}
                     </div>
                 </div>
             </li>
@@ -44,21 +44,20 @@
     </section>
     <section class="wdm-main">
         <section class="wdm-contact">
-            <div class="wdmct-a">{{ activeConversation.contact_names.toString() || activeConversation.addresses.toString() }}</div>
+            <div class="wdmct-a">{{ activeConversation | displayName }}</div>
             <div class="wdmct-b"><i class="messages-icon-contact"></i></div>
         </section>
         <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
             <ol class="unstyled">
                 <li wdm-load-more="loadMessages(activeConversation)"></li>
                 <li class="wdme-row"
-                    ng-class="{'wdme-row-self': m.type == 2}"
+                    ng-class="{'wdme-row-sel//': m.type == 2}"
                     ng-repeat="(d, m) in cvsCache.get(activeConversation, 'messages') | orderBy:'date':true">
                     <div class="wdmer-a">{{ m.body }}</div>
                     <div class="wdmer-b" ng-switch on="m.status">
                         <span ng-switch-when="64"><i class="messages-icon-alert"></i> Send Failed. <a href="">Retry</a></span>
                         <i ng-switch-when="32" class="messages-icon-running"></i>
-                        <span ng-switch-when="0">{{ m.date | date:'MMM d' }}</span>
-                        <span ng-switch-when="-1">{{ m.date | date:'MMM d' }}</span>
+                        <span ng-switch-default>{{ m.date | messageDate:'HH:mm' }}</span>
                     </div>
                 </li>
             </ol>

@@ -6,7 +6,10 @@ define([
     'messages/services/messages-cache',
     'messages/directives/autoscroll',
     'messages/filters/group',
-    'messages/directives/loadmore'
+    'messages/directives/loadmore',
+    'messages/filters/ms',
+    'messages/filters/display-name',
+    'messages/filters/message-date'
 ], function(
     angular,
     common,
@@ -15,7 +18,10 @@ define([
     messagesCache,
     autoscroll,
     groupFilter,
-    loadmore
+    loadmore,
+    msFilter,
+    displayNameFilter,
+    messageDateFilter
 ) {
 'use strict';
 // jshint unused:false
@@ -25,5 +31,8 @@ angular.module('wdMessages', ['wdCommon'])
     .factory('wdmMessagesCache', messagesCache)
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)
-    .filter('group', groupFilter);
+    .filter('ms', msFilter)
+    .filter('group', groupFilter)
+    .filter('displayName', displayNameFilter)
+    .filter('messageDate', messageDateFilter);
 });
