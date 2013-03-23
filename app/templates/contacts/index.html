@@ -34,7 +34,7 @@
             <img class="photo" src="{{contact.photo_path}}">
             <div class="info">
                 <p class="name">{{contact.name.display_name}}</p>
-                <p class="remark">HSBC Hong Kong</p>
+                <p class="remark">{{contact.organization[0].company}}</p>
                 <hr>
 
                 <!-- 每个独立的信息 start -->
@@ -52,6 +52,15 @@
                     <dd ng-repeat="item in contact.email">
                         <p class="des" ng-show="item.address">{{item.type}}</p>
                         <p class="detail" ng-show="item.address">{{item.address}}</p>
+                    </dd>
+                </dl>
+                <!-- 每个独立的信息 end -->
+                <!-- 每个独立的信息 start -->
+                <dl>
+                    <dt ng-show="contact.address">ADDRESS</dt>
+                    <dd ng-repeat="item in contact.address">
+                        <p class="des" ng-show="item.formatted_address">{{item.type}}</p>
+                        <p class="detail" ng-show="item.formatted_address">{{item.formatted_address}}</p>
                     </dd>
                 </dl>
                 <!-- 每个独立的信息 end -->
