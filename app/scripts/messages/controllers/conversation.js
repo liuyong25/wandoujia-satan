@@ -4,8 +4,8 @@ define([
     _
 ) {
 'use strict';
-return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q',
-function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q) {
+return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
+function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http) {
 
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
@@ -17,6 +17,7 @@ $scope.conversations = [];
 $scope.activeConversation = null;
 
 $scope.cvsChanging = false;
+$scope.cvsLoaded = true;
 
 $scope.removeSelected = removeSelected;
 $scope.toggleSelected = toggleSelected;
@@ -35,7 +36,14 @@ $scope.showConversation = showConversation;
 $scope.loadConversations = function() {
     return loadConversation(_.last($scope.conversations));
 };
-$scope.loadMessages = loadMessages;
+$scope.prevMessages = function(conversation) {
+    loadMessages(conversation).then(function success() {
+        _.defer(function() {
+            $scope.$broadcast('wdm:autoscroll:keep');
+        });
+    });
+};
+$scope.sendMessage = sendMessage;
 
 loadConversation().then(function() {
     active($scope.conversations[0]);
@@ -48,6 +56,9 @@ function showConversation(conversation) {
     $scope.cvsChanging = true;
     loadMessages(conversation).then(function success() {
         $scope.cvsChanging = false;
+        _.defer(function() {
+            $scope.$broadcast('wdm:autoscroll:bottom');
+        });
     }, function error() {
         $scope.cvsChanging = false;
     });
@@ -56,7 +67,7 @@ function showConversation(conversation) {
 function loadConversation(cursor) {
     var defer = $q.defer();
     var params = {
-        length: 10
+        length: 30
     };
     if (cursor) {
         params.offset = 0;
@@ -65,9 +76,9 @@ function loadConversation(cursor) {
     else {
         params.offset = 0;
     }
-    Conversations.query(params, function success(conversations) {
-        $scope.conversations = mergeCollection($scope.conversations, conversations);
-        $scope.cvsCache.put(conversations);
+    Conversations.query(params, function success(conversations, getResponseHeader) {
+        mergeConversations(conversations);
+        $scope.cvsLoaded = getResponseHeader('WD-Need-More') === 'false';
         defer.resolve();
     }, function error() {
         defer.reject();
@@ -76,7 +87,7 @@ function loadConversation(cursor) {
 }
 function loadMessages(conversation) {
     var defer = $q.defer();
-    var cursor = _.last($scope.cvsCache.get(conversation, 'messages'));
+    var cursor = $scope.cvsCache.get(conversation, 'messages')[0];
     var params = {
         id: conversation.id,
         length: 30
@@ -89,10 +100,9 @@ function loadMessages(conversation) {
         params.offset = 0;
     }
     Messages.query(params, function success(messages, getResponseHeader) {
-        var totalLength = getResponseHeader('WD-Total-Length');
-        var existMessages = $scope.cvsCache.get(conversation, 'messages');
+        mergeMessages(conversation, messages);
         $scope.cvsCache.put(conversation, {
-            messages: mergeCollection(existMessages, messages)
+            loaded: getResponseHeader('WD-Need-More') === 'false'
         });
         conversation.unread_message_count = 0;
         $scope.activeConversation = conversation;
@@ -103,12 +113,44 @@ function loadMessages(conversation) {
     return defer.promise;
 }
 
+function mergeConversations(conversations) {
+    $scope.conversations = _(mergeCollection($scope.conversations, conversations)).sortBy(function(c) { return -c.date; });
+    $scope.cvsCache.put(conversations);
+}
+
+function mergeMessages(conversation, newMessages) {
+    var messages = $scope.cvsCache.get(conversation, 'messages');
+    messages = mergeCollection(messages, newMessages);
+    $scope.cvsCache.put(conversation, {
+        messages: _(messages).sortBy(function(m) { return m.date; })
+    });
+}
+
 function mergeCollection(dist, source) {
     if (!_.isArray(source)) {
         source = [source];
     }
     return _(dist.concat(source)).uniq(function(item) {
         return item.id;
+    });
+}
+
+
+function sendMessage(conversation, content) {
+    $http({
+        url: '/resource/messages/send',
+        method: 'POST',
+        data: {
+            addresses: conversation.addresses,
+            body: content
+        }
+    }).success(function success(messages) {
+        $scope.cvsCache.put(conversation, {
+            messages: mergeCollection($scope.cvsCache.get(conversation, 'messages'), messages)
+        });
+        _.defer(function() {
+            $scope.$broadcast('wdm:autoscroll:bottom');
+        });
     });
 }
 

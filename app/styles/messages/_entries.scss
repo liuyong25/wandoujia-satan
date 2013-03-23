@@ -15,6 +15,7 @@
         background: #e8e8e8;
         padding: 10px;
         @include text-shadow(0 1px 0 rgba(#fff, 1));
+        white-space: pre-wrap;
 
         &::before {
             content: "";

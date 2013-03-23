@@ -9,6 +9,7 @@ return [function() {
 return new HashMap({
     selected: false,
     active: false,
+    loaded: true,
     messages: []
 });
 

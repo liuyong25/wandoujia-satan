@@ -49,10 +49,10 @@
         </section>
         <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
             <ol class="unstyled">
-                <li wdm-load-more="loadMessages(activeConversation)"></li>
+                <li wdm-load-more="prevMessages(activeConversation)" ng-hide="cvsCache.get(activeConversation).loaded"></li>
                 <li class="wdme-row"
-                    ng-class="{'wdme-row-sel//': m.type == 2}"
-                    ng-repeat="(d, m) in cvsCache.get(activeConversation, 'messages') | orderBy:'date':true">
+                    ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 5}"
+                    ng-repeat="m in cvsCache.get(activeConversation, 'messages') | orderBy:'date'">
                     <div class="wdmer-a">{{ m.body }}</div>
                     <div class="wdmer-b" ng-switch on="m.status">
                         <span ng-switch-when="64"><i class="messages-icon-alert"></i> Send Failed. <a href="">Retry</a></span>
@@ -63,7 +63,7 @@
             </ol>
         </section>
         <section class="wdm-editor" ng-init="sms">
-            <form ng-submit="this.$broadcast('wdm:editor:focus')">
+            <form ng-submit="sendMessage(activeConversation, sms)">
                 <input type="text" placeholder="Reply to..." ng-model="sms">
                 <button class="btn" type="submit">Send</button>
             </form>

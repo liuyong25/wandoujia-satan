@@ -5,17 +5,25 @@ return {
 
 link: function(scope, element, attributes) {
     var childElement = element.children();
-    var lastHeight = childElement.height();
+    var lastHeight = 0;
+    var height = 0;
+
     scope.$watch(attributes.wdmAutoScroll, function() {
         scope.$evalAsync(function() {
-            var height = childElement.height();
-            element.scrollTop(height - lastHeight);
             lastHeight = height;
+            height = childElement.height();
+            console.log('new height', lastHeight, height);
         });
     });
 
-    scope.$on('wdm:editor:focus', function() {
-        element.scrollTop(100000000);
+    scope.$on('wdm:autoscroll:keep', function() {
+        // var height = childElement.height();
+        element.scrollTop(height - lastHeight);
+        // lastHeight = height;
+        console.log('keep', element.scrollTop());
+    });
+    scope.$on('wdm:autoscroll:bottom', function() {
+        element.scrollTop(10000000000);
     });
 }
 
