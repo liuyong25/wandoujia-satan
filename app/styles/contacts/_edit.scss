@@ -1,14 +1,24 @@
+/* 联系人信息界面CSS */
 .contacts-edit{
+    position: fixed;
+    overflow-y : auto;
+    width: 70%;
+    min-width: 300px;
+    height:85%;
 
     .photo{
-        float: left;
+        margin-top: 20px;
+        width: 130px;
+        height: 130px;
     }
 
     .info{
         margin-top:75px;
-        margin-left:30px;
+        margin-left:50px;
         width: 500px;
-        float: left;
+        position: absolute;
+        top:0px;
+        left: 110px;
 
         hr{
             border: 0px;
@@ -30,10 +40,11 @@
 
             dt{
                 font-size: 18px;
+                margin-bottom: 10px;
             }
 
             dd{
-                margin-top: 10px;
+                margin-left: 0px;
 
                 p{
                     display: inline-block;

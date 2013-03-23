@@ -1,0 +1,68 @@
+/* 联系人功能 */
+.contacts{
+
+    .pf{
+        position: fixed;
+    }
+    .pa{
+        position: absolute;
+    }
+
+    ul{
+        list-style: none;
+        margin: 0px;
+    }
+
+    .contacts-list{
+        position: fixed;
+        overflow-y : auto;
+        top:62px;
+        bottom: 76px;
+        width: 25%;
+        min-width: 299px;
+        display: block;
+        padding-left: 1px;
+        .clicked{
+            background-color: #444444;
+            color: #FFFFFF;
+            cursor: default;
+            border-right: 1px solid #444444;
+        }
+
+    }
+
+    .btn-all{
+        position: fixed;
+        top: 0px;
+        background-color: #FFF;
+        min-width: 299px;
+        width: 25%;
+        height: 46px;
+        border-bottom: 1px solid #ebebeb;
+        border-right: 1px solid #ebebeb;
+        padding-top: 15px;
+        z-index: 200;
+
+        .btn-new{
+            margin-left: 8%;
+        }
+
+        .btn-selectAll{
+            margin-left: 10px;
+        }
+    }
+
+    .left{
+        padding-top: 62px;
+        float: left;
+        width: 30%;
+        min-width: 330px;
+    }
+
+    .right{
+        float: left;
+    }
+
+	@import "item";
+	@import "edit";
+}
