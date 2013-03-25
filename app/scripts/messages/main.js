@@ -8,8 +8,8 @@ define([
     'messages/filters/group',
     'messages/directives/loadmore',
     'messages/filters/ms',
-    'messages/filters/display-name',
-    'messages/filters/message-date'
+    'messages/filters/message-date',
+    'messages/directives/realtime'
 ], function(
     angular,
     common,
@@ -20,8 +20,8 @@ define([
     groupFilter,
     loadmore,
     msFilter,
-    displayNameFilter,
-    messageDateFilter
+    messageDateFilter,
+    realtime
 ) {
 'use strict';
 // jshint unused:false
@@ -31,8 +31,8 @@ angular.module('wdMessages', ['wdCommon'])
     .factory('wdmMessagesCache', messagesCache)
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)
+    .directive('wdmRealtime', realtime)
     .filter('ms', msFilter)
     .filter('group', groupFilter)
-    .filter('displayName', displayNameFilter)
     .filter('messageDate', messageDateFilter);
 });

@@ -5,16 +5,20 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http) {
+        'wdpMessagePusher', '$timeout',
+function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
+         wdpMessagePusher,   $timeout) {
 
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
-var Messages = $resource('/resource/conversations/:id/messages', {id: '@id'});
+var ConversationMessages = $resource('/resource/conversations/:id/messages', {id: '@id'});
+var Messages = $resource('/resource/messages/:id', {id: '@id'});
 
 $scope.cvsCache = wdmConversationsCache;
 $scope.msgCache = wdmMessagesCache;
 $scope.conversations = [];
 $scope.activeConversation = null;
+$scope.newConversation = null;
 
 $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
@@ -32,12 +36,13 @@ $scope.deactiveAll = deactiveAll;
 $scope.hasPendingMsg = hasPendingMsg;
 $scope.hasFailedMsg = hasFailedMsg;
 
+$scope.createConversation = createConversation;
 $scope.showConversation = showConversation;
 $scope.loadConversations = function() {
     return loadConversation(_.last($scope.conversations));
 };
 $scope.prevMessages = function(conversation) {
-    loadMessages(conversation).then(function success() {
+    return loadMessages(conversation).then(function success() {
         _.defer(function() {
             $scope.$broadcast('wdm:autoscroll:keep');
         });
@@ -45,23 +50,80 @@ $scope.prevMessages = function(conversation) {
 };
 $scope.sendMessage = sendMessage;
 
+
+// Startup
 loadConversation().then(function() {
     active($scope.conversations[0]);
     showConversation($scope.conversations[0]);
 });
 
+wdpMessagePusher.channel('messages.add', function(msg) {
+    var cid = msg.data.threadId;
+    var mid = msg.data.messageId;
+    var conversation = _($scope.conversations).find(function(conversation) { return conversation.id === cid; });
+    var message;
+    if (conversation) {
+        insertMessage(conversation, mid).then(function() {
+            if (conversation.id === $scope.activeConversation.id) {
+                _.defer(function() {
+                    $scope.$broadcast('wdm:autoscroll:bottom');
+                });
+            }
+        });
+    }
+    else {
+        insertConversation(cid);
+    }
+}).start();
+
+var timer = $timeout(function update() {
+   timer = $timeout(update, 60000 - Date.now() % 60000);
+}, 60000 - Date.now() % 60000);
+
+$scope.$on('$destroy', function() {
+    deactiveAll();
+    $timeout.cancel(timer);
+    wdpMessagePusher.clear().stop();
+});
 
 //==========================================================================
-function showConversation(conversation) {
-    $scope.cvsChanging = true;
-    loadMessages(conversation).then(function success() {
-        $scope.cvsChanging = false;
-        _.defer(function() {
-            $scope.$broadcast('wdm:autoscroll:bottom');
-        });
-    }, function error() {
-        $scope.cvsChanging = false;
+function createConversation() {
+    if ($scope.newConversation) { return; }
+    $scope.newConversation = _(new Conversations()).extend({
+        id: 'xxx',
+        date: Date.now(),
+        message_count: 0,
+        snippet: '',
+        addresses: [],
+        contact_names: [],
+        photo_path: '',
+        unread_message_count: 0,
+        has_error: false
     });
+    mergeConversations($scope.newConversation);
+    $scope.cvsCache.put($scope.newConversation);
+}
+
+function showConversation(conversation) {
+    $scope.deactiveAll();
+    $scope.active(conversation);
+    if (conversation.id !== 'xxx') {
+        $scope.cvsChanging = true;
+        loadMessages(conversation).then(function success() {
+            $scope.cvsChanging = false;
+            _.defer(function() {
+                $scope.$broadcast('wdm:autoscroll:bottom');
+            });
+        }, function error() {
+            $scope.cvsChanging = false;
+        });
+    }
+    else {
+        $scope.cvsCache.put(conversation, {
+            messages: []
+        });
+        $scope.activeConversation = conversation;
+    }
 }
 
 function loadConversation(cursor) {
@@ -99,13 +161,41 @@ function loadMessages(conversation) {
     else {
         params.offset = 0;
     }
-    Messages.query(params, function success(messages, getResponseHeader) {
+    ConversationMessages.query(params, function success(messages, getResponseHeader) {
         mergeMessages(conversation, messages);
         $scope.cvsCache.put(conversation, {
             loaded: getResponseHeader('WD-Need-More') === 'false'
         });
         conversation.unread_message_count = 0;
         $scope.activeConversation = conversation;
+        defer.resolve();
+    }, function error() {
+        defer.reject();
+    });
+    return defer.promise;
+}
+
+function insertConversation(conversationId) {
+    var defer = $q.defer();
+    Conversations.get({ id: conversationId }, function success(conversation) {
+        mergeConversations(conversation);
+        defer.resolve();
+    }, function error() {
+        defer.reject();
+    });
+    return defer.promise;
+}
+
+function insertMessage(conversation, messageId) {
+    var defer = $q.defer();
+    Messages.get({ id: messageId }, function success(message) {
+        var old = _($scope.cvsCache.get(conversation, 'messages')).find(function(message) { return message.id === messageId; });
+        if (old) {
+            _(old).extend(message);
+        }
+        else {
+            mergeMessages(conversation, message);
+        }
         defer.resolve();
     }, function error() {
         defer.reject();
@@ -121,8 +211,9 @@ function mergeConversations(conversations) {
 function mergeMessages(conversation, newMessages) {
     var messages = $scope.cvsCache.get(conversation, 'messages');
     messages = mergeCollection(messages, newMessages);
+    messages = _(messages).sortBy(function(m) { return m.date; });
     $scope.cvsCache.put(conversation, {
-        messages: _(messages).sortBy(function(m) { return m.date; })
+        messages: messages
     });
 }
 
@@ -232,6 +323,12 @@ function hasFailedMsg(conversation) {
     return _($scope.cvsCache.get(conversation, 'messages')).any(isFailed);
 }
 
+
+function conversationExisted(conversationId) {
+    return !!_($scope.conversations).find(function(conversation) {
+        return conversation.id === conversationId;
+    });
+}
 
 }];
 });

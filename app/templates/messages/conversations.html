@@ -1,7 +1,8 @@
 <section class="wdj-messages">
     <section class="wdm-sub">
         <section class="wdm-actions">
-            <div class="btn btn-primary"><i class="messages-icon-ab-add"></i> New message</div>
+            <div class="btn btn-primary"
+                ng-click="createConversation()"><i class="messages-icon-ab-add"></i> New message</div>
             <div class="btn"
                 ng-click="toggleSelectedAll()"
                 ng-switch on="isSelectedAll()">
@@ -17,15 +18,16 @@
             <li class="wdmc-row"
                 ng-repeat="c in conversations"
                 ng-init="status=cvsCache.get(c)"
-                ng-class="{ selected: status.selected, highlight: status.active }">
+                ng-class="{ selected: status.selected, highlight: status.active }"
+                ng-click="showConversation(c)">
                 <label class="wdmcr-a">
                     <input type="checkbox" ng-model="status.selected">
                 </label>
                 <div class="wdmcr-b" ng-class="{ multiple: c.addresses.length > 1 }">
                     <img ng-show="c.photo_path" ng-src="{{c.photo_path}}">
                 </div>
-                <div class="wdmcr-c" ng-click="deactiveAll();active(c);showConversation(c)">
-                    <div class="wdmcr-c-a">{{ c | displayName }}</div>
+                <div class="wdmcr-c">
+                    <div class="wdmcr-c-a">{{ status.displayName() }}</div>
                     <div class="wdmcr-c-b">{{ c.snippet }}</div>
                 </div>
                 <div class="wdmcr-d">
@@ -35,7 +37,7 @@
                         <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
                     </div>
                     <div>
-                        {{ c.date | messageDate:'MMM d' }}
+                        {{ status.date() | messageDate:'MMM d' }}
                     </div>
                 </div>
             </li>
@@ -44,7 +46,7 @@
     </section>
     <section class="wdm-main">
         <section class="wdm-contact">
-            <div class="wdmct-a">{{ activeConversation | displayName }}</div>
+            <div class="wdmct-a">{{ cvsCache.get(activeConversation).displayName() }}</div>
             <div class="wdmct-b"><i class="messages-icon-contact"></i></div>
         </section>
         <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
@@ -63,8 +65,8 @@
             </ol>
         </section>
         <section class="wdm-editor" ng-init="sms">
-            <form ng-submit="sendMessage(activeConversation, sms)">
-                <input type="text" placeholder="Reply to..." ng-model="sms">
+            <form ng-submit="sendMessage(activeConversation, sms);sms=''">
+                <input type="text" placeholder="Reply to {{ cvsCache.get(activeConversation).displayName() }}" ng-model="sms">
                 <button class="btn" type="submit">Send</button>
             </form>
         </section>
