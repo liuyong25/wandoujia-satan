@@ -38,5 +38,8 @@ return function HashMap(defaults) {
     this.remove = function(model) {
         delete hashmap[retrieveId(model)];
     };
+    this.reset = function() {
+        this._hashmap = hashmap = {};
+    };
 };
 });
