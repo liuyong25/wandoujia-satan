@@ -46,7 +46,11 @@ $scope.hasPendingMsg = hasPendingMsg;
 $scope.hasFailedMsg = hasFailedMsg;
 
 $scope.createConversation = createConversation;
-$scope.showConversation = showConversation;
+$scope.showConversation = function(conversation) {
+    var promise = activeConversation(conversation);
+    promise.then(scrollIntoView);
+    return promise;
+};
 $scope.prevConversations = function() {
     return loadConversations(_.last($scope.conversations));
 };
@@ -67,7 +71,7 @@ $scope.sendMessage = function(conversation, content) {
         }
         // The current active one is a temporary one.
         else {
-            showConversation(c).then(function() {
+            $scope.showConversation(c).then(function() {
                 drop(conversation);
             });
         }
@@ -101,7 +105,9 @@ wdpMessagePusher.channel('messages.add', function(msg) {
 
 // Startup
 loadConversations().then(function() {
-    showConversation($scope.conversations[0]);
+    if ($scope.conversations.length) {
+        $scope.showConversation($scope.conversations[0]);
+    }
 });
 
 wdpMessagePusher.start();
@@ -174,12 +180,6 @@ function resendMessage(m) {
     }).then(function success(response) {
         return mergeMessages(response.data);
     });
-}
-
-function showConversation(conversation) {
-    var promise = activeConversation(conversation);
-    promise.then(scrollIntoView);
-    return promise;
 }
 
 function activeConversation(conversation) {
