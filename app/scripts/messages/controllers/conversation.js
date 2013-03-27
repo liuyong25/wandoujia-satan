@@ -18,6 +18,8 @@ $scope.cvsCache = wdmConversationsCache;
 $scope.msgCache = wdmMessagesCache;
 $scope.conversations = [];
 $scope.activeConversation = null;
+$scope.sms = '';
+$scope.editorEnable = true;
 
 $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
@@ -56,6 +58,8 @@ $scope.prevMessages = function(conversation) {
     });
 };
 $scope.sendMessage = function(conversation, content) {
+    if (!$scope.editorEnable || !$scope.sms) { return; }
+    $scope.editorEnable = false;
     sendMessage(conversation, content).then(function(c) {
         // Conversation existed and is the current active one.
         if (same(conversation, c)) {
@@ -67,8 +71,13 @@ $scope.sendMessage = function(conversation, content) {
                 drop(conversation);
             });
         }
+        $scope.sms = '';
+        $scope.editorEnable = true;
+    }, function() {
+        $scope.editorEnable = true;
     });
 };
+$scope.resendMessage = resendMessage;
 
 wdpMessagePusher.channel('messages.add', function(msg) {
     var cid = msg.data.threadId;
@@ -155,6 +164,15 @@ function sendMessage(conversation, content) {
         else {
             return existedConversation;
         }
+    });
+}
+
+function resendMessage(m) {
+    return $http({
+        url: '/resource/messages/' + m.id + '/resend',
+        method: 'GET'
+    }).then(function success(response) {
+        return mergeMessages(response.data);
     });
 }
 
@@ -302,6 +320,7 @@ function mergeConversations(conversations) {
                 active: false,
                 loaded: false,
                 messages: [],
+                groups: [],
                 date: function() {
                     var lastMessageDate = this.messages.length ? this.messages[this.messages.length - 1].date : 0;
                     return Math.max(this.model.date, lastMessageDate);
@@ -334,8 +353,13 @@ function mergeMessages(messages) {
                 existedMessages.push(m);
             }
         });
+        var sortedMessages = _(existedMessages).sortBy(dateAsc);
+        var groups = _(sortedMessages).groupBy(function(m) {
+            return Math.floor(m.date / 3600 / 1000 / 24) * 3600 * 1000 * 24;
+        });
         $scope.cvsCache.put(conversation, {
-            messages: _(existedMessages).sortBy(dateAsc)
+            messages: sortedMessages,
+            groups: groups
         });
     }
     return conversation;

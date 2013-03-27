@@ -1,8 +1,35 @@
+.wdme-sep {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    margin: 10px auto;
+    @include position;
+    color: #a0a0a0;
+
+    & > * {
+        display: inline-block;
+        @include position;
+        $width: 73px;
+        $space: 13px;
+        $offset: -($width + $space);
+        &:before, &:after {
+            content: "";
+            height: 1px;
+            width: $width;
+            background: #ddd;
+            @include position(absolute, 50% 0 0 $offset);
+        }
+        &:after {
+            left: auto;
+            right: $offset;
+        }
+    }
+}
 .wdme-row {
     @include display-box;
     @include box-align(end);
     padding: 0 40px;
-    margin: 10px 0;
+    margin: 20px 0;
 
     & > * {
         margin-left: 8px;
@@ -30,6 +57,10 @@
             line-height:0px;
             @include transform(rotate(45deg));
         }
+    }
+
+    .wdmer-b {
+        color: #a0a0a0;
     }
 }
 .wdme-row-self {

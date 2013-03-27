@@ -20,6 +20,8 @@
     }
     button {
         display: block;
+        // box-sizing forced to 'border-box' by flex box.
+        min-width: 90px;
         margin-right: 10px;
         padding: 7px 30px;
         font-size: 12px;

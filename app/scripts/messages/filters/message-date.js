@@ -4,8 +4,9 @@ define([
     moment
 ) {
 'use strict';
-return ['$filter', function($filter) {
+return [function() {
     return function(input, format) {
+        input = parseInt(input, 10);
         var startOfYesterday = moment().startOf('day').subtract('days', 1);
         var date = moment(input);
         if (date.isAfter(startOfYesterday)) {

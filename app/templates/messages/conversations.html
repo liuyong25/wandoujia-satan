@@ -50,24 +50,34 @@
             <div class="wdmct-b"><i class="messages-icon-contact"></i></div>
         </section>
         <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
-            <ol class="unstyled">
-                <li wdm-load-more="prevMessages(activeConversation)" ng-hide="cvsCache.get(activeConversation).loaded"></li>
-                <li class="wdme-row"
-                    ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 5}"
-                    ng-repeat="m in cvsCache.get(activeConversation, 'messages') | orderBy:'date'">
-                    <div class="wdmer-a">{{ m.body }}</div>
-                    <div class="wdmer-b" ng-switch on="m.status">
-                        <span ng-switch-when="64"><i class="messages-icon-alert"></i> Send Failed. <a href="">Retry</a></span>
-                        <i ng-switch-when="32" class="messages-icon-running"></i>
-                        <span ng-switch-default>{{ m.date | messageDate:'HH:mm' }}</span>
+            <div>
+                <div wdm-load-more="prevMessages(activeConversation)" ng-hide="cvsCache.get(activeConversation).loaded"></div>
+                <div ng-repeat="(d, g) in cvsCache.get(activeConversation).groups">
+                    <div class="wdme-row"
+                        ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 5}"
+                        ng-repeat="m in g">
+                        <div class="wdmer-a">{{ m.body }}</div>
+                        <div class="wdmer-b" ng-switch on="m.status">
+                            <span ng-switch-when="64"><i class="messages-icon-alert"></i> Send Failed. <a href="" ng-click="resendMessage(m)">Retry</a></span>
+                            <i ng-switch-when="32" class="messages-icon-running"></i>
+                            <span ng-switch-default>{{ m.date | messageDate:'HH:mm' }}</span>
+                        </div>
                     </div>
-                </li>
-            </ol>
+                    <div class="wdme-sep" ng-show="!$last">
+                        <span>{{ d | messageDate:'MMM d' }}</span>
+                    </div>
+                </div>
+            </div>
         </section>
-        <section class="wdm-editor" ng-init="sms">
-            <form ng-submit="sendMessage(activeConversation, sms);sms=''">
-                <input type="text" placeholder="Reply to {{ cvsCache.get(activeConversation).displayName() }}" ng-model="sms">
-                <button class="btn" type="submit">Send</button>
+        <section class="wdm-editor">
+            <form ng-submit="sendMessage(activeConversation, sms)">
+                <input type="text" placeholder="Reply to {{ cvsCache.get(activeConversation).displayName() }}" ng-model="sms" ng-disabled="!editorEnable">
+                <button class="btn" type="submit"
+                    ng-disabled="!editorEnable"
+                    ng-switch on="editorEnable">
+                    <span ng-switch-when="true">Send</span>
+                    <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>
+                </button>
             </form>
         </section>
         <div class="wd-loading" data-visible="cvsChanging"></div>
