@@ -5,9 +5,9 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-        'wdpMessagePusher', '$timeout',
+        'wdpMessagePusher', '$timeout', 'wdAlert',
 function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
-         wdpMessagePusher,   $timeout) {
+         wdpMessagePusher,   $timeout,   wdAlert) {
 
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
@@ -25,10 +25,17 @@ $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 
 $scope.removeSelected = function() {
-    removeSelected();
-    if (!hasActive()) {
-        activeConversation($scope.conversations[0]);
-    }
+    wdAlert.confirm(
+        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
+    ).then(function() {
+        removeSelected();
+        if (!hasActive()) {
+            activeConversation($scope.conversations[0]);
+        }
+    });
 };
 $scope.toggleSelected = toggleSelected;
 $scope.toggleSelectedAll = toggleSelectedAll;

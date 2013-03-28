@@ -9,7 +9,13 @@ return {
         ACTION_NEW: 'New message',
         ACTION_SELECT_ALL: 'Select all',
         ACTION_DESELECT_ALL: 'Deselect all',
-        ACTION_DELETE: 'Delete'
+        ACTION_DELETE: 'Delete',
+
+        CONFIRM_DELETE_TITLE: 'Delete messages',
+        CONFIRM_DELETE_CONTENT: 'Delete the selected messages from your phone?',
+
+        CONFIRM_DELETE_OK: 'Delete',
+        CONFIRM_DELETE_CANCEL: 'Cancel'
 
     }
 };
