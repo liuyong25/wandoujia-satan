@@ -44,6 +44,20 @@ if ($route.current.params.preview) {
 else {
     loadScreen();
 }
+
+var chromeExtensionNotification;
+if ($window.chrome &&
+    $window.chrome.webstore &&
+    !localStorage.getItem('photosExtensionInstalled') &&
+    !angular.element($window.document.documentElement).hasClass('photos-extension-installed')) {
+    chromeExtensionNotification = setTimeout(function() {
+        wdNotification.notify($scope, extensionNotificationTemplate)
+            .then(null, function() {
+                localStorage.setItem('photosExtensionInstalled', true);
+            });
+    }, 3000);
+}
+
 // Temp
 wdpMessagePusher
     .channel('photos.add', function(message) {
@@ -142,9 +156,11 @@ $scope.fetch = function() {
 };
 
 $scope.$on('$destroy', function() {
+    clearTimeout(chromeExtensionNotification);
     wdpMessagePusher.clear().stop();
 });
 
+//==========================================================================
 function loadScreen() {
     $scope.loaded = false;
     (function fetchLoop(defer, viewportHeight, lastLayoutHeight) {
@@ -261,18 +277,6 @@ function exclude(collection, item) {
 $scope.installChromeExtension = function() {
     $window.chrome.webstore.install();
 };
-
-if ($window.chrome &&
-    $window.chrome.webstore &&
-    !localStorage.getItem('photosExtensionInstalled') &&
-    !angular.element($window.document.documentElement).hasClass('photos-extension-installed')) {
-    setTimeout(function() {
-        wdNotification.notify($scope, extensionNotificationTemplate)
-            .then(null, function() {
-                localStorage.setItem('photosExtensionInstalled', true);
-            });
-    }, 3000);
-}
 
 }];
 });
