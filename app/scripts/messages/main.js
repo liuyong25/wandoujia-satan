@@ -9,7 +9,8 @@ define([
     'messages/directives/loadmore',
     'messages/filters/ms',
     'messages/filters/message-date',
-    'messages/directives/realtime'
+    'messages/directives/realtime',
+    'messages/directives/conversation'
 ], function(
     angular,
     common,
@@ -21,7 +22,8 @@ define([
     loadmore,
     msFilter,
     messageDateFilter,
-    realtime
+    realtime,
+    conversation
 ) {
 'use strict';
 // jshint unused:false
@@ -32,6 +34,7 @@ angular.module('wdMessages', ['wdCommon'])
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)
     .directive('wdmRealtime', realtime)
+    .directive('wdmConversation', conversation)
     .filter('ms', msFilter)
     .filter('group', groupFilter)
     .filter('messageDate', messageDateFilter);

@@ -2,7 +2,7 @@ define([], function() {
 'use strict';
 return {
     root: {
-        EDITOR_REPLY_PLACEHOLDER: 'Replay to ',
+        EDITOR_REPLY_PLACEHOLDER: 'Reply to ',
         EDITOR_SEND_PLACEHOLDER: 'Send to ',
         EDITOR_SUBMIT: 'Send',
 

@@ -38,7 +38,7 @@
 
     .wdmer-a {
         @include position;
-        max-width: 360px;
+        max-width: 450px;
         background: #e8e8e8;
         padding: 10px;
         @include text-shadow(0 1px 0 rgba(#fff, 1));
@@ -61,6 +61,21 @@
 
     .wdmer-b {
         color: #a0a0a0;
+    }
+    .wdmer-b-del {
+        display: none;
+        @include button-effect;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+
+    &:hover {
+        .wdmer-b-date {
+            display: none;
+        }
+        .wdmer-b-del {
+            display: inline-block;
+        }
     }
 }
 .wdme-row-self {

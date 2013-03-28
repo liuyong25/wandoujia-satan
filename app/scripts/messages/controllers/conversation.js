@@ -46,14 +46,32 @@ $scope.isSelectedAll = isSelectedAll;
 $scope.hasSelected = hasSelected;
 
 $scope.active = active;
-$scope.deactiveAll = deactiveAll;
 $scope.hasActive = hasActive;
 
 $scope.hasPendingMsg = hasPendingMsg;
 $scope.hasFailedMsg = hasFailedMsg;
 
+$scope.removeMessage = function(c, m) {
+    wdAlert.confirm(
+        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
+    ).then(function() {
+        dropMessage(c, m);
+        if (!hasMessage(c) && isLoaded(c)) {
+            drop(c);
+            if (!hasActive()) {
+                $scope.showConversation($scope.conversations[0]);
+            }
+        }
+        removeMessage(m);
+    });
+};
+
 $scope.createConversation = createConversation;
 $scope.showConversation = function(conversation) {
+    if (!conversation) { return; }
     var promise = activeConversation(conversation);
     promise.then(scrollIntoView);
     return promise;
@@ -87,6 +105,7 @@ $scope.sendMessage = function(conversation, content) {
     }, function() {
         $scope.editorEnable = true;
     });
+    scrollIntoView();
 };
 $scope.resendMessage = resendMessage;
 
@@ -97,7 +116,6 @@ wdpMessagePusher.channel('messages.add', function(msg) {
     if (c) {
         pullMessage(mid).then(function() {
             if (isActive(c)) {
-                markConversationAsRead(c);
                 scrollIntoView();
             }
             else {
@@ -112,9 +130,7 @@ wdpMessagePusher.channel('messages.add', function(msg) {
 
 // Startup
 loadConversations().then(function() {
-    if ($scope.conversations.length) {
-        $scope.showConversation($scope.conversations[0]);
-    }
+    $scope.showConversation($scope.conversations[0]);
 });
 
 wdpMessagePusher.start();
@@ -160,6 +176,16 @@ function createConversation() {
  * Return promise resolving with the conversation which messages located in.
  */
 function sendMessage(conversation, content) {
+    var newMessage = new Messages();
+    _(newMessage).extend({
+        id: _.uniqueId('wdmMessage_'),
+        date: Date.now(),
+        body: content,
+        type: 2,
+        thread_id: conversation.id,
+        status: 32
+    });
+    mergeMessages(newMessage);
     return $http({
         url: '/resource/messages/send',
         method: 'POST',
@@ -169,6 +195,7 @@ function sendMessage(conversation, content) {
         }
     }).then(function success(response) {
         var messages = response.data;
+        messages[0] = _(newMessage).extend(messages[0]);
         var existedConversation = mergeMessages(messages);
         if (!existedConversation) {
             var cid = toArray(messages)[0].thread_id;
@@ -189,40 +216,65 @@ function resendMessage(m) {
     });
 }
 
+function removeMessage(m) {
+    var defer = $q.defer();
+    Messages.remove({ id: m.id }, function success() {
+        defer.resolve();
+    }, function error() {
+        defer.reject();
+    });
+    return defer.promise;
+}
+
+function dropMessage(c, m) {
+    var messages = $scope.cvsCache.get(c, 'messages');
+    var index = _(messages).indexOf(m);
+    if (index >= 0) {
+        messages.splice(index, 1);
+        $scope.cvsCache.put(c, {
+            messages: messages,
+            groups: groupMessages(messages)
+        });
+    }
+}
+
 function activeConversation(conversation) {
     var defer = $q.defer();
     if (isActive(conversation)) {
         defer.reject();
     }
     else {
-        deactiveAll();
+        var curActiveCvs = _($scope.conversations).find(isActive);
+        if (curActiveCvs) {
+            deactive(curActiveCvs);
+            if (curActiveCvs.unread_message_count) {
+                markConversationAsRead(curActiveCvs);
+            }
+        }
         active(conversation);
+        // Change conversation content right now.
+        $scope.activeConversation = conversation;
         // If already read any message, just active it.
         // Or load messages.
-        if ($scope.cvsCache.get(conversation, 'messages').length ||
-            $scope.cvsCache.get(conversation, 'loaded')) {
-            $scope.activeConversation = conversation;
+        if (hasMessage(conversation) || isLoaded(conversation)) {
             defer.resolve(conversation);
         }
         else {
             $scope.cvsChanging = true;
             loadMessages(conversation, true).then(function success() {
                 $scope.cvsChanging = false;
-                $scope.activeConversation = conversation;
                 defer.resolve(conversation);
             }, function error() {
                 $scope.cvsChanging = false;
                 defer.reject();
             });
         }
-        if (conversation.unread_message_count) {
-            markConversationAsRead(conversation);
-        }
     }
     return defer.promise;
 }
 
 function markConversationAsRead(conversation) {
+    conversation.unread_message_count = 0;
     return updateConversation(conversation, { read: 1 });
 }
 
@@ -367,15 +419,19 @@ function mergeMessages(messages) {
             }
         });
         var sortedMessages = _(existedMessages).sortBy(dateAsc);
-        var groups = _(sortedMessages).groupBy(function(m) {
-            return Math.floor(m.date / 3600 / 1000 / 24) * 3600 * 1000 * 24;
-        });
+        var groups = groupMessages(sortedMessages);
         $scope.cvsCache.put(conversation, {
             messages: sortedMessages,
             groups: groups
         });
     }
     return conversation;
+}
+
+function groupMessages(messages) {
+    return _(messages).groupBy(function(m) {
+        return Math.floor(m.date / 3600 / 1000 / 24) * 3600 * 1000 * 24;
+    });
 }
 
 function drop(conversation) {
@@ -431,12 +487,6 @@ function active(conversation) {
 function deactive(conversation) {
     toggleActive(conversation, false);
 }
-function deactiveAll() {
-    var conversation = _($scope.conversations).find(isActive);
-    if (conversation) {
-        deactive(conversation);
-    }
-}
 function isActive(conversation) {
     return $scope.cvsCache.get(conversation, 'active');
 }
@@ -457,6 +507,13 @@ function hasFailedMsg(conversation) {
     return _($scope.cvsCache.get(conversation, 'messages')).any(isFailed);
 }
 
+function hasMessage(c) {
+    return !!$scope.cvsCache.get(c, 'messages').length;
+}
+
+function isLoaded(c) {
+    return !!$scope.cvsCache.get(c, 'loaded');
+}
 
 
 function findConversation(cid) {

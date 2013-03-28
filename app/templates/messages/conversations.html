@@ -19,7 +19,7 @@
                 ng-repeat="c in conversations"
                 ng-init="status=cvsCache.get(c)"
                 ng-class="{ selected: status.selected, highlight: status.active }"
-                ng-click="showConversation(c)">
+                wdm-conversation>
                 <label class="wdmcr-a">
                     <input type="checkbox" ng-model="status.selected">
                 </label>
@@ -31,7 +31,7 @@
                     <div class="wdmcr-c-b">{{ c.snippet }}</div>
                 </div>
                 <div class="wdmcr-d">
-                    <div class="status">
+                    <div class="status">&nbsp;
                         <i ng-show="c.has_error || hasFailedMsg(c)" class="wdmcr-icon-alert"></i>
                         <i ng-show="hasPendingMsg(c)" class="wdmcr-icon-running"></i>
                         <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
@@ -47,7 +47,7 @@
     <section class="wdm-main">
         <section class="wdm-contact">
             <div class="wdmct-a">{{ cvsCache.get(activeConversation).displayName() }}</div>
-            <div class="wdmct-b"><i class="messages-icon-contact"></i></div>
+            <div class="wdmct-b" ng-show="activeConversation.addresses.length > 1"><i class="messages-icon-contact"></i></div>
         </section>
         <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
             <div>
@@ -60,7 +60,8 @@
                         <div class="wdmer-b" ng-switch on="m.status">
                             <span ng-switch-when="64"><i class="messages-icon-alert"></i> Send Failed. <a href="" ng-click="resendMessage(m)">Retry</a></span>
                             <i ng-switch-when="32" class="messages-icon-running"></i>
-                            <span ng-switch-default>{{ m.date | messageDate:'HH:mm' }}</span>
+                            <span class="wdmer-b-date" ng-switch-default>{{ m.date | messageDate:'HH:mm' }}</span>
+                            <a href="" class="wdmer-b-del" ng-click="removeMessage(activeConversation, m)"><i class="messages-icon-ab-del"></i></a>
                         </div>
                     </div>
                     <div class="wdme-sep" ng-show="!$last">

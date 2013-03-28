@@ -13,7 +13,6 @@
     border: 1px solid $wdm-border-color;
     margin-bottom: -1px;
     @include transition(background-color, $global-transition-duration / 4);
-    line-height: 24px;
 
     .badge {
         display: inline-block;
