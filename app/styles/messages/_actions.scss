@@ -1,6 +1,8 @@
 .wdm-actions {
     @include display-box;
     @include box-align(center);
+    border-bottom: 1px solid $wdm-border-color;
+    margin-bottom: -1px;
 
     & > .btn:first-of-type {
         margin-left: 10px;

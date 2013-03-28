@@ -331,6 +331,12 @@ function mergeConversations(conversations) {
                         result.push(this.model.contact_names[i] || this.model.addresses[i]);
                     }
                     return result.join(', ');
+                },
+                editorPlaceholder: function() {
+                    var hasRecieved = _(this.messages).any(function(m) {
+                        return m.type !== 2;
+                    });
+                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + this.displayName() + '...';
                 }
             });
         }

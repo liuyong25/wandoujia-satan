@@ -2,17 +2,17 @@
     <section class="wdm-sub">
         <section class="wdm-actions">
             <div class="btn btn-primary"
-                ng-click="createConversation()"><i class="messages-icon-ab-add"></i> New message</div>
+                ng-click="createConversation()"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</div>
             <div class="btn"
                 ng-click="toggleSelectedAll()"
                 ng-switch on="isSelectedAll()">
                 <i class="messages-icon-ab-sel"></i>
-                <span ng-switch-when="false">Select all</span>
-                <span ng-switch-when="true">Deselect all</span>
+                <span ng-switch-when="false">{{$root.DICT.messages.ACTION_SELECT_ALL}}</span>
+                <span ng-switch-when="true">{{$root.DICT.messages.ACTION_DESELECT_ALL}}</span>
             </div>
             <div class="btn"
                 ng-click="removeSelected()"
-                ng-show="hasSelected()"><i class="messages-icon-ab-del"></i> Delete</div>
+                ng-show="hasSelected()"><i class="messages-icon-ab-del"></i> {{$root.DICT.messages.ACTION_DELETE}}</div>
         </section>
         <ol class="wdm-conversations unstyled">
             <li class="wdmc-row"
@@ -71,11 +71,11 @@
         </section>
         <section class="wdm-editor">
             <form ng-submit="sendMessage(activeConversation, sms)">
-                <input type="text" placeholder="Reply to {{ cvsCache.get(activeConversation).displayName() }}" ng-model="sms" ng-disabled="!editorEnable">
+                <input type="text" placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="sms" ng-disabled="!editorEnable">
                 <button class="btn" type="submit"
                     ng-disabled="!editorEnable"
                     ng-switch on="editorEnable">
-                    <span ng-switch-when="true">Send</span>
+                    <span ng-switch-when="true">{{$root.DICT.messages.EDITOR_SUBMIT}}</span>
                     <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>
                 </button>
             </form>
