@@ -1,36 +1,50 @@
 .wdj-messages {
+    @import "flex";
     @import "icons";
 
     @include position(fixed, 0px 0px 68px 0px);
-    @include display-box;
     font-size: 12px;
+
+    // Position with override display in Firefox 19-.
+    // We need a other element to apply flexbox.
+    .wdm-layout {
+        @include display-flex;
+        width: 100%;
+        height: 100%;
+    }
 
     $wdm-border-color: #e7e7e7;
     $wdm-main-text-color: #000;
     $wdm-sub-text-color: #999;
 
+    $wdm-sub-width: 428px;
     .wdm-sub {
-        @include display-box;
-        @include box-orient(vertical);
-        width: 428px;
+        @include display-flex;
+        @include flex-direction(column);
+        width: $wdm-sub-width;
         border-right: 1px solid $wdm-border-color;
     }
     .wdm-main {
-        @include display-box;
-        @include box-flex(1);
-        @include box-orient(vertical);
-        @include position;
+        @include flex(1);
+        @include display-flex;
+        @include flex-direction(column);
 
+        @include position;
         & > .wd-loading {
             @include position(absolute);
         }
     }
 
+    $wdm-actions-height: 53px;
+
     .wdm-actions {
-        height: 53px;
+        height: $wdm-actions-height;
+        border-bottom: 1px solid $wdm-border-color;
+        margin-bottom: -1px;
     }
     .wdm-conversations {
-        @include box-flex(1);
+        @include flex(1);
+        height: 0; // Flexbox need a height as refer.
     }
 
     .wdm-contact {
@@ -38,8 +52,10 @@
         border-bottom: 1px solid $wdm-border-color;
     }
     .wdm-entries {
-        @include box-flex(1);
+        @include flex(1);
         overflow-y: auto;
+        width: 100%; // Firefox need a width to prevent flexbox turn into inline-block.
+        height: 0;   // Flexbox need a height as refer.
     }
 
     @import "actions";

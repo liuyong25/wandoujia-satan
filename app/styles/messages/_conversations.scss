@@ -7,8 +7,11 @@
 }
 
 .wdmc-row {
-    @include display-box;
-    @include box-align(center);
+    @include display-flex;
+    @include align-content(center);
+    @include align-items(center);
+    @include box-sizing(border-box);
+    width: 100%;
     height: 64px;
     border: 1px solid $wdm-border-color;
     margin-bottom: -1px;
@@ -70,25 +73,27 @@
 }
 
 .wdmcr-c {
-    @include box-flex(1);
+    @include flex(1);
     margin: 0 9px;
+    & > * {
+        height: $global-line-height;
+        overflow: hidden;
+    }
 }
 .wdmcr-c-a {
     font-size: 16px;
     color: $wdm-main-text-color;
-    @include nowrap;
-    @include ellipsis;
 }
 .wdmcr-c-b {
     font-size: 12px;
     color: $wdm-sub-text-color;
-    @include nowrap;
-    @include ellipsis;
 }
 .wdmcr-d {
     color: $wdm-sub-text-color;
     margin-right: 16px;
     text-align: right;
+    @include nowrap;
+    min-width: 1px;
 }
 
 .wdmcr-icon-alert {

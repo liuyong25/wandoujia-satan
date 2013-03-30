@@ -1,13 +1,12 @@
 .wdm-actions {
-    @include display-box;
-    @include box-align(center);
-    border-bottom: 1px solid $wdm-border-color;
-    margin-bottom: -1px;
+    @include display-flex;
+    @include align-content(center);
+    @include align-items(center);
 
-    & > .btn:first-of-type {
+    .btn:first-of-type {
         margin-left: 10px;
     }
-    & > .btn {
+    .btn {
         font-size: 12px;
         margin-right: 5px;
     }

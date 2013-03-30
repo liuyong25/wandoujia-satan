@@ -1,7 +1,8 @@
 .wdm-contact {
-    @include display-box;
-    @include box-align(center);
-    @include box-pack(center);
+    @include display-flex;
+    @include align-content(center);
+    @include align-items(center);
+    @include justify-content(center);
     @include position;
 
     font-size: 16px;

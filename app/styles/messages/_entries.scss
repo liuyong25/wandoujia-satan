@@ -26,8 +26,11 @@
     }
 }
 .wdme-row {
-    @include display-box;
-    @include box-align(end);
+    @include display-flex;
+    @include align-content(flex-end);
+    @include align-items(flex-end);
+    @include box-sizing(border-box);
+    width: 100%; // Firefox 19- need to set width or turn into inline-box
     padding: 0 40px;
     margin: 20px 0;
 
@@ -80,8 +83,9 @@
 }
 .wdme-row-self {
     @extend .wdme-row;
-    @include box-direction(reverse);
-    @include box-pack(end);
+    @include flex-direction(row-reverse);
+    @include flex-wrap(wrap-reverse);
+    -webkit-box-pack: end; // for safafi
     .wdmer-a {
         background: #c7eea0;
 
