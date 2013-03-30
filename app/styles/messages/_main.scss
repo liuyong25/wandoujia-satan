@@ -45,6 +45,7 @@
     .wdm-conversations {
         @include flex(1);
         height: 0; // Flexbox need a height as refer.
+        margin-bottom: 0;
     }
 
     .wdm-contact {
