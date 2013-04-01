@@ -8,12 +8,18 @@
 
     .photo{
         margin-top: 20px;
-        width: 130px;
-        height: 130px;
+        width: 127px;
+        height: 127px;
+    }
+
+    .footer{
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
     }
 
     .info{
-        margin-top:75px;
+        margin-top:51px;
         margin-left:50px;
         width: 500px;
         position: absolute;
@@ -26,8 +32,51 @@
             background-color: #ededed;
         }
 
+        select{
+            min-width: 115px;
+            width: auto;
+            margin-right: 4px;
+            background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 92% 50%;
+            border: 1px solid #d6d6d6;
+            line-height: 20px;
+            padding-left: 10px;
+            -webkit-appearance:none;
+        }
+
+        input{
+            margin-bottom: 10px;
+            background-color:#f5f5f5;
+        }
+
         .name{
-            font-size: 28px;
+            font-size: 35px;
+            line-height: 45px;
+            height: 45px;
+            width: 84%;
+            overflow: hidden;
+        }
+
+        .editName{
+            color: #000;
+            margin-top: -25px;
+
+            .name{
+                margin-right: 4px;
+                width: 28%;
+                font-size: 15px;
+                line-height: 20px;
+                height: 20px;
+                overflow: hidden;
+            }
+
+            .title{
+                margin-right: 4px;
+                width: 23%;
+            }
+            .company{
+                margin-right: 4px;
+                width: 50%;
+            }
         }
 
         .remark{
@@ -35,11 +84,19 @@
             font-size:13px;
         }
 
+        .btn-addNewItem{
+            margin-top: 5px;
+        }
+
+        .newItem{
+            margin-bottom: 5px;
+        }
+
         dl{
             margin-top: 25px;
 
             dt{
-                font-size: 18px;
+                font-size: 16px;
                 margin-bottom: 10px;
             }
 
@@ -54,6 +111,20 @@
                 p.des{
                     color: #b3b3b3;
                     width: 85px;
+                }
+
+                p.labelFlag{
+                    color: #b3b3b3;
+                    width: 85px;
+                }
+
+                p.dn{
+                    display: none;
+                }
+
+                input.label{
+                    width: 102px;
+                    margin-right: 4px;
                 }
 
             }

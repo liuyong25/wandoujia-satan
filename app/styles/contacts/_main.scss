@@ -8,6 +8,10 @@
         position: absolute;
     }
 
+    .dn{
+        display: none;
+    }
+
     ul{
         list-style: none;
         margin: 0px;
@@ -19,14 +23,15 @@
         top:62px;
         bottom: 76px;
         width: 25%;
-        min-width: 299px;
+        min-width: 350px;
         display: block;
         padding-left: 1px;
         .clicked{
-            background-color: #444444;
+            background-color: #444444!important;
             color: #FFFFFF;
             cursor: default;
             border-right: 1px solid #444444;
+            margin-left: -1px;
         }
 
     }
@@ -35,7 +40,7 @@
         position: fixed;
         top: 0px;
         background-color: #FFF;
-        min-width: 299px;
+        min-width: 350px;
         width: 25%;
         height: 46px;
         border-bottom: 1px solid #ebebeb;
@@ -44,10 +49,14 @@
         z-index: 200;
 
         .btn-new{
-            margin-left: 8%;
+            margin-left: 3%;
         }
 
         .btn-selectAll{
+            margin-left: 10px;
+        }
+
+        .btn-delete{
             margin-left: 10px;
         }
     }
@@ -56,7 +65,7 @@
         padding-top: 62px;
         float: left;
         width: 30%;
-        min-width: 330px;
+        min-width: 370px;
     }
 
     .right{
@@ -65,4 +74,5 @@
 
 	@import "item";
 	@import "edit";
+    @import "icon";
 }
