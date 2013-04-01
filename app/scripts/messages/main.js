@@ -11,7 +11,8 @@ define([
     'messages/filters/message-date',
     'messages/directives/realtime',
     'messages/directives/conversation',
-    'messages/directives/textarea'
+    'messages/directives/textarea',
+    'messages/directives/receiver'
 ], function(
     angular,
     common,
@@ -25,7 +26,8 @@ define([
     messageDateFilter,
     realtime,
     conversation,
-    textarea
+    textarea,
+    receiver
 ) {
 'use strict';
 // jshint unused:false
@@ -38,6 +40,7 @@ angular.module('wdMessages', ['wdCommon'])
     .directive('wdmRealtime', realtime)
     .directive('wdmConversation', conversation)
     .directive('wdmTextarea', textarea)
+    .directive('wdmReceiver', receiver)
     .filter('ms', msFilter)
     .filter('group', groupFilter)
     .filter('messageDate', messageDateFilter);

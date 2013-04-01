@@ -47,8 +47,11 @@
         </section>
         <section class="wdm-main">
             <section class="wdm-contact">
-                <div class="wdmct-a">{{ cvsCache.get(activeConversation).displayName() }}</div>
-                <div class="wdmct-b" ng-show="activeConversation.addresses.length > 1"><i class="messages-icon-contact"></i></div>
+                <div ui-if="activeConversation.message_count > 0" class="wdmct-a">{{ cvsCache.get(activeConversation).displayName() }}</div>
+                <div ui-if="activeConversation.message_count == 0">
+                    <textarea wdm-receiver rows="1"></textarea>
+                </div>
+                <!-- <div class="wdmct-b" ng-show="activeConversation.addresses.length > 1"><i class="messages-icon-contact"></i></div> -->
             </section>
             <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
                 <div wdm-auto-scroll-container>
