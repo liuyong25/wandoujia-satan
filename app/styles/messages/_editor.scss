@@ -1,8 +1,8 @@
 .wdm-editor {
     form {
         @include display-flex;
-        @include align-content(center);
-        @include align-items(center);
+        @include align-content(flex-end);
+        @include align-items(flex-end);
         width: 100%;
         margin: 0;
     }
@@ -27,7 +27,8 @@
         display: block;
         // box-sizing forced to 'border-box' by flex box.
         min-width: 90px;
-        margin-right: 10px;
+        margin: 10px;
+        margin-left: 0;
         padding: 7px 30px;
         font-size: 12px;
     }

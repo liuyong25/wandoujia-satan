@@ -73,7 +73,6 @@
             </section>
             <section class="wdm-editor">
                 <form ng-submit="sendMessage(activeConversation, sms)">
-                    <!-- <input type="text" placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="sms" ng-disabled="!editorEnable"> -->
                     <textarea placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="sms" ng-disabled="!editorEnable" rows="1" wdm-textarea></textarea>
                     <button class="btn" type="submit"
                         ng-disabled="!editorEnable"
