@@ -1,20 +1,16 @@
 define([
     'angular',
     'common/main',
-    'contacts/controllers/ContactsCtrl',
-    'contacts/directives/upload'
+    'contacts/controllers/ContactsCtrl'
 ], function(
     angular,
     common,
-    contactsCtrl,
-    upload
+    contactsCtrl
 ) {
 
 'use strict';
 
 //注册angular的模块和control
-angular.module('wdContacts', ['wdCommon'])
-.controller('ContactsCtrl', contactsCtrl)
-.directive('wdpUpload', upload);
+angular.module('wdContacts', ['wdCommon']).controller('ContactsCtrl', contactsCtrl);
 
 });

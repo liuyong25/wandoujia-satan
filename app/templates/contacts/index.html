@@ -4,7 +4,7 @@
     <div class="left">
 
         <div class="btn-all">
-            <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact">
+            <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()">
                 <i class="icon-ab-add"></i>
                 New contact
             </button>
@@ -42,6 +42,18 @@
         <!-- 查看和编辑用户信息 -->
         <div class="contacts-edit">
             <img class="photo" ng-src="{{contact.photo_path}}">
+
+            <!-- 上传图片遮罩 start -->
+            <div class="photoUpload dn" >
+                <div class="mask">
+                    <div class="bg"></div>
+                    <span class="icon"></span>
+                    <p>Change Photo</p>
+                </div>
+                <input type="file" >
+            </div>
+            <!-- 上传图片遮罩 end -->
+
             <div class="info">
                 <p class="name">{{contact.name.display_name}}</p>
                 <p class="remark">{{contact.organization[0].company}}</p>
@@ -117,10 +129,9 @@
                 <dl>
                     <dt ng-show="contact.IM">IM</dt>
                     <dd ng-repeat="item in contact.IM">
-                        <p class="des" ng-show="!item.protocol">{{item.type}}</p>
-                        <p class="des" ng-show="!!item.protocol && !item.lable">{{item.protocol}}</p>
+                        <p class="des">{{item.protocol}}</p>
                         <p class="des labelFlag dn">{{item.label}}</p>
-                        <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.IM"></select>
+                        <select class="des dn" ng-model="item.protocol" ng-options="value for (key , value) in protocolMap"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.data}}</p>
                         <input class="detail dn" type="text" ng-model="item.data" placeholder="Enter IM">

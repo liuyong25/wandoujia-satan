@@ -12,6 +12,54 @@
         height: 127px;
     }
 
+    .photoUpload{
+        position: absolute;
+        left: 0px;
+        top: 20px;
+        overflow: hidden;
+        width: 127px;
+        height: 127px;
+        .mask{
+            width: 127px;
+            height: 127px;
+            cursor: pointer;
+
+            div.bg{
+                width: 127px;
+                height: 127px;
+                opacity: 0.6;
+                background-color: #000;
+            }
+
+            span{
+                position: absolute;
+                top: 0px;
+                width: 127px;
+                height: 127px;
+                background:url("../../images/contacts/profileicon.png") no-repeat 50% 40%;
+            }
+
+            p{
+                position: absolute;
+                top: 75px;
+                left: 13px;
+                color: #FFF;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+        }
+
+        input{
+            position: absolute;
+            top: -53px;
+            left: -53px;
+            height: 180px;
+            width: 180px;
+            cursor: pointer;
+        }
+    }
+
     .footer{
         position: fixed;
         bottom: 80px;

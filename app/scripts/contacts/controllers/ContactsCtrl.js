@@ -1,8 +1,8 @@
 define([], function(){
 'use strict';
 
-return ['$scope','$http',
-function ContactsCtrl($scope, $http){
+return ['$scope','$http','wdAlert',
+function ContactsCtrl($scope, $http, wdAlert){
 
     //存储当前联系人的数据列表
     var G_contacts = [];
@@ -27,6 +27,12 @@ function ContactsCtrl($scope, $http){
 
     //正在显示的数据
     var G_showingContact = {};
+
+    //当前的状态
+    var G_status = ''; // “edit” 正在编辑
+
+    //默认头像
+    var G_defaultPhoto = '../../images/contacts/default.png';
 
     //各个type字段映射表
     var G_typeMap = {
@@ -147,7 +153,7 @@ function ContactsCtrl($scope, $http){
 
                 //修正默认头像
                 if(!data[i].photo_path){
-                    data[i].photo_path = '../../images/contacts/default.png';
+                    data[i].photo_path = G_defaultPhoto;
                 };
 
                 G_contacts.push(data[i]);
@@ -156,7 +162,7 @@ function ContactsCtrl($scope, $http){
 
             //数据未取完
             if(l === length){
-                //getData(1,G_dataLengthOnce,data[l-1].id);
+                getData(1,G_dataLengthOnce,data[l-1].id);
             }else{
                 G_dataFinish = true ;
             };
@@ -212,59 +218,99 @@ function ContactsCtrl($scope, $http){
 
     //显示对应的联系人
     function showContacts(id){
-        var data = getContactsById(id,G_contacts);
-        data = changeDataType(data);
-        console.log(data);
 
-        //备份数据到全局
-        G_showingContact = {};
-        $.extend(true,G_showingContact,data);
+        var show = function(){
+            var data = getContactsById(id,G_contacts);
+            data['photo'] = '';
+            data = changeDataType(data);
 
-        G_clicked.clicked = '';
-        for(var i = 0,l = G_list.length; i < l; i++){
-            if ( G_list[i].id == id ) {
-                G_list[i].clicked = 'clicked';
-                G_clicked = G_list[i];
-            };
-        };
-        $scope.contact = data;
+            //备份数据到全局
+            G_showingContact = {};
+            $.extend(true,G_showingContact,data);
 
-        setTimeout(function(){
-            var label = $('.contacts-edit .info .labelFlag');
-            for(var i = 0 , l = label.length ; i<l; i++ ){
-                if(!!label.eq(i).text()){
-                    label.eq(i).css('display','inline-block').prevAll('p.des').hide();
+            G_clicked.clicked = '';
+            for(var i = 0,l = G_list.length; i < l; i++){
+                if ( G_list[i].id == id ) {
+                    G_list[i].clicked = 'clicked';
+                    G_clicked = G_list[i];
                 };
             };
-        },100);
+            $scope.contact = data;
+
+            setTimeout(function(){
+                var label = $('.contacts-edit .info .labelFlag');
+                for(var i = 0 , l = label.length ; i<l; i++ ){
+                    if(!!label.eq(i).text()){
+                        label.eq(i).css('display','inline-block').prevAll('p.des').hide();
+                    };
+                };
+            },100);
+        };
+
+        switch(G_status){
+            case 'new':
+            case 'edit':
+                wdAlert.confirm(
+                    'Are you sure?',
+                    'Do you save?',
+                    'OK',
+                    'Cancel'
+                ).then(function(){
+                    $scope.saveContact($scope.contact.id);
+                    show();
+                });
+            break;
+            default:
+                show();
+            break;
+        };
     };
 
     //删除选中的联系人
     $scope.deleteContacts = function(){
-        var delId = [];
-        for(var i = 0 , l = G_list.length ; i < l ; i ++){
-            if( G_list[i].checked === true ){
-                delId.push(G_list[i].id);
-            };
-        };
 
-        for(var i = 0 , l = delId.length ; i < l ; i ++ ){
-            for(var j = 0 , k = G_list.length ; j < k ; j++){
-                if( G_list[j].id == delId[i] ){
+        wdAlert.confirm(
+            'Are you sure?',
+            'you will delete those contacts',
+            'OK',
+            'Cancel'
+        ).then(function() {
 
-                    //TODO:添加删除接口
-                    $http({
-                        method: 'delete',
-                        url: '/resource/contacts/'+delId[i]
-                    }).success(function(){
-                        // wdAlert('delete success!');
-                    });
-
-                    G_list.splice(j,1);
-                    break;
+            var delId = [];
+            var flagNum = 0;
+            for(var i = 0 , l = G_list.length ; i < l ; i ++){
+                if( G_list[i].checked === true ){
+                    delId.push(G_list[i].id);
                 };
             };
-        };
+
+            for(var i = 0 , l = delId.length ; i < l ; i ++ ){
+                for(var j = 0 , k = G_list.length ; j < k ; j++){
+                    if( G_list[j].id == delId[i] ){
+
+                        //TODO:添加删除接口
+                        $http({
+                            method: 'delete',
+                            url: '/resource/contacts/'+delId[i]
+                        }).success(function(){
+                            flagNum ++ ;
+                            if( flagNum  === l ){
+                                wdAlert.alert('Delete success!', 'Delete success!', 'OK');
+                            };
+                        }).error(function(){
+                            flagNum ++ ;
+                            if( flagNum === 1){
+                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK');
+                            };
+                        });
+
+                        G_list.splice(j,1);
+                        break;
+                    };
+                };
+            };
+
+        });
     };
 
     //选中所有
@@ -293,6 +339,7 @@ function ContactsCtrl($scope, $http){
 
     //编辑联系人
     $scope.editContact = function(){
+        G_status = 'edit';
         var wrap = $('.contacts-edit');
         var ele =  wrap.children('.info');
         var change = function(arr){
@@ -310,7 +357,9 @@ function ContactsCtrl($scope, $http){
         ele.find('div.editName input').show();
         ele.find('p.labelFlag').hide();
         change(ele.find('dl dd p.detail').hide());
-
+        wrap.find('img.photo').on('mouseenter',showPhotoUpload);
+        wrap.find('.photoUpload').on('mouseout',hidePhotoUpload);
+        wrap.find('.photoUpload input').on('change',photoUpload);
         var desEle = ele.find('dl dd p.des');
         for(var i = 0 , l = desEle.length ; i<l ; i++ ){
             var el = desEle.eq(i);
@@ -349,6 +398,9 @@ function ContactsCtrl($scope, $http){
 
         ele.find('hr').show();
         ele.find('dl dd p.detail').show();
+        wrap.find('img.photo').off('mouseenter',showPhotoUpload);
+        wrap.find('.photoUpload').off('mouseout',hidePhotoUpload);
+        wrap.find('.photoUpload input').off('change',photoUpload);
         var label = $('.contacts-edit .info .labelFlag');
         for(var i = 0 , l = label.length ; i<l; i++ ){
             if(!!label.eq(i).text()){
@@ -362,8 +414,15 @@ function ContactsCtrl($scope, $http){
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
 
+        G_status = '';
+
         //TODO:补充保存联系人接口
         var editData = changeDataTypeBack(getContactsById(id,G_contacts));
+        if( id==='wangxiao'){
+            editData = $scope.contact;
+        };
+        console.log(editData);
+
         // $http({
         //     method: 'put',
         //     url: '/resource/contacts/'+id,
@@ -385,6 +444,7 @@ function ContactsCtrl($scope, $http){
         var wrap = $('.contacts-edit');
         var ele =  wrap.children('.info');
 
+        wrap.find('img.photo').attr('src',data.photo_path);
         ele.find('p.name').show();
         ele.find('p.remark').show();
         ele.find('.editName').hide();
@@ -394,6 +454,10 @@ function ContactsCtrl($scope, $http){
         ele.find('input').hide();
         ele.find('select').hide();
         ele.find('.btn-addNewItem').hide();
+        wrap.find('img.photo').off('mouseenter',showPhotoUpload);
+        wrap.find('.photoUpload').off('mouseout',hidePhotoUpload);
+        wrap.find('.photoUpload input').off('change',photoUpload);
+
         var label = ele.find('.labelFlag');
         for(var i = 0 , l = label.length ; i<l; i++ ){
             if(!!label.eq(i).text()){
@@ -408,13 +472,14 @@ function ContactsCtrl($scope, $http){
         wrap.find('.footer .btn-edit').show();
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
+        G_status = '';
 
         showContacts(id);
     };
 
     //增加一个条目
     $scope.addNewItem = function (id,itemType){
-        var obj = getContactsById(id,G_contacts);
+        var obj = $scope.contact;
         var i = 0;
         switch(itemType){
             case 'phone':
@@ -431,7 +496,7 @@ function ContactsCtrl($scope, $http){
             break;
             case 'IM':
                 i = obj.IM.length;
-                obj.IM.push({type:'Home',data:''});
+                obj.IM.push({protocol:'AIM',data:''}); //IM比较特殊，使用的protocol
             break;
             case 'nickname':
                 i = obj.nickname.length;
@@ -483,7 +548,28 @@ function ContactsCtrl($scope, $http){
 
     //添加新的联系人
     $scope.addNewContact = function(){
-
+        $('.contacts-edit .info img.photo').attr('src',G_defaultPhoto);
+        console.log($scope.contact);
+        var obj = {
+            id:'wangxiao',
+            account_name:'',
+            account_type:'',
+            photo_path:G_defaultPhoto,
+            IM:[{protocol:'AIM',custom_protocol:'',data:'',label:'',type:''}],
+            address:[{type:'Home',city:'',country:'',formatted_address:'',label:'',neightborhood:'',pobox:'',post_code:'',region:'',street:''}],
+            email:[{type:'Home',address:'',display_name:'',label:''}],
+            name:{display_name:'',family_name:'',given_name:'',middle_name:'',phonetic_family_name:'',phonetic_given_name:'',phonetic_middle_name:'',prefix:'',suffix:''},
+            nickname:[{type:'Default',label:'',name:''}],
+            note:[{type:'Default',note:''}],
+            organization:[{type:'Work',Company:'',department:'',job_description:'',label:'',office_location:'',phonetic_name:'',symbol:'',title:''}],
+            phone:[{type:'Mobile',label:'',number:''}],
+            relation:[{type:'Friend',name:'',label:''}],
+            website:[{type:'Homepage',URL:'',label:''}]
+        };
+        $scope.contact = obj;
+        setTimeout(function(){
+            $scope.editContact();
+        },100);
     };
 
     //改变data中的type值
@@ -505,6 +591,13 @@ function ContactsCtrl($scope, $http){
             if(!!data['note'][0]){
                 for(var i = 0 , l = data['note'].length ; i < l ; i++ ){
                     data['note'][i].type = 'Default';
+                };
+            };
+
+            //IM显示protocol
+            if(!!data['IM'][0]){
+                for(var i = 0 , l = data['IM'].length ; i < l ; i++ ){
+                    data['IM'][i]['protocol'] = G_protocol[data['IM'][i]['protocol']] || data['IM'][i]['protocol'];
                 };
             };
 
@@ -538,14 +631,48 @@ function ContactsCtrl($scope, $http){
             };
 
         };
+
+        if(!!obj['IM'] && !!obj['IM'].length){
+            for(var i = 0 ,l = obj['IM'].length; i < l ; i++ ){
+                for(var m in G_protocol){
+                    if(obj['IM'][i]['protocol'] === G_protocol[m]){
+                        obj['IM'][i]['protocol'] = m;
+                    };
+                };
+            };
+        };
+
         return obj;
 
+    };
+
+    function showPhotoUpload(){
+        $('.contacts-edit .photoUpload').show();
+    };
+
+    function hidePhotoUpload(){
+        $('.contacts-edit .photoUpload').hide();
+    };
+
+    function photoUpload(e){
+        var file = e.target.files[0];
+        if(!file.type.match('image.*')){
+            return;
+        }else{
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e){
+                $('.contacts-edit img.photo').attr('src',e.target.result);
+                $scope.contact.photo = e.target.result;
+            };
+        };
     };
 
     //主函数开始
     getData(0,G_dataLengthOnce,null);
     $scope.list = G_list;
     $scope.typeMap = G_typeMap;
+    $scope.protocolMap = G_protocol;
     $scope.showContacts = showContacts;
 //return的最后括号
 }];
