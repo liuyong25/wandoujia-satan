@@ -221,7 +221,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         var show = function(){
             var data = getContactsById(id,G_contacts);
-            data['photo'] = '';
+            data['photo'] = [];
             data = changeDataType(data);
 
             //备份数据到全局
@@ -238,7 +238,9 @@ function ContactsCtrl($scope, $http, wdAlert){
             $scope.contact = data;
 
             setTimeout(function(){
-                var label = $('.contacts-edit .info .labelFlag');
+                var wrap = $('.contacts-edit .info');
+                wrap.find('p.des').css('display','inline-block');
+                var label = $('.labelFlag');
                 for(var i = 0 , l = label.length ; i<l; i++ ){
                     if(!!label.eq(i).text()){
                         label.eq(i).css('display','inline-block').prevAll('p.des').hide();
@@ -276,7 +278,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             'OK',
             'Cancel'
         ).then(function() {
-
+            $('.modal-backdrop').remove();
             var delId = [];
             var flagNum = 0;
             for(var i = 0 , l = G_list.length ; i < l ; i ++){
@@ -296,12 +298,12 @@ function ContactsCtrl($scope, $http, wdAlert){
                         }).success(function(){
                             flagNum ++ ;
                             if( flagNum  === l ){
-                                wdAlert.alert('Delete success!', 'Delete success!', 'OK');
+                                wdAlert.alert('Delete success!', 'Delete success!', 'OK').then(function(){$('.modal-backdrop').remove();});
                             };
                         }).error(function(){
                             flagNum ++ ;
                             if( flagNum === 1){
-                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK');
+                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').remove();});
                             };
                         });
 
@@ -311,6 +313,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                 };
             };
 
+        //then最后的括号
         });
     };
 
@@ -422,19 +425,31 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         //TODO:补充保存联系人接口
         var editData = changeDataTypeBack(getContactsById(id,G_contacts));
-        if( G_status === 'new' ){
-            editData = $scope.contact;
-            G_status = '';
-        };
+
         console.log(editData);
 
-        $http({
-            method: 'put',
-            url: '/resource/contacts/'+id,
-            data:editData
-        }).success(function(data){
-            wdAlert.alert('Save success!','Save success!','OK');
-        });
+        switch(G_status){
+            case 'new':
+                editData = $scope.contact;
+                $http({
+                    method: 'put',
+                    url: '/resource/contacts/'+id,
+                    data:editData
+                }).success(function(data){
+                    wdAlert.alert('Save success!','Save success!','OK');
+                });
+            break;
+            case 'edit':
+                $http({
+                    method: 'put',
+                    url: '/resource/contacts/'+id,
+                    data:editData
+                }).success(function(data){
+                    wdAlert.alert('Save success!','Save success!','OK');
+                });
+            break;
+        };
+        G_status = '';
     };
 
     //取消编辑联系人
@@ -674,7 +689,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             reader.readAsDataURL(file);
             reader.onload = function(e){
                 $('.contacts-edit img.photo').attr('src',e.target.result);
-                $scope.contact.photo = e.target.result;
+                $scope.contact.photo[0] = e.target.result;
             };
         };
     };

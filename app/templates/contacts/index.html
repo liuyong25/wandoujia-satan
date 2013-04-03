@@ -71,7 +71,7 @@
                 <dl>
                     <dt ng-show="contact.phone">PHONE</dt>
                     <dd ng-repeat="item in contact.phone">
-                        <p class="des">{{item.type}}</p>
+                        <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.phone"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
@@ -90,8 +90,8 @@
                 <dl>
                     <dt ng-show="contact.email">E-MAIL</dt>
                     <dd ng-repeat="item in contact.email">
-                        <p class="des">{{item.type}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.type}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.email"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.address}}</p>
@@ -110,8 +110,8 @@
                     <dt ng-show="contact.address">ADDRESS</dt>
 
                     <dd ng-repeat="item in contact.address">
-                        <p class="des">{{item.type}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.type}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.address"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.formatted_address}}</p>
@@ -129,8 +129,8 @@
                 <dl>
                     <dt ng-show="contact.IM">IM</dt>
                     <dd ng-repeat="item in contact.IM">
-                        <p class="des">{{item.protocol}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.protocol}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.protocol" ng-options="value for (key , value) in protocolMap"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.data}}</p>
@@ -148,8 +148,8 @@
                 <dl>
                     <dt ng-show="contact.nickname">Nick Name</dt>
                     <dd ng-repeat="item in contact.nickname">
-                        <p class="des">{{item.type}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.type}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.nickname"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.name}}</p>
@@ -167,8 +167,8 @@
                 <dl>
                     <dt ng-show="contact.note">Note</dt>
                     <dd ng-repeat="item in contact.note">
-                        <p class="des">{{item.type}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.type}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.note"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.note}}</p>
@@ -186,8 +186,8 @@
                 <dl>
                     <dt ng-show="contact.website">Website</dt>
                     <dd ng-repeat="item in contact.website">
-                        <p class="des">{{item.type}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.type}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.website"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.URL}}</p>
@@ -205,8 +205,8 @@
                 <dl>
                     <dt ng-show="contact.relation">Relation</dt>
                     <dd ng-repeat="item in contact.relation">
-                        <p class="des">{{item.type}}</p>
-                        <p class="des labelFlag dn">{{item.label}}</p>
+                        <p class="des dn">{{item.type}}</p>
+                        <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.relation"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail">{{item.name}}</p>
