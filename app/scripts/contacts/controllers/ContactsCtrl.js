@@ -162,7 +162,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
             //数据未取完
             if(l === length){
-                getData(1,G_dataLengthOnce,data[l-1].id);
+                //getData(1,G_dataLengthOnce,data[l-1].id);
             }else{
                 G_dataFinish = true ;
             };
@@ -256,6 +256,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     'OK',
                     'Cancel'
                 ).then(function(){
+                    G_status = '';
                     $scope.saveContact($scope.contact.id);
                     show();
                 });
@@ -339,7 +340,12 @@ function ContactsCtrl($scope, $http, wdAlert){
 
     //编辑联系人
     $scope.editContact = function(){
-        G_status = 'edit';
+
+        //addNewContact方法中调用了editContact方法
+        if(G_status !== 'new'){
+            G_status = 'edit';
+        };
+
         var wrap = $('.contacts-edit');
         var ele =  wrap.children('.info');
         var change = function(arr){
@@ -399,7 +405,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('hr').show();
         ele.find('dl dd p.detail').show();
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
-        wrap.find('.photoUpload').off('mouseout',hidePhotoUpload);
+        wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
         wrap.find('.photoUpload input').off('change',photoUpload);
         var label = $('.contacts-edit .info .labelFlag');
         for(var i = 0 , l = label.length ; i<l; i++ ){
@@ -414,12 +420,11 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
 
-        G_status = '';
-
         //TODO:补充保存联系人接口
         var editData = changeDataTypeBack(getContactsById(id,G_contacts));
-        if( id==='wangxiao'){
+        if( G_status === 'new' ){
             editData = $scope.contact;
+            G_status = '';
         };
         console.log(editData);
 
@@ -435,6 +440,12 @@ function ContactsCtrl($scope, $http, wdAlert){
 
     //取消编辑联系人
     $scope.cancelContact = function(id){
+
+        if(G_status === 'new'){
+            id = G_clicked.id;
+            G_status = '';
+        };
+
         var data = getContactsById(id,G_contacts);
         for( var i in data ){
             data[i] = null;
@@ -455,7 +466,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('select').hide();
         ele.find('.btn-addNewItem').hide();
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
-        wrap.find('.photoUpload').off('mouseout',hidePhotoUpload);
+        wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
         wrap.find('.photoUpload input').off('change',photoUpload);
 
         var label = ele.find('.labelFlag');
@@ -472,7 +483,6 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-edit').show();
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
-        G_status = '';
 
         showContacts(id);
     };
@@ -549,7 +559,6 @@ function ContactsCtrl($scope, $http, wdAlert){
     //添加新的联系人
     $scope.addNewContact = function(){
         $('.contacts-edit .info img.photo').attr('src',G_defaultPhoto);
-        console.log($scope.contact);
         var obj = {
             id:'wangxiao',
             account_name:'',
@@ -567,6 +576,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             website:[{type:'Homepage',URL:'',label:''}]
         };
         $scope.contact = obj;
+        G_status = 'new';
         setTimeout(function(){
             $scope.editContact();
         },100);
