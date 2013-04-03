@@ -432,8 +432,8 @@ function ContactsCtrl($scope, $http, wdAlert){
             case 'new':
                 editData = $scope.contact;
                 $http({
-                    method: 'put',
-                    url: '/resource/contacts/'+id,
+                    method: 'post',
+                    url: '/resource/contacts/',
                     data:editData
                 }).success(function(data){
                     wdAlert.alert('Save success!','Save success!','OK');
@@ -576,7 +576,7 @@ function ContactsCtrl($scope, $http, wdAlert){
     $scope.addNewContact = function(){
         $('.contacts-edit .info img.photo').attr('src',G_defaultPhoto);
         var obj = {
-            id:'wangxiao',
+            // id:'wangxiao',
             account_name:'',
             account_type:'',
             photo_path:G_defaultPhoto,
