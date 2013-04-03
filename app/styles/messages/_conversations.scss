@@ -53,6 +53,8 @@
 .wdmcr-a {
     width: 43px;
     text-align: center;
+    height: 100%;
+    line-height: 62px;
 }
 
 .wdmcr-b {
@@ -78,6 +80,7 @@
     & > * {
         height: $global-line-height;
         overflow: hidden;
+        word-break: break-all;
     }
 }
 .wdmcr-c-a {

@@ -21,8 +21,9 @@ $scope.activeConversation = null;
 $scope.sms = '';
 $scope.editorEnable = true;
 
-$scope.cvsChanging = false;
+$scope.cvsChanging = true;
 $scope.cvsLoaded = true;
+$scope.cvsListFirstLoading = true;
 
 $scope.removeSelected = function() {
     wdAlert.confirm(
@@ -100,11 +101,11 @@ $scope.sendMessage = function(conversation, content) {
                 drop(conversation);
             });
         }
-        $scope.sms = '';
         $scope.editorEnable = true;
     }, function() {
         $scope.editorEnable = true;
     });
+    $scope.sms = '';
     scrollIntoView();
 };
 $scope.resendMessage = resendMessage;
@@ -131,6 +132,7 @@ wdpMessagePusher.channel('messages.add', function(msg) {
 // Startup
 loadConversations().then(function() {
     $scope.showConversation($scope.conversations[0]);
+    $scope.cvsListFirstLoading = false;
 });
 
 wdpMessagePusher.start();
@@ -154,12 +156,13 @@ function scrollIntoView() {
 }
 
 function createConversation() {
+    if (hasNewConversation()) { return; }
     var c = _(new Conversations()).extend({
         id: _.uniqueId('wdmConversation_'),
         date: Date.now(),
         message_count: 0,
         snippet: '',
-        addresses: ['10010'],
+        addresses: [],
         contact_names: [],
         photo_path: '',
         unread_message_count: 0,
@@ -176,6 +179,7 @@ function createConversation() {
  * Return promise resolving with the conversation which messages located in.
  */
 function sendMessage(conversation, content) {
+    var newMessages = [];
     var newMessage = new Messages();
     _(newMessage).extend({
         id: _.uniqueId('wdmMessage_'),
@@ -509,6 +513,12 @@ function hasFailedMsg(conversation) {
 
 function hasMessage(c) {
     return !!$scope.cvsCache.get(c, 'messages').length;
+}
+
+function hasNewConversation() {
+    return _($scope.conversations).any(function(c) {
+        return c.message_count === 0;
+    });
 }
 
 function isLoaded(c) {

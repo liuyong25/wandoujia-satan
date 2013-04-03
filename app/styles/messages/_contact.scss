@@ -1,10 +1,16 @@
 .wdm-contact {
-    @include display-flex;
-    @include align-content(center);
-    @include align-items(center);
-    @include justify-content(center);
-    @include position;
+    // @include position;
+}
 
+.wdmct-a {
+    @include display-flex;
+    @include justify-content(center);
+    @include box-sizing(border-box);
+    width: 100%;
+    min-height: 53px;
+    padding: 16px 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 16px;
 }
 
@@ -13,4 +19,25 @@
     padding: 10px;
     cursor: pointer;
     @include button-effect;
+}
+
+.wdmct-c {
+    @include display-flex;
+    @include box-sizing(border-box);
+    padding: 16px 20px;
+    width: 100%;
+
+    font-size: 12px;
+
+    & > div {
+        @include nowrap;
+        margin-right: 13px;
+    }
+    textarea {
+        width: 100%;
+        font-size: 12px;
+    }
+    .text-core {
+        @include flex(1);
+    }
 }

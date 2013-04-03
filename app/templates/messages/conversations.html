@@ -28,7 +28,10 @@
                         <img ng-show="c.photo_path" ng-src="{{c.photo_path}}">
                     </div>
                     <div class="wdmcr-c">
-                        <div class="wdmcr-c-a">{{ status.displayName() }}</div>
+                        <div class="wdmcr-c-a" ng-switch on="c.addresses.length">
+                            <span ng-switch-default>{{ status.displayName() }}</span>
+                            <span ng-switch-when="0">New message</span>
+                        </div>
                         <div class="wdmcr-c-b">{{ c.snippet }}</div>
                     </div>
                     <div class="wdmcr-d">
@@ -38,27 +41,34 @@
                             <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
                         </div>
                         <div>
-                            {{ status.date() | messageDate:'MMM d' }}
+                            {{ status.date() | messageDate:'MMM D' }}
                         </div>
                     </div>
                 </li>
                 <li wdm-load-more="prevConversations()" ng-hide="cvsLoaded"></li>
             </ol>
+            <div class="wd-loading" data-visible="cvsListFirstLoading"></div>
         </section>
         <section class="wdm-main">
             <section class="wdm-contact">
-                <div ui-if="activeConversation.message_count > 0" class="wdmct-a">{{ cvsCache.get(activeConversation).displayName() }}</div>
-                <div ui-if="activeConversation.message_count == 0">
+                <div ui-if="activeConversation.message_count > 0" class="wdmct-a"
+                    title="{{ cvsCache.get(activeConversation).displayName() }}">
+                    {{ cvsCache.get(activeConversation).displayName() }}
+                </div>
+                <div ui-if="activeConversation.message_count == 0" class="wdmct-c">
+                    <div>Send to: </div>
                     <textarea wdm-receiver rows="1"></textarea>
                 </div>
-                <!-- <div class="wdmct-b" ng-show="activeConversation.addresses.length > 1"><i class="messages-icon-contact"></i></div> -->
             </section>
             <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
                 <div wdm-auto-scroll-container>
-                    <div wdm-load-more="prevMessages(activeConversation)" ng-hide="cvsCache.get(activeConversation).loaded"></div>
+                    <div wdm-load-more="prevMessages(activeConversation)" ng-hide="cvsCache.get(activeConversation).loaded || !activeConversation || cvsCache.get(activeConversation).messages.length == 0"></div>
                     <div ng-repeat="(d, g) in cvsCache.get(activeConversation).groups">
+                        <div class="wdme-sep">
+                            <span>{{ d | messageDate:'MMM D' }}</span>
+                        </div>
                         <div class="wdme-row"
-                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 5}"
+                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6}"
                             ng-repeat="m in g">
                             <div class="wdmer-a">{{ m.body }}</div>
                             <div class="wdmer-b" ng-switch on="m.status">
@@ -68,20 +78,14 @@
                                 <a href="" class="wdmer-b-del" ng-click="removeMessage(activeConversation, m)"><i class="messages-icon-ab-del"></i></a>
                             </div>
                         </div>
-                        <div class="wdme-sep" ng-show="!$last">
-                            <span>{{ d | messageDate:'MMM d' }}</span>
-                        </div>
                     </div>
                 </div>
             </section>
             <section class="wdm-editor">
                 <form ng-submit="sendMessage(activeConversation, sms)">
                     <textarea placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="sms" ng-disabled="!editorEnable" rows="1" wdm-textarea></textarea>
-                    <button class="btn" type="submit"
-                        ng-disabled="!editorEnable"
-                        ng-switch on="editorEnable">
-                        <span ng-switch-when="true">{{$root.DICT.messages.EDITOR_SUBMIT}}</span>
-                        <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>
+                    <button class="btn" type="submit">
+                        <span>{{$root.DICT.messages.EDITOR_SUBMIT}}</span>
                     </button>
                 </form>
             </section>

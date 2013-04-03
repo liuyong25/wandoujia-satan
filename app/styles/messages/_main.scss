@@ -23,6 +23,11 @@
         @include flex-direction(column);
         width: $wdm-sub-width;
         border-right: 1px solid $wdm-border-color;
+
+        @include position;
+        & > .wd-loading {
+            @include position(absolute);
+        }
     }
     .wdm-main {
         @include flex(1);
@@ -49,7 +54,7 @@
     }
 
     .wdm-contact {
-        height: 53px;
+        min-height: 53px;
         border-bottom: 1px solid $wdm-border-color;
     }
     .wdm-entries {
@@ -64,6 +69,7 @@
     @import "contact";
     @import "entries";
     @import "editor";
+    @import "textext";
 
 
     .load-more {
