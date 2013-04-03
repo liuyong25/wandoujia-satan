@@ -26,12 +26,14 @@
         min-width: 350px;
         display: block;
         padding-left: 1px;
+        border-right: 1px solid #ebebeb;
+        margin-left: -1px;
+
         .clicked{
             background-color: #444444!important;
             color: #FFFFFF;
             cursor: default;
             border-right: 1px solid #444444;
-            margin-left: -1px;
         }
 
     }

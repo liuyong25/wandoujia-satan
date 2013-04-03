@@ -162,7 +162,9 @@ function ContactsCtrl($scope, $http, wdAlert){
 
             //数据未取完
             if(l === length){
-                getData(1,G_dataLengthOnce,data[l-1].id);
+                //getData(1,G_dataLengthOnce,data[l-1].id);
+                getData(G_contacts.length,G_dataLengthOnce,null);
+
             }else{
                 G_dataFinish = true ;
             };
@@ -175,7 +177,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         var l = data.length;
         for(var i = 0; i<l; i++ ){
             var id = data[i].id || '';
-            var name = data[i].name && data[i].name.display_name || '';
+            var name = (data[i].name && data[i].name.display_name) || (data[i].phone[0] && data[i].phone[0].number) || (data[i].email[0] && data[i].email[0].address) || 'No Name';
             var phone = data[i].phone[0] && data[i].phone[0].number || '';
             var photo = data[i].photo_path;
             var obj = {
