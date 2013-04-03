@@ -29,7 +29,7 @@ function ContactsCtrl($scope, $http, wdAlert){
     var G_showingContact = {};
 
     //当前的状态
-    var G_status = ''; // “edit” 正在编辑
+    var G_status = ''; // “edit” 正在编辑，“new” 正在新建
 
     //默认头像
     var G_defaultPhoto = '../../images/contacts/default.png';
@@ -162,7 +162,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
             //数据未取完
             if(l === length){
-                //getData(1,G_dataLengthOnce,data[l-1].id);
+                getData(1,G_dataLengthOnce,data[l-1].id);
             }else{
                 G_dataFinish = true ;
             };
@@ -428,24 +428,25 @@ function ContactsCtrl($scope, $http, wdAlert){
         };
         console.log(editData);
 
-        // $http({
-        //     method: 'put',
-        //     url: '/resource/contacts/'+id,
-        //     data:editData
-        // }).success(function(data){
-        //
-        //     // wdAlert('delete success!');
-        // });
+        $http({
+            method: 'put',
+            url: '/resource/contacts/'+id,
+            data:editData
+        }).success(function(data){
+            wdAlert.alert('Save success!','Save success!','OK');
+        });
     };
 
     //取消编辑联系人
     $scope.cancelContact = function(id){
 
-        if(G_status === 'new'){
-            id = G_clicked.id;
-            G_status = '';
+        switch(G_status){
+            case 'new':
+            case 'edit':
+                id = G_clicked.id;
+                G_status = '';
+            break;
         };
-
         var data = getContactsById(id,G_contacts);
         for( var i in data ){
             data[i] = null;
