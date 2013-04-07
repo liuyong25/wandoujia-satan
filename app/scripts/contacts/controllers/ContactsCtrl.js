@@ -464,12 +464,12 @@ function ContactsCtrl($scope, $http, wdAlert){
                         }).success(function(data){
                             G_photoBinary = '';
                             G_contacts.push(data[0]);
-                            $scope.list.push(data[0]);
+                            //$scope.list.push(data[0]);
                             showContacts(data[0]['id']);
                         });
                     }else{
                             G_contacts.push(data[0]);
-                            $scope.list.push(data[0]);
+                            //$scope.list.push(data[0]);
                             showContacts(data[0]['id']);
                     };
                 });
@@ -756,7 +756,12 @@ function ContactsCtrl($scope, $http, wdAlert){
 
                 $('.contacts-edit img.photo').attr('src',e.target.result);
 
-                G_photoBinary = file;
+                //传给服务器为二进制
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+                reader.onload = function(e){
+                    G_photoBinary = e.target.result;
+                };
 
             };
         };
