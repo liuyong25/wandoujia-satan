@@ -381,6 +381,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.photoUpload').on('mouseout',hidePhotoUpload);
         wrap.find('.photoUpload input').on('change',photoUpload);
         var desEle = ele.find('dl dd p.des');
+
         for(var i = 0 , l = desEle.length ; i<l ; i++ ){
             var el = desEle.eq(i);
             var val = el.hide().text();
@@ -433,15 +434,16 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-edit').show();
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
+        var saveData = changeDataTypeBack($scope.contact);
 
         switch(G_status){
             case 'new':
                 var editData = [];
-                editData.push(changeDataTypeBack($scope.contact));
+                editData.push(saveData);
                 var account = editData[0].account;
                 editData[0]['account_name'] = account['name'];
                 editData[0]['account_type'] = account['type'];
-
+                console.log(saveData);
                 $http({
                     method: 'post',
                     url: '/resource/contacts/',
@@ -454,8 +456,8 @@ function ContactsCtrl($scope, $http, wdAlert){
                 });
             break;
             case 'edit':
-                var editData = changeDataTypeBack($scope.contact);
-
+                var editData = saveData;
+                console.log(saveData);
                 $http({
                     method: 'put',
                     url: '/resource/contacts/'+id,
@@ -720,7 +722,8 @@ function ContactsCtrl($scope, $http, wdAlert){
             reader.readAsDataURL(file);
             reader.onload = function(e){
                 $('.contacts-edit img.photo').attr('src',e.target.result);
-                $scope.contact.photo['data'] = e.target.result;
+                $scope.contact.photo[0] = {};
+                $scope.contact.photo[0]['data'] = e.target.result;
             };
         };
     };
