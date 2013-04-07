@@ -163,7 +163,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             //数据未取完
             if(l === length){
                 //getData(1,G_dataLengthOnce,data[l-1].id);
-                getData(G_contacts.length,G_dataLengthOnce,null);
+                //getData(G_contacts.length,G_dataLengthOnce,null);
 
             }else{
                 G_dataFinish = true ;
@@ -239,16 +239,20 @@ function ContactsCtrl($scope, $http, wdAlert){
             };
             $scope.contact = data;
 
+            console.log(data);
+
+            //样式相关处理
             setTimeout(function(){
                 var wrap = $('.contacts-edit .info');
                 wrap.find('p.des').css('display','inline-block');
+                wrap.find('p.detail').css('display','inline-block');
                 var label = $('.labelFlag');
                 for(var i = 0 , l = label.length ; i<l; i++ ){
                     if(!!label.eq(i).text()){
                         label.eq(i).css('display','inline-block').prevAll('p.des').hide();
                     };
                 };
-            },100);
+            },50);
         };
 
         switch(G_status){
@@ -417,7 +421,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             if(!!label.eq(i).text()){
                 label.eq(i).css('display','inline-block').prevAll('p.des').hide();
             }else{
-                label.eq(i).prevAll('p.des').show();
+                label.eq(i).prevAll('p.des').css('display','inline-block');
             };
         };
 
@@ -426,7 +430,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-cancel').hide();
 
         //TODO:补充保存联系人接口
-        var editData = changeDataTypeBack(getContactsById(id,G_contacts));
+        var editData = changeDataTypeBack($scope.contact);
 
         console.log(editData);
 
@@ -576,11 +580,22 @@ function ContactsCtrl($scope, $http, wdAlert){
 
     //添加新的联系人
     $scope.addNewContact = function(){
+
+        //获取用户账户
+        $http({
+            method: 'get',
+            url: '/resource/accounts'
+        }).success(function(data) {
+            var data = [{type:'gogole',name:'wangxiao@gmail.com'},{type:'wandoujia',name:'wangxiao@wandoujia.com'}];
+            $scope.accounts = data;
+        });
+
         $('.contacts-edit .info img.photo').attr('src',G_defaultPhoto);
         var obj = {
             // id:'wangxiao',
             account_name:'',
             account_type:'',
+            photo:'',
             photo_path:G_defaultPhoto,
             IM:[{protocol:'AIM',custom_protocol:'',data:'',label:'',type:''}],
             address:[{type:'Home',city:'',country:'',formatted_address:'',label:'',neightborhood:'',pobox:'',post_code:'',region:'',street:''}],

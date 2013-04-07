@@ -16,8 +16,10 @@
                 <i class="icon-ab-del"></i>
                 Delete
             </button>
+            <div class="search">
+                <input type="text">
+            </div>
         </div>
-
         <ul class="contacts-list">
 
             <!-- 每个联系人的模板 -->
@@ -58,6 +60,8 @@
                 <p class="name">{{contact.name.display_name}}</p>
                 <p class="remark">{{contact.organization[0].company}}</p>
                 <div class="editName dn">
+                    <h4>Account Name</h4>
+                    <select class="account" ng-model="contact.account_name" ng-options="value.name for (key , value) in accounts"></select>
                     <h4>Name & Organization</h4>
                     <input class="name" type="text" ng-model="contact.name.given_name" placeholder="Enter First Name">
                     <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Enter Middle Name">
@@ -75,7 +79,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.phone"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.number}}</p>
+                        <p class="detail dn">{{item.number}}</p>
                         <input class="detail dn" type="text" ng-model="item.number"  placeholder="Enter Phone Number">
                     </dd>
 
@@ -94,7 +98,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.email"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.address}}</p>
+                        <p class="detail dn">{{item.address}}</p>
                         <input class="detail dn" type="text" ng-model="item.address"  placeholder="Enter Email Address">
                     </dd>
 
@@ -114,7 +118,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.address"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.formatted_address}}</p>
+                        <p class="detail dn">{{item.formatted_address}}</p>
                         <input class="detail dn" type="text" ng-model="item.formatted_address" placeholder="Enter Address">
                     </dd>
 
@@ -133,7 +137,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.protocol" ng-options="value for (key , value) in protocolMap"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.data}}</p>
+                        <p class="detail dn">{{item.data}}</p>
                         <input class="detail dn" type="text" ng-model="item.data" placeholder="Enter IM">
                     </dd>
 
@@ -152,7 +156,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.nickname"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.name}}</p>
+                        <p class="detail dn">{{item.name}}</p>
                         <input class="detail dn" type="text" ng-model="item.name" placeholder="Enter Nick Name">
                     </dd>
 
@@ -171,7 +175,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.note"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.note}}</p>
+                        <p class="detail dn">{{item.note}}</p>
                         <input class="detail dn" type="text" ng-model="item.note"  placeholder="Enter Note">
                     </dd>
 
@@ -190,7 +194,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.website"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.URL}}</p>
+                        <p class="detail dn">{{item.URL}}</p>
                         <input class="detail dn" type="text" ng-model="item.URL"  placeholder="Enter Website">
                     </dd>
 
@@ -209,7 +213,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.relation"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail">{{item.name}}</p>
+                        <p class="detail dn">{{item.name}}</p>
                         <input class="detail dn" type="text" ng-model="item.name"  placeholder="Enter Relation">
                     </dd>
 
