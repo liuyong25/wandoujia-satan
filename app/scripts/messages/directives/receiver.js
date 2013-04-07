@@ -6,7 +6,7 @@ define([
     _
 ) {
 'use strict';
-return ['wdDev', function(wdDev) {
+return ['wdDev', '$rootScope', function(wdDev, $rootScope) {
 return {
 
 link: function(scope, element) {
@@ -47,9 +47,12 @@ link: function(scope, element) {
         if (addresses === old) {
             element.textext({
                 plugins : 'tags prompt focus autocomplete ajax',
-                prompt : 'Add one...',
+                // prompt : 'Add one...',
                 ext: {
                     itemManager: itemManager
+                },
+                html : {
+                    tag  : '<div class="text-tag"><div class="text-button"><span class="text-label"/><span class="text-remove">&times;</span></div></div>'
                 },
                 tags: {
                     items: items

@@ -4,7 +4,7 @@ define([
     template
 ) {
 'use strict';
-return ['$q', function($q) {
+return ['$q', '$rootScope', function($q, $rootScope) {
 return {
 
 template: template,
@@ -12,6 +12,13 @@ replace: true,
 scope: true,
 link: function(scope, element, attributes) {
     scope.loading = false;
+    scope.text = $rootScope.DICT.messages.BTN_LOAD;
+
+    attributes.$observe('text', function(value) {
+        if (value) {
+            scope.text = value;
+        }
+    });
 
     element.on('click', function() {
         if (scope.loading) { return; }

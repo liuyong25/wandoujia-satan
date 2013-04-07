@@ -145,18 +145,21 @@
   background: #efdbdc;
   color: #9e0b0f;
 }
-.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove {
+.text-core .text-wrap .text-tags .text-tag .text-button .text-remove {
+    cursor: pointer;
   position: absolute;
   right: 3px;
-  top: 5px;
+  top: 3px;
   display: block;
-  width: 11px;
-  height: 11px;
-  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAhCAYAAAAPm1F2AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAAB50RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNS4xqx9I6wAAAQ5JREFUOI2dlD0WwiAQhCc8L6HHgAPoASwtSYvX8BrQxtIyveYA8RppLO1jE+LwE8lzms2yH8MCj1QoaBzH+VuUYNYMS213UlvDRamtUbXb5ZyPHuDoxwGgip3ipfvGuGzPz+vZ/coDONdzFuYCO6ramQQG0DJIE1oPBBvM6e9LqaS2FwD7FWwnVoIAsOc2Xn1jDlyd8pfPBRVOBHA8cc/3yCmQqt0jcY4LuTyAF3pOYS6wI48LAm4MUrx5JthgSQJAt5LtNgAUgEMBBIC3AL2xgo58dEPfhE9wygef89FtCeC49UwltR1pQrK2qr9vNr7uRTCBF3pOYS6wI4/zdQ8MUpxPI9hgSQL0Xyio/QBt54DzsHQx6gAAAABJRU5ErkJggg==") 0 0 no-repeat;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  font-family: Arial;
+  font-weight: bold;
+  text-align: center;
+  font-size: 14px;
+  @include button-effect;
 }
-.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:hover {
-  background-position: 0 -11px;
-}
-.text-core .text-wrap .text-tags .text-tag .text-button a.text-remove:active {
-  background-position: 0 -22px;
+.text-core .text-wrap .text-tags .text-tag .text-button .text-remove:hover {
+    text-decoration: none;
 }

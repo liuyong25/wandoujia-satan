@@ -10,6 +10,16 @@ return {
         ACTION_SELECT_ALL: 'Select all',
         ACTION_DESELECT_ALL: 'Deselect all',
         ACTION_DELETE: 'Delete',
+        ACTION_RETRY: 'Retry',
+
+        LABEL_SEND_TO: 'Send to',
+
+        RECEIVER_PLACEHOLDER: 'Add one...',
+
+        ERROR_SEND_FAILED: 'Send Failed.',
+
+        BTN_LOAD: 'Load more',
+        BTN_LOAD_MSG: 'Load earlier messages',
 
         CONFIRM_DELETE_TITLE: 'Delete messages',
         CONFIRM_DELETE_CONTENT: 'Delete the selected messages from your phone?',

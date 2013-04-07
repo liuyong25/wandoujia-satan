@@ -23,7 +23,7 @@ link: function(scope, element, attributes) {
         // console.log('keep', element.scrollTop());
     });
     scope.$on('wdm:autoscroll:bottom', function() {
-        element.scrollTop(10000000000);
+        element.scrollTop(childElement.outerHeight());
     });
 }
 

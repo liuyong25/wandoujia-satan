@@ -5,9 +5,9 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-        'wdpMessagePusher', '$timeout', 'wdAlert',
+        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA',
 function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
-         wdpMessagePusher,   $timeout,   wdAlert) {
+         wdpMessagePusher,   $timeout,   wdAlert,   GA) {
 
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
@@ -66,7 +66,9 @@ $scope.removeMessage = function(c, m) {
                 $scope.showConversation($scope.conversations[0]);
             }
         }
-        removeMessage(m);
+        removeMessage(m).then(function() {
+            pullConversation(c.id);
+        });
     });
 };
 
@@ -102,13 +104,19 @@ $scope.sendMessage = function(conversation, content) {
             });
         }
         $scope.editorEnable = true;
+        pullConversation(conversation.id);
     }, function() {
         $scope.editorEnable = true;
+        GA('messages:send_failed');
     });
     $scope.sms = '';
     scrollIntoView();
 };
-$scope.resendMessage = resendMessage;
+$scope.resendMessage = function(message) {
+    resendMessage(message).then(function() {
+        pullConversation(message.thread_id);
+    });
+};
 
 wdpMessagePusher.channel('messages.add', function(msg) {
     var cid = msg.data.threadId;
@@ -119,9 +127,7 @@ wdpMessagePusher.channel('messages.add', function(msg) {
             if (isActive(c)) {
                 scrollIntoView();
             }
-            else {
-                pullConversation(cid);
-            }
+            pullConversation(cid);
         });
     }
     else {

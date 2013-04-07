@@ -1,6 +1,6 @@
 define([], function() {
 'use strict';
-return [function() {
+return ['GA', function(GA) {
 return {
 
 link: function(scope, element) {
@@ -22,6 +22,9 @@ link: function(scope, element) {
         rows = element[0].value.split('\n').length + (isNewLine ? 1 : 0);
         rows = Math.min(rows, 4);
         element.attr('rows', rows);
+    });
+    element.on('focus', function() {
+        GA('messages:focus_editor');
     });
 }
 
