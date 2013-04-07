@@ -50,6 +50,7 @@
 
         }
 
+        /* 上传图片用的input */
         input{
             position: absolute;
             top: -53px;
@@ -61,9 +62,6 @@
             opacity: 0;
         }
 
-        input:focus{
-            background-color: #FFF;
-        }
 
     }
 
@@ -76,7 +74,7 @@
     .info{
         margin-top:51px;
         margin-left:50px;
-        width: 500px;
+        width: 75%;
         position: absolute;
         top:0px;
         left: 110px;
@@ -89,7 +87,7 @@
 
         select{
             min-width: 115px;
-            width: auto;
+            width: 18%;
             margin-right: 4px;
             background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
             border: 1px solid #d6d6d6;

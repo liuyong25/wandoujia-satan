@@ -226,8 +226,13 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         var show = function(){
             var data = getContactsById(id,G_contacts);
+            //新建的图片字段，存储改变后的图片
             data['photo'] = [];
+            //账户信息，存储当前账号
             data['account'] = {};
+            if(!data['organization'][0]){
+                data['organization'][0] = {type:'Work',Company:'',department:'',job_description:'',label:'',office_location:'',phonetic_name:'',symbol:'',title:''};
+            };
             data = changeDataType(data);
 
             //备份数据到全局
@@ -542,10 +547,10 @@ function ContactsCtrl($scope, $http, wdAlert){
                 i = obj.IM.length;
                 obj.IM.push({protocol:'AIM',data:''}); //IM比较特殊，使用的protocol
             break;
-            case 'nickname':
-                i = obj.nickname.length;
-                obj.nickname.push({type:'Default',name:''});
-            break;
+            // case 'nickname':
+            //     i = obj.nickname.length;
+            //     obj.nickname.push({type:'Default',name:''});
+            // break;
             case 'note':
                 i = obj.note.length;
                 obj.note.push({type:'Default',note:''});
@@ -617,7 +622,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             address:[{type:'Home',city:'',country:'',formatted_address:'',label:'',neightborhood:'',pobox:'',post_code:'',region:'',street:''}],
             email:[{type:'Home',address:'',display_name:'',label:''}],
             name:{display_name:'',family_name:'',given_name:'',middle_name:'',phonetic_family_name:'',phonetic_given_name:'',phonetic_middle_name:'',prefix:'',suffix:''},
-            nickname:[{type:'Default',label:'',name:''}],
+            // nickname:[{type:'Default',label:'',name:''}],
             note:[{type:'Default',note:''}],
             organization:[{type:'Work',Company:'',department:'',job_description:'',label:'',office_location:'',phonetic_name:'',symbol:'',title:''}],
             phone:[{type:'Mobile',label:'',number:''}],
@@ -691,6 +696,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         };
 
+        //IM字段中使用protocol代替type
         if(!!obj['IM'] && !!obj['IM'].length){
             for(var i = 0 ,l = obj['IM'].length; i < l ; i++ ){
                 for(var m in G_protocol){
@@ -702,7 +708,6 @@ function ContactsCtrl($scope, $http, wdAlert){
         };
 
         return obj;
-
     };
 
     function showPhotoUpload(){
@@ -720,10 +725,19 @@ function ContactsCtrl($scope, $http, wdAlert){
         }else{
             var reader = new FileReader();
             reader.readAsDataURL(file);
+
+            //显示为base64
             reader.onload = function(e){
                 $('.contacts-edit img.photo').attr('src',e.target.result);
                 $scope.contact.photo[0] = {};
-                $scope.contact.photo[0]['data'] = e.target.result;
+
+                //传给服务器为二进制
+                var reader = new FileReader();
+                reader.readAsBinaryString(file);
+                reader.onload = function(e){
+                    $scope.contact.photo[0]['data'] = e.target.result;
+                };
+
             };
         };
     };

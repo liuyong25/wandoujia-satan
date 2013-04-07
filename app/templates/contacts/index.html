@@ -65,11 +65,11 @@
                         <select ng-model="contact.account" ng-options="value.name for (key , value) in accounts"></select>
                     </div>
                     <h4>Name & Organization</h4>
-                    <input class="name" type="text" ng-model="contact.name.given_name" placeholder="Enter First Name">
-                    <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Enter Middle Name">
-                    <input class="name" type="text" ng-model="contact.name.family_name" placeholder="Enter Last Name">
-                    <input class="company" type="text" ng-model="contact.organization[0].company"  placeholder="Enter Company">
-                    <input class="title" type="text" ng-model="contact.organization[0].title" placeholder="Enter Title">
+                    <input class="name" type="text" ng-model="contact.name.given_name" placeholder="First Name">
+                    <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Middle Name">
+                    <input class="name" type="text" ng-model="contact.name.family_name" placeholder="Last Name">
+                    <input class="company" type="text" ng-model="contact.organization[0].company"  placeholder="Company">
+                    <input class="title" type="text" ng-model="contact.organization[0].title" placeholder="Title">
                 </div>
                 <hr>
 
@@ -82,7 +82,7 @@
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.phone"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.number}}</p>
-                        <input class="detail dn" type="text" ng-model="item.number"  placeholder="Enter Phone Number">
+                        <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone Number">
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -101,7 +101,7 @@
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.email"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.address}}</p>
-                        <input class="detail dn" type="text" ng-model="item.address"  placeholder="Enter Email Address">
+                        <input class="detail dn" type="text" ng-model="item.address"  placeholder="Email Address">
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -121,7 +121,7 @@
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.address"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.formatted_address}}</p>
-                        <input class="detail dn" type="text" ng-model="item.formatted_address" placeholder="Enter Address">
+                        <input class="detail dn" type="text" ng-model="item.formatted_address" placeholder="Address">
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -140,7 +140,7 @@
                         <select class="des dn" ng-model="item.protocol" ng-options="value for (key , value) in protocolMap"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.data}}</p>
-                        <input class="detail dn" type="text" ng-model="item.data" placeholder="Enter IM">
+                        <input class="detail dn" type="text" ng-model="item.data" placeholder="IM">
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -150,24 +150,6 @@
                 </dl>
                 <!-- 每个独立的信息 end -->
 
-                <!-- 每个独立的信息 start -->
-                <dl>
-                    <dt ng-show="contact.nickname">Nick Name</dt>
-                    <dd ng-repeat="item in contact.nickname">
-                        <p class="des dn">{{item.type}}</p>
-                        <p class="labelFlag dn">{{item.label}}</p>
-                        <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.nickname"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
-                        <p class="detail dn">{{item.name}}</p>
-                        <input class="detail dn" type="text" ng-model="item.name" placeholder="Enter Nick Name">
-                    </dd>
-
-                    <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'nickname')" ng-show="contact.nickname">Add New Item</button>
-                    <!-- 新增一个item end -->
-
-                </dl>
-                <!-- 每个独立的信息 end -->
 
                 <!-- 每个独立的信息 start -->
                 <dl>
@@ -178,7 +160,7 @@
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.note"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.note}}</p>
-                        <input class="detail dn" type="text" ng-model="item.note"  placeholder="Enter Note">
+                        <input class="detail dn" type="text" ng-model="item.note"  placeholder="Note">
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -197,7 +179,7 @@
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.website"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.URL}}</p>
-                        <input class="detail dn" type="text" ng-model="item.URL"  placeholder="Enter Website">
+                        <input class="detail dn" type="text" ng-model="item.URL"  placeholder="Website">
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -216,7 +198,7 @@
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.relation"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.name}}</p>
-                        <input class="detail dn" type="text" ng-model="item.name"  placeholder="Enter Relation">
+                        <input class="detail dn" type="text" ng-model="item.name"  placeholder="Relation">
                     </dd>
 
                     <!-- 新增一个item start -->
