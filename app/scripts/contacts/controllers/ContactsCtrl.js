@@ -162,8 +162,11 @@ function ContactsCtrl($scope, $http, wdAlert){
 
             //数据未取完
             if(l === length){
+                //如果支持cursor打开这个接口，但是速度不如没有cursor的快
                 //getData(1,G_dataLengthOnce,data[l-1].id);
-                //getData(G_contacts.length,G_dataLengthOnce,null);
+
+                //不支持cursor取数据
+                getData(G_contacts.length,G_dataLengthOnce,null);
 
             }else{
                 G_dataFinish = true ;
@@ -303,9 +306,9 @@ function ContactsCtrl($scope, $http, wdAlert){
                             url: '/resource/contacts/'+delId[i]
                         }).success(function(){
                             flagNum ++ ;
-                            if( flagNum  === l ){
-                                wdAlert.alert('Delete success!', 'Delete success!', 'OK').then(function(){$('.modal-backdrop').remove();});
-                            };
+                            // if( flagNum  === l ){
+                            //     wdAlert.alert('Delete success!', 'Delete success!', 'OK').then(function(){$('.modal-backdrop').remove();});
+                            // };
                         }).error(function(){
                             flagNum ++ ;
                             if( flagNum === 1){
@@ -431,7 +434,6 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         //TODO:补充保存联系人接口
         var editData = changeDataTypeBack($scope.contact);
-
         console.log(editData);
 
         switch(G_status){
@@ -586,7 +588,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             method: 'get',
             url: '/resource/accounts'
         }).success(function(data) {
-            var data = [{type:'gogole',name:'wangxiao@gmail.com'},{type:'wandoujia',name:'wangxiao@wandoujia.com'}];
+            //var data = [{type:'gogole',name:'wangxiao@gmail.com'},{type:'wandoujia',name:'wangxiao@wandoujia.com'}];
             $scope.accounts = data;
         });
 

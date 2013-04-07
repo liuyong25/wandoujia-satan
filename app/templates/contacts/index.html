@@ -60,8 +60,10 @@
                 <p class="name">{{contact.name.display_name}}</p>
                 <p class="remark">{{contact.organization[0].company}}</p>
                 <div class="editName dn">
-                    <h4>Account Name</h4>
-                    <select class="account" ng-model="contact.account_name" ng-options="value.name for (key , value) in accounts"></select>
+                    <div class="account dn">
+                        <h4>Account Name</h4>
+                        <select ng-model="contact.account_name" ng-options="value.name for (key , value) in accounts"></select>
+                    </div>
                     <h4>Name & Organization</h4>
                     <input class="name" type="text" ng-model="contact.name.given_name" placeholder="Enter First Name">
                     <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Enter Middle Name">

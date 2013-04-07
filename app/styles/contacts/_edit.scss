@@ -91,7 +91,7 @@
             min-width: 115px;
             width: auto;
             margin-right: 4px;
-            background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 94% 50%;
+            background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
             border: 1px solid #d6d6d6;
             line-height: 20px;
             padding-left: 10px;
@@ -124,9 +124,13 @@
             color: #000;
             margin-top: -25px;
 
-            .account{
-                width: 300px;
+            div.account{
+
+                select{
+                    width: 350px;
+                }
             }
+
             .name{
                 margin-right: 4px;
                 width: 28%;
