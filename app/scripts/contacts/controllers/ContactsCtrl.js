@@ -34,6 +34,9 @@ function ContactsCtrl($scope, $http, wdAlert){
     //默认头像
     var G_defaultPhoto = '../../images/contacts/default.png';
 
+    //修改后的头像二进制数据
+    var G_photoBinary = '';
+
     //各个type字段映射表
     var G_typeMap = {
        'address' : {
@@ -226,8 +229,6 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         var show = function(){
             var data = getContactsById(id,G_contacts);
-            //新建的图片字段，存储改变后的图片
-            data['photo'] = [];
             //账户信息，存储当前账号
             data['account'] = {};
             if(!data['organization'][0]){
@@ -449,16 +450,30 @@ function ContactsCtrl($scope, $http, wdAlert){
                 editData[0]['account_name'] = account['name'];
                 editData[0]['account_type'] = account['type'];
                 console.log(saveData);
+
                 $http({
                     method: 'post',
                     url: '/resource/contacts/',
                     data:editData
                 }).success(function(data){
-                    //wdAlert.alert('Save success!','Save success!','OK');
-                    G_contacts.push(data[0]);
-                    $scope.list.push(data[0]);
-                    showContacts(data[0]['id']);
+                    if (!!G_photoBinary) {
+                        $http({
+                            method: 'put',
+                            url: '/contacts/'+id+'/upload/',
+                            data: G_photoBinary
+                        }).success(function(data){
+                            G_photoBinary = '';
+                            G_contacts.push(data[0]);
+                            $scope.list.push(data[0]);
+                            showContacts(data[0]['id']);
+                        });
+                    }else{
+                            G_contacts.push(data[0]);
+                            $scope.list.push(data[0]);
+                            showContacts(data[0]['id']);
+                    };
                 });
+
             break;
             case 'edit':
                 var editData = saveData;
@@ -468,7 +483,18 @@ function ContactsCtrl($scope, $http, wdAlert){
                     url: '/resource/contacts/'+id,
                     data:editData
                 }).success(function(data){
-                    //wdAlert.alert('Save success!','Save success!','OK');
+                    if (!!G_photoBinary) {
+                        $http({
+                            method: 'put',
+                            url: '/contacts/'+id+'/upload/',
+                            data: G_photoBinary
+                        }).success(function(data){
+                            G_photoBinary = '';
+                            showContacts(data[0]['id']);
+                        });
+                    }else{
+                            showContacts(data[0]['id']);
+                    };
                 });
             break;
         };
@@ -616,7 +642,6 @@ function ContactsCtrl($scope, $http, wdAlert){
             // id:'wangxiao',
             account_name:'',
             account_type:'',
-            photo:[{data:''}],
             photo_path:G_defaultPhoto,
             IM:[{protocol:'AIM',custom_protocol:'',data:'',label:'',type:''}],
             address:[{type:'Home',city:'',country:'',formatted_address:'',label:'',neightborhood:'',pobox:'',post_code:'',region:'',street:''}],
@@ -730,13 +755,12 @@ function ContactsCtrl($scope, $http, wdAlert){
             reader.onload = function(e){
 
                 $('.contacts-edit img.photo').attr('src',e.target.result);
-                $scope.contact.photo[0] = {};
 
                 //传给服务器为二进制
                 var reader = new FileReader();
                 reader.readAsBinaryString(file);
                 reader.onload = function(e){
-                    $scope.contact.photo[0]['data'] = btoa(e.target.result);
+                    G_photoBinary = e.target.result;
                 };
 
             };

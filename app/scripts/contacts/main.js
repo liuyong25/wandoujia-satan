@@ -11,6 +11,6 @@ define([
 'use strict';
 
 //注册angular的模块和control
-angular.module('wdContacts', ['wdCommon']).controller('ContactsCtrl', contactsCtrl);
+angular.module('wdContacts', ['wdCommon'],['searchFilter']).controller('ContactsCtrl', contactsCtrl);
 
 });
