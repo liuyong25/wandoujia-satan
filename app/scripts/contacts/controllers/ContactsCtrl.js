@@ -756,12 +756,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
                 $('.contacts-edit img.photo').attr('src',e.target.result);
 
-                //传给服务器为二进制
-                var reader = new FileReader();
-                reader.readAsBinaryString(file);
-                reader.onload = function(e){
-                    G_photoBinary = e.target.result;
-                };
+                G_photoBinary = file;
 
             };
         };
