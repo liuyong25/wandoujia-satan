@@ -736,7 +736,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                 var reader = new FileReader();
                 reader.readAsBinaryString(file);
                 reader.onload = function(e){
-                    $scope.contact.photo[0]['data'] = escape(e.target.result);
+                    $scope.contact.photo[0]['data'] = btoa(e.target.result);
                 };
 
             };
