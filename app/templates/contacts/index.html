@@ -17,7 +17,7 @@
                 Delete
             </button>
             <div class="search">
-                <input type="text" ng-model="searchText">
+                <input type="text" ng-model="searchText.name" ng-model="searchText.phone">
             </div>
         </div>
         <ul class="contacts-list">
@@ -62,7 +62,7 @@
                 <div class="editName dn">
                     <div class="account dn">
                         <h4>Account Name</h4>
-                        <select ng-model="contact.account_name" ng-options="value.name for (key , value) in accounts"></select>
+                        <select ng-model="contact.account" ng-options="value.name for (key , value) in accounts"></select>
                     </div>
                     <h4>Name & Organization</h4>
                     <input class="name" type="text" ng-model="contact.name.given_name" placeholder="Enter First Name">

@@ -227,6 +227,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         var show = function(){
             var data = getContactsById(id,G_contacts);
             data['photo'] = [];
+            data['account'] = {};
             data = changeDataType(data);
 
             //备份数据到全局
@@ -435,7 +436,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         //TODO:补充保存联系人接口
         var editData = [];
         editData.push(changeDataTypeBack($scope.contact));
-        var account = editData[0].account_name;
+        var account = editData[0].account;
         editData[0]['account_name'] = account['name'];
         editData[0]['account_type'] = account['type'];
         console.log(editData);
@@ -447,7 +448,9 @@ function ContactsCtrl($scope, $http, wdAlert){
                     url: '/resource/contacts/',
                     data:editData
                 }).success(function(data){
-                    wdAlert.alert('Save success!','Save success!','OK');
+                    //wdAlert.alert('Save success!','Save success!','OK');
+                    console.log(data);
+
                 });
             break;
             case 'edit':
@@ -592,8 +595,10 @@ function ContactsCtrl($scope, $http, wdAlert){
             url: '/resource/accounts'
         }).success(function(data) {
             //var data = [{type:'gogole',name:'wangxiao@gmail.com'},{type:'wandoujia',name:'wangxiao@wandoujia.com'}];
+            $scope.contact.account = data[0];
             $scope.accounts = data;
         });
+
         var wrap = $('.contacts-edit .info');
         wrap.find('img.photo').attr('src',G_defaultPhoto);
         wrap.find('div.account').show().children().show();
