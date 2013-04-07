@@ -433,17 +433,14 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
 
-        //TODO:补充保存联系人接口
-        var editData = [];
-        editData.push(changeDataTypeBack($scope.contact));
-        var account = editData[0].account;
-        editData[0]['account_name'] = account['name'];
-        editData[0]['account_type'] = account['type'];
-        editData[0]['photo'] = ['123'];
-        console.log(editData);
-
         switch(G_status){
             case 'new':
+                var editData = [];
+                editData.push(changeDataTypeBack($scope.contact));
+                var account = editData[0].account;
+                editData[0]['account_name'] = account['name'];
+                editData[0]['account_type'] = account['type'];
+
                 $http({
                     method: 'post',
                     url: '/resource/contacts/',
@@ -451,10 +448,13 @@ function ContactsCtrl($scope, $http, wdAlert){
                 }).success(function(data){
                     //wdAlert.alert('Save success!','Save success!','OK');
                     console.log(data);
-                    $scope.contact = data;
+                    $scope.contact = data[0];
+                    $scope.G_contacts.push(data[0]);
                 });
             break;
             case 'edit':
+                var editData = changeDataTypeBack($scope.contact);
+
                 $http({
                     method: 'put',
                     url: '/resource/contacts/'+id,
