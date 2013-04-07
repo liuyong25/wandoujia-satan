@@ -3,15 +3,15 @@
 }
 
 .wdmct-a {
-    @include display-flex;
-    @include justify-content(center);
+    // @include display-flex;
+    // @include justify-content(center);
     @include box-sizing(border-box);
     width: 100%;
     min-height: 53px;
     padding: 16px 50px;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-size: 16px;
+    text-align: center;
+    word-break: break-word;
 }
 
 .wdmct-b {

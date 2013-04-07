@@ -108,6 +108,9 @@
             height: messages-sprite-height("check");
             @include messages-sprite("check");
         }
+        &:not(:checked):hover:after {
+            @include messages-sprite("check_h");
+        }
         &:checked:after{
             content: "";
             position: absolute;
