@@ -461,7 +461,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     url: '/resource/contacts/'+id,
                     data:editData
                 }).success(function(data){
-                    wdAlert.alert('Save success!','Save success!','OK');
+                    //wdAlert.alert('Save success!','Save success!','OK');
                 });
             break;
         };
@@ -609,7 +609,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             // id:'wangxiao',
             account_name:'',
             account_type:'',
-            photo:'',
+            photo:[{data:''}],
             photo_path:G_defaultPhoto,
             IM:[{protocol:'AIM',custom_protocol:'',data:'',label:'',type:''}],
             address:[{type:'Home',city:'',country:'',formatted_address:'',label:'',neightborhood:'',pobox:'',post_code:'',region:'',street:''}],
@@ -720,7 +720,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             reader.readAsDataURL(file);
             reader.onload = function(e){
                 $('.contacts-edit img.photo').attr('src',e.target.result);
-                $scope.contact.photo[0] = e.target.result;
+                $scope.contact.photo['data'] = e.target.result;
             };
         };
     };
