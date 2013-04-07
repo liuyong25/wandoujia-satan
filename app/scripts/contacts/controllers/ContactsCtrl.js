@@ -433,12 +433,15 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-cancel').hide();
 
         //TODO:补充保存联系人接口
-        var editData = changeDataTypeBack($scope.contact);
+        var editData = [];
+        editData.push(changeDataTypeBack($scope.contact));
+        var account = editData[0].account_name;
+        editData[0]['account_name'] = account['name'];
+        editData[0]['account_type'] = account['type'];
         console.log(editData);
 
         switch(G_status){
             case 'new':
-                editData = $scope.contact;
                 $http({
                     method: 'post',
                     url: '/resource/contacts/',
@@ -591,8 +594,10 @@ function ContactsCtrl($scope, $http, wdAlert){
             //var data = [{type:'gogole',name:'wangxiao@gmail.com'},{type:'wandoujia',name:'wangxiao@wandoujia.com'}];
             $scope.accounts = data;
         });
+        var wrap = $('.contacts-edit .info');
+        wrap.find('img.photo').attr('src',G_defaultPhoto);
+        wrap.find('div.account').show().children().show();
 
-        $('.contacts-edit .info img.photo').attr('src',G_defaultPhoto);
         var obj = {
             // id:'wangxiao',
             account_name:'',
