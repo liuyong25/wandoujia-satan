@@ -296,6 +296,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     delId.push(G_list[i].id);
                 };
             };
+            $('.contacts .btn-all .btn-delete').hide();
 
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
                 for(var j = 0 , k = G_list.length ; j < k ; j++){
@@ -447,9 +448,9 @@ function ContactsCtrl($scope, $http, wdAlert){
                     data:editData
                 }).success(function(data){
                     //wdAlert.alert('Save success!','Save success!','OK');
-                    console.log(data);
-                    $scope.contact = data[0];
-                    $scope.G_contacts.push(data[0]);
+                    G_contacts.push(data[0]);
+                    $scope.list.push(data[0]);
+                    showContacts(data[0]['id']);
                 });
             break;
             case 'edit':
