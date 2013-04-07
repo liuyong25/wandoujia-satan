@@ -439,7 +439,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         var account = editData[0].account;
         editData[0]['account_name'] = account['name'];
         editData[0]['account_type'] = account['type'];
-        editData[0]['photo'] = '123';
+        editData[0]['photo'] = ['123'];
         console.log(editData);
 
         switch(G_status){
