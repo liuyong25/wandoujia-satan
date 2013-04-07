@@ -459,7 +459,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     if (!!G_photoBinary) {
                         $http({
                             method: 'put',
-                            url: '/contacts/'+id+'/upload/',
+                            url: '/resource/contacts/'+id+'/upload/',
                             data: G_photoBinary
                         }).success(function(data){
                             G_photoBinary = '';
@@ -486,7 +486,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     if (!!G_photoBinary) {
                         $http({
                             method: 'put',
-                            url: '/contacts/'+id+'/upload/',
+                            url: '/resource/contacts/'+id+'/upload/',
                             data: G_photoBinary
                         }).success(function(data){
                             G_photoBinary = '';
