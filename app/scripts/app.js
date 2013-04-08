@@ -45,6 +45,14 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             }
         }];
 
+        var reflectNavbar = function(moduleName) {
+            return ['$rootScope', function($rootScope) {
+                $rootScope.currentModule = moduleName;
+                localStorage.setItem('lastModule', moduleName);
+                return moduleName;
+            }];
+        };
+
         // Routers configurations.
         $routeProvider.when('/portal/:help', {
             redirectTo: '/portal'
@@ -62,13 +70,14 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             }
         });
         $routeProvider.when('/', {
-            redirectTo: '/messages'
+            redirectTo: '/' + (localStorage.getItem('lastModule') || 'photos')
         });
         $routeProvider.when('/photos', {
             template: PhotosTemplate,
             controller: 'galleryController',
             resolve: {
-                auth: validateToken
+                auth: validateToken,
+                nav: reflectNavbar('photos')
             },
             reloadOnSearch: false
         });
@@ -76,22 +85,23 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             template: MessagesTemplate,
             controller: 'wdmConversationController',
             resolve: {
-                auth: validateToken
+                auth: validateToken,
+                nav: reflectNavbar('messages')
             }
+        });
+        $routeProvider.when('/contacts', {
+            template: ContactsTemplate,
+            controller: 'ContactsCtrl',
+            resolve: {
+                auth: validateToken,
+                nav: reflectNavbar('contacts')
+            },
+            reloadOnSearch: false
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
         });
 
-        //添加联系人模块
-        $routeProvider.when('/contacts', {
-            template: ContactsTemplate,
-            controller: 'ContactsCtrl',
-            resolve: {
-                auth: validateToken
-            },
-            reloadOnSearch: false
-        });
 
         // Global exception handling.
         wdHttpProvider.requestInterceptors.push(['wdDev', '$rootScope', function(wdDev, $rootScope) {
@@ -152,7 +162,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
     }])
     .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
         function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
-        // Tip users when leavijng.
+        // Tip users when leaving.
         $window.onbeforeunload = function () {
             return wdKeeper.getTip();
         };
@@ -171,6 +181,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
 
         // i18n word table
         $rootScope.DICT = wdWordTable;
+
+        $rootScope.currentModule = 'photos';
     }]);
 
 angular.bootstrap(document, ['wdApp']);
