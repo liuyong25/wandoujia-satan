@@ -46,7 +46,7 @@ link: function(scope, element) {
         }
         if (addresses === old) {
             element.textext({
-                plugins : 'tags prompt focus autocomplete ajax',
+                plugins : 'tags prompt autocomplete ajax',
                 // prompt : 'Add one...',
                 ext: {
                     itemManager: itemManager

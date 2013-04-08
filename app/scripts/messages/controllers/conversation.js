@@ -186,16 +186,17 @@ function createConversation() {
  */
 function sendMessage(conversation, content) {
     var newMessages = [];
-    var newMessage = new Messages();
-    _(newMessage).extend({
-        id: _.uniqueId('wdmMessage_'),
-        date: Date.now(),
-        body: content,
-        type: 2,
-        thread_id: conversation.id,
-        status: 32
+    _(conversation.addresses).each(function() {
+        newMessages.push(_(new Messages()).extend({
+            id: _.uniqueId('wdmMessage_'),
+            date: Date.now(),
+            body: content,
+            type: 2,
+            thread_id: conversation.id,
+            status: 32
+        }));
     });
-    mergeMessages(newMessage);
+    mergeMessages(newMessages);
     return $http({
         url: '/resource/messages/send',
         method: 'POST',
@@ -205,7 +206,10 @@ function sendMessage(conversation, content) {
         }
     }).then(function success(response) {
         var messages = response.data;
-        messages[0] = _(newMessage).extend(messages[0]);
+        _(newMessages).each(function(m, i) {
+            _(m).extend(messages[i]);
+        });
+        // messages[0] = _(newMessage).extend(messages[0]);
         var existedConversation = mergeMessages(messages);
         if (!existedConversation) {
             var cid = toArray(messages)[0].thread_id;
