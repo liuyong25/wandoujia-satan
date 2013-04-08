@@ -4,24 +4,28 @@ define([
     'photos/main',
     'text!templates/auth/portal.html',
     'text!templates/photos/gallery.html',
+    'text!templates/contacts/index.html',
+    'text!templates/messages/conversations.html',
     'common/main',
     'common/language',
-    'text!templates/messages/conversations.html',
-    'messages/main'
+    'messages/main',
+    'contacts/main'
 ], function(
     angular,
     auth,
     photos,
     PortalTemplate,
     PhotosTemplate,
+    ContactsTemplate,
+    MessagesTemplate,
     common,
     language,
-    MessagesTemplate,
-    messages
+    messages,
+    contacts
 ) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages', 'wdContacts'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
 
@@ -77,6 +81,16 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
+        });
+
+        //添加联系人模块
+        $routeProvider.when('/contacts', {
+            template: ContactsTemplate,
+            controller: 'ContactsCtrl',
+            resolve: {
+                auth: validateToken
+            },
+            reloadOnSearch: false
         });
 
         // Global exception handling.
@@ -138,7 +152,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
     }])
     .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
         function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
-        // Tip users when leaving.
+        // Tip users when leavijng.
         $window.onbeforeunload = function () {
             return wdKeeper.getTip();
         };
@@ -154,11 +168,12 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
 
         // GA support
         $rootScope.GA = GA;
+
         // i18n word table
         $rootScope.DICT = wdWordTable;
     }]);
 
 angular.bootstrap(document, ['wdApp']);
 
-(function() {})(common, language, photos, auth, messages);
+(function() {})(common, language, photos, auth, messages, contacts);
 });

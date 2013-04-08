@@ -1,0 +1,207 @@
+.contacts-edit{
+    position: fixed;
+    overflow-y : auto;
+    width: 70%;
+    min-width: 300px;
+    height:85%;
+
+    .photo{
+        margin-top: 20px;
+        width: 127px;
+        height: 127px;
+    }
+
+    .photoUpload{
+        position: absolute;
+        left: 0px;
+        top: 20px;
+        overflow: hidden;
+        width: 127px;
+        height: 127px;
+        .mask{
+            width: 127px;
+            height: 127px;
+            cursor: pointer;
+
+            div.bg{
+                width: 127px;
+                height: 127px;
+                opacity: 0.6;
+                background-color: #000;
+            }
+
+            span{
+                position: absolute;
+                top: 0px;
+                width: 127px;
+                height: 127px;
+                background:url("../../images/contacts/profileicon.png") no-repeat 50% 40%;
+            }
+
+            p{
+                position: absolute;
+                top: 75px;
+                left: 13px;
+                color: #FFF;
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+        }
+
+
+        input{
+            position: absolute;
+            top: -53px;
+            left: -53px;
+            height: 180px;
+            width: 180px;
+            cursor: pointer;
+            font-size: 139px;
+            opacity: 0;
+        }
+
+
+    }
+
+    .footer{
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+    }
+
+    .info{
+        margin-top:51px;
+        margin-left:50px;
+        width: 75%;
+        position: absolute;
+        top:0px;
+        left: 110px;
+
+        hr{
+            border: 0px;
+            height: 5px;
+            background-color: #ededed;
+        }
+
+        select{
+            min-width: 115px;
+            width: 18%;
+            margin-right: 4px;
+            background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
+            border: 1px solid #d6d6d6;
+            line-height: 20px;
+            padding-left: 10px;
+            -webkit-appearance:none;
+            -moz-appearance:none;
+        }
+
+        select:focus{
+            background-color: #FFF;
+        }
+
+        input{
+            margin-bottom: 10px;
+            background-color:#f5f5f5;
+            width: 30%;
+        }
+
+        input:focus{
+            background-color: #FFF;
+        }
+
+        .name{
+            font-size: 35px;
+            line-height: 45px;
+            height: 45px;
+            width: 84%;
+            overflow: hidden;
+        }
+
+        .editName{
+            color: #000;
+            margin-top: -25px;
+
+            div.account{
+
+                select{
+                    width: 350px;
+                }
+            }
+
+            .name{
+                margin-right: 4px;
+                width: 28%;
+                font-size: 15px;
+                line-height: 20px;
+                height: 20px;
+                overflow: hidden;
+            }
+
+            .title{
+                margin-right: 4px;
+                width: 23%;
+            }
+            .company{
+                margin-right: 4px;
+                width: 50%;
+            }
+        }
+
+        .remark{
+            color: #cccccc;
+            font-size:13px;
+        }
+
+        .btn-addNewItem{
+            margin-top: 5px;
+        }
+
+        .newItem{
+            margin-bottom: 5px;
+        }
+
+        dl{
+            margin-top: 25px;
+
+            dt{
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            dd{
+                margin-left: 0px;
+
+                p{
+                    display: inline-block;
+                    font-size: 15px;
+                }
+
+                p.des{
+                    color: #b3b3b3;
+                    width: 85px;
+                }
+
+                p.labelFlag{
+                    color: #b3b3b3;
+                    width: 85px;
+                }
+
+                p.dn{
+                    display: none;
+                }
+
+                input.label{
+                    width: 102px;
+                    margin-right: 4px;
+                }
+
+                input:focus{
+                    background-color: #FFF;
+                }
+
+
+            }
+        }
+    }
+}

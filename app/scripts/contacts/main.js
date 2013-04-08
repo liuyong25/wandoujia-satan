@@ -1,12 +1,16 @@
 define([
     'angular',
-    'common/main'
+    'common/main',
+    'contacts/controllers/ContactsCtrl'
 ], function(
     angular,
-    common
+    common,
+    contactsCtrl
 ) {
+
 'use strict';
-// jshint unused:false
-angular.module('wdContacts', ['wdCommon']);
+
+//注册angular的模块和control
+angular.module('wdContacts', ['wdCommon']).controller('ContactsCtrl', contactsCtrl);
 
 });
