@@ -1,8 +1,4 @@
-define([
-        'vendor/angular/angular-resource'
-    ], function(
-        angularResource
-    ) {
+define([], function() {
 'use strict';
 return window.angular;
 });
