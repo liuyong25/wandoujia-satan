@@ -21,7 +21,7 @@ $scope.activeConversation = null;
 $scope.sms = '';
 $scope.editorEnable = true;
 
-$scope.cvsChanging = true;
+$scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 

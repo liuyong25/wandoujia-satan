@@ -95,7 +95,12 @@
                     </button>
                 </form>
             </section>
-            <div class="wd-loading" data-visible="cvsChanging"></div>
+            <div class="wd-loading" data-visible="cvsChanging || cvsListFirstLoading"></div>
         </section>
+    </div>
+    <div class="wd-blank" ui-if="!conversations.length && !cvsListFirstLoading">
+        <p>{{$root.DICT.messages.BLANK_TIP}}<p>
+        <div class="btn btn-primary"
+            ng-click="createConversation();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</div>
     </div>
 </section>

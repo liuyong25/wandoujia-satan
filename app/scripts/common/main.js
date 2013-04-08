@@ -15,7 +15,8 @@ define([
     'common/services/notification',
     'common/directives/notification',
     'common/services/browser',
-    'common/bootstrap'
+    'common/bootstrap',
+    'common/directives/blank'
 ], function(
     angular,
     loading,
@@ -33,7 +34,8 @@ define([
     notification,
     notificationDirective,
     browser,
-    bootstrap
+    bootstrap,
+    blankDirective
 ) {
 // jshint unused:false
 'use strict';
@@ -45,6 +47,7 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .directive('wdAutoFocus', autofocus)
     .directive('wdAlert', alertDirecitve)
     .directive('wdNotification', notificationDirective)
+    .directive('wdBlank', blankDirective)
     // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)

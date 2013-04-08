@@ -18,6 +18,8 @@ return {
 
         ERROR_SEND_FAILED: 'Send Failed.',
 
+        BLANK_TIP: 'No messages on your phone. C\'mon, make your friends smile.',
+
         BTN_LOAD: 'Load more',
         BTN_LOAD_MSG: 'Load earlier messages',
 

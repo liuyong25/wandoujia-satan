@@ -105,6 +105,10 @@ link: function(scope, element) {
             });
         }
     });
+
+    _.defer(function() {
+        element.focus();
+    });
 }
 
 };
