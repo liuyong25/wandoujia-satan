@@ -25,7 +25,7 @@ function ContactsCtrl($scope, $http, wdAlert){
     //是否selectAll了
     var G_selectAll = false;
 
-    //正在显示的数据
+    //正在显示的数据，cancel功能的时候会用到
     var G_showingContact = {};
 
     //当前的状态
@@ -36,6 +36,9 @@ function ContactsCtrl($scope, $http, wdAlert){
 
     //修改后的头像二进制数据
     var G_photoBinary = '';
+
+    //全局的timer
+    var G_searchTimer;
 
     //各个type字段映射表
     var G_typeMap = {
@@ -229,7 +232,12 @@ function ContactsCtrl($scope, $http, wdAlert){
     function showContacts(id){
 
         var show = function(){
+            if(!id){
+                $('.contacts-edit').hide();
+                return;
+            };
             var data = getContactsById(id,G_contacts);
+
             //账户信息，存储当前账号
             data['account'] = {};
             if(!data['organization'][0]){
@@ -241,11 +249,11 @@ function ContactsCtrl($scope, $http, wdAlert){
             G_showingContact = {};
             $.extend(true,G_showingContact,data);
 
-            G_clicked.clicked = '';
+            G_clicked.clicked = false;
 
             for(var i = 0,l = G_list.length; i < l; i++){
                 if ( !!G_list[i].id && G_list[i].id == id ) {
-                    G_list[i].clicked = 'clicked';
+                    G_list[i].clicked = true;
                     G_clicked = G_list[i];
                 };
             };
@@ -256,7 +264,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
             //样式相关处理
             setTimeout(function(){
-                var wrap = $('.contacts-edit .info');
+                var wrap = $('.contacts-edit').show().find('.info');
                 wrap.find('p.des').css('display','inline-block');
                 wrap.find('p.detail').css('display','inline-block');
                 var label = $('.labelFlag');
@@ -784,7 +792,34 @@ function ContactsCtrl($scope, $http, wdAlert){
     };
 
     //搜索功能
-    $('').on();
+    $('.wdj-contacts .btn-all .search input').on('keyup',function(e){
+        clearTimeout(G_searchTimer);
+        G_searchTimer = setTimeout($scope.searchContacts,300);
+    });
+    $('.wdj-contacts .btn-all .search .icon-clear').on('click',function(){
+        $scope.list = G_list;
+        showContacts(G_list[0]['id']);
+    });
+
+    //搜索联系人功能，根据联系人列表 G_list 搜索
+    $scope.searchContacts = function(){
+        $scope.list = [];
+        var text = $scope.searchText;
+        for( var i = 0, l = G_list.length; i < l ; i++ ){
+            if(  (G_list[i]['name'].indexOf(text)>=0) || (G_list[i]['phone'].indexOf(text)>=0) ){
+                $scope.list.push(G_list[i]);
+            };
+        };
+        if(!!$scope.list[0]){
+            G_clicked['clicked'] = false;
+            G_clicked = $scope.list[0];
+            $scope.list[0]['clicked'] = true;
+            showContacts($scope.list[0]['id']);
+        }else{
+            showContacts();
+        };
+        $scope.$apply();
+    };
 
     //主函数开始
     getData(0,G_dataLengthOnce,null);
@@ -792,6 +827,7 @@ function ContactsCtrl($scope, $http, wdAlert){
     $scope.typeMap = G_typeMap;
     $scope.protocolMap = G_protocol;
     $scope.showContacts = showContacts;
+
 //return的最后括号
 }];
 });
