@@ -1,5 +1,6 @@
 temp
 dist
+app/components
 
 .DS_Store
 .sass-cache

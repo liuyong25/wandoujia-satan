@@ -1,27 +1,31 @@
 define([
-        'angular',
-        'auth/main',
-        'photos/main',
-        'text!templates/auth/portal.html',
-        'text!templates/photos/gallery.html',
-        'text!templates/contacts/index.html',
-        'common/main',
-        'common/language',
-        'contacts/main'
-    ], function(
-        angular,
-        auth,
-        photos,
-        PortalTemplate,
-        PhotosTemplate,
-        ContactsTemplate,
-        common,
-        language,
-        contacts
-    ) {
+    'angular',
+    'auth/main',
+    'photos/main',
+    'text!templates/auth/portal.html',
+    'text!templates/photos/gallery.html',
+    'text!templates/contacts/index.html',
+    'text!templates/messages/conversations.html',
+    'common/main',
+    'common/language',
+    'messages/main',
+    'contacts/main'
+], function(
+    angular,
+    auth,
+    photos,
+    PortalTemplate,
+    PhotosTemplate,
+    ContactsTemplate,
+    MessagesTemplate,
+    common,
+    language,
+    messages,
+    contacts
+) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdContacts'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages', 'wdContacts'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
 
@@ -58,7 +62,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdCont
             }
         });
         $routeProvider.when('/', {
-            redirectTo: '/photos'
+            redirectTo: '/messages'
         });
         $routeProvider.when('/photos', {
             template: PhotosTemplate,
@@ -67,6 +71,13 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdCont
                 auth: validateToken
             },
             reloadOnSearch: false
+        });
+        $routeProvider.when('/messages', {
+            template: MessagesTemplate,
+            controller: 'wdmConversationController',
+            resolve: {
+                auth: validateToken
+            }
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
@@ -164,5 +175,5 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdCont
 
 angular.bootstrap(document, ['wdApp']);
 
-(function() {})(common, language, photos, auth, contacts);
+(function() {})(common, language, photos, auth, messages, contacts);
 });

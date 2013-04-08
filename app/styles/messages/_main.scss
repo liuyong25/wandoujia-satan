@@ -1,2 +1,124 @@
 .wdj-messages {
+    @import "flex";
+    @import "icons";
+
+    @include position(fixed, 0px 0px 68px 0px);
+    font-size: 12px;
+
+    // Position with override display in Firefox 19-.
+    // We need a other element to apply flexbox.
+    .wdm-layout {
+        @include display-flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    $wdm-border-color: #e7e7e7;
+    $wdm-main-text-color: #000;
+    $wdm-sub-text-color: #999;
+
+    $wdm-sub-width: 428px;
+    .wdm-sub {
+        @include display-flex;
+        @include flex-direction(column);
+        width: $wdm-sub-width;
+        border-right: 1px solid $wdm-border-color;
+
+        @include position;
+        & > .wd-loading {
+            @include position(absolute);
+        }
+    }
+    .wdm-main {
+        @include flex(1);
+        @include display-flex;
+        @include flex-direction(column);
+
+        @include position;
+        & > .wd-loading {
+            @include position(absolute);
+        }
+    }
+
+    $wdm-actions-height: 53px;
+
+    .wdm-actions {
+        height: $wdm-actions-height;
+        border-bottom: 1px solid $wdm-border-color;
+        margin-bottom: -1px;
+    }
+    .wdm-conversations {
+        @include flex(1);
+        height: 0; // Flexbox need a height as refer.
+        margin-bottom: 0;
+    }
+
+    .wdm-contact {
+        min-height: 53px;
+        border-bottom: 1px solid $wdm-border-color;
+    }
+    .wdm-entries {
+        @include flex(1);
+        overflow-y: auto;
+        width: 100%; // Firefox need a width to prevent flexbox turn into inline-block.
+        height: 0;   // Flexbox need a height as refer.
+    }
+
+    @import "actions";
+    @import "conversations";
+    @import "contact";
+    @import "entries";
+    @import "editor";
+    @import "textext";
+
+
+    .load-more {
+        display: block;
+        width: 80px;
+        padding: 10px 40px;
+        margin: 10px auto;
+        border-radius: 20px;
+        background: #e6e6e6;
+        text-align: center;
+        opacity: 0.7;
+        cursor: pointer;
+        &:hover {
+            opacity: 1;
+        }
+        &:active {
+            opacity: 1;
+            @include box-shadow(inset 0 1px 1px rgba(#000, 0.1));
+        }
+    }
+    .load-more-hide {
+        visibility: hidden;
+    }
+
+    input[type=checkbox] {
+        position: relative;
+        top:2px;
+        $left: -1px;
+        $top: -3px;
+        &:not(:checked):after {
+            content: "";
+            position: absolute;
+            left: $left;
+            top: $top;
+            width: messages-sprite-width("check");
+            height: messages-sprite-height("check");
+            @include messages-sprite("check");
+        }
+        &:not(:checked):hover:after {
+            @include messages-sprite("check_h");
+        }
+        &:checked:after{
+            content: "";
+            position: absolute;
+            left: $left;
+            top: $top;
+            width: messages-sprite-width("check");
+            height: messages-sprite-height("check");
+            @include messages-sprite("checked");
+        }
+    }
 }

@@ -1,0 +1,35 @@
+.wdm-editor {
+    form {
+        @include display-flex;
+        @include align-content(flex-end);
+        @include align-items(flex-end);
+        width: 100%;
+        margin: 0;
+    }
+    textarea {
+        display: block;
+        @include flex(1);
+        padding: 7px 10px;
+        margin: 10px;
+        @include box-shadow(none);
+        background: #f5f5f5;
+        font-size: 12px;
+        height: auto;
+        min-height: 20px;
+        resize: none;
+        &:focus {
+            background: #fff;
+            border-color: #ccc;
+        }
+        @include transition(background-color $global-transition-duration);
+    }
+    button {
+        display: block;
+        // box-sizing forced to 'border-box' by flex box.
+        min-width: 90px;
+        margin: 10px;
+        margin-left: 0;
+        padding: 7px 30px;
+        font-size: 12px;
+    }
+}

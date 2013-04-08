@@ -1,0 +1,98 @@
+.wdme-sep {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    margin: 10px auto;
+    @include position;
+    color: #a0a0a0;
+
+    & > * {
+        display: inline-block;
+        @include position;
+        $width: 73px;
+        $space: 13px;
+        $offset: -($width + $space);
+        &:before, &:after {
+            content: "";
+            height: 1px;
+            width: $width;
+            background: #ddd;
+            @include position(absolute, 50% 0 0 $offset);
+        }
+        &:after {
+            left: auto;
+            right: $offset;
+        }
+    }
+}
+.wdme-row {
+    @include display-flex;
+    @include align-content(flex-end);
+    @include align-items(flex-end);
+    @include box-sizing(border-box);
+    width: 100%; // Firefox 19- need to set width or turn into inline-box
+    padding: 0 40px;
+    margin: 20px 0;
+
+    & > * {
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
+    .wdmer-a {
+        @include position;
+        max-width: 450px;
+        background: #e8e8e8;
+        padding: 10px;
+        @include text-shadow(0 1px 0 rgba(#fff, 1));
+        white-space: pre-wrap;
+
+        &::before {
+            content: "";
+            display: block;
+            @include position(absolute, 0 0 -4px -5px);
+            width:0px;
+            height:0px;
+            border-bottom:6px solid transparent;  /* left arrow slant */
+            border-top:6px solid transparent; /* right arrow slant */
+            border-left:6px solid #e8e8e8; /* bottom, add background color here */
+            font-size:0px;
+            line-height:0px;
+            @include transform(rotate(45deg));
+        }
+    }
+
+    .wdmer-b {
+        color: #a0a0a0;
+    }
+    .wdmer-b-del {
+        display: none;
+        @include button-effect;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+
+    &:hover {
+        .wdmer-b-date {
+            display: none;
+        }
+        .wdmer-b-del {
+            display: inline-block;
+        }
+    }
+}
+.wdme-row-self {
+    @extend .wdme-row;
+    @include flex-direction(row-reverse);
+    @include flex-wrap(wrap-reverse);
+    -webkit-box-pack: end; // for safafi
+    .wdmer-a {
+        background: #c7eea0;
+
+        &::before {
+            @include position(absolute, auto -5px -4px auto);
+            border-left-color: #c7eea0;
+            @include transform(rotate(135deg));
+        }
+    }
+}

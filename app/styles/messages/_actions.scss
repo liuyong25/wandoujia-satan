@@ -1,0 +1,13 @@
+.wdm-actions {
+    @include display-flex;
+    @include align-content(center);
+    @include align-items(center);
+
+    .btn:first-of-type {
+        margin-left: 10px;
+    }
+    .btn {
+        font-size: 12px;
+        margin-right: 5px;
+    }
+}
