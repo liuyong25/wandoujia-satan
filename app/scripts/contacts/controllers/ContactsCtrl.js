@@ -178,14 +178,14 @@ function ContactsCtrl($scope, $http, wdAlert){
         });
     };
 
-    //取得电话号码
+    //取得电话号码等列表信息
     function getList(data){
         var l = data.length;
         for(var i = 0; i<l; i++ ){
             var id = data[i].id || '';
             var name = (data[i].name && data[i].name.display_name) || (data[i].phone[0] && data[i].phone[0].number) || (data[i].email[0] && data[i].email[0].address) || 'No Name';
             var phone = data[i].phone[0] && data[i].phone[0].number || '';
-            var photo = data[i].photo_path;
+            var photo = data[i].photo_path || G_defaultPhoto;
             var obj = {
                 id : id,
                 name : name,
@@ -241,8 +241,9 @@ function ContactsCtrl($scope, $http, wdAlert){
             $.extend(true,G_showingContact,data);
 
             G_clicked.clicked = '';
+
             for(var i = 0,l = G_list.length; i < l; i++){
-                if ( G_list[i].id == id ) {
+                if ( !!G_list[i].id && G_list[i].id == id ) {
                     G_list[i].clicked = 'clicked';
                     G_clicked = G_list[i];
                 };
@@ -477,12 +478,12 @@ function ContactsCtrl($scope, $http, wdAlert){
                         }).success(function(data){
                             G_photoBinary = '';
                             G_contacts.push(data[0]);
-                            //$scope.list.push(data[0]);
+                            getList(data);
                             showContacts(data[0]['id']);
                         });
                     }else{
                             G_contacts.push(data[0]);
-                            //$scope.list.push(data[0]);
+                            getList(data);
                             showContacts(data[0]['id']);
                     };
                 });
