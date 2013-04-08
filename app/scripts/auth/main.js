@@ -84,13 +84,14 @@ angular.module('wdAuth', ['wdCommon'])
                     },
                     disableErrorControl: !$scope.autoAuth
                 })
-                .success(function() {
+                .success(function(response) {
                     keeper.done();
                     $scope.state = 'standby';
                     $scope.buttonText = $scope.$root.DICT.portal.AUTH_SUCCESS;
                     // TODO: Maybe expiration?
                     wdAuthToken.setToken(authCode);
                     wdAuthToken.startSignoutDetection();
+                    wdDev.setMetaData(response);
                     $location.url($route.current.params.ref || '/');
                     if (acFromInput) {
                         GA('login:success:user_input');

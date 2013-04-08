@@ -18,8 +18,9 @@
     .wdb-w {
         display: inline-block;
         max-width: 60%;
+        margin-top: -50px;
         & > p {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             word-break: break-all;
             margin-bottom: 20px;
@@ -27,7 +28,7 @@
     }
 
     .wdb-i {
-        margin: 20px auto;
+        margin: 0 auto 40px;
 
         @mixin import-icon($name) {
             @include common-sprite($name);
@@ -45,6 +46,10 @@
 
         .wdj-contacts & {
             @include import-icon("nocontacts");
+        }
+
+        .wdj-need-upgrade & {
+            @include import-icon("update");
         }
     }
 }

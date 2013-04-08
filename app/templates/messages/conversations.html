@@ -1,5 +1,5 @@
 <section class="wdj-messages">
-    <div class="wdm-layout">
+    <div class="wdm-layout" ui-if="serverMatchRequirement">
         <section class="wdm-sub">
             <section class="wdm-actions">
                 <div class="btn btn-primary"
@@ -103,4 +103,5 @@
         <div class="btn btn-primary"
             ng-click="createConversation();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</div>
     </div>
+    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.messages.UPGRADE_TIP}}"></div>
 </section>

@@ -53,6 +53,12 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             }];
         };
 
+        var minVersionRequirement = function(versionCode) {
+            return ['wdDev', function(wdDev) {
+                return wdDev.getMetaData('version_code') >= versionCode;
+            }];
+        };
+
         // Routers configurations.
         $routeProvider.when('/portal/:help', {
             redirectTo: '/portal'
@@ -86,7 +92,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             controller: 'wdmConversationController',
             resolve: {
                 auth: validateToken,
-                nav: reflectNavbar('messages')
+                nav: reflectNavbar('messages'),
+                versionSupport: minVersionRequirement(3769)
             }
         });
         $routeProvider.when('/contacts', {
@@ -94,7 +101,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             controller: 'ContactsCtrl',
             resolve: {
                 auth: validateToken,
-                nav: reflectNavbar('contacts')
+                nav: reflectNavbar('contacts'),
+                versionSupport: minVersionRequirement(3769)
             },
             reloadOnSearch: false
         });

@@ -5,14 +5,16 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA',
+        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA', '$route',
 function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
-         wdpMessagePusher,   $timeout,   wdAlert,   GA) {
+         wdpMessagePusher,   $timeout,   wdAlert,   GA,   $route) {
 
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
 var ConversationMessages = $resource('/resource/conversations/:id/messages', {id: '@id'});
 var Messages = $resource('/resource/messages/:id', {id: '@id'});
+
+$scope.serverMatchRequirement = $route.current.locals.versionSupport;
 
 $scope.cvsCache = wdmConversationsCache;
 $scope.msgCache = wdmMessagesCache;
@@ -136,16 +138,19 @@ wdpMessagePusher.channel('messages.add', function(msg) {
 });
 
 // Startup
-loadConversations().then(function() {
-    $scope.showConversation($scope.conversations[0]);
-    $scope.cvsListFirstLoading = false;
-});
+var timer;
+if ($scope.serverMatchRequirement) {
+    loadConversations().then(function() {
+        $scope.showConversation($scope.conversations[0]);
+        $scope.cvsListFirstLoading = false;
+    });
 
-wdpMessagePusher.start();
+    wdpMessagePusher.start();
 
-var timer = $timeout(function update() {
-   timer = $timeout(update, 60000 - Date.now() % 60000);
-}, 60000 - Date.now() % 60000);
+    timer = $timeout(function update() {
+       timer = $timeout(update, 60000 - Date.now() % 60000);
+    }, 60000 - Date.now() % 60000);
+}
 
 // Shutdown
 $scope.$on('$destroy', function() {
