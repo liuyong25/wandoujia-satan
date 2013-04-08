@@ -17,7 +17,7 @@
                 Delete
             </button>
             <div class="search">
-                <input type="text">
+                <input type="text" ng-model="searchContacts.name">
             </div>
         </div>
         <ul class="contacts-list">
@@ -46,6 +46,7 @@
             <img class="photo" ng-src="{{contact.photo_path}}">
 
             <!-- 上传图片遮罩 start -->
+            <!--
             <div class="photoUpload dn" >
                 <div class="mask">
                     <div class="bg"></div>
@@ -54,6 +55,7 @@
                 </div>
                 <input type="file" >
             </div>
+            -->
             <!-- 上传图片遮罩 end -->
 
             <div class="info">

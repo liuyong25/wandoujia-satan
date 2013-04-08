@@ -249,6 +249,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             };
             $scope.contact = data;
 
+            console.log('showContacts:');
             console.log(data);
 
             //样式相关处理
@@ -262,7 +263,16 @@ function ContactsCtrl($scope, $http, wdAlert){
                         label.eq(i).css('display','inline-block').prevAll('p.des').hide();
                     };
                 };
-            },50);
+
+                var dt = wrap.find('dt');
+                var detail = wrap.find('dd p.detail');
+                for(var i = 0 ,l = dt.length;i<l;i++){
+                    if(!detail.eq(i).text()){
+                        dt.eq(i).hide();
+                    };
+                };
+
+            },20);
         };
 
         switch(G_status){
@@ -359,7 +369,7 @@ function ContactsCtrl($scope, $http, wdAlert){
     };
 
     //编辑联系人
-    $scope.editContact = function(){
+    $scope.editContact = function(id){
 
         //addNewContact方法中调用了editContact方法
         if(G_status !== 'new'){
@@ -424,7 +434,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('.remark').show();
 
         ele.find('hr').show();
-        ele.find('dl dd p.detail').show();
+        ele.find('dl dd p.detail').css('display','inline-block');
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
         wrap.find('.photoUpload input').off('change',photoUpload);
@@ -440,7 +450,10 @@ function ContactsCtrl($scope, $http, wdAlert){
         wrap.find('.footer .btn-edit').show();
         wrap.find('.footer .btn-save').hide();
         wrap.find('.footer .btn-cancel').hide();
+
         var saveData = changeDataTypeBack($scope.contact);
+
+        console.log('saveContact:');
 
         switch(G_status){
             case 'new':
@@ -458,7 +471,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                 }).success(function(data){
                     if (!!G_photoBinary) {
                         $http({
-                            method: 'put',
+                            method: 'post',
                             url: '/resource/contacts/'+id+'/upload/',
                             data: G_photoBinary
                         }).success(function(data){
@@ -485,15 +498,16 @@ function ContactsCtrl($scope, $http, wdAlert){
                 }).success(function(data){
                     if (!!G_photoBinary) {
                         $http({
+                            headers:{ "Content-Type" : "text/plain"},
                             method: 'post',
                             url: '/resource/contacts/'+id+'/upload/',
                             data: G_photoBinary
                         }).success(function(data){
                             G_photoBinary = '';
-                            showContacts(data[0]['id']);
+                            showContacts(data['id']);
                         });
                     }else{
-                            showContacts(data[0]['id']);
+                            showContacts(data['id']);
                     };
                 });
             break;
@@ -543,7 +557,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             };
         };
 
-        ele.find('p.detail').show();
+        ele.find('p.detail').css('display','inline-block');
 
         wrap.find('.footer .btn-edit').show();
         wrap.find('.footer .btn-save').hide();
@@ -766,6 +780,9 @@ function ContactsCtrl($scope, $http, wdAlert){
             };
         };
     };
+
+    //搜索功能
+    $('').on();
 
     //主函数开始
     getData(0,G_dataLengthOnce,null);
