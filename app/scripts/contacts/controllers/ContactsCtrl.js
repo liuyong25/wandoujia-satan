@@ -196,6 +196,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             //首次进入默认显示第一个联系人
             if (G_isFirst) {
                 G_isFirst = false;
+                $('.contacts .right .wd-loading').hide();
                 showContacts(G_contacts[0].id);
                 obj.clicked = true;
                 G_clicked = obj;
