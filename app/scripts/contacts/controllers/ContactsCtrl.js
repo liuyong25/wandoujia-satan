@@ -446,9 +446,9 @@ function ContactsCtrl($scope, $http, wdAlert){
             case 'new':
                 var editData = [];
                 editData.push(saveData);
-                var account = editData[0].account;
-                editData[0]['account_name'] = account['name'] || '';
-                editData[0]['account_type'] = account['type'] || '';
+                var account = editData[0].account || {name:'',type:''};
+                editData[0]['account_name'] = account['name'];
+                editData[0]['account_type'] = account['type'];
                 console.log(saveData);
 
                 $http({
