@@ -196,7 +196,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             //首次进入默认显示第一个联系人
             if (G_isFirst) {
                 G_isFirst = false;
-                $('.contacts .right .wd-loading').hide();
+                $('.wdj-contacts .right .wd-loading').hide();
                 showContacts(G_contacts[0].id);
                 obj.clicked = true;
                 G_clicked = obj;
@@ -314,7 +314,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     delId.push(G_list[i].id);
                 };
             };
-            $('.contacts .btn-all .btn-delete').hide();
+            $('.wdj-contacts .btn-all .btn-delete').hide();
 
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
                 for(var j = 0 , k = G_list.length ; j < k ; j++){
