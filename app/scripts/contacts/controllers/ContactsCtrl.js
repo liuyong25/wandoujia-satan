@@ -447,8 +447,8 @@ function ContactsCtrl($scope, $http, wdAlert){
                 var editData = [];
                 editData.push(saveData);
                 var account = editData[0].account;
-                editData[0]['account_name'] = account['name'];
-                editData[0]['account_type'] = account['type'];
+                editData[0]['account_name'] = account['name'] || '';
+                editData[0]['account_type'] = account['type'] || '';
                 console.log(saveData);
 
                 $http({
@@ -485,7 +485,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                 }).success(function(data){
                     if (!!G_photoBinary) {
                         $http({
-                            method: 'put',
+                            method: 'post',
                             url: '/resource/contacts/'+id+'/upload/',
                             data: G_photoBinary
                         }).success(function(data){
