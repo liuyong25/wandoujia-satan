@@ -4,7 +4,7 @@
         exports: '_'
     }
   },
-
+  locale: 'en_us',
   paths: {
     // lib
     jquery: 'vendor/jquery.wrapper',

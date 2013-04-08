@@ -4,20 +4,24 @@ define([
         'photos/main',
         'text!templates/auth/portal.html',
         'text!templates/photos/gallery.html',
+        'text!templates/contacts/index.html',
         'common/main',
-        'common/language'
+        'common/language',
+        'contacts/main'
     ], function(
         angular,
         auth,
         photos,
         PortalTemplate,
         PhotosTemplate,
+        ContactsTemplate,
         common,
-        language
+        language,
+        contacts
     ) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdContacts'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
 
@@ -66,6 +70,16 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
         });
         $routeProvider.otherwise({
             redirectTo: '/portal'
+        });
+
+        //添加联系人模块
+        $routeProvider.when('/contacts', {
+            template: ContactsTemplate,
+            controller: 'ContactsCtrl',
+            resolve: {
+                auth: validateToken
+            },
+            reloadOnSearch: false
         });
 
         // Global exception handling.
@@ -127,7 +141,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
     }])
     .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
         function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
-        // Tip users when leaving.
+        // Tip users when leavijng.
         $window.onbeforeunload = function () {
             return wdKeeper.getTip();
         };
@@ -143,11 +157,12 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage'])
 
         // GA support
         $rootScope.GA = GA;
+
         // i18n word table
         $rootScope.DICT = wdWordTable;
     }]);
 
 angular.bootstrap(document, ['wdApp']);
 
-(function() {})(common, language, photos, auth);
+(function() {})(common, language, photos, auth, contacts);
 });

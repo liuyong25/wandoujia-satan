@@ -1,0 +1,44 @@
+/* 联系人列表的每个条目 */
+.contacts-item{
+
+    border-bottom: 1px solid #ebebeb;
+    padding: 10px 0px 10px 20px;
+    overflow: hidden;
+    cursor: pointer;
+    @include transition(background-color,0.1s);
+
+	img.photo{
+	    width: 60px;
+	    height: 60px;
+        margin-left: 5px;
+	}
+
+	div.info{
+        p{
+            margin: 0px;
+        }
+        margin-left: 10px;
+        line-height: 23px;
+        height: 26px;
+	    display: inline-block;
+        .name{
+            font-size: 18px;
+        }
+        .phone{
+            font-size: 15px;
+            color: #acacac;
+        }
+        .click .phone{
+            color: #FFF;
+        }
+	}
+}
+
+.contacts-item:hover{
+    background: whiteSmoke;
+}
+
+.contacts-item.checked{
+    background: whiteSmoke;
+}
+
