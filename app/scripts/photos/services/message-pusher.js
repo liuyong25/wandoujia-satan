@@ -26,8 +26,10 @@ return {
         return this;
     },
     stop: function() {
-        websocket.close();
-        websocket = websocket.onmessage = null;
+        if (websocket) {
+            websocket.close();
+            websocket = websocket.onmessage = null;
+        }
         return this;
     },
     channel: function() {

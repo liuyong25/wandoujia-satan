@@ -58,7 +58,7 @@
                 </div>
                 <div ui-if="activeConversation.message_count == 0" class="wdmct-c">
                     <div>{{$root.DICT.messages.LABEL_SEND_TO}}: </div>
-                    <textarea wdm-receiver rows="1" placeholder="{{$root.DICT.messages.RECEIVER_PLACEHOLDER}}"></textarea>
+                    <textarea wdm-receiver rows="1"></textarea>
                 </div>
             </section>
             <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">

@@ -47,7 +47,7 @@ link: function(scope, element) {
         if (addresses === old) {
             element.textext({
                 plugins : 'tags prompt autocomplete ajax',
-                // prompt : 'Add one...',
+                prompt : scope.$root.DICT.messages.RECEIVER_PLACEHOLDER,
                 ext: {
                     itemManager: itemManager
                 },
