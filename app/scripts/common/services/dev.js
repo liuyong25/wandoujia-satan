@@ -7,6 +7,7 @@ define([
 return function() {
     var ip = '';
     var port = '';
+    var meta = {};
 
     // $resouce service support :name in url as parameter.
     // If target url need : for presenting port, it should be encoded.
@@ -21,6 +22,12 @@ return function() {
     self.setServer = function(newIP, newPort) {
         ip = newIP;
         port = newPort;
+    };
+    self.getMetaData = function(key) {
+        return meta[key];
+    };
+    self.setMetaData = function(data) {
+        meta = data;
     };
     self.getAPIPrefix = function() {
         return '/api/v1';
@@ -38,6 +45,8 @@ return function() {
         return {
             wrapURL: self.wrapURL,
             setServer: self.setServer,
+            setMetaData: self.setMetaData,
+            getMetaData: self.getMetaData,
             query: function(key) {
                 var queries = $window.location.search.slice(1).split('&');
                 var params = {};

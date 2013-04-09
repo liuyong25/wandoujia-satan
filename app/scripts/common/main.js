@@ -15,7 +15,9 @@ define([
     'common/services/notification',
     'common/directives/notification',
     'common/services/browser',
-    'common/bootstrap'
+    'common/bootstrap',
+    'common/directives/blank',
+    'common/directives/upgrade-warning'
 ], function(
     angular,
     loading,
@@ -33,7 +35,9 @@ define([
     notification,
     notificationDirective,
     browser,
-    bootstrap
+    bootstrap,
+    blankDirective,
+    upgradeWarningDirective
 ) {
 // jshint unused:false
 'use strict';
@@ -45,6 +49,8 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .directive('wdAutoFocus', autofocus)
     .directive('wdAlert', alertDirecitve)
     .directive('wdNotification', notificationDirective)
+    .directive('wdBlank', blankDirective)
+    .directive('wdUpgradeWarning', upgradeWarningDirective)
     // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)

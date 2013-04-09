@@ -19,6 +19,10 @@ a, a:hover {
     @include nowrap;
 }
 
+.btn {
+    font-size: 12px;
+}
+
 .modal {
     @include user-select(none);
     width: 350px;
@@ -38,3 +42,5 @@ a, a:hover {
     }
     color: inherit;
 }
+
+@import "common/*.png";

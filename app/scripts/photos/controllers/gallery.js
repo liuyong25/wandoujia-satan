@@ -60,7 +60,7 @@ if ($window.chrome &&
 
 // Temp
 wdpMessagePusher
-    .channel('photos.add', function(message) {
+    .channel('photos_add.wdp', function(message) {
         _.each(message.data, function(id) {
             var photo = _.find($scope.photos, function(photo) {
                 return photo.id === id;
@@ -72,7 +72,7 @@ wdpMessagePusher
             }
         });
     })
-    .channel('photos.remove', function(message) {
+    .channel('photos_remove.wdp', function(message) {
         _.each(message.data, function(id) {
             var photo = _.find($scope.photos, function(photo) {
                 return photo.id === id;
@@ -84,8 +84,7 @@ wdpMessagePusher
                 });
             }
         });
-    })
-    .start();
+    });
 
 $scope.preview = function(photo) {
     if (photo.path) {
@@ -157,7 +156,7 @@ $scope.fetch = function() {
 
 $scope.$on('$destroy', function() {
     clearTimeout(chromeExtensionNotification);
-    wdpMessagePusher.clear().stop();
+    wdpMessagePusher.unchannel('.wdp');
 });
 
 //==========================================================================
