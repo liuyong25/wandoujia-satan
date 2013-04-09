@@ -79,6 +79,7 @@ $scope.showConversation = function(conversation) {
     if (!conversation) { return; }
     var promise = activeConversation(conversation);
     promise.then(scrollIntoView);
+    $scope.sms = '';
     return promise;
 };
 $scope.prevConversations = function() {

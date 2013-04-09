@@ -6,7 +6,7 @@ define([
     _
 ) {
 'use strict';
-return ['wdDev', '$rootScope', function(wdDev, $rootScope) {
+return ['wdDev', function(wdDev) {
 return {
 
 link: function(scope, element) {
