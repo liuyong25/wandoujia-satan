@@ -259,9 +259,6 @@ function ContactsCtrl($scope, $http, wdAlert){
             };
             $scope.contact = data;
 
-            console.log('showContacts:');
-            console.log(data);
-
             //样式相关处理
             setTimeout(function(){
                 var wrap = $('.contacts-edit').show().find('.info');
@@ -276,9 +273,11 @@ function ContactsCtrl($scope, $http, wdAlert){
 
                 var dt = wrap.find('dt');
                 var detail = wrap.find('dd p.detail');
+                var des = wrap.find('dd p.des');
                 for(var i = 0 ,l = dt.length;i<l;i++){
                     if(!detail.eq(i).text()){
                         dt.eq(i).hide();
+                        des.eq(i).hide();
                     };
                 };
 
@@ -794,7 +793,7 @@ function ContactsCtrl($scope, $http, wdAlert){
     //搜索功能
     $('.wdj-contacts .btn-all .search input').on('keyup',function(e){
         clearTimeout(G_searchTimer);
-        G_searchTimer = setTimeout($scope.searchContacts,300);
+        G_searchTimer = setTimeout($scope.searchContacts,10);
     });
     $('.wdj-contacts .btn-all .search .icon-clear').on('click',function(){
         $scope.list = G_list;
