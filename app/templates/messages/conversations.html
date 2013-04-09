@@ -25,7 +25,7 @@
                         <input type="checkbox" ng-model="status.selected">
                     </label>
                     <div class="wdmcr-b" ng-class="{ multiple: c.addresses.length > 1 }">
-                        <img ng-show="c.photo_path" ng-src="{{c.photo_path}}">
+                        <img ui-if="c.addresses.length == 1" ng-show="c.photo_path" ng-src="{{c.photo_path}}">
                     </div>
                     <div class="wdmcr-c">
                         <div class="wdmcr-c-a" ng-switch on="c.addresses.length">
