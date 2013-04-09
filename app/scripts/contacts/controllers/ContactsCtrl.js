@@ -272,16 +272,13 @@ function ContactsCtrl($scope, $http, wdAlert){
                 };
 
                 var dt = wrap.find('dt');
-                var detail = wrap.find('dd p.detail');
-                var des = wrap.find('dd p.des');
                 for(var i = 0 ,l = dt.length;i<l;i++){
-                    if(!detail.eq(i).text()){
+                    if(!dt.eq(i).next('dd').length){
                         dt.eq(i).hide();
-                        des.eq(i).hide();
                     };
                 };
 
-            },20);
+            },50);
         };
 
         switch(G_status){
@@ -400,11 +397,13 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('hr').hide();
         ele.find('div.editName').show();
         ele.find('div.editName input').show();
+        ele.find('span.delete').show();
         ele.find('p.labelFlag').hide();
         change(ele.find('dl dd p.detail').hide());
         wrap.find('img.photo').on('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').on('mouseout',hidePhotoUpload);
         wrap.find('.photoUpload input').on('change',photoUpload);
+
         var desEle = ele.find('dl dd p.des');
 
         for(var i = 0 , l = desEle.length ; i<l ; i++ ){
@@ -443,6 +442,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('.remark').show();
 
         ele.find('hr').show();
+        ele.find('span.delete').hide();
         ele.find('dl dd p.detail').css('display','inline-block');
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
@@ -506,17 +506,12 @@ function ContactsCtrl($scope, $http, wdAlert){
                     data:editData
                 }).success(function(data){
                     if (!!G_photoBinary) {
-                        $http({
-                            headers:{ "Content-Type" : "text/plain"},
-                            method: 'post',
-                            url: '/resource/contacts/'+id+'/upload/',
-                            data: G_photoBinary
-                        }).success(function(data){
-                            G_photoBinary = '';
-                            showContacts(data['id']);
-                        });
+                        var url = '/resource/contacts/'+id+'/upload/';
+                        upload(url,G_photoBinary);
+                        G_photoBinary = '';
+                        showContacts(data['id']);
                     }else{
-                            showContacts(data['id']);
+                        showContacts(data['id']);
                     };
                 });
             break;
@@ -549,6 +544,7 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('.editName').hide();
 
         ele.find('hr').show();
+        ele.find('span.delete').hide();
 
         ele.find('input').hide();
         ele.find('select').hide();
@@ -620,6 +616,7 @@ function ContactsCtrl($scope, $http, wdAlert){
             wrap.find('p.detail').hide();
             wrap.find('p.des').hide();
             wrap.find('input.detail').show();
+            wrap.find('span.delete').show();
             var sel = wrap.find('select').show();
             var label = wrap.find('input.label');
             for(var i = 0, l = label.length ; i<l ; i++){
@@ -628,6 +625,15 @@ function ContactsCtrl($scope, $http, wdAlert){
                 };
             };
         },100);
+    };
+
+    //删除一个条目
+    $scope.delItem = function(key,item){
+        for(var i = 0 , l = $scope.contact[key].length; i<l; i++ ){
+            if( $scope.contact[key][i] == item ){
+                $scope.contact[key].splice(i,1);
+            };
+        };
     };
 
     //切换type的select时触发
@@ -768,6 +774,7 @@ function ContactsCtrl($scope, $http, wdAlert){
 
     function photoUpload(e){
         var file = e.target.files[0];
+        G_photoBinary = file;
         if(!file.type.match('image.*')){
             return;
         }else{
@@ -776,18 +783,22 @@ function ContactsCtrl($scope, $http, wdAlert){
 
             //显示为base64
             reader.onload = function(e){
-
                 $('.contacts-edit img.photo').attr('src',e.target.result);
-
-                //传给服务器为二进制
-                var reader = new FileReader();
-                reader.readAsBinaryString(file);
-                reader.onload = function(e){
-                    G_photoBinary = e.target.result;
-                };
-
             };
         };
+    };
+
+    //上传接口函数
+    function upload(url,file){
+        var xhr = new XMLHttpRequest();
+        var boundary = '———————–' + new Date().getTime();
+        var fileName = file.name;
+        xhr.open('post', url, true);
+        xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
+        var formData = new FormData();
+        formData.append('file', file);
+        data = formData;
+        xhr.send(data);
     };
 
     //搜索功能

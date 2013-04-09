@@ -49,7 +49,7 @@
             <img class="photo" ng-src="{{contact.photo_path}}">
 
             <!-- 上传图片遮罩 start -->
-            <!--
+
             <div class="photoUpload dn" >
                 <div class="mask">
                     <div class="bg"></div>
@@ -58,7 +58,7 @@
                 </div>
                 <input type="file" >
             </div>
-        -->
+
             <!-- 上传图片遮罩 end -->
 
             <div class="info">
@@ -88,6 +88,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.number}}</p>
                         <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone Number">
+                        <span class="delete dn" ng-click="delItem('phone',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -107,6 +108,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.address}}</p>
                         <input class="detail dn" type="text" ng-model="item.address"  placeholder="Email Address">
+                        <span class="delete dn" ng-click="delItem('email',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -127,6 +129,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.formatted_address}}</p>
                         <input class="detail dn" type="text" ng-model="item.formatted_address" placeholder="Address">
+                        <span class="delete dn" ng-click="delItem('address',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -146,6 +149,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.data}}</p>
                         <input class="detail dn" type="text" ng-model="item.data" placeholder="IM">
+                        <span class="delete dn" ng-click="delItem('IM',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -166,6 +170,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.note}}</p>
                         <input class="detail dn" type="text" ng-model="item.note"  placeholder="Note">
+                        <span class="delete dn" ng-click="delItem('note',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -185,6 +190,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.URL}}</p>
                         <input class="detail dn" type="text" ng-model="item.URL"  placeholder="Website">
+                        <span class="delete dn" ng-click="delItem('website',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -204,6 +210,7 @@
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
                         <p class="detail dn">{{item.name}}</p>
                         <input class="detail dn" type="text" ng-model="item.name"  placeholder="Relation">
+                        <span class="delete dn" ng-click="delItem('relation',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
