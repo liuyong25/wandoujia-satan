@@ -1,8 +1,10 @@
-define([], function(){
+define([
+    'fineuploader'
+], function(fineuploader){
 'use strict';
 
-return ['$scope','$http','wdAlert',
-function ContactsCtrl($scope, $http, wdAlert){
+return ['$scope','$http','wdAlert','wdDev',
+function ContactsCtrl($scope, $http, wdAlert , wdDev){
 
     //存储当前联系人的数据列表
     var G_contacts = [];
@@ -33,9 +35,6 @@ function ContactsCtrl($scope, $http, wdAlert){
 
     //默认头像
     var G_defaultPhoto = '../../images/contacts/default.png';
-
-    //修改后的头像二进制数据
-    var G_photoBinary = '';
 
     //全局的timer
     var G_searchTimer;
@@ -353,10 +352,12 @@ function ContactsCtrl($scope, $http, wdAlert){
     //选中所有
     $scope.selectAll = function(){
         if (G_selectAll === true) {
+            $('.btn-all .btn-selectAll').html('<i class="icon-ab-sel"></i>Select all');
             $('.btn-all .btn-delete').hide();
             G_selectAll = false;
         }else{
             $('.btn-all .btn-delete').show();
+            $('.btn-all .btn-selectAll').html('<i class="icon-ab-sel"></i>Deselect all');
             G_selectAll = true;
         };
         for(var i = 0, l = $scope.list.length;i<l;i++){
@@ -400,9 +401,8 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('span.delete').show();
         ele.find('p.labelFlag').hide();
         change(ele.find('dl dd p.detail').hide());
-        wrap.find('img.photo').on('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').on('mouseout',hidePhotoUpload);
-        wrap.find('.photoUpload input').on('change',photoUpload);
+        wrap.find('img.photo').on('mouseenter',showPhotoUpload);
 
         var desEle = ele.find('dl dd p.des');
 
@@ -424,6 +424,9 @@ function ContactsCtrl($scope, $http, wdAlert){
 
         //添加新item的功能
         ele.find('.btn-addNewItem').show();
+
+        //图片上传
+        photoUpload();
     };
 
     //保存联系人
@@ -446,7 +449,6 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('dl dd p.detail').css('display','inline-block');
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
-        wrap.find('.photoUpload input').off('change',photoUpload);
         var label = $('.contacts-edit .info .labelFlag');
         for(var i = 0 , l = label.length ; i<l; i++ ){
             if(!!label.eq(i).text()){
@@ -478,22 +480,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     url: '/resource/contacts/',
                     data:editData
                 }).success(function(data){
-                    if (!!G_photoBinary) {
-                        $http({
-                            method: 'post',
-                            url: '/resource/contacts/'+id+'/upload/',
-                            data: G_photoBinary
-                        }).success(function(data){
-                            G_photoBinary = '';
-                            G_contacts.push(data[0]);
-                            getList(data);
-                            showContacts(data[0]['id']);
-                        });
-                    }else{
-                            G_contacts.push(data[0]);
-                            getList(data);
-                            showContacts(data[0]['id']);
-                    };
+
                 });
 
             break;
@@ -505,14 +492,7 @@ function ContactsCtrl($scope, $http, wdAlert){
                     url: '/resource/contacts/'+id,
                     data:editData
                 }).success(function(data){
-                    if (!!G_photoBinary) {
-                        var url = '/resource/contacts/'+id+'/upload/';
-                        upload(url,G_photoBinary);
-                        G_photoBinary = '';
-                        showContacts(data['id']);
-                    }else{
-                        showContacts(data['id']);
-                    };
+
                 });
             break;
         };
@@ -551,7 +531,6 @@ function ContactsCtrl($scope, $http, wdAlert){
         ele.find('.btn-addNewItem').hide();
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
-        wrap.find('.photoUpload input').off('change',photoUpload);
 
         var label = ele.find('.labelFlag');
         for(var i = 0 , l = label.length ; i<l; i++ ){
@@ -653,6 +632,9 @@ function ContactsCtrl($scope, $http, wdAlert){
     //添加新的联系人
     $scope.addNewContact = function(){
 
+        var wrap = $('.contacts-edit .info');
+        wrap.find('img.photo').attr('src',G_defaultPhoto);
+
         //获取用户账户
         $http({
             method: 'get',
@@ -661,11 +643,10 @@ function ContactsCtrl($scope, $http, wdAlert){
             //var data = [{type:'gogole',name:'wangxiao@gmail.com'},{type:'wandoujia',name:'wangxiao@wandoujia.com'}];
             $scope.contact.account = data[0];
             $scope.accounts = data;
+            if(data.length > 1){
+                wrap.find('div.account').show().children().show();
+            };
         });
-
-        var wrap = $('.contacts-edit .info');
-        wrap.find('img.photo').attr('src',G_defaultPhoto);
-        wrap.find('div.account').show().children().show();
 
         var obj = {
             // id:'wangxiao',
@@ -772,33 +753,58 @@ function ContactsCtrl($scope, $http, wdAlert){
         $('.contacts-edit .photoUpload').hide();
     };
 
-    function photoUpload(e){
-        var file = e.target.files[0];
-        G_photoBinary = file;
-        if(!file.type.match('image.*')){
-            return;
-        }else{
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
+    // function photoUpload(e){
+    //     var file = e.target.files[0];
+    //     if(!file.type.match('image.*')){
+    //         return;
+    //     }else{
+    //         G_photoBinary = file;
+    //         var reader = new FileReader();
+    //         reader.readAsDataURL(file);
 
-            //显示为base64
-            reader.onload = function(e){
-                $('.contacts-edit img.photo').attr('src',e.target.result);
-            };
-        };
-    };
+    //         //显示为base64
+    //         reader.onload = function(e){
+    //             $('.contacts-edit img.photo').attr('src',e.target.result);
+    //         };
+    //     };
+    // };
 
-    //上传接口函数
-    function upload(url,file){
-        var xhr = new XMLHttpRequest();
-        var boundary = '———————–' + new Date().getTime();
-        var fileName = file.name;
-        xhr.open('post', url, true);
-        xhr.setRequestHeader('Content-Type', 'multipart/form-data; boundary=' + boundary);
-        var formData = new FormData();
-        formData.append('file', file);
-        data = formData;
-        xhr.send(data);
+    function photoUpload(){
+        var uploader = new fineuploader.FineUploaderBasic({
+            button: $('.contacts-edit .photoUpload')[0],
+            request: {
+                endpoint: wdDev.wrapURL('/resource/contacts/'+$scope.contact.id+'/upload/')
+            },
+            validation: {
+                acceptFiles: 'image/*'
+            },
+            cors: {
+                expected: true,
+                sendCredentials: true
+            },
+            autoUpload: false,
+            callbacks: {
+                onSubmit: function(id) {
+                    var file = uploader.getFile(id);
+                    if(!file.type.match('image.*')){
+                        return;
+                    }else{
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file);
+
+                        //显示为base64
+                        reader.onload = function(e){
+                            $('.contacts-edit img.photo').attr('src',e.target.result);
+                        };
+                    };
+                    console.log(123);
+                }
+            }
+        });
+
+        $('.contacts-edit .footer .btn-save').click(function() {
+            uploader.uploadStoredFiles();
+        });
     };
 
     //搜索功能
@@ -814,9 +820,9 @@ function ContactsCtrl($scope, $http, wdAlert){
     //搜索联系人功能，根据联系人列表 G_list 搜索
     $scope.searchContacts = function(){
         $scope.list = [];
-        var text = $scope.searchText;
+        var text = $scope.searchText.toLocaleLowerCase();
         for( var i = 0, l = G_list.length; i < l ; i++ ){
-            if(  (G_list[i]['name'].indexOf(text)>=0) || (G_list[i]['phone'].indexOf(text)>=0) ){
+            if(  (G_list[i]['name'].toLocaleLowerCase().indexOf(text)>=0) || (G_list[i]['phone'].toLocaleLowerCase().indexOf(text)>=0) ){
                 $scope.list.push(G_list[i]);
             };
         };
