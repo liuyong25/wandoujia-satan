@@ -75,7 +75,7 @@
                         <div class="wdme-row"
                             ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6}"
                             ng-repeat="m in g">
-                            <div class="wdmer-a">{{ m.body }}</div>
+                            <div class="wdmer-a"><div ng-show="activeConversation.addresses.length > 1">{{$root.DICT.messages.BATCH_RECEIVER_TIP}} {{m.contact_name || m.address}}: </div>{{ m.body }}</div>
                             <div class="wdmer-b" ng-switch on="m.status">
                                 <span ng-switch-when="64"><i class="messages-icon-alert"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
                                 <i ng-switch-when="32" class="messages-icon-running"></i>

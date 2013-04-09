@@ -12,6 +12,8 @@ return {
         ACTION_DELETE: 'Delete',
         ACTION_RETRY: 'Retry',
 
+        BATCH_RECEIVER_TIP: 'Send to',
+
         LABEL_SEND_TO: 'Send to',
 
         RECEIVER_PLACEHOLDER: 'Add one...',
