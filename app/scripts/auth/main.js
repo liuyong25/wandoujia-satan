@@ -10,8 +10,8 @@ define([
 
 angular.module('wdAuth', ['wdCommon'])
     .provider('wdAuthToken', authToken)
-    .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert', 'wdBrowser',
-        function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert, wdBrowser) {
+    .controller('portalController', ['$scope', '$location', '$http', 'wdDev', '$route', '$timeout', 'wdAuthToken', 'wdKeeper', 'GA', 'wdAlert', 'wdBrowser', '$rootScope',
+        function($scope, $location, $http, wdDev, $route, $timeout, wdAuthToken, wdKeeper, GA, wdAlert, wdBrowser, $rootScope) {
 
         $scope.isSupport = Modernizr.cors && Modernizr.websockets;
         $scope.isSafari = wdBrowser.safari;
@@ -84,13 +84,14 @@ angular.module('wdAuth', ['wdCommon'])
                     },
                     disableErrorControl: !$scope.autoAuth
                 })
-                .success(function() {
+                .success(function(response) {
                     keeper.done();
                     $scope.state = 'standby';
                     $scope.buttonText = $scope.$root.DICT.portal.AUTH_SUCCESS;
                     // TODO: Maybe expiration?
                     wdAuthToken.setToken(authCode);
                     wdAuthToken.startSignoutDetection();
+                    wdDev.setMetaData(response);
                     $location.url($route.current.params.ref || '/');
                     if (acFromInput) {
                         GA('login:success:user_input');
@@ -102,6 +103,7 @@ angular.module('wdAuth', ['wdCommon'])
                         GA('login:success:cache');
                     }
                     GA('perf:auth_duration:success:' + ((new Date()).getTime() - timeStart));
+                    $rootScope.$broadcast('signin');
                 })
                 .error(function() {
                     keeper.done();

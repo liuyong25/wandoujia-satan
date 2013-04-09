@@ -25,7 +25,7 @@
                         <input type="checkbox" ng-model="status.selected">
                     </label>
                     <div class="wdmcr-b" ng-class="{ multiple: c.addresses.length > 1 }">
-                        <img ng-show="c.photo_path" ng-src="{{c.photo_path}}">
+                        <img ui-if="c.addresses.length == 1" ng-show="c.photo_path" ng-src="{{c.photo_path}}">
                     </div>
                     <div class="wdmcr-c">
                         <div class="wdmcr-c-a" ng-switch on="c.addresses.length">
@@ -58,7 +58,7 @@
                 </div>
                 <div ui-if="activeConversation.message_count == 0" class="wdmct-c">
                     <div>{{$root.DICT.messages.LABEL_SEND_TO}}: </div>
-                    <textarea wdm-receiver rows="1" placeholder="{{$root.DICT.messages.RECEIVER_PLACEHOLDER}}"></textarea>
+                    <textarea wdm-receiver rows="1"></textarea>
                 </div>
             </section>
             <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
@@ -75,7 +75,7 @@
                         <div class="wdme-row"
                             ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6}"
                             ng-repeat="m in g">
-                            <div class="wdmer-a">{{ m.body }}</div>
+                            <div class="wdmer-a"><div ng-show="activeConversation.addresses.length > 1">{{$root.DICT.messages.BATCH_RECEIVER_TIP}} {{m.contact_name || m.address}}: </div>{{ m.body }}</div>
                             <div class="wdmer-b" ng-switch on="m.status">
                                 <span ng-switch-when="64"><i class="messages-icon-alert"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
                                 <i ng-switch-when="32" class="messages-icon-running"></i>
@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </section>
-            <section class="wdm-editor">
+            <section class="wdm-editor" ng-hide="cvsChanging || cvsListFirstLoading">
                 <form ng-submit="sendMessage(activeConversation, sms)">
                     <textarea placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="sms" ng-disabled="!editorEnable" rows="1" wdm-textarea></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')">
@@ -95,7 +95,13 @@
                     </button>
                 </form>
             </section>
-            <div class="wd-loading" data-visible="cvsChanging"></div>
+            <div class="wd-loading" data-visible="cvsChanging || cvsListFirstLoading"></div>
         </section>
     </div>
+    <div class="wd-blank" ui-if="!conversations.length && !cvsListFirstLoading">
+        <p>{{$root.DICT.messages.BLANK_TIP}}<p>
+        <div class="btn btn-primary"
+            ng-click="createConversation();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</div>
+    </div>
+    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.messages.UPGRADE_TIP}}"></div>
 </section>

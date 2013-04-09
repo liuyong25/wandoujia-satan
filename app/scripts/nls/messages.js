@@ -12,11 +12,16 @@ return {
         ACTION_DELETE: 'Delete',
         ACTION_RETRY: 'Retry',
 
+        BATCH_RECEIVER_TIP: 'Send to',
+
         LABEL_SEND_TO: 'Send to',
 
         RECEIVER_PLACEHOLDER: 'Add one...',
 
         ERROR_SEND_FAILED: 'Send Failed.',
+
+        BLANK_TIP: 'No messages on your phone. C\'mon, make your friends smile.',
+        UPGRADE_TIP: 'Update SnapPea to start text messaging from the web.',
 
         BTN_LOAD: 'Load more',
         BTN_LOAD_MSG: 'Load earlier messages',

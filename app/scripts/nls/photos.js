@@ -28,6 +28,8 @@ return {
         SLIDES_DOWNLOAD: 'Download',
         SLIDES_CLOSE: 'Close',
 
+        BLANK_TIP: 'No photos on your phone. Add some photos to share with friends.',
+
         BTN_LOAD: 'Load more...',
 
         CONFIRM_DELETE_TITLE: 'Delete photos',

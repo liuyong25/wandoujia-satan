@@ -6,7 +6,7 @@ define([
     _
 ) {
 'use strict';
-return ['wdDev', '$rootScope', function(wdDev, $rootScope) {
+return ['wdDev', function(wdDev) {
 return {
 
 link: function(scope, element) {
@@ -27,7 +27,7 @@ link: function(scope, element) {
 
         compareItems: function(item1, item2)
         {
-            return item1.number === item2.number && item1.display_name === item2.display_name;
+            return item1 === item2 || (item1.number === item2.number && item1.display_name === item2.display_name);
         }
     };
 
@@ -47,7 +47,7 @@ link: function(scope, element) {
         if (addresses === old) {
             element.textext({
                 plugins : 'tags prompt autocomplete ajax',
-                // prompt : 'Add one...',
+                prompt : scope.$root.DICT.messages.RECEIVER_PLACEHOLDER,
                 ext: {
                     itemManager: itemManager
                 },
@@ -66,6 +66,7 @@ link: function(scope, element) {
                     }
                 },
                 ajax : {
+                    typeDelay: 0.2,
                     type: 'POST',
                     contentType: 'application/json; charset=utf-8',
                     url : wdDev.wrapURL('/resource/contacts/search?offset=0&length=10'),
@@ -104,6 +105,10 @@ link: function(scope, element) {
                 element.val('');
             });
         }
+    });
+
+    _.defer(function() {
+        element.focus();
     });
 }
 

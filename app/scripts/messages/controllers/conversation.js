@@ -5,14 +5,16 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA',
+        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA', '$route',
 function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
-         wdpMessagePusher,   $timeout,   wdAlert,   GA) {
+         wdpMessagePusher,   $timeout,   wdAlert,   GA,   $route) {
 
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
 var ConversationMessages = $resource('/resource/conversations/:id/messages', {id: '@id'});
 var Messages = $resource('/resource/messages/:id', {id: '@id'});
+
+$scope.serverMatchRequirement = $route.current.locals.versionSupport;
 
 $scope.cvsCache = wdmConversationsCache;
 $scope.msgCache = wdmMessagesCache;
@@ -21,7 +23,7 @@ $scope.activeConversation = null;
 $scope.sms = '';
 $scope.editorEnable = true;
 
-$scope.cvsChanging = true;
+$scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 
@@ -77,6 +79,7 @@ $scope.showConversation = function(conversation) {
     if (!conversation) { return; }
     var promise = activeConversation(conversation);
     promise.then(scrollIntoView);
+    $scope.sms = '';
     return promise;
 };
 $scope.prevConversations = function() {
@@ -118,7 +121,7 @@ $scope.resendMessage = function(message) {
     });
 };
 
-wdpMessagePusher.channel('messages.add', function(msg) {
+wdpMessagePusher.channel('messages_add.wdm', function(e, msg) {
     var cid = msg.data.threadId;
     var mid = msg.data.messageId;
     var c = findConversation(cid);
@@ -136,22 +139,25 @@ wdpMessagePusher.channel('messages.add', function(msg) {
 });
 
 // Startup
-loadConversations().then(function() {
-    $scope.showConversation($scope.conversations[0]);
-    $scope.cvsListFirstLoading = false;
-});
+var timer;
+if ($scope.serverMatchRequirement) {
+    loadConversations().then(function() {
+        $scope.showConversation($scope.conversations[0]);
+        $scope.cvsListFirstLoading = false;
+    });
 
-wdpMessagePusher.start();
+    wdpMessagePusher.start();
 
-var timer = $timeout(function update() {
-   timer = $timeout(update, 60000 - Date.now() % 60000);
-}, 60000 - Date.now() % 60000);
+    timer = $timeout(function update() {
+       timer = $timeout(update, 60000 - Date.now() % 60000);
+    }, 60000 - Date.now() % 60000);
+}
 
 // Shutdown
 $scope.$on('$destroy', function() {
     $scope.cvsCache.reset();
     $timeout.cancel(timer);
-    wdpMessagePusher.clear().stop();
+    wdpMessagePusher.unchannel('.wdm');
 });
 
 //==========================================================================
@@ -162,7 +168,11 @@ function scrollIntoView() {
 }
 
 function createConversation() {
-    if (hasNewConversation()) { return; }
+    var existedNewConversation = findConversation();
+    if (existedNewConversation) {
+        activeConversation(existedConversation);
+        return;
+    }
     var c = _(new Conversations()).extend({
         id: _.uniqueId('wdmConversation_'),
         date: Date.now(),
@@ -525,8 +535,8 @@ function hasMessage(c) {
     return !!$scope.cvsCache.get(c, 'messages').length;
 }
 
-function hasNewConversation() {
-    return _($scope.conversations).any(function(c) {
+function findNewConversation() {
+    return _($scope.conversations).find(function(c) {
         return c.message_count === 0;
     });
 }
