@@ -49,7 +49,7 @@
             <img class="photo" ng-src="{{contact.photo_path}}">
 
             <!-- 上传图片遮罩 start -->
-
+            <!--
             <div class="photoUpload dn">
                 <div class="mask">
                     <div class="bg"></div>
@@ -57,7 +57,7 @@
                     <p>Change Photo</p>
                 </div>
             </div>
-
+            -->
             <!-- 上传图片遮罩 end -->
 
             <div class="info">
@@ -232,5 +232,16 @@
 
     </div>
     <!-- 右侧布局 end -->
+
+    <!-- 为空检测 -->
+    <div class="wd-blank dn">
+        <p>No contacts on your phone. Your friends are waiting!<p>
+        <div class="btn btn-primary"
+            ng-click="addNewContact();"><i class="icon-ab-add"></i> New contact</div>
+    </div>
+    <!-- 为空检测 -->
+    <!-- 版本检测 -->
+    <!-- <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.messages.UPGRADE_TIP}}"></div> -->
+    <!-- 版本检测 -->
 
 </div>

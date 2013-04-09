@@ -1,15 +1,15 @@
 .contacts-item{
 
     border-bottom: 1px solid #ebebeb;
-    padding: 10px 0px 10px 20px;
+    padding: 7px 0px 8px 20px;
     overflow: hidden;
     cursor: pointer;
     @include transition(background-color,0.1s);
 
 	img.photo{
-	    width: 60px;
-	    height: 60px;
-        margin-left: 5px;
+	    width: 48px;
+	    height: 48px;
+        margin-left: 15px;
 	}
 
 	div.info{
@@ -21,7 +21,7 @@
         height: 26px;
 	    display: inline-block;
         .name{
-            font-size: 18px;
+            font-size: 16px;
         }
         .phone{
             font-size: 15px;
