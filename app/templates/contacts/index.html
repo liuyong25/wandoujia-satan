@@ -1,4 +1,4 @@
-<div class="contacts">
+<div class="wdj-contacts">
 
     <!-- 左侧布局 -->
     <div class="left">
@@ -17,13 +17,14 @@
                 Delete
             </button>
             <div class="search">
-                <input type="text" ng-model="searchContacts.name">
+                <input type="search" ng-model="searchText">
+                <span class="icon-clear" ng-show="searchText" ng-click="searchText='';">&times;</span>
             </div>
         </div>
         <ul class="contacts-list">
 
             <!-- 每个联系人的模板 -->
-            <li class="contacts-item" ng-repeat="item in list| filter:searchContacts" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
+            <li class="contacts-item" ng-repeat="item in list" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
                 <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked();$event.stopPropagation();">
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">
@@ -57,7 +58,7 @@
                 </div>
                 <input type="file" >
             </div>
-            -->
+        -->
             <!-- 上传图片遮罩 end -->
 
             <div class="info">
