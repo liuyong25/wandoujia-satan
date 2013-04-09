@@ -87,7 +87,7 @@
                     </div>
                 </div>
             </section>
-            <section class="wdm-editor">
+            <section class="wdm-editor" ng-hide="cvsChanging || cvsListFirstLoading">
                 <form ng-submit="sendMessage(activeConversation, sms)">
                     <textarea placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="sms" ng-disabled="!editorEnable" rows="1" wdm-textarea></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')">
