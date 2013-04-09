@@ -120,7 +120,7 @@ $scope.resendMessage = function(message) {
     });
 };
 
-wdpMessagePusher.channel('messages.add', function(msg) {
+wdpMessagePusher.channel('messages_add.wdm', function(e, msg) {
     var cid = msg.data.threadId;
     var mid = msg.data.messageId;
     var c = findConversation(cid);
@@ -156,7 +156,7 @@ if ($scope.serverMatchRequirement) {
 $scope.$on('$destroy', function() {
     $scope.cvsCache.reset();
     $timeout.cancel(timer);
-    wdpMessagePusher.clear().stop();
+    wdpMessagePusher.unchannel('.wdm');
 });
 
 //==========================================================================

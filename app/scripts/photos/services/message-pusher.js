@@ -1,27 +1,24 @@
-define([], function() {
+define([
+    'jquery'
+], function(
+    jQuery
+) {
 'use strict';
 // Message Pusher Service
 return ['wdDev', '$log',
 function(wdDev,   $log) {
 
-var url = wdDev.wrapURL('/service/notification');
-
 var websocket;
-var channels = {};
+var channels = jQuery({});
 
 return {
     start: function() {
         if (websocket) { return; }
-        websocket = new WebSocket('ws:' + url);
+        websocket = new WebSocket('ws:' + wdDev.wrapURL('/service/notification'));
         websocket.onmessage = function(e) {
             $log.log('socket', e.data);
             var message = JSON.parse(e.data);
-            var channel = channels[message.type];
-            if (channel) {
-                channel.forEach(function(callback) {
-                    callback(message);
-                });
-            }
+            channels.triggerHandler(message.type.replace('.', '_'), [message]);
         };
         // websocket.onerror = function(e) {
         //     console.log(arguments);
@@ -33,15 +30,16 @@ return {
         websocket = websocket.onmessage = null;
         return this;
     },
-    channel: function(id, callback) {
-        if (!channels[id]) {
-            channels[id] = [];
-        }
-        channels[id].push(callback);
+    channel: function() {
+        channels.on.apply(channels, arguments);
+        return this;
+    },
+    unchannel: function() {
+        channels.off.apply(channels, arguments);
         return this;
     },
     clear: function() {
-        channels = {};
+        channels = jQuery({});
         return this;
     }
 };

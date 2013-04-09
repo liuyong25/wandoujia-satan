@@ -46,9 +46,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
         }];
 
         var reflectNavbar = function(moduleName) {
-            return ['$rootScope', function($rootScope) {
-                $rootScope.currentModule = moduleName;
-                localStorage.setItem('lastModule', moduleName);
+            return [function() {
                 return moduleName;
             }];
         };
@@ -168,8 +166,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             }
         }
     }])
-    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable',
-        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable) {
+    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable', 'wdpMessagePusher',
+        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable,   wdpMessagePusher) {
         // Tip users when leaving.
         $window.onbeforeunload = function () {
             return wdKeeper.getTip();
@@ -190,7 +188,12 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
         // i18n word table
         $rootScope.DICT = wdWordTable;
 
-        $rootScope.currentModule = 'photos';
+        $rootScope.$on('signin', function() {
+            wdpMessagePusher.start();
+        });
+        $rootScope.$on('signout', function() {
+            wdpMessagePusher.stop().clear();
+        });
     }]);
 
 angular.bootstrap(document, ['wdApp']);

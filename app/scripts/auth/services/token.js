@@ -29,6 +29,7 @@ return function() {
                 else {
                     $location.url('/portal');
                 }
+                $rootScope.$broadcast('signout');
             },
             startSignoutDetection: function() {
                 var self = this;
