@@ -168,7 +168,11 @@ function scrollIntoView() {
 }
 
 function createConversation() {
-    if (hasNewConversation()) { return; }
+    var existedNewConversation = findConversation();
+    if (existedNewConversation) {
+        activeConversation(existedConversation);
+        return;
+    }
     var c = _(new Conversations()).extend({
         id: _.uniqueId('wdmConversation_'),
         date: Date.now(),
@@ -531,8 +535,8 @@ function hasMessage(c) {
     return !!$scope.cvsCache.get(c, 'messages').length;
 }
 
-function hasNewConversation() {
-    return _($scope.conversations).any(function(c) {
+function findNewConversation() {
+    return _($scope.conversations).find(function(c) {
         return c.message_count === 0;
     });
 }
