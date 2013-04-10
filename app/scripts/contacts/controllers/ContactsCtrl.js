@@ -367,9 +367,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
                                 $('.wdj-contacts .wd-blank').show();
                             };
                             //当全部删除完
-                            // if( flagNum  === l ){
-                            //     wdAlert.alert('Delete success!', 'Delete success!', 'OK').then(function(){$('.modal-backdrop').remove();});
-                            // };
+                            if( flagNum  === l ){
+                                $scope.list[0]['clicked'] = true;
+                                G_clicked = $scope.list[0]['clicked'];
+                                showContacts($scope.list[0]['id']);
+                                $('ul.contacts-list')[0].scrollTop = 0;
+                                //wdAlert.alert('Delete success!', 'Delete success!', 'OK').then(function(){$('.modal-backdrop').remove();});
+                            };
                         }).error(function(){
                             flagNum ++ ;
                             if( flagNum === 1){
@@ -840,17 +844,20 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
             };
         };
         if(!!$scope.list[0]){
+            $('ul.contacts-list li.no-contacts').hide();
             G_clicked['clicked'] = false;
             G_clicked = $scope.list[0];
             $scope.list[0]['clicked'] = true;
             showContacts($scope.list[0]['id']);
         }else{
+            $('ul.contacts-list li.no-contacts').show();
             showContacts();
         };
         $scope.$apply();
     };
 
     //主函数开始
+    $('.contacts-edit').hide();
     getData(0,G_dataLengthOnce,null);
     $scope.serverMatchRequirement = $route.current.locals.versionSupport;
     $scope.list = G_list;
