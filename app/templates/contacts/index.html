@@ -224,7 +224,7 @@
             </div>
 
             <div class="footer">
-                <button class="btn btn-edit" type="button" ng-click="editContact(contact.id)">Edit</button>
+                <button class="btn btn-edit" ng-show="!contact.read_only" type="button" ng-click="editContact(contact.id)">Edit</button>
                 <button class="btn btn-cancel dn" type="button" ng-click="cancelContact(contact.id)">Cancel</button>
                 <button class="btn btn-primary btn-save dn" type="button" ng-click="saveContact(contact.id)">Save</button>
             </div>
