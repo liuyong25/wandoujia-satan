@@ -351,6 +351,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         for(var i = 0 , l = G_list.length ; i < l ; i ++){
             if( G_list[i].checked === true && G_list[i]['read_only'] ){
                 read_only.push(G_list[i]['name']);
+                G_list[i].checked = false;
             };
         };
 
@@ -557,6 +558,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
+                     showContacts($scope.contact.id);
                     GA('Web Contacts:save new contact failed');
                 });
 
@@ -576,8 +578,15 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                             $scope.list = G_list;
                         };
                     };
+                    for(var i = 0 , l = G_contacts.length;i<l; i++ ){
+                        if(!!id && G_contacts[i]['id']===id){
+                            G_contacts[i] = data;
+                        };
+                    };
+
                     showContacts(data['id']);
                 }).error(function(){
+                    showContacts($scope.contact.id);
                     GA('Web Contacts:save the editing contact failed');
                 });
             break;
@@ -699,6 +708,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.addNewContact = function(){
 
         GA('Web Contacts:click add a New Contacts button');
+        if(G_status == 'new'){ return;};
         $('.contacts-list .no-contacts').hide();
         $scope.searchText = '';
         $scope.list = G_list;
