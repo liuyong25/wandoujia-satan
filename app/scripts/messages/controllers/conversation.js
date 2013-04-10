@@ -20,7 +20,6 @@ $scope.cvsCache = wdmConversationsCache;
 $scope.msgCache = wdmMessagesCache;
 $scope.conversations = [];
 $scope.activeConversation = null;
-$scope.sms = '';
 $scope.editorEnable = true;
 
 $scope.cvsChanging = false;
@@ -79,7 +78,6 @@ $scope.showConversation = function(conversation) {
     if (!conversation) { return; }
     var promise = activeConversation(conversation);
     promise.then(scrollIntoView);
-    $scope.sms = '';
     return promise;
 };
 $scope.prevConversations = function() {
@@ -92,8 +90,9 @@ $scope.prevMessages = function(conversation) {
         });
     });
 };
-$scope.sendMessage = function(conversation, content) {
-    if (!$scope.editorEnable || !$scope.sms) { return; }
+$scope.sendMessage = function(conversation) {
+    var content = $scope.cvsCache.get(conversation, 'draft');
+    if (!$scope.editorEnable || !content) { return; }
     $scope.editorEnable = false;
     // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
     $scope.$broadcast('wdm:beforeMessageSend', conversation, content);
@@ -114,7 +113,9 @@ $scope.sendMessage = function(conversation, content) {
         $scope.editorEnable = true;
         GA('messages:send_failed');
     });
-    $scope.sms = '';
+    $scope.cvsCache.put(conversation, {
+        draft: ''
+    });
     scrollIntoView();
 };
 $scope.resendMessage = function(message) {
@@ -406,6 +407,7 @@ function mergeConversations(conversations) {
                 loaded: false,
                 messages: [],
                 groups: [],
+                draft: '',
                 date: function() {
                     var lastMessageDate = this.messages.length ? this.messages[this.messages.length - 1].date : 0;
                     return Math.max(this.model.date, lastMessageDate);
@@ -565,7 +567,7 @@ function dateAsc(item) {
     return item.date;
 }
 function dateDesc(item) {
-    return -item.date;
+    return item.message_count ? -item.date : (-item.date * 10);
 }
 
 function toArray() {

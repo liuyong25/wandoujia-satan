@@ -1,8 +1,6 @@
 define([
-    'angular',
     'underscore'
 ], function(
-    angular,
     _
 ) {
 'use strict';
@@ -84,6 +82,11 @@ link: function(scope, element) {
                     }
                 }
             });
+
+            element.on('setFormData', function() {
+                setData(element.textext()[0]);
+                scope.$apply();
+            });
         }
     });
 
@@ -91,7 +94,10 @@ link: function(scope, element) {
         var textext = element.textext()[0];
         textext.tags().onBlur();
         element.val('');
+        setData(textext);
+    });
 
+    function setData(textext) {
         var items = JSON.parse(textext.hiddenInput().val());
         var addresses = _(items).map(function(item) {
             return item.number;
@@ -102,7 +108,7 @@ link: function(scope, element) {
 
         scope.activeConversation.addresses = addresses;
         scope.activeConversation.contact_names = names;
-    });
+    }
 
     _.defer(function() {
         element.focus();
