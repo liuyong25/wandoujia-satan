@@ -2464,8 +2464,8 @@
         var self   = this,
             target = $(e.target)
             ;
-
-        if(target.is(CSS_DOT_SUGGESTION) || target.is(CSS_DOT_LABEL))
+        if (target.is(CSS_DOT_SUGGESTION) || target.is(CSS_DOT_LABEL) ||
+            target.parent().is(CSS_DOT_SUGGESTION) || target.parent().is(CSS_DOT_LABEL))
             self.trigger('enterKeyPress');
 
         if (self.core().hasPlugin('tags'))
@@ -2489,7 +2489,6 @@
             container         = self.containerElement(),
             isBlurByMousedown = container.data(DATA_MOUSEDOWN_ON_AUTOCOMPLETE) === true
             ;
-
         // only trigger a close event if the blur event was
         // not triggered by a mousedown event on the autocomplete
         // otherwise set focus back back on the input

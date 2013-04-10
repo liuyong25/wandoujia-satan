@@ -69,7 +69,7 @@ link: function(scope, element) {
                     typeDelay: 0.2,
                     type: 'POST',
                     contentType: 'application/json; charset=utf-8',
-                    url : wdDev.wrapURL('/resource/contacts/search?offset=0&length=10'),
+                    url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=10'),
                     dataType : 'json',
                     xhrFields: {
                         withCredentials: true
@@ -84,27 +84,24 @@ link: function(scope, element) {
                     }
                 }
             });
-
-            element.on('setFormData', function(e) {
-                var textext = angular.element(e.target).textext()[0];
-                var items = JSON.parse(textext.hiddenInput().val());
-                var addresses = _(items).map(function(item) {
-                    return item.number;
-                });
-                var names = _(items).map(function(item) {
-                    return item.display_name;
-                });
-
-                scope.$apply(function() {
-                    scope.activeConversation.addresses = addresses;
-                    scope.activeConversation.contact_names = names;
-                });
-            });
-            element.on('blur', function() {
-                element.textext()[0].tags().onBlur();
-                element.val('');
-            });
         }
+    });
+
+    scope.$on('wdm:beforeMessageSend', function() {
+        var textext = element.textext()[0];
+        textext.tags().onBlur();
+        element.val('');
+
+        var items = JSON.parse(textext.hiddenInput().val());
+        var addresses = _(items).map(function(item) {
+            return item.number;
+        });
+        var names = _(items).map(function(item) {
+            return item.display_name;
+        });
+
+        scope.activeConversation.addresses = addresses;
+        scope.activeConversation.contact_names = names;
     });
 
     _.defer(function() {

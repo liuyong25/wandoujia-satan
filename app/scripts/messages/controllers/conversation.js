@@ -95,6 +95,8 @@ $scope.prevMessages = function(conversation) {
 $scope.sendMessage = function(conversation, content) {
     if (!$scope.editorEnable || !$scope.sms) { return; }
     $scope.editorEnable = false;
+    // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
+    $scope.$broadcast('wdm:beforeMessageSend', conversation, content);
     sendMessage(conversation, content).then(function(c) {
         // Conversation existed and is the current active one.
         if (same(conversation, c)) {
@@ -168,7 +170,7 @@ function scrollIntoView() {
 }
 
 function createConversation() {
-    var existedNewConversation = findConversation();
+    var existedNewConversation = findNewConversation();
     if (existedNewConversation) {
         activeConversation(existedConversation);
         return;
@@ -419,7 +421,7 @@ function mergeConversations(conversations) {
                     var hasRecieved = _(this.messages).any(function(m) {
                         return m.type !== 2;
                     });
-                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + this.displayName() + '...';
+                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + this.displayName() + '...' : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER);
                 }
             });
         }
