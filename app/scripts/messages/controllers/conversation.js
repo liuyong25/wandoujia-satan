@@ -433,6 +433,7 @@ function mergeConversations(conversations) {
 
 function mergeMessages(messages) {
     messages = toArray(messages);
+    if (!messages.length) { return; }
     var cid = messages[0].thread_id;
     var conversation = findConversation(cid);
     var existedMessages = $scope.cvsCache.get(conversation, 'messages');
