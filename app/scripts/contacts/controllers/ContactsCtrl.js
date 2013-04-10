@@ -658,6 +658,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.addNewContact = function(){
 
         GA('Web Contacts:click add a New Contacts button');
+        $('.contacts-list .no-contacts').hide();
+        $scope.searchText = '';
+        $scope.list = G_list;
         $('.wdj-contacts .wd-blank').hide();
         $('.wdj-contacts .right .wd-loading').hide();
 
@@ -706,6 +709,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         setTimeout(function(){
             $('ul.contacts-list')[0].scrollTop = 0;
             $scope.editContact();
+            $('.contacts-edit').show();
         },100);
     };
 
