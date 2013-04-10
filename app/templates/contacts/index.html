@@ -27,7 +27,7 @@
             <!-- 没有联系人时显示 end -->
             <!-- 每个联系人的模板 -->
             <li class="contacts-item" ng-repeat="item in list" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
-                <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked();$event.stopPropagation();">
+                <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);$event.stopPropagation();">
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">
                     <p class="name">{{item.name}}</p>

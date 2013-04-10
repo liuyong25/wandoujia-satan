@@ -3,8 +3,8 @@ define([
 ], function(fineuploader){
 'use strict';
 
-return ['$scope','$http','wdAlert','wdDev','$route',
-function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
+return ['$scope','$http','wdAlert','wdDev','$route','GA',
+function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
     //存储当前联系人的数据列表
     var G_contacts = [];
@@ -337,6 +337,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
     //删除选中的联系人
     $scope.deleteContacts = function(){
 
+        GA('Web Contacts:click delete contacts button');
+
         wdAlert.confirm(
             'Are you sure?',
             'you will delete those contacts',
@@ -394,10 +396,12 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
     //选中所有
     $scope.selectAll = function(){
         if (G_selectAll === true) {
+             GA('Web Contacts:click Deselect all button');
             $('.btn-all .btn-selectAll').html('<i class="icon-ab-sel"></i>Select all');
             $('.btn-all .btn-delete').hide();
             G_selectAll = false;
         }else{
+             GA('Web Contacts:click select all button');
             $('.btn-all .btn-delete').show();
             $('.btn-all .btn-selectAll').html('<i class="icon-ab-sel"></i>Deselect all');
             G_selectAll = true;
@@ -407,7 +411,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
         };
     };
 
-    $scope.clickChecked = function(){
+    $scope.clickChecked = function(isChecked){
+        if(isChecked){
+            GA('Web Contacts:click checkbox checked');
+        }else{
+            GA('Web Contacts:click checkbox unchecked');
+        };
+
         for(var i = 0, l = $scope.list.length;i<l;i++){
             if($scope.list[i].checked){
                 $('.btn-all .btn-delete').show();
@@ -419,6 +429,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
 
     //编辑联系人
     $scope.editContact = function(id){
+
+        GA('Web Contacts:click edit contact button');
 
         //addNewContact方法中调用了editContact方法
         if(G_status !== 'new'){
@@ -486,6 +498,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
 
         switch(G_status){
             case 'new':
+                GA('Web Contacts:click save the new contact button');
                 var editData = [];
                 editData.push(saveData);
                 var account = editData[0].account || {name:'',type:''};
@@ -502,10 +515,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
                     getList(data,true);
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
+                }).error(function(){
+                    GA('Web Contacts:save new contact failed');
                 });
 
             break;
             case 'edit':
+                GA('Web Contacts:click save the editing contact button');
                 var editData = saveData;
                 $http({
                     method: 'put',
@@ -520,6 +536,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
                         };
                     };
                     showContacts(data['id']);
+                }).error(function(){
+                    GA('Web Contacts:save the editing contact failed');
                 });
             break;
         };
@@ -528,6 +546,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
 
     //取消编辑联系人
     $scope.cancelContact = function(id){
+        GA('Web Contacts:click cancel contact button');
 
         switch(G_status){
             case 'new':
@@ -638,6 +657,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route){
     //添加新的联系人
     $scope.addNewContact = function(){
 
+        GA('Web Contacts:click add a New Contacts button');
         $('.wdj-contacts .wd-blank').hide();
         $('.wdj-contacts .right .wd-loading').hide();
 
