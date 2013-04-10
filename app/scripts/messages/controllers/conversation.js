@@ -172,7 +172,7 @@ function scrollIntoView() {
 function createConversation() {
     var existedNewConversation = findNewConversation();
     if (existedNewConversation) {
-        activeConversation(existedConversation);
+        activeConversation(existedNewConversation);
         return;
     }
     var c = _(new Conversations()).extend({
