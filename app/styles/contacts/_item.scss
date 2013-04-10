@@ -22,10 +22,16 @@
 	    display: inline-block;
         .name{
             font-size: 16px;
+            width: 226px;
+            overflow: hidden;
+            height: 20px;
         }
         .phone{
             font-size: 15px;
             color: #acacac;
+            width: 226px;
+            overflow: hidden;
+            height: 20px;
         }
         .click .phone{
             color: #FFF;
