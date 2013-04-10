@@ -12,12 +12,14 @@
     }
 
     .photoUpload{
-        position: absolute;
-        left: 0px;
-        top: 20px;
+        top: -129px;
         overflow: hidden;
-        width: 127px;
-        height: 127px;
+        width: 128px;
+        height: 128px;
+        input{
+            width: 200px;
+            height: 200px;
+        }
         .mask{
             width: 127px;
             height: 127px;
@@ -48,19 +50,6 @@
             }
 
         }
-
-
-        input{
-            position: absolute;
-            top: -53px;
-            left: -53px;
-            height: 180px;
-            width: 180px;
-            cursor: pointer;
-            font-size: 139px;
-            opacity: 0;
-        }
-
 
     }
 
@@ -203,5 +192,14 @@
 
             }
         }
+
+        span.delete{
+            margin-left: 5px;
+            font-size: 25px;
+            line-height: 25px;
+            height: 25px;
+            cursor:pointer;
+        }
+
     }
 }
