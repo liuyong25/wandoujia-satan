@@ -28,6 +28,14 @@
         border-right: 1px solid #e7e7e7;
         margin-left: -1px;
 
+        li.no-contacts{
+            height: 64px;
+            text-align: center;
+            line-height: 64px;
+            font-size: 18px;
+            border-bottom: 1px solid #e7e7e7;
+        }
+
         .clicked{
             background-color: #444444!important;
             color: #FFFFFF;
