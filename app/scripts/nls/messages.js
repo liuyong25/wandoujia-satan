@@ -3,7 +3,7 @@ define([], function() {
 return {
     root: {
         EDITOR_REPLY_PLACEHOLDER: 'Reply to ',
-        EDITOR_SEND_PLACEHOLDER: 'Send to ',
+        EDITOR_SEND_PLACEHOLDER: 'Write a message ',
         EDITOR_SUBMIT: 'Send',
 
         ACTION_NEW: 'New message',
@@ -12,7 +12,7 @@ return {
         ACTION_DELETE: 'Delete',
         ACTION_RETRY: 'Retry',
 
-        BATCH_RECEIVER_TIP: 'Send to',
+        BATCH_RECEIVER_TIP: 'To',
 
         LABEL_SEND_TO: 'Send to',
 

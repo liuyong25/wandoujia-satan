@@ -144,7 +144,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
                         // If auth error, always signout.
                         // 401 for auth invalid, 0 for server no response.
                         if (!response.config.disableErrorControl &&
-                            (response.status === 401 || response.status === 0)) {
+                            (response.status === 401 /*|| response.status === 0 */)) {
                             wdAuthToken.signout();
                         }
                         return $q.reject(response);
