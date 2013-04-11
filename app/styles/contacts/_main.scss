@@ -1,4 +1,5 @@
 .wdj-contacts{
+    font-family: arial, sans-serif;
 
     .pf{
         position: fixed;
@@ -18,9 +19,9 @@
 
     .contacts-list{
         position: fixed;
-        overflow-y : hidden;
-        top:106px;
-        bottom: 76px;
+        overflow-y : auto;
+        top:103px;
+        bottom: 70px;
         width: 428px;
         display: block;
         padding-left: 1px;
@@ -31,8 +32,7 @@
             height: 64px;
             text-align: center;
             line-height: 64px;
-            font-size: 18px;
-            border-bottom: 1px solid #e7e7e7;
+            font-size: 12px;
         }
 
         .clicked{
@@ -75,14 +75,14 @@
         background-color: #FFF;
         min-width: 350px;
         width: 428px;
-        height: 93px;
+        height: 90px;
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         padding-top: 12px;
         z-index: 200;
 
         .btn-new{
-            margin-left: 3%;
+            margin-left: 10px;
         }
 
         .btn-selectAll{
@@ -98,31 +98,33 @@
 
         border-top: 1px solid #e7e7e7;
         margin-top: 10px;
-        padding-left: 15px;
+        padding-left: 10px;
         padding-top: 9px;
         cursor: pointer;
 
         input{
-            font-size: 16px;
+            font-size: 12px;
             line-height: 25px;
             padding-left: 33px;
             padding-right: 25px;
-            width: 78%;
+            width: 347px;
             height: 22px;
+            box-shadow: none;
             background:#f5f5f5 url("../../images/contacts/icon_search.png") no-repeat 3% 50%;
         }
 
         input:focus{
-            border-color:none;
+            border-color:#CCC;
             box-shadow:none;
             background-color: #FFF;
         }
 
         span.icon-clear{
             position: absolute;
-            left:89%;
+            left:92%;
             font-size: 25px;
             padding-top: 8px;
+            @include button-effect;
         }
 
     }
@@ -135,6 +137,10 @@
 
     .right{
         float: left;
+
+        .wd-loading{
+            margin-left: 200px;
+        }
     }
 
 	@import "item";

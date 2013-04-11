@@ -1,7 +1,7 @@
 <div class="wdj-contacts">
 
     <!-- 左侧布局 -->
-    <div class="left">
+    <div class="left dn">
 
         <div class="btn-all">
             <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()">
@@ -17,40 +17,36 @@
                 Delete
             </button>
             <div class="search">
-                <input type="search" ng-model="searchText">
+                <input type="search" ng-model="searchText" placeholder="Search">
                 <span class="icon-clear" ng-show="searchText" ng-click="searchText='';">&times;</span>
             </div>
         </div>
+
         <ul class="contacts-list">
+
             <!-- 没有联系人时显示 -->
             <li class="no-contacts dn">No contacts matched your search.</li>
             <!-- 没有联系人时显示 end -->
+
             <!-- 每个联系人的模板 -->
-            <li class="contacts-item" ng-repeat="item in pageList" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
-                <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);$event.stopPropagation();">
+            <li class="contacts-item" ng-repeat="item in list" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
+                <label class="selected" ng-model="item.checked" ng-click="clickChecked(item.checked);$event.stopPropagation();">
+                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" >
+                </label>
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">
                     <p class="name">{{item.name}}</p>
-                    <p class="phone" ng-show="item.phone">{{item.phone}}</p>
+                    <p class="phone">{{item.phone}}</p>
                 </div>
             </li>
             <!-- 每个联系人的模板 end -->
-
-            <!-- 分页按钮 -->
-            <div class="page-btn" ng-click="changePage($event)">
-                <p class="up">pageUp</p>
-                <div class="page"></div>
-                <p class="down">pageDown</p>
-            </div>
-            <!-- 分页按钮 end -->
-
         </ul>
 
     </div>
     <!-- 左侧布局 end -->
 
     <!-- 右侧布局 -->
-    <div class="right">
+    <div class="right dn">
 
         <div class="wd-loading" data-visible="true"></div>
 

@@ -55,22 +55,33 @@
 
     .footer{
         position: fixed;
-        bottom: 80px;
-        right: 20px;
+        bottom: 65px;
+        right: 10px;
+        height: 40px;
+        left: 429px;
+        background-color: #FFF;
+        opacity: 0.9;
+
+        .btn{
+            width: 80px;
+            margin-left: 5px;
+            float: right;
+        }
     }
 
     .info{
-        margin-top:51px;
-        margin-left:50px;
-        width: 75%;
+        margin-top:73px;
+        margin-left: 25px;
         position: absolute;
         top:0px;
-        left: 110px;
+        left: 127px;
+        right: 50px;
 
         hr{
             border: 0px;
             height: 5px;
             background-color: #ededed;
+            margin-top: 8px;
         }
 
         select{
@@ -79,8 +90,9 @@
             margin-right: 4px;
             background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
             border: 1px solid #d6d6d6;
-            line-height: 20px;
+            line-height: 28px;
             padding-left: 10px;
+            height: 38px;
             -webkit-appearance:none;
             -moz-appearance:none;
         }
@@ -93,11 +105,17 @@
             margin-bottom: 10px;
             background-color:#f5f5f5;
             width: 30%;
+            box-shadow:none;
+            height: 28px;
+            line-height: 28px;
         }
 
         input:focus{
+            border-color:#CCC;
+            box-shadow:none;
             background-color: #FFF;
         }
+
 
         .name{
             font-size: 35px;
@@ -105,16 +123,24 @@
             height: 45px;
             width: 84%;
             overflow: hidden;
+            margin-bottom: 0px;
         }
 
         .editName{
             color: #000;
             margin-top: -25px;
 
+            input{
+                height: 28px;
+                line-height: 28px;
+            }
+
             div.account{
 
                 select{
                     width: 350px;
+                    line-height: 28px;
+                    height: 28px;
                 }
             }
 
@@ -122,16 +148,16 @@
                 margin-right: 4px;
                 width: 28%;
                 font-size: 15px;
-                line-height: 20px;
-                height: 20px;
                 overflow: hidden;
             }
 
             .title{
                 margin-right: 4px;
                 width: 23%;
+                margin-top: 10px;
             }
             .company{
+                margin-top: 10px;
                 margin-right: 4px;
                 width: 50%;
             }
@@ -199,6 +225,7 @@
             line-height: 25px;
             height: 25px;
             cursor:pointer;
+            @include button-effect;
         }
 
     }

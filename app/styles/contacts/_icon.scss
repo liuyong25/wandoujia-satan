@@ -1,7 +1,9 @@
 @import "photos/*.png";
+@import "contacts/*.png";
 $wdp-icons-list: "ab-add", "ab-sel", "ab-del", "ab-dl", "ab-sh", "del", "dl", "share", "cancel", "feedback";
 
 @each $icon in $wdp-icons-list {
+
     // sprite meta
     $sprite-width : photos-sprite-width($icon);
     $sprite-height: photos-sprite-height($icon);
@@ -48,17 +50,17 @@ input[type=checkbox] {
         position: absolute;
         left: $left;
         top: $top;
-        width: photos-sprite-width("check");
-        height: photos-sprite-height("check");
-        @include photos-sprite("check");
+        width: contacts-sprite-width("check");
+        height: contacts-sprite-height("check");
+        @include contacts-sprite("check");
     }
     &:checked:after{
         content: "";
         position: absolute;
         left: $left;
         top: $top;
-        width: photos-sprite-width("check");
-        height: photos-sprite-height("check");
-        @include photos-sprite("checked");
+        width: contacts-sprite-width("check");
+        height: contacts-sprite-height("check");
+        @include contacts-sprite("checked");
     }
 }

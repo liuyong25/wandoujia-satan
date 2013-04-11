@@ -9,17 +9,11 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //存储当前联系人的数据列表
     var G_contacts = [];
 
-    //左侧联系人列表
+    //联系人列表
     var G_list = [];
 
-    //分页数据
-    var G_page = [];
-    var G_pageList = [];
-    var G_pageNum = [];
-
     //每次拉取数据的长度
-    //var G_dataLengthOnce = 30;
-    var G_dataLengthOnce = 0;
+    var G_dataLengthOnce = 30;
 
     //标示是否首次进入
     var G_isFirst = true;
@@ -158,10 +152,11 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         cursor = cursor || 0;
         $http({
             method: 'get',
-            url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset,
-            timeout:5000
+            url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset
         }).success(function(data) {
-
+            if(G_contacts.length>0){
+                 G_isFirst = false;
+            };
             for(var i = 0,l = data.length;i<l;i++){
 
                 //修正默认头像
@@ -170,15 +165,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 };
                 G_contacts.push(data[i]);
             };
-
             getList(data);
-            pageLoad(data);
 
             //数据未取完
             if(l === length){
                 //如果支持cursor打开这个接口，但是速度不如没有cursor的快
                 //getData(1,G_dataLengthOnce,data[l-1].id);
-                if(G_page.length >10){return;}
+                if(l > 11){G_dataFinish = true;return};
                 //不支持cursor取数据
                 getData(G_contacts.length,G_dataLengthOnce,null);
 
@@ -187,7 +180,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             };
 
         }).error(function(){
-            G_dataFinish = true ;
+            wdAlert.alert('error','timeout','ok').then(function(){location.reload();});
         });
     };
 
@@ -211,13 +204,18 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         var l = data.length;
         if(l<1){
             $('.wdj-contacts .wd-blank').show();
+        }else{
+            if(G_isFirst){
+                $('.wdj-contacts .left').show();
+                $('.wdj-contacts .right').show();
+            };
         };
+
         for(var i = 0; i<l; i++ ){
             var obj = getListItem(data[i]);
 
             //首次进入默认显示第一个联系人
-            if (G_isFirst) {
-                G_isFirst = false;
+            if (!i && G_isFirst) {
                 $('.wdj-contacts .right .wd-loading').hide();
                 showContacts(G_contacts[0].id);
                 obj.clicked = true;
@@ -265,13 +263,16 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             var data = getContactsById(id,G_contacts);
             if(!data){
                 data = G_contacts[0];
-                //$('ul.contacts-list')[0].scrollTop = 0;
+                $('ul.contacts-list')[0].scrollTop = 0;
             };
 
             //账户信息，存储当前账号
             data['account'] = {};
             if(!data['organization'][0]){
                 data['organization'][0] = {type:'Work',Company:'',department:'',job_description:'',label:'',office_location:'',phonetic_name:'',symbol:'',title:''};
+            };
+            if(!data['photo_path']){
+                data['photo_path'] = G_defaultPhoto;
             };
             data = changeDataType(data);
 
@@ -285,16 +286,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 if ( !!G_list[i].id && G_list[i].id == id ) {
                     G_list[i].clicked = true;
                     G_clicked = G_list[i];
-                }
-            };
-
-            for(var i = 0,l = $scope.pageList.length; i < l; i++){
-                if ( !!$scope.pageList[i]['id'] && $scope.pageList[i]['id'] == id ) {
-                    $scope.pageList[i]['clicked'] = true;
-                    G_clicked = $scope.pageList[i];
                 };
             };
-
+            console.log(data);
             $scope.contact = data;
 
             //样式相关处理
@@ -367,22 +361,14 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         //取得read only的账号
         var read_only = [];
-        // for(var i = 0 , l = G_list.length ; i < l ; i ++){
-        //     if( G_list[i].checked === true && G_list[i]['read_only'] ){
-        //         read_only.push(G_list[i]['name']);
-        //         G_list[i].checked = false;
-        //     };
-        // };
-        for(var i = 0, l = G_page.length;i<l;i++){
-            for(var m = 0, n = G_page[i].length ; m < n ; m++ ){
-                if( G_page[i][m]['checked'] === true && G_page[i][m]['read_only'] ){
-                    read_only.push(G_page[i][m]['name']);
-                    G_page[i][m]['checked'] = false;
-                };
-            }
+        for(var i = 0 , l = G_list.length ; i < l ; i ++){
+            if( G_list[i].checked === true && G_list[i]['read_only'] ){
+                read_only.push(G_list[i]['name']);
+                G_list[i].checked = false;
+            };
         };
 
-        var alertTpl = '';
+        var alertTpl = '<p>Delete the selected contacts from your phone?</p>';
         if(read_only.length > 0){
             alertTpl += '<p>here is read only contact,can not be deleted :</p><ul>'
             for(var i = 0 , l = read_only.length; i < l ; i++ ){
@@ -396,101 +382,59 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         },300);
 
         wdAlert.confirm(
-            'You will delete those contacts!',
+            'Delete contacts!',
             '',
             'OK',
             'Cancel'
         ).then(function() {
             $('.modal-body').html('');
-            $('.modal-backdrop').remove();
+            $('.modal-backdrop').html('');
 
             var delId = [];
             var flagNum = 0;
 
-            // for(var i = 0 , l = G_list.length ; i < l ; i ++){
-
-            //     if( G_list[i].checked === true && !G_list[i]['read_only']){
-            //         delId.push(G_list[i].id);
-            //     };
-            // };
-            for(var i = 0, l = G_page.length;i<l;i++){
-                for(var m = 0, n = G_page[i].length ; m < n ; m++ ){
-                    if( G_page[i][m]['checked'] === true && !G_page[i][m]['read_only']){
-                        delId.push(G_page[i][m]['id']);
-                    };
-                }
-            };
-
-            //$scope.list[0]['clicked'] = true;
-
-            G_clicked.clicked = false;
-            //G_clicked = $scope.pageList[0]['clicked'];
-            //showContacts($scope.pageList[0]['id']);
-            $('ul.contacts-list')[0].scrollTop = 0;
-            $('.wdj-contacts .btn-all .btn-delete').hide();
-
-            for(var i = 0 , l = delId.length ; i < l ; i ++ ){
-                // for(var j = 0 , k = G_list.length ; j < k ; j++){
-                //     if( G_list[j][id] == delId[i] ){
-
-                //         $http({
-                //             method: 'delete',
-                //             url: '/resource/contacts/'+delId[i]
-                //         }).success(function(){
-                //             flagNum ++ ;
-                //             if(!G_list.length){
-                //                 $('.wdj-contacts .wd-blank').show();
-                //             };
-                //             //当全部删除完
-                //             // if( flagNum  === l ){
-                //             // };
-                //         }).error(function(){
-                //             flagNum ++ ;
-                //             if( flagNum === 1){
-                //                 wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').remove();});
-                //             };
-                //         });
-
-                //         G_list.splice(j,1);
-                //         break;
-                //     };
-                // };
-                for(var i2 = 0, l2 = G_page.length;i2<l2;i2++){
-                    for(var m = 0, n = G_page[i2].length ; m < n ; m++ ){
-
-                        if( G_page[i2][m]['id'] == delId[i] ){
-
-                            $http({
-                                method: 'delete',
-                                url: '/resource/contacts/'+delId[i]
-                            }).success(function(){
-                                flagNum ++ ;
-
-                                // if(!G_page[i2].length){
-                                //     $('.wdj-contacts .wd-blank').show();
-                                // };
-
-                                //当全部删除完
-                                // if( flagNum  === l ){
-                                // };
-
-                            }).error(function(){
-                                flagNum ++ ;
-                                if( flagNum === 1 ){
-                                    wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').remove();});
-                                };
-                            });
-
-                            G_page[i2].splice(m,1);
-                            break;
-                        };
-
-                    }
+            for(var i = 0 , l = G_list.length ; i < l ; i ++){
+                if( G_list[i].checked === true && !G_list[i]['read_only'] ){
+                    delId.push(G_list[i].id);
                 };
             };
 
-            //TODO：重新分页
-            rePage(G_dataLengthOnce);
+            for(var i = 0 , l = delId.length ; i < l ; i ++ ){
+
+                for(var j = 0 , k = G_list.length ; j < k ; j++){
+
+                    if( G_list[j].id == delId[i] ){
+
+                        $http({
+                            method: 'delete',
+                            url: '/resource/contacts/'+delId[i]
+                        }).success(function(){
+                            flagNum ++ ;
+                            if(!G_list.length){
+                                $('.wdj-contacts .wd-blank').show();
+                            };
+                            //当全部删除完
+                            // if( flagNum  === l ){
+                            // };
+                        }).error(function(){
+                            flagNum ++ ;
+                            if( flagNum === 1){
+                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').remove();});
+                            };
+                        });
+
+                        G_list.splice(j,1);
+                        break;
+                    };
+                };
+            };
+
+            $scope.list[0]['clicked'] = true;
+            G_clicked.clicked = false;
+            G_clicked = $scope.list[0]['clicked'];
+            showContacts($scope.list[0]['id']);
+            $('ul.contacts-list')[0].scrollTop = 0;
+            $('.wdj-contacts .btn-all .btn-delete').hide();
 
         //then最后的括号
         },
@@ -503,47 +447,35 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //选中所有
     $scope.selectAll = function(){
         if (G_selectAll === true) {
-            GA('Web Contacts:click Deselect all button');
+             GA('Web Contacts:click Deselect all button');
             $('.btn-all .btn-selectAll').html('<i class="icon-ab-sel"></i>Select all');
             $('.btn-all .btn-delete').hide();
             G_selectAll = false;
         }else{
-            GA('Web Contacts:click select all button');
+             GA('Web Contacts:click select all button');
             $('.btn-all .btn-delete').show();
             $('.btn-all .btn-selectAll').html('<i class="icon-ab-sel"></i>Deselect all');
             G_selectAll = true;
         };
-        for(var i = 0, l = G_page.length;i<l;i++){
-            for(var m = 0, n = G_page[i].length ; m < n ; m++ ){
-                G_page[i][m]['checked'] = G_selectAll ;
-            }
+        for(var i = 0, l = $scope.list.length;i<l;i++){
+            $scope.list[i].checked = G_selectAll ;
         };
     };
 
     $scope.clickChecked = function(isChecked){
-
         if(isChecked){
             GA('Web Contacts:click checkbox checked');
         }else{
             GA('Web Contacts:click checkbox unchecked');
         };
 
-        for(var i = 0, l = G_list.length;i<l;i++){
-            if(G_list[i].checked){
-                //$('.btn-all .btn-delete').show();
-                //return;
+        for(var i = 0, l = $scope.list.length;i<l;i++){
+            console.log($scope.list[i].checked);
+            if($scope.list[i].checked){
+                $('.btn-all .btn-delete').show();
+                return;
             }
         };
-
-        for(var i = 0 ,l = G_page.length ; i < l ; i ++ ){
-            for(var m = 0 , n = G_page[i].length; m < n ; m ++ ){
-                if(G_page[i][m]['checked']){
-                    $('.btn-all .btn-delete').show();
-                    return;
-                };
-            };
-        };
-
         $('.btn-all .btn-delete').hide();
     };
 
@@ -603,8 +535,60 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         photoUpload();
     };
 
+    //检查当前输入是否为空，为空返回true
+    function checkBlank(contact){
+        for(var m in contact){
+            for(var n in contact){
+                switch(n){
+                    case 'IM':
+                        if(!!contact[n]['data']){return false;}
+                    break;
+                    case 'address':
+                        if(!!contact[n]['formatted_address']){return false;}
+                    break;
+                    case 'email':
+                        if(!!contact[n]['address']){return false;}
+                    break;
+                    case 'address':
+                        if(!!contact[n]['formatted_address']){return false;}
+                    break;
+                    case 'name':
+                        if(!!contact[n]['family_name']||!!contact[n]['given_name']||!!contact[n]['middle_name']){return false;}
+                    break;
+                    case 'address':
+                        if(!!contact[n]['formatted_address']){return false;}
+                    break;
+                    case 'note':
+                        if(!!contact[n]['note']){return false;}
+                    break;
+                    case 'organization':
+                        if(!!contact[n]['company']||!!contact[n]['title']){return false;}
+                    break;
+                    case 'phone':
+                        if(!!contact[n]['number']){return false;}
+                    break;
+                    case 'relation':
+                        if(!!contact[n]['name']){return false;}
+                    break;
+                    case 'website':
+                        if(!!contact[n]['URL']){return false;}
+                    break;
+                };
+            };
+        }
+
+        //用户没有输入，返回true
+        return true;
+    };
+
     //保存联系人
     $scope.saveContact = function(id){
+
+        //检查是否用户没有填入信息
+        if(checkBlank($scope.contact)){
+            wdAlert.alert('Please enter the contact!');
+            return;
+        };
 
         //UI操作
         var wrap = $('.contacts-edit');
@@ -636,7 +620,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
-                     showContacts($scope.contact.id);
+                     wdAlert.alert('Create new contact fail!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
+                    showContacts($scope.contact.id);
                     GA('Web Contacts:save new contact failed');
                 });
 
@@ -650,20 +635,12 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     data:editData
                 }).success(function(data){
 
-                    // for(var i = 0 , l = G_list.length;i<l; i++ ){
-                    //     if(!!id && G_list[i]['id']===id){
-                    //         G_list[i] = getListItem(data);
-                    //         $scope.list = G_list;
-                    //     };
-                    // };
-                    for(var i = 0, l = G_page.length;i<l;i++){
-                        for(var m = 0, n = G_page[i].length ; m < n ; m++ ){
-                            if(!!id && G_page[i][m]['id']===id){
-                                G_page[i][m] = getListItem(data);
-                            };
-                        }
+                    for(var i = 0 , l = G_list.length;i<l; i++ ){
+                        if(!!id && G_list[i]['id']===id){
+                            G_list[i] = getListItem(data);
+                            $scope.list = G_list;
+                        };
                     };
-
                     for(var i = 0 , l = G_contacts.length;i<l; i++ ){
                         if(!!id && G_contacts[i]['id']===id){
                             G_contacts[i] = data;
@@ -672,7 +649,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
                     showContacts(data['id']);
                 }).error(function(){
-                    showContacts($scope.contact.id);
+                    wdAlert.alert('Edit the contact fail!', '', 'OK').then(function(){showContacts($scope.contact.id);});
                     GA('Web Contacts:save the editing contact failed');
                 });
             break;
@@ -794,13 +771,14 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.addNewContact = function(){
 
         GA('Web Contacts:click add a New Contacts button');
-        if(G_status == 'new'){ return;};
+        if( G_status == 'new'){ return; };
         $('.contacts-list .no-contacts').hide();
+        $('.wdj-contacts .left').show();
+        $('.wdj-contacts .right').show();
         $scope.searchText = '';
         $scope.list = G_list;
         $('.wdj-contacts .wd-blank').hide();
         $('.wdj-contacts .right .wd-loading').hide();
-
         var wrap = $('.contacts-edit .info');
         wrap.find('img.photo').attr('src',G_defaultPhoto);
 
@@ -814,6 +792,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             if(data.length > 1){
                 wrap.find('div.account').show().children().show();
             };
+        }).error(function(){
+            //wdAlert.alert("");
         });
 
         var obj = {
@@ -831,7 +811,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             relation:[{type:'Friend',name:'',label:''}],
             website:[{type:'Homepage',URL:'',label:''}]
         };
-        G_clicked.clicked = false;
+
+        G_clicked['clicked'] = false;
         G_clicked = {
             id : "",
             name : "New contact",
@@ -840,7 +821,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             clicked : true
         };
         $scope.list.unshift(G_clicked);
-
         $scope.contact = obj;
         G_status = 'new';
         setTimeout(function(){
@@ -997,7 +977,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
     //搜索联系人功能，根据联系人列表 G_list 搜索
     $scope.searchContacts = function(){
-
         $scope.list = [];
         var text = $scope.searchText.toLocaleLowerCase();
         for( var i = 0, l = G_list.length; i < l ; i++ ){
@@ -1016,114 +995,14 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             showContacts();
         };
         $('ul.contacts-list')[0].scrollTop = 0;
-
         $scope.$apply();
-    };
-
-    //动态加载生成分页
-    function pageLoad(data){
-
-        var arr = [];
-        for(var i = 0 , l = data.length ; i<l; i++ ){
-            arr.push(getListItem(data[i]));
-        };
-        G_page.push(arr);
-
-        var tpl = "<span class='num'>"+G_page.length+"</span>";
-
-        //加载首页
-        if( G_page.length === 1 ){
-            $scope.pageList = G_page[0];
-            $scope.pageList[0]['clicked'] = true;
-            G_clicked = $scope.pageList[0];
-            tpl = "<span class='num now'>"+G_page.length+"</span>";
-            $(".contacts-list .page-btn div.page").append(tpl);
-        }else if( G_page.length <12 ){
-            $(".contacts-list .page-btn div.page").append(tpl);
-        }else if( G_page.length === 12 ){
-            $(".contacts-list .page-btn div.page").append('<span class="more">...</span>');
-        };
-
-    };
-
-    $scope.changePage = function(e){
-        var ele = $(e.target);
-        switch(e.target.className){
-
-            //页码
-            case 'num':
-                G_page[G_pageNum] = $scope.pageList;
-                if(!!ele.text()){
-                    G_pageNum = ele.text()-1;
-                };
-                ele.siblings().removeClass('now');
-                ele.addClass('now');
-                $scope.pageList = G_page[G_pageNum];
-            break;
-
-            //翻页
-            case 'up':
-                if(G_pageNum > 0){
-                    G_page[G_pageNum] = $scope.pageList;
-                    G_pageNum -- ;
-                    $(".contacts-list .page-btn div.page span").removeClass('now').eq(G_pageNum).addClass('now');
-                    $scope.pageList = G_page[G_pageNum];
-                };
-            break;
-            case 'down':
-                if(G_pageNum < G_page.length){
-                    G_page[G_pageNum] = $scope.pageList;
-                    G_pageNum ++ ;
-                    $(".contacts-list .page-btn div.page span").removeClass('now').eq(G_pageNum).addClass('now');
-                    $scope.pageList = G_page[G_pageNum];
-                };
-            break;
-            case 'more':
-
-            break;
-        }
-    };
-
-    function rePage(num){
-
-        var arr = [];
-
-        for(var i = 0,l = G_page.length; i < l ; i++ ){
-            for(var m = 0,n = G_page[i].length; m<n; m++ ){
-                arr.push(G_page[i][m]);
-            };
-        };
-        console.log('arr');
-        console.log(arr);
-
-        var n = 0;
-        G_page = [];
-        G_page[0] = [];
-        G_page[0].push(arr[0]);
-        for(var i = 1 , l = arr.length; i < l; i++ ){
-            G_page[n].push(arr[i]);
-            if( i && i%num === 0 ){
-                n++;
-                G_page[n] = [];
-            };
-        };
-
-        $(".contacts-list .page-btn div.page").html('');
-        for(var i = 0 , l = G_page.length; i < l ; i++ ){
-            var tpl = "<span class='num'>"+(i+1)+"</span>";
-            $(".contacts-list .page-btn div.page").append(tpl);
-        };
-
     };
 
     //主函数开始
     $('.contacts-edit').hide();
-    G_dataLengthOnce = Math.floor(($(document).height()-73-106)/68);
-
     getData(0,G_dataLengthOnce,null);
     $scope.serverMatchRequirement = $route.current.locals.versionSupport;
-    // $scope.list = G_list;
-    $scope.pageList = G_pageList;
+    $scope.list = G_list;
     $scope.typeMap = G_typeMap;
     $scope.protocolMap = G_protocol;
     $scope.showContacts = showContacts;
@@ -1131,13 +1010,3 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 //return的最后括号
 }];
 });
-
-
-
-
-
-
-
-
-
-
