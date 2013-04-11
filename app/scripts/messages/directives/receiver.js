@@ -25,7 +25,7 @@ link: function(scope, element) {
 
         compareItems: function(item1, item2)
         {
-            return item1 === item2 || (item1.number === item2.number && item1.display_name === item2.display_name);
+            return item1 != null && item2 != null && (item1 === item2 || (item1.number === item2.number && item1.display_name === item2.display_name));
         }
     };
 

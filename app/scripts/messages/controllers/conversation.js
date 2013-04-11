@@ -423,7 +423,10 @@ function mergeConversations(conversations) {
                     var hasRecieved = _(this.messages).any(function(m) {
                         return m.type !== 2;
                     });
-                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + this.displayName() + '...' : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER);
+                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + this.displayName() : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...';
+                },
+                selectTip: function() {
+                    return this.selected ? $scope.$root.DICT.messages.ACTION_DESELECT : $scope.$root.DICT.messages.ACTION_SELECT;
                 }
             });
         }

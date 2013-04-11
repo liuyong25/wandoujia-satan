@@ -11,7 +11,10 @@ return {
         ACTION_DESELECT_ALL: 'Deselect all',
         ACTION_DELETE: 'Delete',
         ACTION_RETRY: 'Retry',
+        ACTION_SELECT: 'Select',
+        ACTION_DESELECT: 'Deselect',
 
+        BTN_SEND_TIP: 'Send (Enter)',
         BATCH_RECEIVER_TIP: 'To',
 
         LABEL_SEND_TO: 'Send to',

@@ -71,12 +71,15 @@
     @import "editor";
     @import "textext";
 
+    .messages-icon-running {
+        @include animation(flash 2s infinite);
+    }
 
     .load-more {
         display: block;
         width: 80px;
-        padding: 10px 40px;
-        margin: 10px auto;
+        padding: 8px 40px;
+        margin: 15px auto;
         border-radius: 20px;
         background: #e6e6e6;
         text-align: center;
@@ -98,7 +101,7 @@
         position: relative;
         top:2px;
         $left: -1px;
-        $top: -3px;
+        $top: -4px;
         &:not(:checked):after {
             content: "";
             position: absolute;
