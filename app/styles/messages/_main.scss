@@ -61,7 +61,7 @@
         @include flex(1);
         overflow-y: auto;
         width: 100%; // Firefox need a width to prevent flexbox turn into inline-block.
-        height: 0;   // Flexbox need a height as refer.
+        height: 1px;   // Flexbox need a height as refer.
     }
 
     @import "actions";
@@ -72,7 +72,7 @@
     @import "textext";
 
     .messages-icon-running {
-        @include animation(flash 2s infinite);
+        @include animation(flash 4s infinite);
     }
 
     .load-more {
