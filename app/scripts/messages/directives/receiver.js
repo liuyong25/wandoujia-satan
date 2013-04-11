@@ -67,7 +67,7 @@ link: function(scope, element) {
                     typeDelay: 0.2,
                     type: 'POST',
                     contentType: 'application/json; charset=utf-8',
-                    url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=10'),
+                    url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=20'),
                     dataType : 'json',
                     xhrFields: {
                         withCredentials: true
