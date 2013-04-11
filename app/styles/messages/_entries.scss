@@ -34,6 +34,11 @@
     padding: 0 40px;
     margin: 20px 0;
 
+    // @include transition(all $global-transition-duration);
+    // &.ui-animate {
+    //     opacity: 0;
+    // }
+
     & > * {
         margin-left: 8px;
         margin-right: 8px;
@@ -43,9 +48,9 @@
         @include position;
         max-width: 450px;
         background: #e8e8e8;
-        padding: 10px;
-        @include text-shadow(0 1px 0 rgba(#fff, 1));
-        white-space: pre-wrap;
+        padding: 10px 15px;
+        @include text-shadow(0 1px 0 rgba(#fff, 0.5));
+        border-radius: 3px 3px 3px 0;
 
         &::before {
             content: "";
@@ -60,10 +65,23 @@
             line-height:0px;
             @include transform(rotate(45deg));
         }
+
+    }
+    .wdmer-a-a {
+        display: inline-block;
+        color: #999;
+        cursor: default;
+    }
+    .wdmer-a-b {
+        white-space: pre-wrap;
+        word-break: break-all;
+        -webkit-hyphens: auto;
+        -o-hyphens: auto;
     }
 
     .wdmer-b {
         color: #a0a0a0;
+        margin: 0;
     }
     .wdmer-b-del {
         display: none;
@@ -88,6 +106,7 @@
     -webkit-box-pack: end; // for safafi
     .wdmer-a {
         background: #c7eea0;
+        border-radius: 3px 3px 0 3px;
 
         &::before {
             @include position(absolute, auto -5px -4px auto);

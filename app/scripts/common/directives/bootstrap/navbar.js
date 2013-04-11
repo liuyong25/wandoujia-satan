@@ -25,12 +25,17 @@ return [function() {
 
                 if ($scope.currentModule === 'messages') {
                     $scope.messageNotification = false;
+                    $scope.$root.restoreTitle();
                 }
             });
 
             wdpMessagePusher.channel('messages_add.wdNavbar', function(e) {
                 if ($scope.currentModule !== 'messages') {
                     $scope.messageNotification = true;
+                    if ($route.current.locals.nav != null &&
+                        $route.current.locals.nav !== 'messages') {
+                        $scope.$root.notifyNewMessage();
+                    }
                     $scope.$apply();
                 }
             });

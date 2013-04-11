@@ -166,8 +166,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             }
         }
     }])
-    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable', 'wdpMessagePusher',
-        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable,   wdpMessagePusher) {
+    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable', 'wdpMessagePusher', 'wdTitleNotification',
+        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable,   wdpMessagePusher, wdTitleNotification) {
         // Tip users when leaving.
         $window.onbeforeunload = function () {
             return wdKeeper.getTip();
@@ -187,6 +187,14 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
 
         // i18n word table
         $rootScope.DICT = wdWordTable;
+
+
+        $rootScope.notifyNewMessage = function() {
+            wdTitleNotification.notify('You\'ve got a new message');
+        };
+        $rootScope.restoreTitle = function() {
+            wdTitleNotification.restore();
+        };
 
         $rootScope.$on('signin', function() {
             wdpMessagePusher.start();

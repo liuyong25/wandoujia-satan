@@ -4781,7 +4781,7 @@
         var name = parts[1] || parts[0];
         var number = parts[0];
         node.find('.text-label').text(name).attr('title', number);
-        if (!name && /[^\d.+()-]/.test(number)) {
+        if (!parts[1] && /[^\d.+()-]/.test(number)) {
             node.find('.text-button').addClass('error');
         }
         node.data(CSS_TAG, tag);
