@@ -18,11 +18,10 @@
 
     .contacts-list{
         position: fixed;
-        overflow-y : auto;
+        overflow-y : hidden;
         top:106px;
         bottom: 76px;
-        width: 25%;
-        min-width: 350px;
+        width: 428px;
         display: block;
         padding-left: 1px;
         border-right: 1px solid #e7e7e7;
@@ -43,6 +42,31 @@
             border-right: 1px solid #444444;
         }
 
+        div.page-btn{
+            height: 40px;
+            display: block;
+            width: 99%;
+            line-height: 25px;
+
+            p{
+                color: blue;
+                display: inline;
+                margin-left: 3px;
+                cursor: pointer;
+            }
+            .now{
+                background-color: #888;
+            }
+            div.page{
+                display: inline;
+                cursor: pointer;
+                span{
+                    margin-left:3px;
+                    color:blue;
+                }
+            }
+        }
+
     }
 
     .btn-all{
@@ -50,7 +74,7 @@
         top: 0px;
         background-color: #FFF;
         min-width: 350px;
-        width: 25%;
+        width: 428px;
         height: 93px;
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
@@ -62,11 +86,11 @@
         }
 
         .btn-selectAll{
-            margin-left: 8px;
+            margin-left: 2px;
         }
 
         .btn-delete{
-            margin-left: 8px;
+            margin-left: 2px;
         }
     }
 
@@ -89,6 +113,8 @@
         }
 
         input:focus{
+            border-color:none;
+            box-shadow:none;
             background-color: #FFF;
         }
 
@@ -104,8 +130,7 @@
     .left{
         padding-top: 62px;
         float: left;
-        width: 30%;
-        min-width: 370px;
+        width: 453px;
     }
 
     .right{

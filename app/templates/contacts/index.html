@@ -26,7 +26,7 @@
             <li class="no-contacts dn">No contacts matched your search.</li>
             <!-- 没有联系人时显示 end -->
             <!-- 每个联系人的模板 -->
-            <li class="contacts-item" ng-repeat="item in list" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
+            <li class="contacts-item" ng-repeat="item in pageList" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
                 <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);$event.stopPropagation();">
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">
@@ -35,6 +35,14 @@
                 </div>
             </li>
             <!-- 每个联系人的模板 end -->
+
+            <!-- 分页按钮 -->
+            <div class="page-btn" ng-click="changePage($event)">
+                <p class="up">pageUp</p>
+                <div class="page"></div>
+                <p class="down">pageDown</p>
+            </div>
+            <!-- 分页按钮 end -->
 
         </ul>
 
