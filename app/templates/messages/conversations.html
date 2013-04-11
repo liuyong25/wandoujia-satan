@@ -41,8 +41,8 @@
                     </div>
                     <div class="wdmcr-d">
                         <div class="status">&nbsp;
-                            <i ng-show="c.has_error || hasFailedMsg(c)" class="wdmcr-icon-alert"></i>
-                            <i ui-if="hasPendingMsg(c)" class="wdmcr-icon-running"></i>
+                            <span ng-show="c.has_error || hasFailedMsg(c)"><i class="wdmcr-icon-alert"></i></span>
+                            <span ui-if="hasPendingMsg(c)"><i class="wdmcr-icon-running"></i></span>
                             <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
                         </div>
                         <div>
@@ -87,9 +87,12 @@
                                 <div class="wdmer-a-a"
                                     ng-show="m.type >= 2 && m.type <= 6 && activeConversation.addresses.length > 1">
                                     {{$root.DICT.messages.BATCH_RECEIVER_TIP}}
-                                    <span bs-tooltip="{{m.address}}">{{ m.contact_name || m.address }}</span>:
+                                    <span
+                                        bs-tooltip="{{m.address}}"
+                                        data-options="{container:false}">{{ m.contact_name || m.address }}</span>:
                                 </div>
-                                <div class="wdmer-a-b">{{ m.body }}</div>
+                                <div ui-if="m.category == 0" class="wdmer-a-b">{{ m.body }}</div>
+                                <div ui-if="m.category == 1" class="wdmer-a-b" style="color:#999;">{{ $root.DICT.messages.MMS_WARNING }}</div>
                             </div>
                             <div class="wdmer-b" ng-switch on="m.status">
                                 <span ng-switch-when="64"><i class="messages-icon-alert"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
@@ -110,7 +113,7 @@
                     <textarea placeholder="{{ cvsCache.get(activeConversation).editorPlaceholder() }}" ng-model="cvsCache.get(activeConversation).draft" ng-disabled="!editorEnable" rows="1" wdm-textarea></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')"
                         bs-tooltip="{{$root.DICT.messages.BTN_SEND_TIP}}"
-                        ng-disabled="!cvsCache.get(activeConversation).draft"
+                        data-options="{container:false}"
                         ng-class="{ 'btn-primary': cvsCache.get(activeConversation).draft}">
                         <span>{{$root.DICT.messages.EDITOR_SUBMIT}}</span>
                     </button>
