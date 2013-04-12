@@ -29,7 +29,7 @@
             <!-- 没有联系人时显示 end -->
 
             <!-- 每个联系人的模板 -->
-            <li class="contacts-item" ng-repeat="item in list" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
+            <li class="contacts-item" ng-repeat="item in pageList" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
                 <label class="selected" ng-model="item.checked" ng-click="clickChecked(item.checked);$event.stopPropagation();">
                     <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" >
                 </label>
@@ -40,6 +40,8 @@
                 </div>
             </li>
             <!-- 每个联系人的模板 end -->
+
+            <li class="load-more" ng-click="loadMore()">load more</li>
         </ul>
 
     </div>

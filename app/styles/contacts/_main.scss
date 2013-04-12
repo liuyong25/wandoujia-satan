@@ -34,7 +34,17 @@
             line-height: 64px;
             font-size: 12px;
         }
-
+        li.load-more{
+            display: block;
+            width: 80px;
+            padding: 10px 40px;
+            margin: 10px auto;
+            border-radius: 20px;
+            background: #E6E6E6;
+            text-align: center;
+            opacity: 0.7;
+            cursor: pointer;
+        }
         .clicked{
             background-color: #444444!important;
             color: #FFFFFF;
