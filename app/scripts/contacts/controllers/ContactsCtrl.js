@@ -423,7 +423,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
                         $http({
                             method: 'delete',
-                            url: '/resource/contacts/'+delId[i]
+                            url: '/resource/contacts/'+delId[i],
+                            timeout:7000
                         }).success(function(){
                             flagNum ++ ;
                             if(!G_list.length){
@@ -717,6 +718,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
     //增加一个条目
     $scope.addNewItem = function (id,itemType){
+
         var obj = $scope.contact;
         var i = 0;
         switch(itemType){
