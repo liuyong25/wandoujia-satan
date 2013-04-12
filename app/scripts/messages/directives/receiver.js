@@ -25,7 +25,7 @@ link: function(scope, element) {
 
         compareItems: function(item1, item2)
         {
-            return item1 === item2 || (item1.number === item2.number && item1.display_name === item2.display_name);
+            return item1 != null && item2 != null && (item1 === item2 || (item1.number === item2.number && item1.display_name === item2.display_name));
         }
     };
 
@@ -67,7 +67,7 @@ link: function(scope, element) {
                     typeDelay: 0.2,
                     type: 'POST',
                     contentType: 'application/json; charset=utf-8',
-                    url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=10'),
+                    url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=20'),
                     dataType : 'json',
                     xhrFields: {
                         withCredentials: true

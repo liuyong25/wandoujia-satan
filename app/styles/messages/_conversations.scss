@@ -97,6 +97,10 @@
     text-align: right;
     @include nowrap;
     min-width: 1px;
+
+    .status > * {
+        margin-left: 5px;
+    }
 }
 
 .wdmcr-icon-alert {

@@ -61,7 +61,7 @@
         @include flex(1);
         overflow-y: auto;
         width: 100%; // Firefox need a width to prevent flexbox turn into inline-block.
-        height: 0;   // Flexbox need a height as refer.
+        height: 1px;   // Flexbox need a height as refer.
     }
 
     @import "actions";
@@ -71,12 +71,15 @@
     @import "editor";
     @import "textext";
 
+    .messages-icon-running {
+        @include animation(flash 4s infinite);
+    }
 
     .load-more {
         display: block;
         width: 80px;
-        padding: 10px 40px;
-        margin: 10px auto;
+        padding: 8px 40px;
+        margin: 15px auto;
         border-radius: 20px;
         background: #e6e6e6;
         text-align: center;
@@ -98,7 +101,7 @@
         position: relative;
         top:2px;
         $left: -1px;
-        $top: -3px;
+        $top: -4px;
         &:not(:checked):after {
             content: "";
             position: absolute;

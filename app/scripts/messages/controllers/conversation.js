@@ -119,7 +119,15 @@ $scope.sendMessage = function(conversation) {
     scrollIntoView();
 };
 $scope.resendMessage = function(message) {
-    resendMessage(message).then(function() {
+    var promise;
+    if (typeof message.id === 'string') {
+        // client only message data.
+        promise = sendMessage(message);
+    }
+    else {
+        promise = resendMessage(message);
+    }
+    promise.then(function() {
         pullConversation(message.thread_id);
     });
 };
@@ -199,22 +207,38 @@ function createConversation() {
  */
 function sendMessage(conversation, content) {
     var newMessages = [];
-    _(conversation.addresses).each(function() {
-        newMessages.push(_(new Messages()).extend({
-            id: _.uniqueId('wdmMessage_'),
-            date: Date.now(),
-            body: content,
-            type: 2,
-            thread_id: conversation.id,
-            status: 32
-        }));
-    });
-    mergeMessages(newMessages);
+    var addresses = [];
+    if (arguments.length === 2) {
+        addresses = addresses.concat(conversation.addresses);
+        // Brand new message from user input.
+        _(conversation.addresses).each(function(address) {
+            newMessages.push(_(new Messages()).extend({
+                id: _.uniqueId('wdmMessage_'),
+                date: Date.now(),
+                body: content,
+                address: address,
+                type: 2,
+                category: 0,
+                thread_id: conversation.id,
+                status: 32
+            }));
+        });
+        mergeMessages(newMessages);
+    }
+    else {
+        // an existed message
+        var m = conversation;
+        addresses = addresses.concat(m.address);
+        content = m.body;
+        newMessages = newMessages.concat(m);
+        m.status = 32;
+    }
+
     return $http({
         url: '/resource/messages/send',
         method: 'POST',
         data: {
-            addresses: conversation.addresses,
+            addresses: addresses,
             body: content
         }
     }).then(function success(response) {
@@ -231,6 +255,11 @@ function sendMessage(conversation, content) {
         else {
             return existedConversation;
         }
+    }, function error() {
+        _(newMessages).each(function(m) {
+            m.status = 64;
+        });
+        return $q.reject();
     });
 }
 
@@ -423,7 +452,10 @@ function mergeConversations(conversations) {
                     var hasRecieved = _(this.messages).any(function(m) {
                         return m.type !== 2;
                     });
-                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + this.displayName() + '...' : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER);
+                    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + this.displayName() : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...';
+                },
+                selectTip: function() {
+                    return this.selected ? $scope.$root.DICT.messages.ACTION_DESELECT : $scope.$root.DICT.messages.ACTION_SELECT;
                 }
             });
         }
