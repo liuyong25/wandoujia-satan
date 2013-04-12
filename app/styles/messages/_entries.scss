@@ -1,3 +1,11 @@
+.wdme-load-more {
+    text-align: center;
+    .load-more {
+        display: inline-block;
+        @include nowrap;
+        width: auto;
+    }
+}
 .wdme-sep {
     text-align: center;
     height: 40px;
