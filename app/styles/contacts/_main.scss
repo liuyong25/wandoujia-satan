@@ -124,10 +124,8 @@
             background:#f5f5f5 url("../../images/contacts/icon_search.png") no-repeat 3% 50%;
         }
 
-        input:focus{
-            border-color:#CCC;
-            box-shadow:none;
-            background-color: #FFF;
+        input::-ms-clear {
+            display: none;
         }
 
         span.icon-clear{
@@ -138,6 +136,12 @@
             padding-top: 8px;
             width: 14px;
             overflow: hidden;
+        }
+
+        input:focus{
+            border-color:#CCC;
+            box-shadow:none;
+            background-color: #FFF;
         }
 
     }

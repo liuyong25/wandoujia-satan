@@ -20,6 +20,9 @@
             width: 200px;
             height: 200px;
         }
+        input::-ms-clear {
+            display: none;
+        }
         .mask{
             width: 127px;
             height: 127px;
@@ -109,7 +112,9 @@
             height: 28px;
             line-height: 28px;
         }
-
+        input::-ms-clear {
+            display: none;
+        }
         input:focus{
             border-color:#CCC;
             box-shadow:none;
@@ -134,7 +139,9 @@
                 height: 28px;
                 line-height: 28px;
             }
-
+            input::-ms-clear {
+                display: none;
+            }
             div.account{
 
                 select{
@@ -216,7 +223,9 @@
                     width: 102px;
                     margin-right: 4px;
                 }
-
+                input::-ms-clear {
+                    display: none;
+                }
                 input:focus{
                     background-color: #FFF;
                 }
