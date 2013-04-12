@@ -1035,6 +1035,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //搜索联系人功能，根据联系人列表 G_list 搜索
     $scope.searchContacts = function(){
         $scope.list = [];
+        $scope.searchText = $scope.searchText || '';
         var text = $scope.searchText.toLocaleLowerCase();
         for( var i = 0, l = G_list.length; i < l ; i++ ){
             if(  (G_list[i]['name'].toLocaleLowerCase().indexOf(text)>=0) || (G_list[i]['phone'].toLocaleLowerCase().indexOf(text)>=0) ){
