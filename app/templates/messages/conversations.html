@@ -71,11 +71,12 @@
             </section>
             <section class="wdm-entries" wdm-auto-scroll="cvsCache.get(activeConversation).messages">
                 <div wdm-auto-scroll-container>
-                    <div wdm-load-more="prevMessages(activeConversation)"
-                        data-text="{{$root.DICT.messages.BTN_LOAD_MSG}}"
-                        ng-hide="cvsCache.get(activeConversation).loaded || !activeConversation || cvsCache.get(activeConversation).messages.length == 0"
-                        ng-click="$root.GA('messages:load_messages')"
-                        style="width:120px;"></div>
+                    <div class="wdme-load-more">
+                        <div wdm-load-more="prevMessages(activeConversation)"
+                            data-text="{{$root.DICT.messages.BTN_LOAD_MSG}}"
+                            ng-hide="cvsCache.get(activeConversation).loaded || !activeConversation || cvsCache.get(activeConversation).messages.length == 0"
+                            ng-click="$root.GA('messages:load_messages')"></div>
+                    </div>
                     <div ng-repeat="(d, g) in cvsCache.get(activeConversation).groups">
                         <div class="wdme-sep">
                             <span>{{ d | date:'MMM d' }}</span>
