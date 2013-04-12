@@ -154,6 +154,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             method: 'get',
             url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset
         }).success(function(data) {
+
             if(G_contacts.length>0){
                  G_isFirst = false;
             };
@@ -171,7 +172,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             if(l === length){
                 //如果支持cursor打开这个接口，但是速度不如没有cursor的快
                 //getData(1,G_dataLengthOnce,data[l-1].id);
-                //if(G_debug>5){return;}else{G_debug++;};
+                //if(G_debug>2){return;}else{G_debug++;};
                 //不支持cursor取数据
                 getData(G_contacts.length,G_dataLengthOnce,null);
 
@@ -180,7 +181,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             };
 
         }).error(function(){
-            wdAlert.alert('error','timeout','ok').then(function(){location.reload();});
+            wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
         });
     };
 
@@ -339,11 +340,14 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     wdAlert.confirm(
                         'Save Contact',
                         'Save changes to this contact? ',
-                        "Don't Save",
-                        "Save"
+                        "Save",
+                        "Don't Save"
                     ).then(function(){
-                        G_status = '';
                         $scope.saveContact($scope.contact.id);
+                        show();
+                    },function(){
+                        G_status = '';
+                        $scope.list.shift();
                         show();
                     });
                 }else{
@@ -356,11 +360,14 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 wdAlert.confirm(
                     'Save Contact',
                     'Save changes to this contact? ',
-                    "Don't Save",
-                    "Save"
+                    "Save",
+                    "Don't Save"
                 ).then(function(){
-                    G_status = '';
                     $scope.saveContact($scope.contact.id);
+                    show();
+                },function(){
+                    G_status = '';
+                    $scope.list.shift();
                     show();
                 });
             break;
@@ -384,9 +391,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             };
         };
 
-        var alertTpl = '<p>Delete the selected contacts from your phone?</p>';
+        var alertTpl = '<p>Delete the selected contact(s) from your phone?</p>';
         if(read_only.length > 0){
-            alertTpl += '<p>here is read only contact,can not be deleted :</p><ul>'
+            alertTpl += '<p>Those are read-only contact(s),can not be deleted:</p><ul>'
             for(var i = 0 , l = read_only.length; i < l ; i++ ){
                 alertTpl += ('<li>'+read_only[i]+'</li>');
             };
@@ -398,8 +405,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         },300);
 
         wdAlert.confirm(
-            'Delete contacts!',
-            '',
+            'Delete contact(s)!',
+            'Delete the selected contact(s) from your phone?',
             'Delete',
             'Cancel'
         ).then(function() {
@@ -407,6 +414,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             $('.modal-backdrop').html('');
 
             var delId = [];
+
+            //标志是否全部删除成功
             var flagNum = 0;
 
             for(var i = 0 , l = G_list.length ; i < l ; i ++){
@@ -427,20 +436,29 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                             timeout:7000
                         }).success(function(){
                             flagNum ++ ;
-                            if(!G_list.length){
-                                $('.wdj-contacts .wd-blank').show();
-                            };
+
                             //当全部删除完
                             // if( flagNum  === l ){
                             // };
                         }).error(function(){
                             flagNum ++ ;
                             if( flagNum === 1){
-                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').html('');});
+                                wdAlert.alert('Failed to delete selected contact(s)!', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
                             };
                         });
 
                         $scope.list.splice(j,1);
+                        break;
+                    };
+                };
+
+                for(var j = 0, k = G_list.length ; j < k ; j++ ){
+
+                    if( G_list[j]['id'] == delId[i]){
+                        G_list.splice(j,1);
+                        if(!G_list.length){
+                            $('.wdj-contacts .wd-blank').show();
+                        };
                         break;
                     };
                 };
@@ -488,7 +506,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         };
 
         for(var i = 0, l = $scope.list.length;i<l;i++){
-            console.log($scope.list[i].checked);
+
             if($scope.list[i].checked){
                 $('.btn-all .btn-delete').show();
                 return;
@@ -502,13 +520,15 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         GA('Web Contacts:click edit contact button');
 
+        var wrap = $('.contacts-edit');
+        var ele =  wrap.children('.info');
+
         //addNewContact方法中调用了editContact方法
         if(G_status !== 'new'){
             G_status = 'edit';
+            ele.find('.account').hide();
         };
 
-        var wrap = $('.contacts-edit');
-        var ele =  wrap.children('.info');
         var change = function(arr){
             for(var i = 0 , l = arr.length ; i<l ; i++ ){
                 var val = arr.eq(i).hide().text();
@@ -517,6 +537,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         };
 
         ele.find('dt').show();
+
         ele.find('p.name').hide();
         ele.find('p.remark').hide();
         ele.find('hr').hide();
@@ -555,9 +576,10 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
     //检查当前输入是否为空，为空返回true
     function checkBlank(contact){
-        if(!!contact['given_name'] ||!!contact['middle_name']||!!contact['family_name'] ||!!contact['family_name'] ){
+        if(!!contact['name']['given_name'] ||!!contact['name']['middle_name']||!!contact['name']['family_name']  ){
             return false;
         };
+
         for(var m in contact){
             for(var n in contact[m]){
                 switch(m){
@@ -573,9 +595,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     case 'address':
                         if(!!contact[m][n]['formatted_address']){return false;}
                     break;
-                    case 'name':
-                        if(!!contact[m][n]['family_name']||!!contact[m][n]['given_name']||!!contact[m][n]['middle_name']){return false;}
-                    break;
+                    // case 'name':
+                    //     if(!!contact[m][n]['family_name']||!!contact[m][n]['given_name']||!!contact[m][n]['middle_name']){return false;}
+                    // break;
                     case 'address':
                         if(!!contact[m][n]['formatted_address']){return false;}
                     break;
@@ -642,7 +664,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
-                    wdAlert.alert('Create new contact fail!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
+                    wdAlert.alert('Failed to save new contact!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
                     $scope.list.shift();
                     showContacts(G_showingContact['id']);
                     G_status = '';
@@ -666,6 +688,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                             $scope.list = G_list;
                         };
                     };
+
                     for(var i = 0 , l = G_contacts.length;i<l; i++ ){
                         if(!!id && G_contacts[i]['id']===id){
                             G_contacts[i] = data;
@@ -674,7 +697,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
                     showContacts(data['id']);
                 }).error(function(){
-                    wdAlert.alert('Edit the contact fail!', '', 'OK').then(function(){showContacts($scope.contact.id);});
+                    wdAlert.alert('Failed to save edits!', '', 'OK').then(function(){showContacts($scope.contact.id);});
                     GA('Web Contacts:save the editing contact failed');
                 });
             break;
@@ -692,8 +715,10 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 //无联系人时显示无联系人界面
                 if(!G_list.length){
                     $('.wdj-contacts .wd-blank').show();
+                }else{
+                    id = G_list[0].id;
                 };
-                id = G_list[0].id;
+
             break;
             case 'edit':
                 id = G_clicked.id;

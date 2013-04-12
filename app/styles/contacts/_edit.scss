@@ -138,9 +138,15 @@
             div.account{
 
                 select{
+                    margin-right: 4px;
+                    background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
+                    border: 1px solid #d6d6d6;
+                    padding-left: 10px;
+                    -webkit-appearance:none;
+                    -moz-appearance:none;
                     width: 350px;
                     line-height: 28px;
-                    height: 28px;
+                    height: 38px;
                 }
             }
 
