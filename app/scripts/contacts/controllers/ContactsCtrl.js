@@ -554,6 +554,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
     //检查当前输入是否为空，为空返回true
     function checkBlank(contact){
+        if(!!contact['given_name'] ||!!contact['middle_name']||!!contact['family_name'] ||!!contact['family_name'] ){
+            return false;
+        };
         for(var m in contact){
             for(var n in contact[m]){
                 switch(m){
