@@ -288,7 +288,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     G_clicked = G_list[i];
                 };
             };
-            console.log(data);
             $scope.contact = data;
 
             //样式相关处理
@@ -336,12 +335,29 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         switch(G_status){
             case 'new':
+                if(!checkBlank($scope.contact)){
+                    wdAlert.confirm(
+                        'Save Contact',
+                        'Save changes to this contact? ',
+                        "Don't Save",
+                        "Save"
+                    ).then(function(){
+                        G_status = '';
+                        $scope.saveContact($scope.contact.id);
+                        show();
+                    });
+                }else{
+                    $scope.list.shift();
+                    show();
+                    G_status = '';
+                };
+                break;
             case 'edit':
                 wdAlert.confirm(
-                    'Are you sure?',
-                    'Do you save?',
-                    'OK',
-                    'Cancel'
+                    'Save Contact',
+                    'Save changes to this contact? ',
+                    "Don't Save",
+                    "Save"
                 ).then(function(){
                     G_status = '';
                     $scope.saveContact($scope.contact.id);
@@ -384,7 +400,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         wdAlert.confirm(
             'Delete contacts!',
             '',
-            'OK',
+            'Delete',
             'Cancel'
         ).then(function() {
             $('.modal-body').html('');

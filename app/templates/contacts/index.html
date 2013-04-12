@@ -17,7 +17,7 @@
                 Delete
             </button>
             <div class="search">
-                <input type="search" ng-model="searchText" placeholder="Search">
+                <input type="search" ng-model="searchText" placeholder="Search contacts...">
                 <span class="icon-clear" ng-show="searchText" ng-click="searchText='';">&times;</span>
             </div>
         </div>
@@ -229,8 +229,8 @@
 
             <div class="footer">
                 <button class="btn btn-edit" ng-show="!contact.read_only" type="button" ng-click="editContact(contact.id)">Edit</button>
-                <button class="btn btn-cancel dn" type="button" ng-click="cancelContact(contact.id)">Cancel</button>
                 <button class="btn btn-primary btn-save dn" type="button" ng-click="saveContact(contact.id)">Save</button>
+                <button class="btn btn-cancel dn" type="button" ng-click="cancelContact(contact.id)">Cancel</button>
             </div>
 
         </div>
