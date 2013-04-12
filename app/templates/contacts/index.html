@@ -17,8 +17,8 @@
                 Delete
             </button>
             <div class="search">
-                <input type="search" ng-model="searchText" placeholder="Search contacts...">
-                <span class="icon-clear" ng-show="searchText" ng-click="searchText='';">&times;</span>
+                <input type="text" ng-model="searchText" placeholder="Search contacts...">
+                <span class="icon-clear" ng-show="searchText" ng-click="searchText='';clearSearch();">&times;</span>
             </div>
         </div>
 
@@ -71,13 +71,13 @@
                 <p class="remark">{{contact.organization[0].company}}</p>
                 <div class="editName dn">
                     <div class="account dn">
-                        <h4>Account Name</h4>
+                        <h4>Account</h4>
                         <select ng-model="contact.account" ng-options="value.name for (key , value) in accounts"></select>
                     </div>
                     <h4>Name & Organization</h4>
-                    <input class="name" type="text" ng-model="contact.name.given_name" placeholder="First Name">
-                    <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Middle Name">
-                    <input class="name" type="text" ng-model="contact.name.family_name" placeholder="Last Name">
+                    <input class="name" type="text" ng-model="contact.name.given_name" placeholder="First name">
+                    <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Middle name">
+                    <input class="name" type="text" ng-model="contact.name.family_name" placeholder="Last name">
                     <input class="company" type="text" ng-model="contact.organization[0].company"  placeholder="Company">
                     <input class="title" type="text" ng-model="contact.organization[0].title" placeholder="Title">
                 </div>
@@ -85,19 +85,19 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.phone">PHONE</dt>
+                    <dt ng-show="contact.phone">Phone</dt>
                     <dd ng-repeat="item in contact.phone">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.phone"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.number}}</p>
-                        <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone Number">
+                        <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone number">
                         <span class="delete dn" ng-click="delItem('phone',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'phone')" ng-show="contact.phone">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'phone')" ng-show="contact.phone">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -105,19 +105,19 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.email">E-MAIL</dt>
+                    <dt ng-show="contact.email">E-mail</dt>
                     <dd ng-repeat="item in contact.email">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.email"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.address}}</p>
-                        <input class="detail dn" type="text" ng-model="item.address"  placeholder="Email Address">
+                        <input class="detail dn" type="text" ng-model="item.address"  placeholder="Email address">
                         <span class="delete dn" ng-click="delItem('email',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'email')" ng-show="contact.email">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'email')" ng-show="contact.email">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -125,20 +125,20 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.address">ADDRESS</dt>
+                    <dt ng-show="contact.address">Address</dt>
 
                     <dd ng-repeat="item in contact.address">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.address"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.formatted_address}}</p>
                         <input class="detail dn" type="text" ng-model="item.formatted_address" placeholder="Address">
                         <span class="delete dn" ng-click="delItem('address',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'address')" ng-show="contact.address">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'address')" ng-show="contact.address">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -151,14 +151,14 @@
                         <p class="des dn">{{item.protocol}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.protocol" ng-options="value for (key , value) in protocolMap"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.data}}</p>
                         <input class="detail dn" type="text" ng-model="item.data" placeholder="IM">
                         <span class="delete dn" ng-click="delItem('IM',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'IM')" ng-show="contact.IM">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'IM')" ng-show="contact.IM">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -172,14 +172,14 @@
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.note"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.note}}</p>
                         <input class="detail dn" type="text" ng-model="item.note"  placeholder="Note">
                         <span class="delete dn" ng-click="delItem('note',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'note')" ng-show="contact.note">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'note')" ng-show="contact.note">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -192,14 +192,14 @@
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.website"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.URL}}</p>
                         <input class="detail dn" type="text" ng-model="item.URL"  placeholder="Website">
                         <span class="delete dn" ng-click="delItem('website',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'website')" ng-show="contact.website">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'website')" ng-show="contact.website">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -207,19 +207,19 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.relation">Relation</dt>
+                    <dt ng-show="contact.relation">Relationship</dt>
                     <dd ng-repeat="item in contact.relation">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.relation"></select>
-                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom Label">
+                        <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
                         <p class="detail dn">{{item.name}}</p>
-                        <input class="detail dn" type="text" ng-model="item.name"  placeholder="Relation">
+                        <input class="detail dn" type="text" ng-model="item.name"  placeholder="Relationship">
                         <span class="delete dn" ng-click="delItem('relation',item)">&times;</span>
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'relation')" ng-show="contact.relation">Add New Item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'relation')" ng-show="contact.relation">Add new item</button>
                     <!-- 新增一个item end -->
 
                 </dl>
