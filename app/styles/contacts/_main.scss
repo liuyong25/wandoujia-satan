@@ -136,6 +136,8 @@
             font-size: 25px;
             padding-top: 8px;
             @include button-effect;
+            width: 14px;
+            overflow: hidden;
         }
 
     }

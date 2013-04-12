@@ -146,7 +146,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         'CI_JABBER':'Jabber',
         'CI_NETMEETING': 'Netmeeting'
     };
-
+    var G_debug = 0 ;
     //获取数据
     function getData(offset,length,cursor){
         cursor = cursor || 0;
@@ -171,7 +171,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             if(l === length){
                 //如果支持cursor打开这个接口，但是速度不如没有cursor的快
                 //getData(1,G_dataLengthOnce,data[l-1].id);
-
+                //if(G_debug>5){return;}else{G_debug++;};
                 //不支持cursor取数据
                 getData(G_contacts.length,G_dataLengthOnce,null);
 
@@ -417,9 +417,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
 
-                for(var j = 0 , k = G_list.length ; j < k ; j++){
+                for(var j = 0 , k = $scope.list.length ; j < k ; j++){
 
-                    if( G_list[j].id == delId[i] ){
+                    if( $scope.list[j].id == delId[i] ){
 
                         $http({
                             method: 'delete',
@@ -435,14 +435,15 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                         }).error(function(){
                             flagNum ++ ;
                             if( flagNum === 1){
-                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').remove();});
+                                wdAlert.alert('Delete fail!', 'Delete fail!', 'OK').then(function(){$('.modal-backdrop').html('');});
                             };
                         });
 
-                        G_list.splice(j,1);
+                        $scope.list.splice(j,1);
                         break;
                     };
                 };
+
             };
 
             $scope.list[0]['clicked'] = true;
@@ -554,40 +555,40 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //检查当前输入是否为空，为空返回true
     function checkBlank(contact){
         for(var m in contact){
-            for(var n in contact){
-                switch(n){
+            for(var n in contact[m]){
+                switch(m){
                     case 'IM':
-                        if(!!contact[n]['data']){return false;}
+                        if(!!contact[m][n]['data']){return false;}
                     break;
                     case 'address':
-                        if(!!contact[n]['formatted_address']){return false;}
+                        if(!!contact[m][n]['formatted_address']){return false;}
                     break;
                     case 'email':
-                        if(!!contact[n]['address']){return false;}
+                        if(!!contact[m][n]['address']){return false;}
                     break;
                     case 'address':
-                        if(!!contact[n]['formatted_address']){return false;}
+                        if(!!contact[m][n]['formatted_address']){return false;}
                     break;
                     case 'name':
-                        if(!!contact[n]['family_name']||!!contact[n]['given_name']||!!contact[n]['middle_name']){return false;}
+                        if(!!contact[m][n]['family_name']||!!contact[m][n]['given_name']||!!contact[m][n]['middle_name']){return false;}
                     break;
                     case 'address':
-                        if(!!contact[n]['formatted_address']){return false;}
+                        if(!!contact[m][n]['formatted_address']){return false;}
                     break;
                     case 'note':
-                        if(!!contact[n]['note']){return false;}
+                        if(!!contact[m][n]['note']){return false;}
                     break;
                     case 'organization':
-                        if(!!contact[n]['company']||!!contact[n]['title']){return false;}
+                        if(!!contact[m][n]['company']||!!contact[m][n]['title']){return false;}
                     break;
                     case 'phone':
-                        if(!!contact[n]['number']){return false;}
+                        if(!!contact[m][n]['number']){return false;}
                     break;
                     case 'relation':
-                        if(!!contact[n]['name']){return false;}
+                        if(!!contact[m][n]['name']){return false;}
                     break;
                     case 'website':
-                        if(!!contact[n]['URL']){return false;}
+                        if(!!contact[m][n]['URL']){return false;}
                     break;
                 };
             };
@@ -628,7 +629,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 $http({
                     method: 'post',
                     url: '/resource/contacts/',
-                    data:editData
+                    data:editData,
+                    timeout:7000
                 }).success(function(data){
                     G_contacts.unshift(data[0]);
                     $scope.list.shift();
@@ -636,8 +638,10 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
-                     wdAlert.alert('Create new contact fail!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
-                    showContacts($scope.contact.id);
+                    wdAlert.alert('Create new contact fail!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
+                    $scope.list.shift();
+                    showContacts(G_showingContact['id']);
+                    G_status = '';
                     GA('Web Contacts:save new contact failed');
                 });
 
@@ -648,7 +652,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 $http({
                     method: 'put',
                     url: '/resource/contacts/'+id,
-                    data:editData
+                    data:editData,
+                    timeout:7000
                 }).success(function(data){
 
                     for(var i = 0 , l = G_list.length;i<l; i++ ){
@@ -680,6 +685,10 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         switch(G_status){
             case 'new':
                 G_list.shift();
+                //无联系人时显示无联系人界面
+                if(!G_list.length){
+                    $('.wdj-contacts .wd-blank').show();
+                };
                 id = G_list[0].id;
             break;
             case 'edit':
@@ -699,7 +708,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         wrap.find('img.photo').off('mouseenter',showPhotoUpload);
         wrap.find('.photoUpload').hide().off('mouseout',hidePhotoUpload);
-
 
         showContacts(id);
     };
@@ -990,6 +998,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         $scope.list = G_list;
         showContacts(G_list[0]['id']);
     });
+    $scope.clearSearch = function(){
+        $('ul.contacts-list li.no-contacts').hide();
+    };
 
     //搜索联系人功能，根据联系人列表 G_list 搜索
     $scope.searchContacts = function(){
