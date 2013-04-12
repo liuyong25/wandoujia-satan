@@ -190,7 +190,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
 
 
         $rootScope.notifyNewMessage = function() {
-            wdTitleNotification.notify('You\'ve got a new message');
+            wdTitleNotification.notify($rootScope.DICT.app.MESSAGE_NOTIFICATION_TITLE);
         };
         $rootScope.restoreTitle = function() {
             wdTitleNotification.restore();

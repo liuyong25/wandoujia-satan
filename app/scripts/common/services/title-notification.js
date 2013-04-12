@@ -2,7 +2,7 @@ define([], function() {
 'use strict';
 return ['$window', function($window) {
     var timer;
-    var speed = 200;
+    var speed = 1500;
     var endChar = '... ';
     var pos = 0;
     var originPageTitle = $window.document.title;
@@ -11,7 +11,7 @@ return ['$window', function($window) {
     var notification = {
         notify: function(message) {
             if (timer) { return; }
-            notificationTitle = originPageTitle + ' - ' + message;
+            notificationTitle = message;
             moveTitle();
         },
         restore: function() {
@@ -25,7 +25,7 @@ return ['$window', function($window) {
     function moveTitle() {
         var ml = notificationTitle.length;
 
-        var title = notificationTitle.substr(pos,ml) + endChar + notificationTitle.substr(0,pos);
+        var title = pos % 2 ? notificationTitle : originPageTitle;
         $window.document.title = title;
 
         pos += 1;
