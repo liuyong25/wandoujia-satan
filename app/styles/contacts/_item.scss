@@ -1,20 +1,29 @@
 .contacts-item{
 
     border-bottom: 1px solid #ebebeb;
-    padding: 7px 0px 8px 20px;
     overflow: hidden;
-    cursor: pointer;
     @include transition(background-color,0.1s);
 
 	img.photo{
 	    width: 48px;
 	    height: 48px;
-        margin-left: 15px;
 	}
+
+    label.selected{
+        display: inline-block;
+        cursor: pointer;
+        width: 43px;
+        height: 65px;
+        text-align: center;
+        height: 100%;
+        line-height: 62px;
+        margin-bottom: 5px;
+    }
 
 	div.info{
         p{
             margin: 0px;
+            cursor: default;
         }
         margin-left: 10px;
         line-height: 23px;
@@ -25,6 +34,7 @@
             width: 226px;
             overflow: hidden;
             height: 20px;
+            line-height: 20px;
         }
         .phone{
             font-size: 15px;

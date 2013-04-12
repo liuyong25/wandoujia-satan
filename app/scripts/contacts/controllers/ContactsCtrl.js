@@ -154,7 +154,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             method: 'get',
             url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset
         }).success(function(data) {
-
+            if(G_contacts.length>0){
+                 G_isFirst = false;
+            };
             for(var i = 0,l = data.length;i<l;i++){
 
                 //修正默认头像
@@ -177,6 +179,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 G_dataFinish = true ;
             };
 
+        }).error(function(){
+            wdAlert.alert('error','timeout','ok').then(function(){location.reload();});
         });
     };
 
@@ -200,13 +204,18 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         var l = data.length;
         if(l<1){
             $('.wdj-contacts .wd-blank').show();
+        }else{
+            if(G_isFirst){
+                $('.wdj-contacts .left').show();
+                $('.wdj-contacts .right').show();
+            };
         };
+
         for(var i = 0; i<l; i++ ){
             var obj = getListItem(data[i]);
 
             //首次进入默认显示第一个联系人
-            if (G_isFirst) {
-                G_isFirst = false;
+            if (!i && G_isFirst) {
                 $('.wdj-contacts .right .wd-loading').hide();
                 showContacts(G_contacts[0].id);
                 obj.clicked = true;
@@ -261,6 +270,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             data['account'] = {};
             if(!data['organization'][0]){
                 data['organization'][0] = {type:'Work',Company:'',department:'',job_description:'',label:'',office_location:'',phonetic_name:'',symbol:'',title:''};
+            };
+            if(!data['photo_path']){
+                data['photo_path'] = G_defaultPhoto;
             };
             data = changeDataType(data);
 
@@ -323,12 +335,29 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         switch(G_status){
             case 'new':
+                if(!checkBlank($scope.contact)){
+                    wdAlert.confirm(
+                        'Save Contact',
+                        'Save changes to this contact? ',
+                        "Don't Save",
+                        "Save"
+                    ).then(function(){
+                        G_status = '';
+                        $scope.saveContact($scope.contact.id);
+                        show();
+                    });
+                }else{
+                    $scope.list.shift();
+                    show();
+                    G_status = '';
+                };
+                break;
             case 'edit':
                 wdAlert.confirm(
-                    'Are you sure?',
-                    'Do you save?',
-                    'OK',
-                    'Cancel'
+                    'Save Contact',
+                    'Save changes to this contact? ',
+                    "Don't Save",
+                    "Save"
                 ).then(function(){
                     G_status = '';
                     $scope.saveContact($scope.contact.id);
@@ -355,7 +384,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             };
         };
 
-        var alertTpl = '';
+        var alertTpl = '<p>Delete the selected contacts from your phone?</p>';
         if(read_only.length > 0){
             alertTpl += '<p>here is read only contact,can not be deleted :</p><ul>'
             for(var i = 0 , l = read_only.length; i < l ; i++ ){
@@ -369,40 +398,29 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         },300);
 
         wdAlert.confirm(
-            'You will delete those contacts!',
+            'Delete contacts!',
             '',
-            'OK',
+            'Delete',
             'Cancel'
         ).then(function() {
             $('.modal-body').html('');
-            $('.modal-backdrop').remove();
+            $('.modal-backdrop').html('');
 
             var delId = [];
             var flagNum = 0;
 
             for(var i = 0 , l = G_list.length ; i < l ; i ++){
-
-                if( G_list[i].checked === true && !G_list[i]['read_only']){
+                if( G_list[i].checked === true && !G_list[i]['read_only'] ){
                     delId.push(G_list[i].id);
                 };
             };
 
-            console.log(delId);
-            console.log(read_only);
-
-            $scope.list[0]['clicked'] = true;
-            G_clicked.clicked = false;
-            G_clicked = $scope.list[0]['clicked'];
-            showContacts($scope.list[0]['id']);
-            $('ul.contacts-list')[0].scrollTop = 0;
-
-            $('.wdj-contacts .btn-all .btn-delete').hide();
-
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
+
                 for(var j = 0 , k = G_list.length ; j < k ; j++){
+
                     if( G_list[j].id == delId[i] ){
 
-                        //TODO:添加删除接口
                         $http({
                             method: 'delete',
                             url: '/resource/contacts/'+delId[i]
@@ -426,6 +444,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     };
                 };
             };
+
+            $scope.list[0]['clicked'] = true;
+            G_clicked.clicked = false;
+            G_clicked = $scope.list[0]['clicked'];
+            showContacts($scope.list[0]['id']);
+            $('ul.contacts-list')[0].scrollTop = 0;
+            $('.wdj-contacts .btn-all .btn-delete').hide();
 
         //then最后的括号
         },
@@ -461,6 +486,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         };
 
         for(var i = 0, l = $scope.list.length;i<l;i++){
+            console.log($scope.list[i].checked);
             if($scope.list[i].checked){
                 $('.btn-all .btn-delete').show();
                 return;
@@ -525,8 +551,60 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         photoUpload();
     };
 
+    //检查当前输入是否为空，为空返回true
+    function checkBlank(contact){
+        for(var m in contact){
+            for(var n in contact){
+                switch(n){
+                    case 'IM':
+                        if(!!contact[n]['data']){return false;}
+                    break;
+                    case 'address':
+                        if(!!contact[n]['formatted_address']){return false;}
+                    break;
+                    case 'email':
+                        if(!!contact[n]['address']){return false;}
+                    break;
+                    case 'address':
+                        if(!!contact[n]['formatted_address']){return false;}
+                    break;
+                    case 'name':
+                        if(!!contact[n]['family_name']||!!contact[n]['given_name']||!!contact[n]['middle_name']){return false;}
+                    break;
+                    case 'address':
+                        if(!!contact[n]['formatted_address']){return false;}
+                    break;
+                    case 'note':
+                        if(!!contact[n]['note']){return false;}
+                    break;
+                    case 'organization':
+                        if(!!contact[n]['company']||!!contact[n]['title']){return false;}
+                    break;
+                    case 'phone':
+                        if(!!contact[n]['number']){return false;}
+                    break;
+                    case 'relation':
+                        if(!!contact[n]['name']){return false;}
+                    break;
+                    case 'website':
+                        if(!!contact[n]['URL']){return false;}
+                    break;
+                };
+            };
+        }
+
+        //用户没有输入，返回true
+        return true;
+    };
+
     //保存联系人
     $scope.saveContact = function(id){
+
+        //检查是否用户没有填入信息
+        if(checkBlank($scope.contact)){
+            wdAlert.alert('Please enter the contact!');
+            return;
+        };
 
         //UI操作
         var wrap = $('.contacts-edit');
@@ -558,7 +636,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
-                     showContacts($scope.contact.id);
+                     wdAlert.alert('Create new contact fail!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
+                    showContacts($scope.contact.id);
                     GA('Web Contacts:save new contact failed');
                 });
 
@@ -586,7 +665,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
                     showContacts(data['id']);
                 }).error(function(){
-                    showContacts($scope.contact.id);
+                    wdAlert.alert('Edit the contact fail!', '', 'OK').then(function(){showContacts($scope.contact.id);});
                     GA('Web Contacts:save the editing contact failed');
                 });
             break;
@@ -708,13 +787,14 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.addNewContact = function(){
 
         GA('Web Contacts:click add a New Contacts button');
-        if(G_status == 'new'){ return;};
+        if( G_status == 'new'){ return; };
         $('.contacts-list .no-contacts').hide();
+        $('.wdj-contacts .left').show();
+        $('.wdj-contacts .right').show();
         $scope.searchText = '';
         $scope.list = G_list;
         $('.wdj-contacts .wd-blank').hide();
         $('.wdj-contacts .right .wd-loading').hide();
-
         var wrap = $('.contacts-edit .info');
         wrap.find('img.photo').attr('src',G_defaultPhoto);
 
@@ -728,6 +808,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             if(data.length > 1){
                 wrap.find('div.account').show().children().show();
             };
+        }).error(function(){
+            //wdAlert.alert("");
         });
 
         var obj = {
@@ -745,7 +827,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             relation:[{type:'Friend',name:'',label:''}],
             website:[{type:'Homepage',URL:'',label:''}]
         };
-        G_clicked.clicked = false;
+
+        G_clicked['clicked'] = false;
         G_clicked = {
             id : "",
             name : "New contact",
@@ -754,7 +837,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             clicked : true
         };
         $scope.list.unshift(G_clicked);
-
         $scope.contact = obj;
         G_status = 'new';
         setTimeout(function(){
@@ -944,13 +1026,3 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 //return的最后括号
 }];
 });
-
-
-
-
-
-
-
-
-
-

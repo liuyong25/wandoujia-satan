@@ -1,4 +1,5 @@
 .wdj-contacts{
+    font-family: arial, sans-serif;
 
     .pf{
         position: fixed;
@@ -19,10 +20,9 @@
     .contacts-list{
         position: fixed;
         overflow-y : auto;
-        top:106px;
-        bottom: 76px;
-        width: 25%;
-        min-width: 350px;
+        top:103px;
+        bottom: 70px;
+        width: 428px;
         display: block;
         padding-left: 1px;
         border-right: 1px solid #e7e7e7;
@@ -32,15 +32,49 @@
             height: 64px;
             text-align: center;
             line-height: 64px;
-            font-size: 18px;
-            border-bottom: 1px solid #e7e7e7;
+            font-size: 12px;
         }
-
+        li.load-more{
+            display: block;
+            width: 80px;
+            padding: 10px 40px;
+            margin: 10px auto;
+            border-radius: 20px;
+            background: #E6E6E6;
+            text-align: center;
+            opacity: 0.7;
+            cursor: pointer;
+        }
         .clicked{
             background-color: #444444!important;
             color: #FFFFFF;
             cursor: default;
             border-right: 1px solid #444444;
+        }
+
+        div.page-btn{
+            height: 40px;
+            display: block;
+            width: 99%;
+            line-height: 25px;
+
+            p{
+                color: blue;
+                display: inline;
+                margin-left: 3px;
+                cursor: pointer;
+            }
+            .now{
+                background-color: #888;
+            }
+            div.page{
+                display: inline;
+                cursor: pointer;
+                span{
+                    margin-left:3px;
+                    color:blue;
+                }
+            }
         }
 
     }
@@ -50,23 +84,23 @@
         top: 0px;
         background-color: #FFF;
         min-width: 350px;
-        width: 25%;
-        height: 93px;
+        width: 428px;
+        height: 90px;
         border-bottom: 1px solid #e7e7e7;
         border-right: 1px solid #e7e7e7;
         padding-top: 12px;
         z-index: 200;
 
         .btn-new{
-            margin-left: 3%;
+            margin-left: 10px;
         }
 
         .btn-selectAll{
-            margin-left: 8px;
+            margin-left: 2px;
         }
 
         .btn-delete{
-            margin-left: 8px;
+            margin-left: 2px;
         }
     }
 
@@ -74,29 +108,34 @@
 
         border-top: 1px solid #e7e7e7;
         margin-top: 10px;
-        padding-left: 15px;
+        padding-left: 10px;
         padding-top: 9px;
         cursor: pointer;
 
         input{
-            font-size: 16px;
+            border-color: #CCC;
+            font-size: 12px;
             line-height: 25px;
             padding-left: 33px;
             padding-right: 25px;
-            width: 78%;
+            width: 347px;
             height: 22px;
+            box-shadow: none;
             background:#f5f5f5 url("../../images/contacts/icon_search.png") no-repeat 3% 50%;
         }
 
         input:focus{
+            border-color:#CCC;
+            box-shadow:none;
             background-color: #FFF;
         }
 
         span.icon-clear{
             position: absolute;
-            left:89%;
+            left:92%;
             font-size: 25px;
             padding-top: 8px;
+            @include button-effect;
         }
 
     }
@@ -104,12 +143,15 @@
     .left{
         padding-top: 62px;
         float: left;
-        width: 30%;
-        min-width: 370px;
+        width: 453px;
     }
 
     .right{
         float: left;
+
+        .wd-loading{
+            margin-left: 200px;
+        }
     }
 
 	@import "item";
