@@ -19,7 +19,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     var G_searchList = [];
 
     //每次拉取数据的长度
-    var G_dataLengthOnce = 30;
+    var G_dataLengthOnce = 20;
 
     //标示是否首次进入
     var G_isFirst = true;
@@ -1064,8 +1064,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             $('ul.contacts-list li.no-contacts').hide();
             G_clicked['clicked'] = false;
             $scope.pageList = G_searchList.slice(0,G_dataLengthOnce);
-            if($scope.pageList.length == G_dataLengthOnce){
-                $(".contacts-list .load-more").show();
+            if($scope.pageList.length < G_searchList.length){
+                $(".contacts-list .load-more").hide();
             };
             $scope.pageList[0]['clicked'] = true;
             G_clicked = $scope.pageList[0];
