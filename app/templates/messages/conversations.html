@@ -20,13 +20,12 @@
             <ol class="wdm-conversations unstyled">
                 <li class="wdmc-row"
                     ng-repeat="c in conversations"
-                    ng-init="status=cvsCache.get(c)"
-                    ng-class="{ selected: status.selected, highlight: status.active }"
+                    ng-class="{ selected: cvsCache.get(c).selected, highlight: cvsCache.get(c).active }"
                     wdm-conversation>
                     <label class="wdmcr-a"
-                        ng-click="$root.GA('messages:select:' + status.selected)">
-                        <span bs-tooltip="{{status.selectTip()}}">
-                            <input type="checkbox" ng-model="status.selected">
+                        ng-click="$root.GA('messages:select:' + cvsCache.get(c).selected)">
+                        <span bs-tooltip="{{cvsCache.get(c).selectTip()}}">
+                            <input type="checkbox" ng-model="cvsCache.get(c).selected">
                         </span>
                     </label>
                     <div class="wdmcr-b" ng-class="{ multiple: c.addresses.length > 1 }">
@@ -34,7 +33,7 @@
                     </div>
                     <div class="wdmcr-c">
                         <div class="wdmcr-c-a" ng-switch on="c.addresses.length">
-                            <span ng-switch-default>{{ status.displayName() }}</span>
+                            <span ng-switch-default>{{ cvsCache.get(c).displayName() }}</span>
                             <span ng-switch-when="0">New message</span>
                         </div>
                         <div class="wdmcr-c-b">{{ c.snippet }}</div>
@@ -46,7 +45,7 @@
                             <span class="badge" ng-show="c.unread_message_count">{{ c.unread_message_count }}</span>
                         </div>
                         <div>
-                            {{ status.date() | messageDate:'MMM D' }}
+                            {{ cvsCache.get(c).date() | messageDate:'MMM D' }}
                         </div>
                     </div>
                 </li>

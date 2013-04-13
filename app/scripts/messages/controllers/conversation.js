@@ -228,11 +228,15 @@ function sendMessage(conversation, content) {
     else {
         // an existed message
         var m = conversation;
+        conversation = findConversation(m.thread_id);
         addresses = addresses.concat(m.address);
         content = m.body;
         newMessages = newMessages.concat(m);
         m.status = 32;
     }
+
+    conversation.date = Date.now();
+    mergeConversations(conversation);
 
     return $http({
         url: '/resource/messages/send',
@@ -243,16 +247,25 @@ function sendMessage(conversation, content) {
         }
     }).then(function success(response) {
         var messages = response.data;
+        var existedCid;
+        var newCid;
         _(newMessages).each(function(m, i) {
+            existedCid = m.thread_id;
+            newCid = messages[i].thread_id;
             _(m).extend(messages[i]);
         });
-        // messages[0] = _(newMessage).extend(messages[0]);
-        var existedConversation = mergeMessages(messages);
+
+        var existedConversation = mergeMessages(newMessages);
         if (!existedConversation) {
-            var cid = toArray(messages)[0].thread_id;
-            return pullConversation(cid);
+            var cache = $scope.cvsCache.get(conversation);
+            $scope.cvsCache.remove(conversation);
+            conversation.id = newCid;
+            $scope.cvsCache.put(conversation, cache);
+            return pullConversation(newCid);
         }
         else {
+            existedConversation.date = Date.now();
+            mergeConversations(existedConversation);
             return existedConversation;
         }
     }, function error() {
