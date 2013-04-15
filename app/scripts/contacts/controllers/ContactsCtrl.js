@@ -307,8 +307,18 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 wrap.find('button.btn-addNewItem').hide();
                 wrap.find('hr').show();
                 wrap.find('span.delete').hide();
-                if($scope.pageList.length == G_dataLengthOnce){
-                    $(".contacts-list .load-more").show();
+                if(G_dataFinish){
+                    if( $scope.pageList.length < G_list.length ){
+                        $(".contacts-list .load-more").show();
+                    }else{
+                        $(".contacts-list .load-more").hide();
+                    };
+                }else{
+                    if( $scope.pageList.length === G_dataLengthOnce ){
+                        $(".contacts-list .load-more").show();
+                    }else{
+                        $(".contacts-list .load-more").hide();
+                    };
                 };
                 wrap.find('p.des').css('display','inline-block');
                 wrap.find('p.detail').css('display','inline-block');
@@ -386,7 +396,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         };
     };
 
-    //删除选中的联系人
+    //删除选中的联系人，传入id删除单个，不传入说明删除多个。
     $scope.deleteContacts = function(id){
 
         GA('Web Contacts:click delete contacts button');
@@ -403,7 +413,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             };
         };
 
-        var alertTpl = '<p>Delete the selected contact(s) from your phone?</p>';
+        var word = "";
+        if(!!id){
+            word = "contact";
+        }else{
+            word = "contact(s)";
+        };
+        var alertTpl = '<p>Delete the selected '+word+' from your phone?</p>';
         if(read_only.length > 0){
             alertTpl += '<p>Those are read-only contact(s),can not be deleted:</p><ul>'
             for(var i = 0 , l = read_only.length; i < l ; i++ ){
@@ -417,8 +433,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         },300);
 
         wdAlert.confirm(
-            'Delete contact(s)!',
-            'Delete the selected contact(s) from your phone?',
+            'Delete '+word+"!",
+            'Delete the selected '+word+' from your phone?',
             'Delete',
             'Cancel'
         ).then(function() {
@@ -444,33 +460,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
 
                 for(var j = 0 , k = $scope.pageList.length ; j < k ; j++){
-
                     if( $scope.pageList[j].id == delId[i] ){
-
-                        $http({
-                            method: 'delete',
-                            url: '/resource/contacts/'+delId[i],
-                            timeout:7000
-                        }).success(function(){
-                            flagNum ++ ;
-
-                            //当全部删除完
-                            // if( flagNum  === l ){
-                            // };
-                        }).error(function(){
-                            flagNum ++ ;
-                            if( flagNum === 1){
-                                wdAlert.alert('Failed to delete selected contact(s)!', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
-                            };
-                        });
-
                         $scope.pageList.splice(j,1);
                         break;
                     };
                 };
 
                 for(var j = 0, k = G_list.length ; j < k ; j++ ){
-
                     if( !!G_list[j] && !!G_list[j]['id'] && G_list[j]['id'] == delId[i]){
                         G_list.splice(j,1);
                         if(!G_list.length){
@@ -479,18 +475,48 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                         break;
                     };
                 };
-
             };
 
+            $scope.loadMore();
+            G_selectAll = true;
+            $scope.selectAll();
             $scope.pageList[0]['clicked'] = true;
-            G_clicked.clicked = false;
+            if(!!G_clicked){G_clicked.clicked = false;};
             G_clicked = $scope.pageList[0]['clicked'];
             showContacts($scope.pageList[0]['id']);
             $('ul.contacts-list')[0].scrollTop = 0;
-            $('.wdj-contacts .btn-all .btn-delete').hide();
+            if(!id){
+                $('.wdj-contacts .btn-all .btn-delete').hide();
+            };
+
+            httpDel(delId);
+
+            //删除多个
+            function httpDel(delId){
+                var i = 0;
+                var l = delId.length;
+                var del = function(){
+                    $http({
+                        method: 'delete',
+                        url: '/resource/contacts/'+delId[i],
+                        timeout:7000
+                    }).success(function(){
+                        i++;
+                        if(i<l){
+                            del();
+                        }else{
+                            //全部删除
+                        };
+                    }).error(function(){
+                        wdAlert.alert('Failed to delete selected contact(s)!', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
+                    });
+                };
+                del();
+            };
 
         //then最后的括号
         },
+
         //cancel时
         function(){
             $('.modal-body').html('');
@@ -647,7 +673,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         //检查是否用户没有填入信息
         if(checkBlank($scope.contact)){
-            wdAlert.alert('Please enter the contact!');
+            wdAlert.alert('Please enter the contact!','','OK');
             return;
         };
 
