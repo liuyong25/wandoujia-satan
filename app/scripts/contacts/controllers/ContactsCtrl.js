@@ -30,6 +30,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //数据是否已经加载完成
     var G_dataFinish = false;
 
+    //用来阻止加载
+    var G_stopLoad = false;
+
     //是否selectAll了
     var G_selectAll = false;
 
@@ -176,7 +179,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             getList(data);
 
             //数据未取完
-            if(l === length){
+            if( !G_stopLoad && (l === length)){
                 //如果支持cursor打开这个接口，但是速度不如没有cursor的快
                 //getData(1,G_dataLengthOnce,data[l-1].id);
                 //if(G_debug>4){return;}else{G_debug++;};
@@ -366,11 +369,11 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                         show();
                     },function(){
                         G_status = '';
-                        $scope.list.shift();
+                        $scope.pageList.shift();
                         show();
                     });
                 }else{
-                    $scope.list.shift();
+                    $scope.pageList.shift();
                     show();
                     G_status = '';
                 };
@@ -386,7 +389,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     show();
                 },function(){
                     G_status = '';
-                    $scope.list.shift();
+                    $scope.pageList.shift();
                     show();
                 });
             break;
@@ -1067,7 +1070,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         G_searchTimer = setTimeout($scope.searchContacts,10);
     });
     $('.wdj-contacts .btn-all .search .icon-clear').on('click',function(){
-        $scope.list = G_list;
+        $scope.pageList = G_list;
         showContacts(G_list[0]['id']);
     });
     $scope.clearSearch = function(){
@@ -1132,6 +1135,16 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.typeMap = G_typeMap;
     $scope.protocolMap = G_protocol;
     $scope.showContacts = showContacts;
+
+    $scope.$on('$destroy',function(){
+        G_stopLoad = true;
+    });
+
+    setTimeout(function(){
+        $('input').on('click',function(e){
+            e.target.select();
+        });
+    },500);
 
 //return的最后括号
 }];
