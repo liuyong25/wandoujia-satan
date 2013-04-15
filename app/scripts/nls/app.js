@@ -10,6 +10,8 @@ return {
         NAVBAR_APPS_TIP: 'Apps (coming soon)',
         NAVBAR_SIGNOUT_TIP: 'Sign out',
 
+        MESSAGE_NOTIFICATION_TITLE: 'New message(s)',
+
         UPGRADE_BTN_TEXT: 'Get the latest version on Google Play'
     }
 };
