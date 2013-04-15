@@ -1,6 +1,6 @@
 @import "photos/*.png";
 @import "contacts/*.png";
-$wdp-icons-list: "ab-add", "ab-sel", "ab-del", "ab-dl", "ab-sh", "del", "dl", "share", "cancel", "feedback";
+$wdp-icons-list: "ab-add", "ab-sel", "ab-del", "ab-dl", "ab-sh", "del", "dl", "share", "cancel", "feedback", "check", "checked";
 
 @each $icon in $wdp-icons-list {
 

@@ -19,7 +19,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     var G_searchList = [];
 
     //每次拉取数据的长度
-    var G_dataLengthOnce = 20;
+    var G_dataLengthOnce = 50;
 
     //标示是否首次进入
     var G_isFirst = true;
