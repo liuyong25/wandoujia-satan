@@ -461,14 +461,12 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             };
 
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
-
                 for(var j = 0 , k = $scope.pageList.length ; j < k ; j++){
                     if( $scope.pageList[j].id == delId[i] ){
                         $scope.pageList.splice(j,1);
                         break;
                     };
                 };
-
                 for(var j = 0, k = G_list.length ; j < k ; j++ ){
                     if( !!G_list[j] && !!G_list[j]['id'] && G_list[j]['id'] == delId[i]){
                         G_list.splice(j,1);
@@ -478,8 +476,13 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                         break;
                     };
                 };
+                for(var j = 0, k = G_searchList.length ; j < k ; j++ ){
+                    if( !!G_searchList[j] && !!G_searchList[j]['id'] && G_searchList[j]['id'] == delId[i]){
+                        G_searchList.splice(j,1);
+                        break;
+                    };
+                };
             };
-
             $scope.loadMore();
             G_selectAll = true;
             $scope.selectAll();
@@ -1112,7 +1115,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.loadMore = function(){
         var pl = $scope.pageList.length;
         var l = pl + G_dataLengthOnce;
-
         if( !!$scope.searchText ){
             $scope.pageList = $scope.pageList.concat(G_searchList.slice(pl,l));
             if(l>$scope.pageList.length){
