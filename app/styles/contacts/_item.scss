@@ -8,6 +8,9 @@
 	    width: 48px;
 	    height: 48px;
 	}
+    label{
+        margin-bottom: 0px;
+    }
 
     label.selected{
         display: inline-block;
@@ -17,17 +20,20 @@
         text-align: center;
         height: 100%;
         line-height: 62px;
-        margin-bottom: 5px;
+        padding-bottom: 5px;
     }
 
 	div.info{
         p{
             margin: 0px;
             cursor: default;
+            text-overflow: ellipsis;
         }
+        height: 40px;
+        overflow: hidden;
+        vertical-align: middle;
         margin-left: 10px;
         line-height: 23px;
-        height: 26px;
 	    display: inline-block;
         .name{
             font-size: 16px;
