@@ -5,11 +5,13 @@ define([
     'text!templates/auth/portal.html',
     'text!templates/photos/gallery.html',
     'text!templates/contacts/index.html',
+    'text!templates/applications/index.html',
     'text!templates/messages/conversations.html',
     'common/main',
     'common/language',
     'messages/main',
-    'contacts/main'
+    'contacts/main',
+    'applications/main'
 ], function(
     angular,
     auth,
@@ -17,15 +19,17 @@ define([
     PortalTemplate,
     PhotosTemplate,
     ContactsTemplate,
+    ApplicationsTemplate,
     MessagesTemplate,
     common,
     language,
     messages,
-    contacts
+    contacts,
+    applications
 ) {
 'use strict';
 
-angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages', 'wdContacts'])
+angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages', 'wdContacts','wdApplications'])
     .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
         function($routeProvider,   $httpProvider,   wdHttpProvider) {
 
@@ -104,10 +108,19 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             },
             reloadOnSearch: false
         });
+        $routeProvider.when('/applications', {
+            template: ApplicationsTemplate,
+            controller: 'ApplicationsCtrl',
+            resolve: {
+                auth: validateToken,
+                nav: reflectNavbar('applications'),
+                versionSupport: minVersionRequirement(3769)
+            },
+            reloadOnSearch: false
+        });
         $routeProvider.otherwise({
             redirectTo: '/portal'
         });
-
 
         // Global exception handling.
         wdHttpProvider.requestInterceptors.push(['wdDev', '$rootScope', function(wdDev, $rootScope) {
