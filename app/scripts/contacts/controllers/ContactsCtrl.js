@@ -323,8 +323,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                         };
                     };
                 }else{
-                    if($scope.pageList.length>0){
-                        if($scope.pageList.length < G_searchList.length){
+                    if(G_searchList.length>0){
+                        if( $scope.pageList.length < G_searchList.length ){
                             $(".contacts-list .load-more").show();
                         }else{
                             $(".contacts-list .load-more").hide();
