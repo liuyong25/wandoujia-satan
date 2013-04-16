@@ -17,6 +17,7 @@
         width: 128px;
         height: 128px;
         input{
+            font-family: arial, sans-serif;
             width: 200px;
             height: 200px;
         }
@@ -50,6 +51,7 @@
                 color: #FFF;
                 font-size: 14px;
                 font-weight: bold;
+                text-overflow: ellipsis;
             }
 
         }
@@ -111,6 +113,7 @@
             box-shadow:none;
             height: 28px;
             line-height: 28px;
+            font-family: arial, sans-serif;
         }
         input::-ms-clear {
             display: none;
@@ -129,6 +132,7 @@
             width: 84%;
             overflow: hidden;
             margin-bottom: 0px;
+            text-overflow: ellipsis;
         }
 
         .editName{
@@ -203,6 +207,7 @@
                 p{
                     display: inline-block;
                     font-size: 15px;
+                    text-overflow: ellipsis;
                 }
 
                 p.des{

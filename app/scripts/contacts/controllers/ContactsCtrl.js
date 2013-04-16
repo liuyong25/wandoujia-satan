@@ -165,9 +165,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset
         }).success(function(data) {
 
-            if(G_contacts.length>0){
-                 G_isFirst = false;
-            };
             for(var i = 0,l = data.length;i<l;i++){
 
                 //修正默认头像
@@ -177,7 +174,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 G_contacts.push(data[i]);
             };
             getList(data);
-
+            G_isFirst = false;
             //数据未取完
             if( !G_stopLoad && (l === length)){
                 //如果支持cursor打开这个接口，但是速度不如没有cursor的快
@@ -217,6 +214,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             $('.wdj-contacts .wd-blank').show();
         }else{
             if(G_isFirst){
+                $('.wdj-contacts').children('.wd-loading').hide();
                 $('.wdj-contacts .left').show();
                 $('.wdj-contacts .right').show();
             };
@@ -311,18 +309,31 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                 wrap.find('hr').show();
                 wrap.find('span.delete').hide();
                 if(G_dataFinish){
-                    if( $scope.pageList.length < G_list.length ){
-                        $(".contacts-list .load-more").show();
+                    if(G_searchList.length>0){
+                        if($scope.pageList.length < G_searchList.length){
+                            $(".contacts-list .load-more").show();
+                        }else{
+                            $(".contacts-list .load-more").hide();
+                        };
                     }else{
-                        $(".contacts-list .load-more").hide();
+                        if($scope.pageList.length < G_list.length){
+                            $(".contacts-list .load-more").show();
+                        }else{
+                            $(".contacts-list .load-more").hide();
+                        };
                     };
                 }else{
-                    if( $scope.pageList.length === G_dataLengthOnce ){
-                        $(".contacts-list .load-more").show();
+                    if($scope.pageList.length>0){
+                        if($scope.pageList.length < G_searchList.length){
+                            $(".contacts-list .load-more").show();
+                        }else{
+                            $(".contacts-list .load-more").hide();
+                        };
                     }else{
-                        $(".contacts-list .load-more").hide();
+                        $(".contacts-list .load-more").show();
                     };
                 };
+
                 wrap.find('p.des').css('display','inline-block');
                 wrap.find('p.detail').css('display','inline-block');
                 if(!data.read_only){
@@ -486,10 +497,16 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
             $scope.loadMore();
             G_selectAll = true;
             $scope.selectAll();
-            $scope.pageList[0]['clicked'] = true;
-            if(!!G_clicked){G_clicked.clicked = false;};
-            G_clicked = $scope.pageList[0]['clicked'];
-            showContacts($scope.pageList[0]['id']);
+            if(!!$scope.pageList[0]){
+                $scope.pageList[0]['clicked'] = true;
+                G_clicked = $scope.pageList[0];
+                showContacts($scope.pageList[0]['id']);
+            }else{
+                showContacts();
+            };
+            if(!!G_clicked && !!G_clicked['clicked']){
+                G_clicked.clicked = false;
+            };
             $('ul.contacts-list')[0].scrollTop = 0;
             if(!id){
                 $('.wdj-contacts .btn-all .btn-delete').hide();
@@ -620,6 +637,10 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         //添加新item的功能
         ele.find('.btn-addNewItem').show();
 
+        $('input').one('click',function(e){
+            e.target.select();
+        });
+
         //图片上传
         photoUpload();
     };
@@ -707,7 +728,11 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                             $scope.pageList[i] = getListItem(data);
                         };
                     };
-
+                    for(var i = 0 , l = G_list.length;i<l; i++ ){
+                        if(!!id && G_list[i]['id']===id){
+                            G_list[i] = getListItem(data);
+                        };
+                    };
                     for(var i = 0 , l = G_contacts.length;i<l; i++ ){
                         if(!!id && G_contacts[i]['id']===id){
                             G_contacts[i] = data;
@@ -882,7 +907,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         $('.wdj-contacts .right .wd-loading').hide();
         var wrap = $('.contacts-edit .info');
         wrap.find('img.photo').attr('src',G_defaultPhoto);
-        $scope.searchText = '';
+        //$scope.searchText = '';
 
         //获取用户账户
         $http({
@@ -1141,12 +1166,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     $scope.$on('$destroy',function(){
         G_stopLoad = true;
     });
-
-    setTimeout(function(){
-        $('input').on('click',function(e){
-            e.target.select();
-        });
-    },500);
 
 //return的最后括号
 }];
