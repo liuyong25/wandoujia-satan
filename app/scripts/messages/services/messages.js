@@ -9,6 +9,8 @@ return ['$http', '$q', function($http, $q) {
 function MessagesCollection(conversation) {
     this._conversation = conversation;
     this._collection = [];
+    this.dirty = false;
+    this.loaded = true;
 }
 
 MessagesCollection.getInstance = function(conversation) {
@@ -29,11 +31,6 @@ Object.defineProperties(MessagesCollection.prototype, {
         }
     },
 
-    loaded: {
-        value: false,
-        writable: true
-    },
-
     empty: {
         get: function() {
             return !this.length && this.loaded;
@@ -43,84 +40,6 @@ Object.defineProperties(MessagesCollection.prototype, {
     latestDate: {
         get: function() {
             return this._collection.length ? this._collection[this._collection.length - 1].date : 0;
-        }
-    },
-
-    create: {
-        value: function(content) {
-            var self = this;
-            var newMessages = this._conversation.addresses.map(function(addr, index) {
-                return wrapMessage({
-                    id: guid(),
-                    thread_id: self._conversation.id,
-                    address: addr,
-                    contact_name: self._conversation.contact_names[index],
-                    date: Date.now(),
-                    read: 1,
-                    status: 32,
-                    type: 2,
-                    body: content,
-                    category: 0
-                });
-            });
-            this.add(newMessages);
-            return newMessages;
-        }
-    },
-
-    add: {
-        value: function(messages) {
-            var collection = this._collection;
-            messages = [].concat(messages);
-            var updated = messages.map(function(m) {
-                var existed = _(collection).find(function(e) {
-                    return e.id === m.id;
-                });
-                if (existed) {
-                    existed.extend(m);
-                    return existed;
-                }
-                else {
-                    collection.push(m);
-                    return m;
-                }
-            });
-            collection.sort(function(a, b) {
-                return a.date - b.date;
-            });
-            return updated;
-        }
-    },
-
-    remove: {
-        value: function(messages) {
-            var self = this;
-            messages = [].concat(messages);
-            var removed = messages.reduce(function(trash, m) {
-                var index = self._collection.indexOf(m);
-                if (index !== -1) {
-                    self._collection.splice(index, 1);
-                    if (!m.isNew) {
-                        trash.push(m);
-                    }
-                }
-                return trash;
-            }, []);
-            return $q.all(removed.map(function(m) {
-                return $http({
-                    method: 'DELETE',
-                    url: '/resource/messages/' + m.id
-                }).error(function error() {
-                    self.add(m);
-                    return $q.reject();
-                });
-            }));
-        }
-    },
-
-    contains: {
-        value: function(message) {
-            return this._collection.indexOf(message) !== -1;
         }
     },
 
@@ -146,86 +65,155 @@ Object.defineProperties(MessagesCollection.prototype, {
                 return !m.isRead;
             });
         }
-    },
+    }
+});
 
-    getById: {
-        value: function(id) {
-            return _(this._collection).find(function(m) {
-                return m.id === id;
-            });
-        }
+_.extend(MessagesCollection.prototype, {
+    getById: function(id) {
+        return _(this._collection).find(function(m) {
+            return m.id === id;
+        });
     },
+    contains: function(message) {
+        return this._collection.indexOf(message) !== -1;
+    },
+    create: function(data) {
+        var self = this;
+        data = _.extend({
+            id: guid(),
+            thread_id: self._conversation.id,
+            date: Date.now(),
+            read: 1,
+            status: 32,
+            type: 2,
+            category: 0
+        }, data);
+        return this.add(wrapMessage(data))[0];
+    },
+    add: function(messages) {
+        var self = this;
+        var collection = this._collection;
+        messages = [].concat(messages);
 
-    fetch: {
-        value: function(id) {
-            var self = this;
-            if (arguments.length === 1) {
-                var m = this.getById(id);
-                if (m) {
-                    return m.fetch();
-                }
-                else {
-                    return $http({
-                        method: 'GET',
-                        url: '/resource/messages/' + id
-                    }).then(function success(response) {
-                        var m = wrapMessage(response.data);
-                        self.add(m);
-                        return m;
-                    });
-                }
-            }
-            else if (this._conversation.isNew) {
-                this.loaded = true;
-                return $q.when([]);
+        var updated = messages.map(function(m) {
+            var existed = self.getById(m.id);
+            if (existed) {
+                existed.extend(m);
+                return existed;
             }
             else {
-                var params = {
-                    offset: 0,
-                    length: 30
-                };
-                if (this._collection.length) {
-                    params.cursor = this._collection[0].id;
-                    params.offset = 1;
-                }
-                return $http({
-                    method: 'GET',
-                    url: '/resource/conversations/' + this._conversation.id + '/messages',
-                    params: params
-                }).then(function success(response) {
-                    var rawData = [].concat(response.data);
-                    var messages = rawData.map(wrapMessage);
-                    self.loaded = response.headers('WD-Need-More') === 'false';
-                    return self.add(messages);
-                });
+                m._collection = self;
+                collection.push(m);
+                return m;
             }
-        }
-    },
+        });
 
-    send: {
-        value: function(content) {
-            var self = this;
-            var messages = this.create(content);
-            return $http({
-                method: 'POST',
-                url: '/resource/messages/send',
-                data: {
-                    addresses: self._conversation.addresses,
-                    body: content
+        this.sort();
+
+        return updated;
+    },
+    remove: function(messages) {
+        var self = this;
+        messages = [].concat(messages);
+
+        var removed = messages.reduce(function(trash, m) {
+            var index = self._collection.indexOf(m);
+            if (index !== -1) {
+                self._collection.splice(index, 1);
+                if (!m.isNew) {
+                    trash.push(m);
                 }
+            }
+            return trash;
+        }, []);
+
+        this.sort();
+
+        return $q.all(removed.map(function(m) {
+            return $http({
+                method: 'DELETE',
+                url: '/resource/messages/' + m.id
+            }).error(function error() {
+                self.add(m);
+                return $q.reject();
+            });
+        }));
+    },
+    sort: function() {
+        this._collection.sort(function(a, b) {
+            return a.date - b.date;
+        });
+    },
+    fetch: function(id) {
+        var self = this;
+        if (this._conversation.isNew) {
+            this.loaded = true;
+            return $q.when([]);
+        }
+        else if (arguments.length === 1) {
+            return $http({
+                method: 'GET',
+                url: '/resource/messages/' + id
             }).then(function success(response) {
-                var data = response.data;
-                messages.forEach(function(m, index) {
-                    m.extend(data[index]);
-                });
-                return messages[0].cid;
+                var m = wrapMessage(response.data);
+                return self.add(m)[0];
             });
         }
+        else {
+            var dirty = this.dirty;
+            var params = {
+                offset: 0,
+                length: 30
+            };
+            if (this._collection.length && !dirty) {
+                params.cursor = this._collection[0].id;
+                params.offset = 1;
+                this.dirty = false;
+            }
+            return $http({
+                method: 'GET',
+                url: '/resource/conversations/' + this._conversation.id + '/messages',
+                params: params
+            }).then(function success(response) {
+                var rawData = [].concat(response.data);
+                var messages = rawData.map(wrapMessage);
+                if (!dirty) {
+                    self.loaded = response.headers('WD-Need-More') === 'false';
+                }
+                return self.add(messages);
+            });
+        }
+    },
+    send: function(content) {
+        var self = this;
+        var messages = this._conversation.addresses.map(function(addr, index) {
+            return self.create({
+                address: addr,
+                contact_name: self._conversation.contact_names[index],
+                body: content
+            });
+        });
+
+        return $http({
+            method: 'POST',
+            url: '/resource/messages/send',
+            data: {
+                addresses: self._conversation.addresses,
+                body: content
+            }
+        }).then(function success(response) {
+            var data = response.data;
+            messages.forEach(function(m, index) {
+                m.extend(data[index]);
+            });
+            self.sort();
+            return messages[0].cid;
+        });
     }
 });
 
 function wrapMessage(origin) {
-    return Object.create(origin, {
+    var message = Object.create(origin, {
         cid: {
             get: function() {
                 return this.thread_id;
@@ -262,20 +250,19 @@ function wrapMessage(origin) {
             }
         },
 
-        fetch: {
-            value: function() {
-                if (this.isNew) {
-                    return $q.when(this);
-                }
-                var self = this;
-                return $http({
-                    method: 'GET',
-                    url: '/resource/messages/' + this.id
-                }).then(function(response) {
-                    self.extend(response.data);
-                    return self;
-                });
+        rawData: {
+            get: function() {
+                return Object.getPrototypeOf(this);
             }
+        }
+    });
+
+    _.extend(message, {
+        fetch: function() {
+            if (this.isNew) {
+                return $q.when(this);
+            }
+            return this._collection.fetch(this.id);
         },
 
         send: function() {
@@ -303,6 +290,7 @@ function wrapMessage(origin) {
                 }
                 var data = response.data[0];
                 self.extend(data);
+                self.sort();
                 return self.cid;
             }, function error() {
                 self.rawData.status = 64;
@@ -310,18 +298,11 @@ function wrapMessage(origin) {
             });
         },
 
-        rawData: {
-            get: function() {
-                return Object.getPrototypeOf(this);
+        extend: function(newData) {
+            if (typeof newData.extend === 'function') {
+                newData = newData.rawData;
             }
-        },
-        extend: {
-            value: function(newData) {
-                if (typeof newData.extend === 'function') {
-                    newData = newData.rawData;
-                }
-                _.extend(origin, newData);
-            }
+            _.extend(origin, newData);
         }
     });
 }
