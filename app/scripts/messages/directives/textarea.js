@@ -3,7 +3,12 @@ define([], function() {
 return ['GA', function(GA) {
 return {
 
-link: function(scope, element) {
+link: function(scope, element, attributes) {
+    if (!element.attr('placeholder')) {
+        attributes.$observe('placeholder', function(value) {
+            element.attr('placeholder', value);
+        });
+    }
     element.on('keydown', function(e) {
         var isNewLine = false;
         var rows = 1;

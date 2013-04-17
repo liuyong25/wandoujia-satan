@@ -12,7 +12,9 @@ define([
     'messages/directives/realtime',
     'messages/directives/conversation',
     'messages/directives/textarea',
-    'messages/directives/receiver'
+    'messages/directives/receiver',
+    'messages/services/conversations',
+    'messages/services/messages'
 ], function(
     angular,
     common,
@@ -27,7 +29,9 @@ define([
     realtime,
     conversation,
     textarea,
-    receiver
+    receiver,
+    conversations,
+    messages
 ) {
 'use strict';
 // jshint unused:false
@@ -35,6 +39,8 @@ angular.module('wdMessages', ['wdCommon'])
     .controller('wdmConversationController', conversationController)
     .factory('wdmConversationsCache', conversationsCache)
     .factory('wdmMessagesCache', messagesCache)
+    .factory('wdmMessages', messages)
+    .factory('wdmConversations', conversations)
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)
     .directive('wdmRealtime', realtime)

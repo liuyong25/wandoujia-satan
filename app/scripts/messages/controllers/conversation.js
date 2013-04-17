@@ -5,10 +5,82 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA', '$route',
+        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA', '$route', 'wdmConversations',
 function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
-         wdpMessagePusher,   $timeout,   wdAlert,   GA,   $route) {
+         wdpMessagePusher,   $timeout,   wdAlert,   GA,   $route,   wdmConversations) {
+window.wdmm = wdmConversations;
+$scope.conversations = wdmConversations;
 
+
+$scope.selectTip = function(c) {
+    return c.selected ? $scope.$root.DICT.messages.ACTION_DESELECT : $scope.$root.DICT.messages.ACTION_SELECT;
+};
+
+$scope.editorPlaceholder = function(c) {
+    if (!c) { return; }
+    var hasRecieved = c.messages.collection.some(function(m) {
+        return m.type !== 2;
+    });
+    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + c.displayNames.join(', ') : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...';
+};
+
+$scope.sendMessage = function(c) {
+    if (!$scope.editorEnable || !c.draft) { return; }
+    $scope.editorEnable = false;
+    // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
+    $scope.$broadcast('wdm:beforeMessageSend', c);
+    $scope.conversations.sendMessages(c).then(function(c) {
+        // c existed and is the current active one.
+        if (same(c, c)) {
+            scrollIntoView();
+        }
+        // The current active one is a temporary one.
+        else {
+            $scope.showConversation(c).then(function() {
+                drop(c);
+            });
+        }
+        $scope.editorEnable = true;
+        pullConversation(c.id);
+    }, function() {
+        $scope.editorEnable = true;
+        GA('messages:send_failed');
+    });
+    $scope.cvsCache.put(c, {
+        draft: ''
+    });
+    scrollIntoView();
+};
+
+$scope.removeSelected = function() {
+    wdAlert.confirm(
+        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
+    ).then(function() {
+        $scope.conversations.removeSelected();
+        if (!$scope.conversations.contains($scope.activeConversation)) {
+            activeConversation($scope.conversations.collection[0]);
+        }
+    });
+};
+
+$scope.removeMessage = function(c, m) {
+    wdAlert.confirm(
+        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
+    ).then(function() {
+        $scope.conversations.removeMessages(c, m);
+        if (!$scope.conversations.contains($scope.activeConversation)) {
+            activeConversation($scope.conversations.collection[0]);
+        }
+    });
+};
+
+//=========================================
 
 var Conversations = $resource('/resource/conversations/:id', {id: '@id'});
 var ConversationMessages = $resource('/resource/conversations/:id/messages', {id: '@id'});
@@ -18,7 +90,7 @@ $scope.serverMatchRequirement = $route.current.locals.versionSupport;
 
 $scope.cvsCache = wdmConversationsCache;
 $scope.msgCache = wdmMessagesCache;
-$scope.conversations = [];
+// $scope.conversations = [];
 $scope.activeConversation = null;
 $scope.editorEnable = true;
 
@@ -26,19 +98,7 @@ $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 
-$scope.removeSelected = function() {
-    wdAlert.confirm(
-        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
-        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
-        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
-        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
-    ).then(function() {
-        removeSelected();
-        if (!hasActive()) {
-            activeConversation($scope.conversations[0]);
-        }
-    });
-};
+
 $scope.toggleSelected = toggleSelected;
 $scope.toggleSelectedAll = toggleSelectedAll;
 $scope.selectAll = selectAll;
@@ -53,25 +113,7 @@ $scope.hasActive = hasActive;
 $scope.hasPendingMsg = hasPendingMsg;
 $scope.hasFailedMsg = hasFailedMsg;
 
-$scope.removeMessage = function(c, m) {
-    wdAlert.confirm(
-        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
-        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
-        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
-        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
-    ).then(function() {
-        dropMessage(c, m);
-        if (!hasMessage(c) && isLoaded(c)) {
-            drop(c);
-            if (!hasActive()) {
-                $scope.showConversation($scope.conversations[0]);
-            }
-        }
-        removeMessage(m).then(function() {
-            pullConversation(c.id);
-        });
-    });
-};
+
 
 $scope.createConversation = createConversation;
 $scope.showConversation = function(conversation) {
@@ -90,34 +132,7 @@ $scope.prevMessages = function(conversation) {
         });
     });
 };
-$scope.sendMessage = function(conversation) {
-    var content = $scope.cvsCache.get(conversation, 'draft');
-    if (!$scope.editorEnable || !content) { return; }
-    $scope.editorEnable = false;
-    // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
-    $scope.$broadcast('wdm:beforeMessageSend', conversation, content);
-    sendMessage(conversation, content).then(function(c) {
-        // Conversation existed and is the current active one.
-        if (same(conversation, c)) {
-            scrollIntoView();
-        }
-        // The current active one is a temporary one.
-        else {
-            $scope.showConversation(c).then(function() {
-                drop(conversation);
-            });
-        }
-        $scope.editorEnable = true;
-        pullConversation(conversation.id);
-    }, function() {
-        $scope.editorEnable = true;
-        GA('messages:send_failed');
-    });
-    $scope.cvsCache.put(conversation, {
-        draft: ''
-    });
-    scrollIntoView();
-};
+
 $scope.resendMessage = function(message) {
     var promise;
     if (typeof message.id === 'string') {
@@ -135,7 +150,7 @@ $scope.resendMessage = function(message) {
 wdpMessagePusher.channel('messages_add.wdm', function(e, msg) {
     var cid = msg.data.threadId;
     var mid = msg.data.messageId;
-    var c = findConversation(cid);
+    var c = $scope.conversations.getById(cid);
     if (c) {
         pullMessage(mid).then(function() {
             if (isActive(c)) {
@@ -152,10 +167,15 @@ wdpMessagePusher.channel('messages_add.wdm', function(e, msg) {
 // Startup
 var timer;
 if ($scope.serverMatchRequirement) {
-    loadConversations().then(function() {
-        $scope.showConversation($scope.conversations[0]);
+    // loadConversations().then(function() {
+    //     $scope.showConversation($scope.conversations[0]);
+    //     $scope.cvsListFirstLoading = false;
+    // });
+    $scope.conversations.fetch().then(function() {
+        $scope.showConversation($scope.conversations.collection[0]);
         $scope.cvsListFirstLoading = false;
     });
+
 
     wdpMessagePusher.start();
 
@@ -166,6 +186,7 @@ if ($scope.serverMatchRequirement) {
 
 // Shutdown
 $scope.$on('$destroy', function() {
+    $scope.conversations.clear();
     $scope.cvsCache.reset();
     $timeout.cancel(timer);
     wdpMessagePusher.unchannel('.wdm');
@@ -307,32 +328,28 @@ function dropMessage(c, m) {
     }
 }
 
-function activeConversation(conversation) {
+function activeConversation(c) {
     var defer = $q.defer();
-    if (isActive(conversation)) {
+    if ($scope.activeConversation === c) {
         defer.reject();
     }
     else {
-        var curActiveCvs = _($scope.conversations).find(isActive);
+        var curActiveCvs = $scope.activeConversation;
         if (curActiveCvs) {
-            deactive(curActiveCvs);
-            if (curActiveCvs.unread_message_count) {
-                markConversationAsRead(curActiveCvs);
-            }
+            curActiveCvs.allRead();
         }
-        active(conversation);
-        // Change conversation content right now.
-        $scope.activeConversation = conversation;
+        // Change c content right now.
+        $scope.activeConversation = c;
         // If already read any message, just active it.
         // Or load messages.
-        if (hasMessage(conversation) || isLoaded(conversation)) {
-            defer.resolve(conversation);
+        if (c.messages.length || c.loaded) {
+            defer.resolve(c);
         }
         else {
             $scope.cvsChanging = true;
-            loadMessages(conversation, true).then(function success() {
+            c.messages.fetch().then(function success() {
                 $scope.cvsChanging = false;
-                defer.resolve(conversation);
+                defer.resolve(c);
             }, function error() {
                 $scope.cvsChanging = false;
                 defer.reject();
@@ -520,10 +537,8 @@ function removeSelected() {
     _.chain($scope.conversations).filter(isSelected).each(remove);
 }
 
-function toggleSelected(conversation, selected) {
-    $scope.cvsCache.put(conversation, {
-        selected: typeof selected !== 'undefined' ? selected : !isSelected(conversation)
-    });
+function toggleSelected(c, selected) {
+    c.selected = typeof selected !== 'undefined' ? selected : !c.selected;
 }
 function select(conversation) {
     toggleSelected(conversation, true);
@@ -532,13 +547,13 @@ function deselect(conversation) {
     toggleSelected(conversation, false);
 }
 function toggleSelectedAll() {
-    _($scope.conversations).each(isSelectedAll() ? deselect : select);
+    $scope.conversations.forEach(isSelectedAll() ? deselect : select);
 }
 function selectAll() {
-    _($scope.conversations).each(select);
+    $scope.conversations.forEach(select);
 }
 function deselectAll() {
-    _($scope.conversations).each(deselect);
+    $scope.conversations.forEach(deselect);
 }
 function isSelected(conversation) {
     return $scope.cvsCache.get(conversation, 'selected');
