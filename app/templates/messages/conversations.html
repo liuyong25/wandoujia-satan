@@ -88,8 +88,7 @@
                                 <div class="wdmer-a-a"
                                     ng-show="m.type >= 2 && m.type <= 6 && activeConversation.addresses.length > 1">
                                     {{$root.DICT.messages.BATCH_RECEIVER_TIP}}
-                                    <span bs-tooltip="{{m.address}}"
-                                        data-options="{container:false}">{{ m.contact_name || m.address }}</span>:
+                                    <span bs-tooltip="{{m.address}}">{{ m.contact_name || m.address }}</span>:
                                 </div>
                                 <div ui-if="m.isSMS" class="wdmer-a-b">{{ m.body }}</div>
                                 <div ui-if="m.isMMS" class="wdmer-a-b" style="color:#999;">{{ $root.DICT.messages.MMS_WARNING }}</div>
@@ -101,7 +100,6 @@
                                 <a href="" class="wdmer-b-del"
                                     ng-show="!m.isPending"
                                     bs-tooltip="{{$root.DICT.messages.ACTION_DELETE}}"
-                                    data-options="{container:false}"
                                     ng-click="removeMessage(activeConversation, m);$root.GA('messages:delete_message')"><i class="messages-icon-ab-del"></i></a>
                             </div>
                         </div>
@@ -116,7 +114,7 @@
                         data-placeholder="{{ editorPlaceholder(activeConversation) }}"></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')"
                         bs-tooltip="{{$root.DICT.messages.BTN_SEND_TIP}}"
-                        data-options="{container:false}"
+                        ng-disabled="!activeConversation.draft"
                         ng-class="{ 'btn-primary': activeConversation.draft}">
                         <span>{{$root.DICT.messages.EDITOR_SUBMIT}}</span>
                     </button>
