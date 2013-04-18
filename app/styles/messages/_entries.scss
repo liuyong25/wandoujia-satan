@@ -42,10 +42,10 @@
     padding: 0 40px;
     margin: 20px 0;
 
-    // @include transition(all $global-transition-duration);
-    // &.ui-animate {
-    //     opacity: 0;
-    // }
+    @include transition(all $global-transition-duration);
+    &.ui-animate {
+        opacity: 0;
+    }
 
     & > * {
         margin-left: 8px;

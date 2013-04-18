@@ -78,12 +78,13 @@
                             ng-click="$root.GA('messages:load_messages')"></div>
                     </div>
 <!--                     <div ng-repeat="(d, g) in cvsCache.get(activeConversation).groups">
-                        <div class="wdme-sep">
-                            <span>{{ d | date:'MMM d' }}</span>
-                        </div>
- -->                        <div class="wdme-row"
-                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6}"
-                            ng-repeat="m in activeConversation.messages.collection">
+ -->
+                    <div ui-animate
+                        ng-repeat="m in activeConversation.messages.collection"
+                        >
+                        <div class="wdme-sep" ui-if="m.isSeparator"><span>{{ m.date | date:'MMM d' }}</span></div>
+                        <div class="wdme-row"
+                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6}">
                             <div class="wdmer-a">
                                 <div class="wdmer-a-a"
                                     ng-show="m.type >= 2 && m.type <= 6 && activeConversation.addresses.length > 1">
@@ -103,7 +104,7 @@
                                     ng-click="removeMessage(activeConversation, m);$root.GA('messages:delete_message')"><i class="messages-icon-ab-del"></i></a>
                             </div>
                         </div>
-                    <!-- </div> -->
+                    </div>
                 </div>
             </section>
             <section class="wdm-editor" ng-hide="cvsChanging || cvsListFirstLoading">

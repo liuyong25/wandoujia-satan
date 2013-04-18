@@ -147,6 +147,17 @@ _.extend(MessagesCollection.prototype, {
         this._collection.sort(function(a, b) {
             return a.date - b.date;
         });
+        this._collection.reduce(function(sep, m) {
+            var dayCount = Math.floor(m.date / 1000 / 3600 / 24);
+            if (dayCount !== sep) {
+                sep = dayCount;
+                m.isSeparator = true;
+            }
+            else {
+                m.isSeparator = false;
+            }
+            return sep;
+        }, 0);
     },
     fetch: function(id) {
         var self = this;

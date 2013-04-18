@@ -12,18 +12,16 @@ link: function(scope, element, attributes) {
         scope.$evalAsync(function() {
             lastHeight = height;
             height = childElement.height();
-            // console.log('new height', lastHeight, height);
         });
     });
 
     scope.$on('wdm:autoscroll:keep', function() {
-        // var height = childElement.height();
         element.scrollTop(height - lastHeight);
-        // lastHeight = height;
-        // console.log('keep', element.scrollTop());
     });
     scope.$on('wdm:autoscroll:bottom', function() {
-        element.scrollTop(childElement.outerHeight());
+        element.stop().animate({
+            scrollTop: childElement.outerHeight()
+        });
     });
 }
 
