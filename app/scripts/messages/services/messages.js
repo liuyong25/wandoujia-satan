@@ -10,7 +10,7 @@ function MessagesCollection(conversation) {
     this._conversation = conversation;
     this._collection = [];
     this.dirty = false;
-    this.loaded = true;
+    this.loaded = false;
 }
 
 MessagesCollection.getInstance = function(conversation) {
@@ -120,6 +120,7 @@ _.extend(MessagesCollection.prototype, {
             var index = self._collection.indexOf(m);
             if (index !== -1) {
                 self._collection.splice(index, 1);
+                m._collection = null;
                 if (!m.isNew) {
                     trash.push(m);
                 }
@@ -133,7 +134,10 @@ _.extend(MessagesCollection.prototype, {
             return $http({
                 method: 'DELETE',
                 url: '/resource/messages/' + m.id
-            }).error(function error() {
+            }).then(function success() {
+                function always() { return removed; }
+                return self._conversation.fetch().then(always, always);
+            }, function error() {
                 self.add(m);
                 return $q.reject();
             });
@@ -155,8 +159,9 @@ _.extend(MessagesCollection.prototype, {
                 method: 'GET',
                 url: '/resource/messages/' + id
             }).then(function success(response) {
-                var m = wrapMessage(response.data);
-                return self.add(m)[0];
+                var m = self.add(wrapMessage(response.data))[0];
+                function always() { return m; }
+                return self._conversation.fetch().then(always, always);
             });
         }
         else {
@@ -176,11 +181,18 @@ _.extend(MessagesCollection.prototype, {
                 params: params
             }).then(function success(response) {
                 var rawData = [].concat(response.data);
-                var messages = rawData.map(wrapMessage);
+                var messages = self.add(rawData.map(wrapMessage));
+                function always() { return messages; }
+
                 if (!dirty) {
                     self.loaded = response.headers('WD-Need-More') === 'false';
                 }
-                return self.add(messages);
+                if (dirty) {
+                    return self._conversation.fetch().then(always, always);
+                }
+                else {
+                    return messages;
+                }
             });
         }
     },
@@ -207,7 +219,9 @@ _.extend(MessagesCollection.prototype, {
                 m.extend(data[index]);
             });
             self.sort();
-            return messages[0].cid;
+
+            function always() { return messages; }
+            return self._conversation.fetch().then(always, always);
         });
     }
 });
@@ -305,6 +319,8 @@ function wrapMessage(origin) {
             _.extend(origin, newData);
         }
     });
+
+    return message;
 }
 
 function guid() {

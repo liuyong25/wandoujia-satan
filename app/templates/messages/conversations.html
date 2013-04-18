@@ -4,7 +4,7 @@
             <section class="wdm-actions">
                 <button class="btn btn-primary"
                     ng-disabled="cvsListFirstLoading"
-                    ng-click="conversations.create();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</button>
+                    ng-click="createConversation();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</button>
                 <button class="btn"
                     ng-disabled="cvsListFirstLoading"
                     ng-click="conversations.toggleSelectAll();$root.GA('messages:select_all:' + conversations.allSelected)"
@@ -112,7 +112,6 @@
                 <form ng-submit="sendMessage(activeConversation)">
                     <textarea rows="1"
                         ng-model="activeConversation.draft"
-                        ng-disabled="!editorEnable"
                         wdm-textarea
                         data-placeholder="{{ editorPlaceholder(activeConversation) }}"></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')"
