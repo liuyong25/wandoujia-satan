@@ -1,0 +1,165 @@
+.wdj-applications{
+	.header{
+		position: fixed;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		height: 44px;
+		overflow: hidden;
+		padding-left: 20px;
+		padding-top: 10px;
+		background: rgba(255, 255, 255, 0.9);
+		z-index: 200;
+	}
+    ul{
+        list-style: none;
+        margin: 0px;
+    }
+	.apps-list{
+		position: fixed;
+		top: 0px;
+		bottom: 70px;
+		overflow-y:auto;
+		padding-top: 54px;
+
+		dl{
+			float: left;
+			width: 160px;
+			height: 160px;
+			background-color: #f5f5f5;
+			margin:0px 0px 10px 10px;
+			text-align: center;
+            position: relative;
+
+			img{
+				margin: 10px 0px 10px 0px;
+                width: 96px;
+                height: 96px;
+			}
+
+            dd.title{
+                margin-left: 0px;
+                height: 40px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+
+            dd.toolbar{
+                opacity: 0;
+                height: 26px;
+                overflow: hidden;
+                text-align: left;
+                margin-left: 0px;
+                background-color: #000;
+                position: absolute;
+                bottom: 0px;
+                left: 0px;
+                right: 0px;
+                @include transition(opacity 0.3s);
+
+                .btn-icon-check{
+                    width: 25px;
+                    height: 26px;
+                    padding-left: 5px;
+                    padding-top: 2px;
+                    display: inline-block;
+                }
+                .btn-icon-del{
+                    width: 20px;
+                    height: 22px;
+                    padding-top: 2px;
+                    display: inline-block;
+                    float: right;
+                }
+                .btn-icon-info{
+                    width: 25px;
+                    height: 26px;
+                    padding-top: 2px;
+                    display: inline-block;
+                    float: right;
+                }
+            }
+		}
+
+        dl:hover{
+            dd.toolbar{
+                opacity: 0.8;
+            }
+        }
+
+	}
+
+    .mask{
+        display: none;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background-color: rgba(9,9,9,0.8);
+        z-index: 201;
+        text-align: center;
+
+        dl.info{
+            width: 296px;
+            background-color: #fff;
+            border-radius: 6px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+
+            span.close-btn{
+                position: absolute;
+                right: 12px;
+                top: 0px;
+                font-size: 22px;
+                color: #999;
+                font-weight: bolder;
+                cursor: pointer;
+            }
+
+            hr{
+                color: #e7e7e7;
+                width: 248px;
+                margin-top: 10px;
+                margin: 10px auto 14px auto;
+            }
+
+            dt{
+                img{
+                    margin-top: 25px;
+                    width: 60px;
+                    height: 60px;
+                }
+                h2{
+                    font-size: 14px;
+                    line-height: 14px;
+                    margin: 6px 0px 0px 0px;
+                }
+            }
+            dd{
+                p{
+                    display: inline-block;
+                }
+                p.title{
+                    width: 35%;
+                    text-align: right;
+                }
+                p.detail{
+                    width: 50%;
+                    text-align: left;
+                }
+                ul.detail{
+                    vertical-align: top;
+                    width: 50%;
+                    display: inline-block;
+                    li{
+                        text-align: left;
+                    }
+                }
+            }
+        }
+    }
+
+	@import "icon";
+}

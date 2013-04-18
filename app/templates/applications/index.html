@@ -1,2 +1,67 @@
 <div class="wdj-applications">
+
+    <!-- <div class="wd-loading" data-visible="true"></div> -->
+    <!-- header -->
+    <div class="header">
+        <button class="btn btn-primary installApp">
+            <i class="icon-add"></i>
+            Install app
+        </button>
+        <button class="btn select-all" ng-click="selectAll()">
+            <i class="icon-sel"></i>
+            Select all
+        </button>
+    </div>
+    <!-- header end -->
+
+    <!-- 应用列表 -->
+    <div class="apps-list">
+        <dl ng-repeat="item in list" ng>
+            <dt><img ng-src="{{item.icon}}"></dt>
+            <dd class="title" title="{{item.name}}">{{item.name}}</dd>
+            <dd class="toolbar">
+                <span class="btn-icon-check">
+                    <input type="checkbox" ng-checked="item.checked" ng-click="checkedApp($event)">
+                </span>
+                <span class="btn-icon-info" ng-click="showAppInfo(item.package_name)">
+                    <i class="icon-info"></i>
+                </span>
+                <span class="btn-icon-del">
+                    <i class="icon-del"></i>
+                </span>
+            </dd>
+        </dl>
+    </div>
+    <!-- 应用列表 end -->
+
+    <!-- 遮罩层 -->
+    <div class="mask">
+        <dl class="info">
+            <span class="close-btn" ng-click="closeAppInfo()">&times;</span>
+            <dt>
+                <img ng-src="{{info.icon}}">
+                <h2>{{info.name}}</h2>
+            </dt>
+            <hr>
+            <dd>
+                <p class="title">Size:</p>
+                <p class="detail">{{info.apk_size}} M</p>
+            </dd>
+            <dd>
+                <p class="title">Installation:</p>
+                <p class="detail">{{info.installed_location}}</p>
+            </dd>
+            <dd>
+                <p class="title">Version:</p>
+                <p class="detail">{{info.version_name}}</p>
+            </dd>
+            <dd>
+                <p class="title">Permission:</p>
+                <ul class="detail">
+                    <li ng-repeat="item2 in info.requested_permission">{{item2}}</li>
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    <!-- 遮罩层 end  -->
 </div>
