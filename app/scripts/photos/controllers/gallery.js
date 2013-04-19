@@ -60,7 +60,7 @@ if ($window.chrome &&
 
 // Temp
 wdpMessagePusher
-    .channel('photos_add.wdp', function(message) {
+    .channel('photos_add.wdp', function(e, message) {
         _.each(message.data, function(id) {
             var photo = _.find($scope.photos, function(photo) {
                 return photo.id === id;
@@ -72,7 +72,7 @@ wdpMessagePusher
             }
         });
     })
-    .channel('photos_remove.wdp', function(message) {
+    .channel('photos_remove.wdp', function(e, message) {
         _.each(message.data, function(id) {
             var photo = _.find($scope.photos, function(photo) {
                 return photo.id === id;
