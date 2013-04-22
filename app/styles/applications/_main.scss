@@ -10,6 +10,13 @@
 		padding-top: 10px;
 		background: rgba(255, 255, 255, 0.9);
 		z-index: 200;
+
+        button.delete-all{
+            display: none;
+            i:hover{
+                background-position: 0 -208px;
+            }
+        }
 	}
     ul{
         list-style: none;
@@ -21,6 +28,7 @@
 		bottom: 70px;
 		overflow-y:auto;
 		padding-top: 54px;
+        padding-left: 10px;
 
 		dl{
 			float: left;
@@ -30,6 +38,7 @@
 			margin:0px 0px 10px 10px;
 			text-align: center;
             position: relative;
+            cursor: pointer;
 
 			img{
 				margin: 10px 0px 10px 0px;
@@ -56,6 +65,7 @@
                 left: 0px;
                 right: 0px;
                 @include transition(opacity 0.3s);
+                cursor: default;
 
                 .btn-icon-check{
                     width: 25px;
@@ -83,7 +93,7 @@
 
         dl:hover{
             dd.toolbar{
-                opacity: 0.8;
+                opacity: 1;
             }
         }
 
@@ -91,22 +101,31 @@
 
     .mask{
         display: none;
-        position: fixed;
+        position: absolute;
         top: 0px;
         left: 0px;
         right: 0px;
         bottom: 0px;
-        background-color: rgba(9,9,9,0.8);
-        z-index: 201;
+        background-color: rgba(9,9,9,0.9);
+        z-index: 1031;
         text-align: center;
 
         dl.info{
             width: 296px;
+            height: 300px;
             background-color: #fff;
             border-radius: 6px;
             margin: 0 auto;
             position: relative;
             overflow: hidden;
+
+            div.detail-info{
+                position: fixed;
+                width: 296px;
+                overflow-y:auto;
+                overflow-x:hidden;
+                height: 175px;
+            }
 
             span.close-btn{
                 position: absolute;
@@ -122,7 +141,7 @@
                 color: #e7e7e7;
                 width: 248px;
                 margin-top: 10px;
-                margin: 10px auto 14px auto;
+                margin: 10px auto 5px auto;
             }
 
             dt{
@@ -144,10 +163,12 @@
                 p.title{
                     width: 35%;
                     text-align: right;
+                    margin-bottom: 0px;
                 }
                 p.detail{
                     width: 50%;
                     text-align: left;
+                    margin-bottom: 0px;
                 }
                 ul.detail{
                     vertical-align: top;
