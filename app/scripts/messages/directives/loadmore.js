@@ -23,9 +23,11 @@ link: function(scope, element, attributes) {
     element.on('click', function() {
         if (scope.loading) { return; }
         scope.$apply(function() {
+            scope.$eval(attributes.pre);
             scope.loading = true;
             $q.when(scope.$eval(attributes.wdmLoadMore)).then(function success() {
                 scope.loading = false;
+                scope.$eval(attributes.post);
             }, function error() {
                 scope.loading = false;
             });

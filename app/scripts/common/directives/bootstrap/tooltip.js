@@ -8,17 +8,21 @@ return [function() {
     return {
         restrict: 'EAC',
         link: function($scope, element, attributes) {
-            attributes.$observe('bsTooltip', function(value) {
-                var options = _.extend({
-                    container: 'body',
-                    title: value,
-                    delay: { show: 200, hide: 0 }
-                }, $scope.$eval(attributes.options));
-                element
-                    .tooltip('destroy')
-                    .tooltip(options);
+            element.tooltip(_.extend({
+                container: 'body',
+                title: function() {
+                    return attributes.bsTooltip;
+                },
+                delay: { show: 200, hide: 0 }
+            }, $scope.$eval(attributes.options)));
+
+            attributes.$observe('disabled', function(value) {
+                if (value) {
+                    element.tooltip('hide');
+                }
             });
-            $scope.$on('$destroy', function() {
+
+            element.on('$destroy', function() {
                 element.tooltip('destroy');
             });
         }
