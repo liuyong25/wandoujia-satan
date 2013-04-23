@@ -1,7 +1,7 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev',function($scope,$http,wdDev){
+    return ['$scope','$http','wdDev','wdpMessagePusher',function($scope,$http,wdDev,wdpMessagePusher){
 
         //$scope相关
         //展示应用列表
@@ -19,6 +19,9 @@ define([
         //全局
         //应用数据列表
         var G_appList = [];
+
+        //上传进度相关
+        var G_uploadingList = [];
 
         //权限显示对照表
         var G_permissionWord = {
@@ -54,6 +57,9 @@ define([
                     data['installed_location'] = "SD card";
                 break;
             };
+
+            //是否显示提示
+            data['confirmTipShow'] = false;
             data['checked'] = false;
             return data;
         };
@@ -73,10 +79,15 @@ define([
                 method: 'delete',
                 url: '/resource/apps/'+package_name
             }).success(function(data) {
-
             }).error(function(){
                 //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
             });
+            for(var i = 0 , l = $scope.list.length;i < l ; i++ ){
+                if($scope.list[i]['package_name'] == package_name ){
+                    $scope.list[i]['confirmTipShow'] = true;
+                    break;
+                };
+            };
         };
 
         //删除多个
@@ -85,14 +96,7 @@ define([
             for(var i = 0 , l = $scope.list.length ; i<l ; i++ ){
                 if( $scope.list[i]['checked'] == true ){
                     dels.push($scope.list[i]['package_name']);
-                };
-            };
-            for(var i = 0 , l = dels.length;i<l;i++ ){
-                for(var m = 0 , n = $scope.list.length ; m<n ; m++ ){
-                    if( $scope.list[m]['checked'] == true ){
-                        $scope.list.splice(m,1);
-                        break;
-                    };
+                    $scope.list[i]['confirmTipShow'] = true;
                 };
             };
 
@@ -111,7 +115,7 @@ define([
                     //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
                 });
             };
-            $('.header button.delete-all').hide();
+
         };
 
         //上传APK
@@ -130,10 +134,16 @@ define([
             message:{
                 typeError:"The file's type is error!"
             },
-            autoUpload: false,
+            autoUpload: true,
             callbacks: {
                 onSubmit: function(id,name) {
                     showUploadApp(name);
+                },
+                onProgress: function(id,name,progress,total){
+                    updateUpload(name,Math.floor(progress/total*100));
+                },
+                onerror:function(){
+                    //console.log();
                 }
             }
         });
@@ -141,11 +151,36 @@ define([
         //上传安装应用时，显示对应的应用
         function showUploadApp(package_name){
             var item = {
-                package_name:package_name
+                package_name:package_name,
+                progress:'1%',
+                progressShow:true,
+                doneTipShow: false
             };
             $scope.newList.push(item);
             $scope.$apply();
             changeAppsBlock();
+        };
+
+        //更新上传进度
+        function updateUpload(name,progress){
+            for(var i = 0 , l = $scope.newList.length; i < l ; i++ ){
+                if( $scope.newList[i]['package_name'] == name ){
+                    if( progress == 100 ){
+                        $scope.newList[i]['confirmTipShow'] = true;
+                        $scope.newList[i]['progressShow'] = false;
+                        $scope.$apply();
+                    }else{
+                        $scope.newList[i]['progress'] = ""+progress+"%";
+                        $scope.$apply();
+                    };
+                    break;
+                };
+            };
+        };
+
+        //上传之后或者过程中关闭那个应用
+        function closeUploadApp(e){
+            $(e.target.parentNode).hide();
         };
 
         //显示对应的应用
@@ -212,8 +247,53 @@ define([
             $(window).one("resize",changeAppsBlock);
         };
 
+        //webSocket处理
+        wdpMessagePusher
+            .channel('app_install', function(e, message) {
+                var name = message.data.packageName;
+                console.log('app_install');
+                console.log(name);
+                $http({
+                    method: 'get',
+                    url: '/resource/apps/'+name
+                }).success(function(data){
+                    for(var i = 0,l = $scope.newList.length;i<l; i++ ){
+                        if( $scope.newList[i]['package_name'] == data['package_name'] ){
+                            console.log('ttttt');
+                            $scope.newList.splice(i,1);
+                            break;
+                        };
+                    };
+                    for(var i = 0,l = $scope.list.length; i<l; i++ ){
+                        if($scope.list[i]['package_name'] == data['package_name'] ){
+                            $scope.list.splice(i,1);
+                            break;
+                        };
+                    };
+                    $scope.list.unshift(data);
+                }).error(function(){
+                });
+            })
+            .channel('app_uninstall', function(e, message) {
+                var name = message.data.packageName;
+                console.log('app_uninstall');
+                console.log(name);
+                for(var i = 0,l = $scope.list.length;i<l;i++ ){
+                    if($scope.list[i]['package_name']==name){
+                        $scope.list.splice(i,1);
+                        $scope.$apply();
+                        break;
+                    };
+                };
+            });
+
         //主程序
         getAppListData();
+
+        //析构
+        $scope.$on('$destroy', function() {
+            wdpMessagePusher.unchannel('*');
+        });
 
         //需要挂载到socpe上面的方法
         $scope.showAppInfo = showAppInfo;
@@ -222,6 +302,7 @@ define([
         $scope.checkedApp = checkedApp;
         $scope.delApp = delApp;
         $scope.delMoreApps = delMoreApps;
+        $scope.closeUploadApp = closeUploadApp;
 
 //最后的括号
     }];

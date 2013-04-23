@@ -25,7 +25,13 @@
         <dl class="new-list" ng-repeat="item in newList">
             <dt><img src="../../images/applications/app_default.png"></dt>
             <dd class="title" title="{{item.package_name}}">{{item.package_name}}</dd>
-            <!-- <dd class="toolbar"></dd> -->
+            <dd class="progress" ng-show="item.progressShow"><span style="width:{{item.progress}}"></span></dd>
+
+            <!-- 确认提示 -->
+            <dd class="confirm" ng-show="item.confirmTipShow"><i class="icon-phone"></i><p>Confirm install on your phone.</p></dd>
+            <!-- 确认提示 end -->
+
+            <span class="close-btn" ng-click="closeUploadApp($event);">&times;</span>
         </dl>
         <!-- 新安装的应用列表 end -->
 
@@ -41,6 +47,11 @@
                     <i class="icon-del"></i>
                 </span>
             </dd>
+
+            <!-- 确认提示 -->
+            <dd class="confirm" ng-show="item.confirmTipShow"><i class="icon-phone"></i><p>Confirm uninstall on your phone.</p></dd>
+            <!-- 确认提示 end -->
+
         </dl>
         <!-- 已安装的应用列表 end -->
 
