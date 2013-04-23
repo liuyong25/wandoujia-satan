@@ -4,10 +4,10 @@ define([
     _
 ) {
 'use strict';
-return ['$scope', '$resource', 'wdmConversationsCache', 'wdmMessagesCache', '$q', '$http',
-        'wdpMessagePusher', '$timeout', 'wdAlert', 'GA', '$route', 'wdmConversations',
-function($scope,   $resource,   wdmConversationsCache,   wdmMessagesCache,   $q,   $http,
-         wdpMessagePusher,   $timeout,   wdAlert,   GA,   $route,   wdmConversations) {
+return ['$scope', '$resource', '$q', '$http', 'wdpMessagePusher', '$timeout', 'wdAlert',
+        'GA', '$route', 'wdmConversations',
+function($scope,   $resource,   $q,   $http,   wdpMessagePusher,   $timeout,   wdAlert,
+         GA,   $route,   wdmConversations) {
 
 $scope.serverMatchRequirement = $route.current.locals.versionSupport;
 $scope.conversations = wdmConversations;

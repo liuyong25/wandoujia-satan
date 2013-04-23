@@ -2,8 +2,6 @@ define([
     'angular',
     'common/main',
     'messages/controllers/conversation',
-    'messages/services/conversations-cache',
-    'messages/services/messages-cache',
     'messages/directives/autoscroll',
     'messages/filters/group',
     'messages/directives/loadmore',
@@ -19,8 +17,6 @@ define([
     angular,
     common,
     conversationController,
-    conversationsCache,
-    messagesCache,
     autoscroll,
     groupFilter,
     loadmore,
@@ -37,8 +33,6 @@ define([
 // jshint unused:false
 angular.module('wdMessages', ['wdCommon'])
     .controller('wdmConversationController', conversationController)
-    .factory('wdmConversationsCache', conversationsCache)
-    .factory('wdmMessagesCache', messagesCache)
     .factory('wdmMessages', messages)
     .factory('wdmConversations', conversations)
     .directive('wdmAutoScroll', autoscroll)
