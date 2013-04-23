@@ -15,7 +15,13 @@
     height: 64px;
     border: 1px solid $wdm-border-color;
     margin-bottom: -1px;
-    @include transition(background-color, $global-transition-duration / 4);
+    @include transition(background-color $global-transition-duration / 4,
+                        border-color $global-transition-duration / 4,
+                        opacity $global-transition-duration);
+
+    &.ui-animate {
+        opacity: 0;
+    }
 
     .badge {
         display: inline-block;

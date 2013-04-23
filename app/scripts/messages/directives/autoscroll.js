@@ -8,20 +8,24 @@ link: function(scope, element, attributes) {
     var lastHeight = 0;
     var height = 0;
 
-    scope.$watch(attributes.wdmAutoScroll, function() {
-        scope.$evalAsync(function() {
+    scope.$on('wdm:autoscroll:prekeep', function() {
+        lastHeight = childElement.height();
+    });
+    scope.$on('wdm:autoscroll:keep', function() {
+        setTimeout(function() {
+            var height = childElement.height();
+            element.stop().scrollTop(height - lastHeight);
             lastHeight = height;
-            height = childElement.height();
-        });
+        }, 0);
+    });
+    scope.$on('wdm:autoscroll:flip', function() {
+        element.stop().scrollTop(childElement.outerHeight());
     });
 
-    scope.$on('wdm:autoscroll:keep', function() {
-        element.scrollTop(height - lastHeight);
-    });
     scope.$on('wdm:autoscroll:bottom', function() {
-        element.stop().animate({
+        element.animate({
             scrollTop: childElement.outerHeight()
-        });
+        }, 1000);
     });
 }
 

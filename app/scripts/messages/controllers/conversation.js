@@ -17,7 +17,7 @@ $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 
 
-wdpMessagePusher.channel('messages_add.wdm', function(e, msg) {
+wdpMessagePusher.channel('messages_add.wdm messages_update.wdm', function(e, msg) {
     var cid = msg.data.threadId;
     var mid = msg.data.messageId;
     var c = $scope.conversations.getById(cid);
@@ -58,7 +58,11 @@ $scope.createConversation = function() {
 $scope.showConversation = function(conversation) {
     if (!conversation) { return; }
     var promise = activeConversation(conversation);
-    promise.then(scrollIntoView);
+    promise.then(function() {
+        _.defer(function() {
+            $scope.$broadcast('wdm:autoscroll:flip');
+        });
+    });
     return promise;
 };
 
@@ -75,6 +79,15 @@ $scope.sendMessage = function(c) {
     });
     scrollIntoView();
 };
+
+$scope.resendMessage = function(c, m) {
+    $scope.conversations.resendMessage(c, m).then(function(cc) {
+        if (cc !== $scope.activeConversation) {
+            $scope.showConversation(cc);
+        }
+    });
+};
+
 
 $scope.removeSelected = function() {
     wdAlert.confirm(
@@ -104,19 +117,6 @@ $scope.removeMessage = function(c, m) {
     });
 };
 
-// $scope.resendMessage = function(message) {
-//     var promise;
-//     if (typeof message.id === 'string') {
-//         // client only message data.
-//         promise = sendMessage(message);
-//     }
-//     else {
-//         promise = resendMessage(message);
-//     }
-//     promise.then(function() {
-//         pullConversation(message.thread_id);
-//     });
-// };
 
 // Startup
 var timer;
@@ -126,8 +126,6 @@ if ($scope.serverMatchRequirement) {
         $scope.cvsListFirstLoading = false;
     });
 
-    wdpMessagePusher.start();
-
     timer = $timeout(function update() {
        timer = $timeout(update, 60000 - Date.now() % 60000);
     }, 60000 - Date.now() % 60000);
@@ -136,7 +134,6 @@ if ($scope.serverMatchRequirement) {
 // Shutdown
 $scope.$on('$destroy', function() {
     $scope.conversations.clear();
-    $scope.cvsCache.reset();
     $timeout.cancel(timer);
     wdpMessagePusher.unchannel('.wdm');
 });

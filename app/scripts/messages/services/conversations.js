@@ -184,27 +184,32 @@ _.extend(ConversationCollection.prototype, {
             });
         }
     },
-    sendMessages: function(c) {
+    _placeMessages: function(c, messages) {
+        messages = [].concat(messages);
         var self = this;
-        return c.sendMessages().then(function success(messages) {
-            var cid = messages[0].cid;
-            if (c.id === cid) { return c; }
-            var existed = self.getById(cid);
-            if (existed) {
-                existed.messages.add(messages);
-                var promise = existed.fetch();
-                promise.then(function success() {
-                    self.remove(c);
-                });
-                return promise;
+        var cid = messages[0].cid;
+        if (c.id === cid) { return c; }
+        var existed = self.getById(cid);
+        if (existed) {
+            existed.messages.add(messages);
+            var promise = existed.fetch();
+            promise.then(function success() {
+                self.remove(c);
+            });
+            return promise;
+        }
+        else {
+            if (c.isNew) {
+                c.rawData.id = cid;
+                return c.fetch();
             }
-            else {
-                if (c.isNew) {
-                    c.rawData.id = cid;
-                    return c.fetch();
-                }
-            }
-        });
+        }
+    },
+    sendMessages: function(c) {
+        return c.sendMessages().then(this._placeMessages.bind(this, c));
+    },
+    resendMessage: function(c, m) {
+        return c.resendMessage(m).then(this._placeMessages.bind(this, c));
     }
 });
 
@@ -335,6 +340,10 @@ function wrapConversation(origin) {
             else {
                 return $q.reject();
             }
+        },
+
+        resendMessage: function(m) {
+            return m.send();
         }
     });
 

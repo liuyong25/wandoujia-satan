@@ -102,6 +102,9 @@ _.extend(MessagesCollection.prototype, {
                 return existed;
             }
             else {
+                if (m._collection) {
+                    m = wrapMessage(m.rawData);
+                }
                 m._collection = self;
                 collection.push(m);
                 return m;
@@ -293,6 +296,7 @@ function wrapMessage(origin) {
         send: function() {
             var self = this;
             var config;
+            this.rawData.status = 32;
             if (this.isNew) {
                 config = {
                     method: 'POST',
@@ -310,13 +314,11 @@ function wrapMessage(origin) {
                 };
             }
             return $http(config).then(function success(response) {
-                if (!response.data.length) {
-                    return self.cid;
+                if (response.data && response.data.length) {
+                    self.extend(response.data[0]);
+                    self.sort();
                 }
-                var data = response.data[0];
-                self.extend(data);
-                self.sort();
-                return self.cid;
+                return self;
             }, function error() {
                 self.rawData.status = 64;
                 return $q.reject();
