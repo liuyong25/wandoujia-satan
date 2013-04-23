@@ -4,14 +4,19 @@
 		top: 0px;
 		left: 0px;
 		right: 0px;
-		height: 44px;
+		height: 40px;
 		overflow: hidden;
 		padding-left: 20px;
 		padding-top: 10px;
 		background: rgba(255, 255, 255, 0.9);
 		z-index: 200;
 
+        button.select-all{
+            margin-left: 6px;
+        }
+
         button.delete-all{
+            margin-left: 6px;
             display: none;
             i:hover{
                 background-position: 0 -208px;
@@ -27,7 +32,7 @@
 		top: 0px;
 		bottom: 70px;
 		overflow-y:auto;
-		padding-top: 54px;
+		padding-top: 50px;
         padding-left: 10px;
 
 		dl{
@@ -41,9 +46,9 @@
             cursor: pointer;
 
 			img{
-				margin: 10px 0px 10px 0px;
-                width: 96px;
-                height: 96px;
+                margin-bottom: 6px;
+                width: 72px;
+                height: 72px;
 			}
 
             dd.title{
@@ -59,8 +64,8 @@
                 overflow: hidden;
                 text-align: left;
                 margin-left: 0px;
-                background-color: #000;
                 position: absolute;
+                background-color: #000;
                 bottom: 0px;
                 left: 0px;
                 right: 0px;
@@ -96,7 +101,8 @@
                 bottom: 0px;
                 background: #F38200;
                 height: 52px;
-                width: 165px;
+                right: 0px;
+                left: 0px;
 
                 i.icon-phone{
                     position: absolute;
@@ -127,6 +133,13 @@
         }
 
         dl.new-list{
+
+            dt{
+                img{
+                    width: 96px;
+                    height: 96px;
+                }
+            }
             cursor: default;
 
             span.close-btn{
@@ -170,8 +183,8 @@
         text-align: center;
 
         dl.info{
-            width: 296px;
-            height: 300px;
+            width: 316px;
+            height: 330px;
             background-color: #fff;
             border-radius: 6px;
             margin: 0 auto;
@@ -180,7 +193,7 @@
 
             div.detail-info{
                 position: fixed;
-                width: 296px;
+                width: 316px;
                 overflow-y:auto;
                 overflow-x:hidden;
                 height: 175px;
@@ -188,34 +201,43 @@
 
             span.close-btn{
                 position: absolute;
-                right: 12px;
-                top: 0px;
+                right: 15px;
+                top: 10px;
                 font-size: 22px;
-                color: #999;
+                color: #333;
                 font-weight: bolder;
                 cursor: pointer;
+                opacity: 0.65;
+            }
+
+            span.close-btn:hover{
+                opacity: 1;
+                @include transition(opacity 0.3s);
             }
 
             hr{
                 color: #e7e7e7;
-                width: 248px;
+                width: 270px;
                 margin-top: 10px;
                 margin: 10px auto 5px auto;
             }
 
             dt{
                 img{
-                    margin-top: 25px;
+                    margin-top: 30px;
                     width: 60px;
                     height: 60px;
                 }
                 h2{
-                    font-size: 14px;
+                    font-size: 18px;
+                    font-weight: normal;
                     line-height: 14px;
                     margin: 6px 0px 0px 0px;
                 }
             }
             dd{
+                margin-left: -15px;
+                line-height: 22px;
                 p{
                     display: inline-block;
                 }
@@ -223,8 +245,11 @@
                     width: 35%;
                     text-align: right;
                     margin-bottom: 0px;
+                    margin-right: 10px;
+                    color: #999;
                 }
                 p.detail{
+                    color: #555;
                     width: 50%;
                     text-align: left;
                     margin-bottom: 0px;
@@ -234,10 +259,36 @@
                     width: 50%;
                     display: inline-block;
                     li{
+                        line-height: 20px;
+                        color: #555;
                         text-align: left;
                     }
                 }
             }
+
+            div.bottons{
+                padding-top: 6px;
+                display: block;
+                height: 28px;
+                width: 316px;
+                position: absolute;
+                bottom: 0px;
+                text-align: center;
+                background-color: #f5f5f5;
+                border-top: 1px solid #dcdcdc;
+                color: #999;
+                cursor: pointer;
+                font-weight: normal;
+
+                p{
+                    display: inline-block;
+                    margin: 0px;
+                }
+                .icon-del{
+                    margin-right: 4px;
+                }
+            }
+
         }
     }
 

@@ -88,6 +88,7 @@ define([
                     break;
                 };
             };
+            $('.mask').hide();
         };
 
         //删除多个
@@ -142,6 +143,14 @@ define([
                 onProgress: function(id,name,progress,total){
                     updateUpload(name,Math.floor(progress/total*100));
                 },
+                onComplete: function(id, name, data){
+                    var package_name = data.result[0].package_name;
+                    for(var i = 0, l = $scope.newList.length; i < l ; i++ ){
+                        if($scope.newList[i]['file_name'] == name){
+                            $scope.newList[i]['package_name'] = package_name;
+                        };
+                    };
+                },
                 onerror:function(){
                     //console.log();
                 }
@@ -149,14 +158,14 @@ define([
         });
 
         //上传安装应用时，显示对应的应用
-        function showUploadApp(package_name){
+        function showUploadApp(file_name){
             var item = {
-                package_name:package_name,
+                file_name:file_name,
                 progress:'1%',
                 progressShow:true,
                 doneTipShow: false
             };
-            $scope.newList.push(item);
+            $scope.newList.unshift(item);
             $scope.$apply();
             changeAppsBlock();
         };
@@ -164,7 +173,7 @@ define([
         //更新上传进度
         function updateUpload(name,progress){
             for(var i = 0 , l = $scope.newList.length; i < l ; i++ ){
-                if( $scope.newList[i]['package_name'] == name ){
+                if( $scope.newList[i]['file_name'] == name ){
                     if( progress == 100 ){
                         $scope.newList[i]['confirmTipShow'] = true;
                         $scope.newList[i]['progressShow'] = false;
@@ -190,7 +199,7 @@ define([
             mask.children('.info').css({
                 'top':top
             });
-            mask.find('.detail-info').css('top',top+15+105);
+            mask.find('.detail-info').css('top',top + 17 + 110 + 5 );
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
                 mask.show();
@@ -242,7 +251,9 @@ define([
             var n = Math.floor(docWidth/170);
             var w = docWidth/n - 10;
             setTimeout(function(){
-                $(".apps-list dl").width(w).height(w);
+                var ele = $(".apps-list dl");
+                ele.width(w).height(w);
+                ele.find('img').css('margin-top',(w-118)/2+'px' );
             },100);
             $(window).one("resize",changeAppsBlock);
         };
@@ -259,7 +270,6 @@ define([
                 }).success(function(data){
                     for(var i = 0,l = $scope.newList.length;i<l; i++ ){
                         if( $scope.newList[i]['package_name'] == data['package_name'] ){
-                            console.log('ttttt');
                             $scope.newList.splice(i,1);
                             break;
                         };
@@ -271,6 +281,7 @@ define([
                         };
                     };
                     $scope.list.unshift(data);
+                    changeAppsBlock();
                 }).error(function(){
                 });
             })

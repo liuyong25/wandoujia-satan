@@ -12,7 +12,7 @@
             Select all
         </button>
         <button class="btn delete-all" ng-click="delMoreApps()">
-            <i class="icon-del"></i>
+            <i class="icon-delAll"></i>
             Delete
         </button>
     </div>
@@ -24,7 +24,7 @@
         <!-- 新安装的应用列表 -->
         <dl class="new-list" ng-repeat="item in newList">
             <dt><img src="../../images/applications/app_default.png"></dt>
-            <dd class="title" title="{{item.package_name}}">{{item.package_name}}</dd>
+            <dd class="title" title="{{item.file_name}}">{{item.file_name}}</dd>
             <dd class="progress" ng-show="item.progressShow"><span style="width:{{item.progress}}"></span></dd>
 
             <!-- 确认提示 -->
@@ -59,8 +59,8 @@
     <!-- 应用列表 end -->
 
     <!-- 遮罩层 -->
-    <div class="mask">
-        <dl class="info">
+    <div class="mask" ng-click="closeAppInfo()">
+        <dl class="info" ng-click="$event.stopPropagation();">
             <span class="close-btn" ng-click="closeAppInfo()">&times;</span>
             <dt>
                 <img ng-src="{{info.icon}}">
@@ -86,6 +86,9 @@
                         <li ng-repeat="item2 in info.requested_permission">{{item2}}</li>
                     </ul>
                 </dd>
+            </div>
+            <div class="bottons" ng-click="delApp(info.package_name)">
+                <i class="icon-del"></i><p>Uninstall</p>
             </div>
         </dl>
     </div>
