@@ -1,5 +1,5 @@
 define([
-        'text!templates/bootstrap/navbar.html'
+        'text!templates/common/navbar.html'
     ], function(
         template
     ) {
@@ -8,7 +8,6 @@ return [function() {
     return {
         restrict: 'EAC',
         replace: true,
-        transclude: true,
         template: template,
         controller: ['$scope', 'wdAuthToken', '$route', 'wdpMessagePusher', function($scope, wdAuthToken, $route, wdpMessagePusher) {
             $scope.messageNotification = false;
