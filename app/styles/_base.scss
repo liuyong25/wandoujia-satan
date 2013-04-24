@@ -1,10 +1,24 @@
 // Variables
 $global-line-height: 20px;
 $global-transition-duration: 0.4s;
+$global-left-offset: 60px;
 
 
 // http://docs.angularjs.org/api/ng.directive:ngCloak
 [ng\:cloak], [ng-cloak], .ng-cloak { display: none; }
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.viewport {
+    @include position;
+    height: 100%;
+    margin-left: $global-left-offset;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 
 body {
     background: #fff;

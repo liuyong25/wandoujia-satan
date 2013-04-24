@@ -6,6 +6,12 @@
         width: 150px;
     }
 }
+.wdme-block {
+    @include transition(all $global-transition-duration);
+    &.ui-animate {
+        opacity: 0;
+    }
+}
 .wdme-sep {
     text-align: center;
     height: 40px;
@@ -41,11 +47,6 @@
     width: 100%; // Firefox 19- need to set width or turn into inline-box
     padding: 0 40px;
     margin: 20px 0;
-
-    // @include transition(all $global-transition-duration);
-    // &.ui-animate {
-    //     opacity: 0;
-    // }
 
     & > * {
         margin-left: 8px;
