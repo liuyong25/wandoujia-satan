@@ -292,7 +292,7 @@ define([
 
         //改变应用的宽度和高度
         function changeAppsBlock(){
-            var docWidth = $(document).width()-40;
+            var docWidth = $(document).width()-100;
             var n = Math.floor(docWidth/170);
             var w = docWidth/n - 10;
             setTimeout(function(){

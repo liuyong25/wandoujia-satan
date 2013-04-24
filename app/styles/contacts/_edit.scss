@@ -1,9 +1,9 @@
 .contacts-edit{
     position: fixed;
     overflow-y : auto;
-    height:85%;
+    height:95%;
     right: 0px;
-    left: 454px;
+    left: 514px;
 
     .photo{
         margin-top: 25px;
@@ -60,12 +60,12 @@
 
     .footer{
         position: fixed;
-        bottom: 65px;
         right: 10px;
         height: 45px;
         left: 429px;
         background-color: #FFF;
         opacity: 0.9;
+        bottom: 0px;
 
         .btn{
             width: 80px;
