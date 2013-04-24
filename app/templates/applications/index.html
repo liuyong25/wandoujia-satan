@@ -5,15 +5,19 @@
     <div class="header">
         <button class="btn btn-primary installApp">
             <i class="icon-add"></i>
-            Install app
+            {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
         </button>
         <button class="btn select-all" ng-click="selectAll()">
             <i class="icon-sel"></i>
-            Select all
+            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
+        </button>
+        <button class="btn reinstall" ng-click="reinstall()">
+            <!-- <i class="icon-sel"></i> -->
+            <p>{{$root.DICT.applications.BUTTONS.REINSTALL}}</p>
         </button>
         <button class="btn delete-all" ng-click="delMoreApps()">
             <i class="icon-delAll"></i>
-            Delete
+            {{$root.DICT.applications.BUTTONS.UNINSTALL}}
         </button>
     </div>
     <!-- header end -->
@@ -28,7 +32,7 @@
             <dd class="progress" ng-show="item.progressShow"><span style="width:{{item.progress}}"></span></dd>
 
             <!-- 确认提示 -->
-            <dd class="confirm" ng-show="item.confirmTipShow"><i class="icon-phone"></i><p>Confirm install on your phone.</p></dd>
+            <dd class="confirm" ng-show="item.confirmTipShow"><i class="icon-phone"></i><p>{{$root.DICT.applications.CONFIRMS.INSTALL}}</p></dd>
             <!-- 确认提示 end -->
 
             <span class="close-btn" ng-click="closeUploadApp($event);">&times;</span>
@@ -49,7 +53,7 @@
             </dd>
 
             <!-- 确认提示 -->
-            <dd class="confirm" ng-show="item.confirmTipShow"><i class="icon-phone"></i><p>Confirm uninstall on your phone.</p></dd>
+            <dd class="confirm" ng-show="item.confirmTipShow"><i class="icon-phone"></i><p>{{$root.DICT.applications.CONFIRMS.INSTALL}}</p></dd>
             <!-- 确认提示 end -->
 
         </dl>
@@ -63,7 +67,7 @@
         <dl class="info" ng-click="$event.stopPropagation();">
             <span class="close-btn" ng-click="closeAppInfo()">&times;</span>
             <dt>
-                <img ng-src="{{info.icon}}">
+                <img src="{{info.icon}}">
                 <h2>{{info.name}}</h2>
             </dt>
             <hr>
@@ -83,14 +87,29 @@
                 <dd>
                     <p class="title">Permission:</p>
                     <ul class="detail">
-                        <li ng-repeat="item2 in info.requested_permission">{{item2}}</li>
+                        <li ng-repeat="item2 in info.requested_permission">
+                            <p>{{item2}}</p>
+                        </li>
                     </ul>
                 </dd>
             </div>
             <div class="bottons" ng-click="delApp(info.package_name)">
-                <i class="icon-del"></i><p>Uninstall</p>
+                <i class="icon-del"></i><p>{{$root.DICT.applications.BUTTONS.UNINSTALL}}</p>
             </div>
         </dl>
     </div>
     <!-- 遮罩层 end  -->
+
+    <!-- 为空检测 -->
+  <!--   <div class="wd-blank dn">
+        <p>No applications on your phone!<p>
+        <div class="btn btn-primary"
+            ng-click="addNewContact();"><i class="icon-ab-add"></i> New contact</div>
+    </div> -->
+    <!-- 为空检测 end -->
+
+    <!-- 版本检测 -->
+    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.applications.UPGRADE_TIP}}"></div>
+    <!-- 版本检测 end -->
+
 </div>

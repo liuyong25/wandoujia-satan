@@ -1,5 +1,5 @@
 @import "applications/*.png";
-$iconList:"add","check","check_hover","checked","del","del_hover","delAll","delAll_hover","info_hover","info","info_pressed","phone","search","sel";
+$iconList:"add","check","checked","del","del_hover","delAll","delAll_hover","info_hover","info","info_pressed","phone","search","sel";
 @each $icon in $iconList{
 
     // sprite meta
@@ -50,9 +50,6 @@ input[type=checkbox] {
         @include applications-sprite("check");
     }
 
-    &:not(:checked):hover:after {
-        @include applications-sprite("check_hover");
-    }
 
     &:checked:after{
         content: "";
