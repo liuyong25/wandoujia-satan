@@ -8,6 +8,8 @@ return {
         NAVBAR_MESSAGES_TIP: 'Messages',
         NAVBAR_CONTACTS_TIP: 'Contacts',
         NAVBAR_APPS_TIP: 'Apps (coming soon)',
+        NAVBAR_FEEDBACK_TIP: 'Feedback',
+        NAVBAR_HELP_TIP: 'Help',
         NAVBAR_SIGNOUT_TIP: 'Sign out',
 
         MESSAGE_NOTIFICATION_TITLE: 'New message(s)',

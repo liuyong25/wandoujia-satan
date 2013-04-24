@@ -2,21 +2,103 @@
 // Basic styles are modified in bootstrap submodule.
 $navbar-layout: smart;
 @import "navbar/*.png";
-.navbar {
-    .brand {
-        margin: 0;
-    }
-    .nav {
-        $item-padding: 26px;
-        & > li > a {
-            padding-left: $item-padding;
-            padding-right: $item-padding;
+
+
+.navigator {
+    @include position(fixed, 0px 0 0px 0px);
+    width: 60px;
+
+    & > .navigator-inner {
+        @include position;
+        width: 100%;
+        height: 100%;
+        background-color: #343434;
+        @include background-image(linear-gradient(to left, #313131, #393939));
+        @include box-shadow(inset -2px 0 2px rgba(#000, 0.2));
+
+        .brand {
+            text-align: center;
+            height: 92px;
         }
-        &.nav-modules {
-            position: absolute;
-            left: 50%;
-            top: 0;
-            margin-left: -(navbar-sprite-width(img) + $item-padding * 2) * 4 / 2;
+
+        .nav {
+            margin: 0;
+            & > li {
+                margin: 17px 0;
+                &:first-of-type {
+                    margin-top: 0;
+                }
+                &:last-of-type {
+                    margin-bottom: 0;
+                }
+                & > a {
+                    height: 55px;
+                    text-align: center;
+                }
+            }
+        }
+
+        .nav-settings {
+            @include position(absolute, 0 0px 0px 0px);
+            a {
+                color: #fff;
+                font-size: 10px;
+            }
+            .navbar-icon-feedback,
+            .navbar-icon-help {
+                margin: 0;
+            }
+            .signout {
+                border-top: 1px solid #1d1d1d;
+            }
+        }
+    }
+    // logo & icons
+    %wd-navbar-icon {
+        @include inline-block;
+        // @include hide-text;
+        line-height: 0;
+    }
+    i.navbar-logo {
+        @extend %wd-navbar-icon;
+        @include navbar-sprite(logo);
+        width: navbar-sprite-width(logo);
+        height: navbar-sprite-height(logo);
+        $margin: (92px - navbar-sprite-height(logo)) / 2;
+        margin: $margin 0;
+        vertical-align: top;
+    }
+    .nav > li > a {
+        @include transition(opacity $global-transition-duration);
+        opacity: 0.65;
+    }
+
+
+    .nav > .active > a {
+        background-color: #66a20f;
+        @include background-image(linear-gradient(to bottom, #579300, #7cb825));
+        &, &:active {
+            opacity: 1;
+        }
+    }
+    .nav > li > a {
+        &:hover, &:focus {
+            opacity: 1;
+            background-color: transparent;
+        }
+        &:active {
+            opacity: 0.5;
+        }
+    }
+    @each $icon in "app", "contact", "img", "sms", "setting", "signout", "feedback", "help" {
+        i.navbar-icon-#{$icon} {
+            @extend %wd-navbar-icon;
+            @include navbar-sprite($icon);
+            width: navbar-sprite-width($icon);
+            height: navbar-sprite-height($icon);
+            $margin: (55px - navbar-sprite-height($icon)) / 2 - 1px;
+            margin-top: $margin;
+            margin-bottom: $margin;
         }
     }
 
@@ -29,50 +111,7 @@ $navbar-layout: smart;
         height: 10px;
         border-radius: 5px;
         background: #6eb800;
-        @include position(absolute, 15px 15px 0 0);
+        @include position(absolute, 10px 10px 0 0);
     }
 
-    // logo & icons
-    %wd-navbar-icon {
-        @include inline-block;
-        @include hide-text;
-        line-height: 0;
-    }
-    i.navbar-logo {
-        @extend %wd-navbar-icon;
-        @include navbar-sprite(logo);
-        width: navbar-sprite-width(logo);
-        height: navbar-sprite-height(logo);
-        $margin: (20px - navbar-sprite-height(logo)) / 2;
-        margin: $margin 0;
-        vertical-align: top;
-    }
-    .nav > li > a {
-        @include transition(opacity $global-transition-duration);
-        opacity: 0.65;
-    }
-    .nav > .active > a {
-        &, &:active {
-            opacity: 1;
-        }
-    }
-    .nav > li > a {
-        &:hover, &:focus {
-            opacity: 1;
-        }
-        &:active {
-            opacity: 0.5;
-        }
-    }
-    @each $icon in "app", "contact", "img", "sms", "setting", "signout" {
-        i.navbar-icon-#{$icon} {
-            @extend %wd-navbar-icon;
-            @include navbar-sprite($icon);
-            width: navbar-sprite-width($icon);
-            height: navbar-sprite-height($icon);
-            $margin: ($global-line-height - navbar-sprite-height($icon)) / 2 - 1px;
-            margin-top: $margin;
-            margin-bottom: $margin;
-        }
-    }
 }
