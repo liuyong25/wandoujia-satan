@@ -2,7 +2,7 @@
     @import "flex";
     @import "icons";
 
-    @include position(fixed, 0px 0px 68px 0px);
+    @include position(fixed, 0px 0px 0px $global-left-offset);
     font-size: 12px;
 
     // Position with override display in Firefox 19-.

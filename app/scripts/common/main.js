@@ -18,7 +18,8 @@ define([
     'common/bootstrap',
     'common/directives/blank',
     'common/directives/upgrade-warning',
-    'common/services/title-notification'
+    'common/services/title-notification',
+    'common/directives/navbar'
 ], function(
     angular,
     loading,
@@ -39,13 +40,15 @@ define([
     bootstrap,
     blankDirective,
     upgradeWarningDirective,
-    titleNotification
+    titleNotification,
+    navbar
 ) {
 // jshint unused:false
 'use strict';
 // Common Module is the collection of most used or global functions.
 angular.module('wdCommon', ['wdBootstrap', 'ui'])
     // Directives
+    .directive('wdNavbar', navbar)
     .directive('wdStrip', strip)
     .directive('wdLoading', loading)
     .directive('wdAutoFocus', autofocus)

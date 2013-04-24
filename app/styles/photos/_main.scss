@@ -1,23 +1,11 @@
 @import "icons";    // all icon sprites
 .wdj-photos {
 
-    padding-left: 20px;
-    padding-right: 20px;
-
-    &:after {
-        content: "";
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 68px;
-        height: 8px;
-        // @include background-image(linear-gradient(top, rgba(235, 235, 235, 0) 0, rgba(235, 235, 235, 1) 10px));
-        // background: image-url("bg-pattern.png");
-        background: #fff;
-    }
+    padding-left: 10px;
+    padding-right: 10px;
 
     .wdp-timeline-container {
-        padding: 50px 0px 80px;
+        padding: 50px 0px 20px;
     }
     @import "showcase"; // showcase consists of group of photos
     @import "block";    // each photos is contained in a block
