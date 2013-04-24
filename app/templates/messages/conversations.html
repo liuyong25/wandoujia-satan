@@ -50,7 +50,7 @@
                         </div>
                     </div>
                 </li>
-                <li wdm-load-more="conversations.fetch()" ng-hide="conversations.loaded"
+                <li wdm-load-more="conversations.fetch()" ng-hide="conversations.loaded || cvsListFirstLoading"
                     ng-click="$root.GA('messages:load_conversations')"></li>
             </ol>
             <div class="wd-loading" data-visible="cvsListFirstLoading"></div>
