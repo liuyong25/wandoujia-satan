@@ -75,8 +75,10 @@ $navbar-layout: smart;
 
 
     .nav > .active > a {
-        background-color: #66a20f;
-        @include background-image(linear-gradient(to bottom, #579300, #7cb825));
+        &, &:hover, &:focus {
+            background-color: #66a20f;
+            @include background-image(linear-gradient(to bottom, #579300, #7cb825));
+        }
         &, &:active {
             opacity: 1;
         }
