@@ -107,8 +107,8 @@ $navbar-layout: smart;
     }
     .notification:after {
         content: "";
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
         border-radius: 5px;
         background: #6eb800;
         @include position(absolute, 10px 10px 0 0);
