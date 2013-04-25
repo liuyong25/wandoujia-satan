@@ -31,8 +31,8 @@ return {
         BTN_LOAD: 'Load more',
         BTN_LOAD_MSG: 'Load earlier messages',
 
-        CONFIRM_DELETE_TITLE: 'Delete message(s)',
-        CONFIRM_DELETE_CONTENT: 'Delete the selected message(s) from your phone?',
+        CONFIRM_DELETE_TITLE: 'Delete messages',
+        CONFIRM_DELETE_CONTENT: 'Delete the selected messages from your phone?',
 
         CONFIRM_DELETE_OK: 'Delete',
         CONFIRM_DELETE_CANCEL: 'Cancel'
