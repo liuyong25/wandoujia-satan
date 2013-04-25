@@ -1,5 +1,5 @@
 .wd-blank {
-    @include position(fixed, 0px 0px 68px 0px);
+    @include position(fixed, 0px 0px 0px $global-left-offset);
     background: #fff;
     @include ui-layer-top;
 
