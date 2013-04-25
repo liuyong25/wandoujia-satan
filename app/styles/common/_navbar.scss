@@ -76,15 +76,15 @@ $navbar-layout: smart;
         vertical-align: top;
     }
     .nav > li > a {
-        @include transition(opacity $global-transition-duration);
+        @include transition(opacity $global-transition-duration,
+                            background $global-transition-duration * 1.5);
         opacity: 0.65;
     }
 
 
     .nav > .active > a {
         &, &:hover, &:focus {
-            background-color: #66a20f;
-            @include background-image(linear-gradient(top, #579300, #7cb825));
+            background-color: #6db800;
         }
         &, &:active {
             opacity: 1;
