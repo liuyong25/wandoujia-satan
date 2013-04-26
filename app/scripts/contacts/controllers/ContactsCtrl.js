@@ -1,7 +1,6 @@
 define([
     'fineuploader'
 ], function(fineuploader){
-'use strict';
 
 return ['$scope','$http','wdAlert','wdDev','$route','GA',
 function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
@@ -210,14 +209,15 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //取得电话号码等列表信息
     function getList(data,isUnshift){
         var l = data.length;
-        if(l<1){
+
+        if(G_isFirst){
+            $('.wdj-contacts').children('.wd-loading').hide();
+            $('.wdj-contacts .left').show();
+            $('.wdj-contacts .right').show();
+        };
+
+        if( G_list.length < 1 && l<1 ){
             $('.wdj-contacts .wd-blank').show();
-        }else{
-            if(G_isFirst){
-                $('.wdj-contacts').children('.wd-loading').hide();
-                $('.wdj-contacts .left').show();
-                $('.wdj-contacts .right').show();
-            };
         };
 
         for(var i = 0; i<l; i++ ){

@@ -21,12 +21,12 @@
         position: fixed;
         overflow-y : auto;
         top:103px;
-        bottom: 70px;
         width: 428px;
         display: block;
         padding-left: 1px;
         border-right: 1px solid #e7e7e7;
         margin-left: -1px;
+        bottom: 0px;
 
         li.no-contacts{
             height: 64px;
@@ -116,12 +116,12 @@
             border-color: #CCC;
             font-size: 12px;
             line-height: 25px;
-            padding-left: 33px;
+            padding-left: 28px;
             padding-right: 25px;
             width: 348px;
             height: 22px;
             box-shadow: none;
-            background:#f5f5f5 url("../../images/contacts/icon_search.png") no-repeat 3% 50%;
+            background:#f5f5f5 url("../../images/contacts/icon_search.png") no-repeat 2% 50%;
         }
 
         input::-ms-clear {
