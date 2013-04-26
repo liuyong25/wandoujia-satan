@@ -16,16 +16,16 @@ return {
             UNKNOWNTIPS:'Installation tips',
             INSTALL_COMPLETE:'Installation complete'
         },
-        NOAPP:'No apps on your phone.',
+        NOAPP:'No applications on your phone.',
         UPGRADE_TIP:'Please Update SnapPea.',
         DEL_ONE_APP:{
-            TITLE:'Uninstall app',
+            TITLE:'Uninstall application',
             CONTENT:'Uninstall the selected application from your phone?',
             AGREE:'Uninstall',
             CANCEL:'Cancel'
         },
         DEL_MORE_APPS:{
-            TITLE:'Uninstall apps',
+            TITLE:'Uninstall applications',
             CONTENT:'Uninstall the selected applications from your phone?',
             AGREE:'Uninstall',
             CANCEL:'Cancel'
