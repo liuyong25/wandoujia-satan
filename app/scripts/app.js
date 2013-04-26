@@ -114,7 +114,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             resolve: {
                 auth: validateToken,
                 nav: reflectNavbar('applications'),
-                versionSupport: minVersionRequirement(3000)
+                versionSupport: minVersionRequirement(3795)
             },
             reloadOnSearch: false
         });
