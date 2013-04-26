@@ -24,6 +24,7 @@
             font-weight: bold;
             word-break: break-all;
             margin-bottom: 20px;
+            display: block;
         }
     }
 
@@ -48,6 +49,9 @@
             @include import-icon("nocontacts");
         }
 
+        .wdj-applications & {
+            @include import-icon("noapps");
+        }
         .wdj-need-upgrade & {
             @include import-icon("update");
         }

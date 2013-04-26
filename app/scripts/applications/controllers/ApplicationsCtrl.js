@@ -26,21 +26,24 @@ define([
         //上传进度相关
         var G_uploadingList = [];
 
-        //权限显示对照表
-        var G_permissionWord = {
-
-        };
+        //当前的手机是否开启未知来源提示，false当前用户未开启，true开启
+        var G_unknownTips = false;
 
         function getAppListData(){
             $http({
                 method: 'get',
                 url: '/resource/apps?length=9999'
             }).success(function(data) {
+
                 for( var i = 0,l = data.length ; i<l; i++ ){
                     G_appList.push(changeInfo(data[i]));
                 };
+                if(G_appList.length == 0){
+                    $('.wd-blank').show();
+                };
                 $scope.list = G_appList;
                 changeAppsBlock();
+                uploadApk($('.installApp'));
             }).error(function(){
                 //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
             });
@@ -62,6 +65,10 @@ define([
 
             //是否显示提示
             data['confirmTipShow'] = false;
+
+            //是否显示安装成功
+            data['doneTipShow'] = false;
+
             data['checked'] = false;
             return data;
         };
@@ -73,6 +80,7 @@ define([
                     for(var m = 0 , n = data[i]['requested_permission'].length; m < n; m++ ){
                         data[i]['requested_permission'][m] = $scope.$root.DICT.applications.PERMISSIONS[data[i]['requested_permission'][m]] || data[i]['requested_permission'][m];
                     };
+                    console.log(data[i]);
                     return data[i];
                 };
             };
@@ -98,7 +106,11 @@ define([
                         break;
                     };
                 };
-                $('.mask').hide().css('opacity',0);
+                var mask = $('.mask').css('opacity',0);
+                setTimeout(function(){
+                    mask.hide().find('.info').hide();
+                    $('dd.confirm').css('opacity',0.8);
+                },500);
             },function(){
 
             });
@@ -107,18 +119,24 @@ define([
         //删除多个
         function delMoreApps(){
             wdAlert.confirm(
-                $scope.$root.DICT.applications.DEL_MORE_APP.TITLE,
-                $scope.$root.DICT.applications.DEL_MORE_APP.CONTENT,
-                $scope.$root.DICT.applications.DEL_MORE_APP.AGREE,
-                $scope.$root.DICT.applications.DEL_MORE_APP.CANCEL
+                $scope.$root.DICT.applications.DEL_MORE_APPS.TITLE,
+                $scope.$root.DICT.applications.DEL_MORE_APPS.CONTENT,
+                $scope.$root.DICT.applications.DEL_MORE_APPS.AGREE,
+                $scope.$root.DICT.applications.DEL_MORE_APPS.CANCEL
             ).then(function(){
                 var dels = [];
                 for(var i = 0 , l = $scope.list.length ; i<l ; i++ ){
                     if( $scope.list[i]['checked'] == true ){
                         dels.push($scope.list[i]['package_name']);
                         $scope.list[i]['confirmTipShow'] = true;
+                        $scope.list[i]['checked'] = false;
                     };
                 };
+                setTimeout(function(){
+                    $('.header button.delete-all').hide();
+                    $('dd.toolbar').css('opacity',0);
+                    $('dd.confirm').css('opacity',0.8);
+                },500);
 
                 var i = 0;
                 del(dels[i]);
@@ -132,7 +150,6 @@ define([
                             i++;
                         };
                     }).error(function(){
-                        //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
                     });
                 };
             },function(){
@@ -141,45 +158,57 @@ define([
         };
 
         //上传APK
-        var uploader = new fineuploader.FineUploaderBasic({
-            button: $('.installApp')[0],
-            request: {
-                endpoint: wdDev.wrapURL('/resource/apps/upload')
-            },
-            validation: {
-                allowedExtensions:['apk']
-            },
-            cors: {
-                expected: true,
-                sendCredentials: true
-            },
-            message:{
-                typeError:"The file's type is error!"
-            },
-            autoUpload: true,
-            callbacks: {
-                onSubmit: function(id,name) {
-                    showUploadApp(name);
-                },
-                onProgress: function(id,name,progress,total){
-                    updateUpload(name,Math.floor(progress/total*100));
-                },
-                onComplete: function(id, name, data){
-                    var result = data.result[0];
-                    for(var i = 0, l = $scope.newList.length; i < l ; i++ ){
-                        if($scope.newList[i]['file_name'] == name){
-                            $scope.newList[i]['package_name'] = result['package_name'];
-                            $scope.newList[i]['apk_path'] =  result['apk_path'];
-                            $scope.newList[i]['unknown_sources'] = result['unknown_sources'];
-                        };
-                    };
-                    $('.header button.reinstall').show();
-                },
-                onerror:function(){
-                    //console.log();
-                }
-            }
-        });
+        function uploadApk(btnEles){
+
+            for(var i = 0,l = btnEles.length;i<l;i++ ){
+                var uploader = new fineuploader.FineUploaderBasic({
+                    button: btnEles[i],
+                    request: {
+                        endpoint: wdDev.wrapURL('/resource/apps/upload')
+                    },
+                    validation: {
+                        allowedExtensions:['apk']
+                    },
+                    cors: {
+                        expected: true,
+                        sendCredentials: true
+                    },
+                    message:{
+                        typeError:"The file's type is error!"
+                    },
+                    autoUpload: true,
+                    callbacks: {
+                        onSubmit: function(id,name) {
+                            showUploadApp(name);
+                            $('.wd-blank').hide();
+                        },
+                        onProgress: function(id,name,progress,total){
+                            updateUpload(name,Math.floor(progress/total*100));
+                        },
+                        onComplete: function(id, name, data){
+                            var result = data.result[0];
+                            for(var i = 0, l = $scope.newList.length; i < l ; i++ ){
+                                if($scope.newList[i]['file_name'] == name){
+                                    $scope.newList[i]['package_name'] = result['package_name'];
+                                    $scope.newList[i]['apk_path'] =  result['apk_path'];
+                                    $scope.newList[i]['unknown_sources'] = result['unknown_sources'];
+                                    if(!G_unknownTips){
+                                        G_unknownTips = result['unknown_sources'];
+                                    };
+                                    if(!G_unknownTips){
+                                        showUnknowTips();
+                                    };
+                                };
+                            };
+                            $('.header button.reinstall').show();
+                        },
+                        onerror:function(){
+                            //console.log();
+                        }
+                    }
+                });
+            };
+        };
 
         //上传安装应用时，显示对应的应用
         function showUploadApp(file_name){
@@ -211,11 +240,31 @@ define([
             };
         };
 
-        function reinstall(){
+        //显示未知来源应用提示
+        function showUnknowTips(){
+            var mask = $('.mask');
+            var top = $(document).height()*0.2;
+            mask.children('.unknowApkTips').show().css({
+                'top':top
+            });
+            setTimeout(function(){
+                mask.show();
+                setTimeout(function(){
+                    mask.css('opacity',1);
+                },30);
+            },200);
+        };
+
+        function reinstall(item){
             var apk_paths = [];
-            for(var i = 0,l = $scope.newList.length; i<l; i++ ){
-                apk_paths.push({'apk_path':$scope.newList[i]['apk_path']});
+            if(!!item){
+                apk_paths.push({'apk_path':item['apk_path']});
+            }else{
+                for(var i = 0,l = $scope.newList.length; i<l; i++ ){
+                    apk_paths.push({'apk_path':$scope.newList[i]['apk_path']});
+                };
             };
+
             $http({
                 method: 'post',
                 url: '/resource/apps/install',
@@ -228,18 +277,24 @@ define([
         };
 
         //上传之后或者过程中关闭那个应用
-        function closeUploadApp(e){
-            $(e.target.parentNode).hide();
+        function closeUploadApp(item){
+            for(var i = 0,l = $scope.newList.length;i<l;i++ ){
+                if($scope.newList[i]['file_name'] == item['file_name']){
+                    $scope.newList.splice(i,1);
+                    break;
+                };
+            };
+        };
+
+        //删除confirm提示
+        function closeConfirm(item){
+            item['confirmTipShow'] = false;
         };
 
         //显示对应的应用
         function showAppInfo(package_name){
             var mask = $('.mask');
-            var top = $(document).height()*0.2;
-            mask.children('.info').css({
-                'top':top
-            });
-            mask.find('.detail-info').css('top',top + 17 + 110 + 5 );
+            mask.children('.info').show();
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
                 mask.show();
@@ -249,8 +304,13 @@ define([
             },200);
         };
 
-        function closeAppInfo(){
-            $('.mask').hide().css('opacity',0);
+        function closeMask(){
+            var mask = $('.mask').css('opacity',0);
+             setTimeout(function(){
+                mask.hide();
+                mask.find('.info').hide();
+                mask.find('.unknowApkTips').hide();
+            },500);
         };
 
         function selectAll(){
@@ -269,7 +329,7 @@ define([
                     $scope.list[i]['checked'] = true;
                     eles.eq(i).css('opacity',1);
                 };
-                $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.UNSELECT_ALL);
+                $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.DESELECT_ALL);
                 $('.header button.delete-all').show();
             };
         };
@@ -283,24 +343,28 @@ define([
                 for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
                     if($scope.list[i]['checked']){
                         return;
-                    }else{
-                        $('.header button.delete-all').hide();
                     };
                 };
+                $('.header button.delete-all').hide();
             };
         };
 
         //改变应用的宽度和高度
         function changeAppsBlock(){
-            var docWidth = $(document).width()-100;
+            var docWidth = $(document).width()-90;
             var n = Math.floor(docWidth/170);
             var w = docWidth/n - 10;
             setTimeout(function(){
                 var ele = $(".apps-list dl");
-                ele.width(w).height(w);
-                ele.find('img').css('margin-top',(w-118)/2+'px' );
+                ele.animate({
+                    width:w,
+                    height:w
+                },500);
+                ele.find('img').css('margin-top',(w-72-6-20)/2+'px' );
             },100);
-            $(window).one("resize",changeAppsBlock);
+            setTimeout(function(){
+                $(window).one("resize",changeAppsBlock);
+            },1000);
         };
 
         //webSocket处理
@@ -311,23 +375,36 @@ define([
                     method: 'get',
                     url: '/resource/apps/'+name
                 }).success(function(data){
-                    for(var i = 0,l = $scope.newList.length;i<l; i++ ){
-                        if( $scope.newList[i]['package_name'] == data['package_name'] ){
-                            $scope.newList.splice(i,1);
-                            break;
+
+                    setTimeout(function(){
+                        for(var i = 0,l = $scope.newList.length;i<l; i++ ){
+                            if( $scope.newList[i]['package_name'] == data['package_name'] ){
+                                $scope.newList.splice(i,1);
+                                break;
+                            };
                         };
-                    };
-                    for(var i = 0,l = $scope.list.length; i<l; i++ ){
-                        if($scope.list[i]['package_name'] == data['package_name'] ){
-                            $scope.list.splice(i,1);
-                            break;
+
+                        //如果已经安装，移除掉之前版本
+                        for(var i = 0,l = $scope.list.length; i<l; i++ ){
+                            if($scope.list[i]['package_name'] == data['package_name'] ){
+                                $scope.list.splice(i,1);
+                                break;
+                            };
                         };
-                    };
-                    if($scope.newList.length<=0){
-                        $('.header button.reinstall').hide();
-                    };
-                    $scope.list.unshift(data);
-                    changeAppsBlock();
+                    },100);
+
+                    setTimeout(function(){
+                        data['doneTipShow'] = true;
+                        $scope.list.unshift(data);
+                        $scope.$apply();
+                        setTimeout(function(){
+                            data['doneTipShow'] = false;
+                            $scope.$apply();
+                        },4000);
+                        changeAppsBlock();
+                    },200);
+
+
                 }).error(function(){
                 });
             })
@@ -352,7 +429,8 @@ define([
 
         //需要挂载到socpe上面的方法
         $scope.showAppInfo = showAppInfo;
-        $scope.closeAppInfo = closeAppInfo;
+        $scope.closeMask = closeMask;
+        $scope.closeConfirm = closeConfirm;
         $scope.selectAll = selectAll;
         $scope.checkedApp = checkedApp;
         $scope.delApp = delApp;

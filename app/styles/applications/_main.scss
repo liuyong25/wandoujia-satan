@@ -2,6 +2,7 @@
     p{
         display: inline-block;
         margin: 0px;
+        font-weight: normal;
     }
 	.header{
 		position: fixed;
@@ -10,17 +11,12 @@
 		right: 0px;
 		height: 40px;
 		overflow: hidden;
-		padding-left: 20px;
+		padding-left: 10px;
 		padding-top: 10px;
 		background: rgba(255, 255, 255, 0.9);
 		z-index: 200;
 
         button.select-all{
-            margin-left: 6px;
-        }
-
-        button.reinstall{
-            display: none;
             margin-left: 6px;
         }
 
@@ -42,12 +38,11 @@
 		bottom: 0px;
 		overflow-y:auto;
 		padding-top: 50px;
-        padding-left: 10px;
 
 		dl{
 			float: left;
-			width: 160px;
-			height: 160px;
+			width: 0px;
+			height: 0px;
 			background-color: #f5f5f5;
 			margin:0px 0px 10px 10px;
 			text-align: center;
@@ -55,16 +50,18 @@
             cursor: pointer;
 
 			img{
-                margin-bottom: 6px;
+                margin-bottom: 8px;
                 width: 72px;
                 height: 72px;
 			}
 
             dd.title{
                 margin-left: 0px;
-                height: 40px;
+                height: 20px;
+                line-height: 20px;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                font-size: 16px;
             }
 
             dd.toolbar{
@@ -91,16 +88,22 @@
                 .btn-icon-del{
                     width: 20px;
                     height: 22px;
-                    padding-top: 2px;
+                    padding-top: 3px;
+                    padding-right: 1px;
                     display: inline-block;
                     float: right;
+                    opacity: 0.65;
                 }
-                .btn-icon-info{
-                    width: 25px;
-                    height: 26px;
-                    padding-top: 2px;
-                    display: inline-block;
-                    float: right;
+                .btn-icon-del:hover{
+                    opacity: 1;
+                    @include transition(opacity 0.4s);
+                }
+                .btn-icon-del:active{
+                    opacity: 0.5;
+                    @include transition(opacity 0.4s);
+                }
+                .icon-del:hover{
+
                 }
             }
 
@@ -109,30 +112,89 @@
                 position: absolute;
                 bottom: 0px;
                 background: #F38200;
-                height: 52px;
+                height: 45px;
                 right: 0px;
                 left: 0px;
+                opacity: 0;
+                cursor: default;
+                @include transition(opacity 0.4s);
 
                 i.icon-phone{
                     position: absolute;
-                    left: 13px;
-                    top: 18px;
+                    left: 8px;
+                    top: 12px;
+                }
+
+                i.icon-close{
+                    position: absolute;
+                    right: 5px;
+                    top: 12px;
+                    opacity: 0.65;
+                }
+                i.icon-close:hover{
+                    opacity: 1;
+                    @include transition(opacity 0.4s);
+                }
+                i.icon-retry{
+                    position: absolute;
+                    right: 21px;
+                    top: 12px;
+                    opacity: 0.65;
+                }
+                i.icon-retry:hover{
+                    opacity: 1;
+                    @include transition(opacity 0.4s);
+                }
+                i.icon-retry:active{
+                    opacity: 0.65;
+                }
+                p{
+                    margin-right: 0px;
+                    margin-bottom: 0;
+                    height: 35px;
+                    vertical-align: middle;
+                    line-height: 16px;
+                    margin-top: 5px;
+                    margin-left: 36px;
+                    display: block;
+                    width: 93px;
+                    text-align: left;
+                    font-size: 12px;
+                    color: #FFF;
+                }
+            }
+
+            dd.done{
+                margin-left: 0px;
+                position: absolute;
+                bottom: 0px;
+                background: #77c03c;
+                height: 45px;
+                right: 0px;
+                left: 0px;
+                opacity: 0.9;
+
+                i.icon-sel_white{
+                    position: absolute;
+                    left: 22px;
+                    top: 12px;
                 }
 
                 p{
                     margin-right: 0px;
                     margin-bottom: 0;
-                    height: 43px;
-                    margin-top: 7px;
-                    margin-left: 45px;
+                    height: 35px;
+                    vertical-align: middle;
+                    line-height: 16px;
+                    margin-top: 14px;
+                    margin-left: 42px;
                     display: block;
-                    width: 110px;
+                    width: 126px;
                     text-align: left;
                     font-size: 12px;
-                    color: #fff;
+                    color: #FFF;
                 }
             }
-
 		}
 
         dl:hover{
@@ -140,7 +202,11 @@
                 opacity: 1;
             }
         }
-
+        dl.confirm:hover{
+            dd.toolbar{
+                opacity: 0;
+            }
+        }
         dl.new-list{
 
             dt{
@@ -158,25 +224,30 @@
                 font-size: 20px;
                 cursor: pointer;
             }
+
             dd.title{
+                font-weight: normal;
+                width: 120px;
+                margin: -61px auto;
+                font-size: 12px;
                 white-space: nowrap;
-                background: #333;
+                background: #000;
                 color: white;
                 border-radius: 14px;
-                line-height: 30px;
-                height: 30px;
+                line-height: 24px;
+                height: 24px;
                 padding-left: 9px;
                 padding-right: 9px;
-                opacity: 0.7;
-                margin-top: -61px;
+                opacity: 0.5;
             }
 
             dd.progress{
                 height: 9px;
-                width: 165px;
                 margin: 0;
                 position: absolute;
                 bottom: 0px;
+                right: 0px;
+                left: 0px;
                 background: #555;
                 display: block;
 
@@ -205,32 +276,39 @@
         text-align: center;
         @include transition(opacity 0.4s);
 
+        span.close-btn{
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 22px;
+            color: #333;
+            font-weight: bolder;
+            cursor: pointer;
+            opacity: 0.65;
+        }
+
         dl.info{
-            width: 316px;
-            height: 330px;
+            font-weight: normal;
+            display: none;
+            width: 330px;
             background-color: #fff;
             border-radius: 6px;
             margin: 0 auto;
-            position: relative;
+            position: absolute;
+            top:100px;
+            bottom: 100px;
+            left: 50%;
+            margin-left: -165px;
             overflow: hidden;
 
             div.detail-info{
                 position: fixed;
-                width: 316px;
+                width: 330px;
                 overflow-y:auto;
                 overflow-x:hidden;
-                height: 163px;
-            }
-
-            span.close-btn{
-                position: absolute;
-                right: 15px;
-                top: 10px;
-                font-size: 22px;
-                color: #333;
-                font-weight: bolder;
-                cursor: pointer;
-                opacity: 0.65;
+                font-size: 12px;
+                bottom: 141px;
+                top: 240px;
             }
 
             span.close-btn:hover{
@@ -242,20 +320,20 @@
                 color: #e7e7e7;
                 width: 270px;
                 margin-top: 10px;
-                margin: 10px auto 5px auto;
+                margin: 18px auto 5px auto;
             }
 
             dt{
                 img{
-                    margin-top: 30px;
+                    margin-top: 33px;
                     width: 60px;
                     height: 60px;
                 }
                 h2{
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: normal;
                     line-height: 14px;
-                    margin: 6px 0px 0px 0px;
+                    margin: 8px 0px 0px 0px;
                 }
             }
             dd{
@@ -263,9 +341,10 @@
                 line-height: 22px;
                 p{
                     display: inline-block;
+                    font-weight: normal;
                 }
                 p.title{
-                    width: 35%;
+                    width: 25%;
                     text-align: right;
                     margin-bottom: 0px;
                     margin-right: 10px;
@@ -295,30 +374,83 @@
                 }
             }
 
-            div.bottons{
+            div.buttons{
                 padding-top: 6px;
                 display: block;
                 height: 28px;
-                width: 316px;
+                width: 330px;
                 position: absolute;
                 bottom: 0px;
                 text-align: center;
                 background-color: #f5f5f5;
                 border-top: 1px solid #dcdcdc;
-                color: #999;
+                color: #000;
+                opacity: 0.35;
                 cursor: pointer;
                 font-weight: normal;
 
                 p{
                     display: inline-block;
                     margin: 0px;
+
                 }
                 .icon-del{
                     margin-right: 4px;
                 }
             }
+            div.buttons:hover{
+                opacity: 0.55;
+                @include transition(opacity 0.4);
+            };
+            div.buttons:active{
+                opacity: 0.35;
+            };
 
         }
+
+        /* unkonw tips */
+        .unknowApkTips{
+            display: none;
+            background: #FFF;
+            width: 694px;
+            left: 50%;
+            margin-left: -354px;
+            position: absolute;
+            border-radius: 5px;
+            height: 280px;
+            text-align: left;
+            padding-left: 15px;
+
+            h2{
+                font-size: 16px;
+                font-weight: bold;
+                line-height: 16px;
+                margin-bottom: 17px;
+                margin-top: 15px;
+            }
+
+            ul{
+                margin-top: 3px;
+                li{
+                    float: left;
+                    width: 215px;
+                    margin-right: 15px;
+                    line-height: 20px;
+                }
+            }
+
+            button{
+                position: absolute;
+                right: 15px;
+                bottom: 8px;
+            }
+
+        }
+        /* unkonw tips end */
+
+    }
+    .wd-blank{
+        display: none;
     }
 
 	@import "icon";
