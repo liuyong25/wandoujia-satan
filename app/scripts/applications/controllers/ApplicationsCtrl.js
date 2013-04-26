@@ -45,7 +45,9 @@ define([
                     $('.wd-blank').show();
                 };
                 $scope.list = G_appList;
-                uploadApk($('.installApp'));
+                setTimeout(function(){
+                    uploadApk($('.installApp'));
+                },300);
             }).error(function(){
             });
         };
@@ -161,6 +163,7 @@ define([
         //上传APK
         function uploadApk(btnEles){
             for(var i = 0,l = btnEles.length;i<l;i++ ){
+                console.log(btnEles[i]);
                 var uploader = new fineuploader.FineUploaderBasic({
                     button: btnEles[i],
                     request: {

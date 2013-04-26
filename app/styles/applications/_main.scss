@@ -299,13 +299,13 @@
             overflow: hidden;
 
             div.detail-info{
-                position: fixed;
+                position: absolute;
                 width: 400px;
-                overflow-y:auto;
-                overflow-x:hidden;
+                overflow-y: auto;
+                overflow-x: hidden;
                 font-size: 12px;
-                bottom: 141px;
-                top: 240px;
+                top: 143px;
+                bottom: 40px;
             }
 
             span.close-btn:hover{
