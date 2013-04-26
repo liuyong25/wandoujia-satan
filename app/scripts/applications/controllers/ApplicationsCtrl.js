@@ -136,7 +136,7 @@ define([
                 };
                 setTimeout(function(){
                     $('.header button.delete-all').hide();
-                    $('dd.toolbar').css('opacity',0);
+                    $('dd.toolbar').css('opacity','');
                     $('dd.confirm').css('opacity',0.8);
                 },500);
 
@@ -330,8 +330,10 @@ define([
             }else{
                 $scope.isSelectAll = true;
                 for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    $scope.list[i]['checked'] = true;
-                    eles.eq(i).css('opacity',1);
+                    if(!$scope.list[i]['confirmTipShow']){
+                        $scope.list[i]['checked'] = true;
+                        eles.eq(i).css('opacity',1);
+                    };
                 };
                 $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.DESELECT_ALL);
                 $('.header button.delete-all').show();
