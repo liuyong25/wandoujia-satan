@@ -16,7 +16,7 @@ return {
         SAFARI_TITLE: 'Change your Safari settings',
         SAFARI_CONTENT: 'Go to Settings > Privacy > Block cookies and select "Never".',
         H1: 'Manage your Android phone from the web.',
-        H1_P: 'Your photos, messages, and contacts in your web browser.',
+        H1_P: 'Your photos, messages, contacts and apps in your web browser.',
         H2: 'New to SnapPea?',
         H2_P: 'To get your passcode, <a href="https://play.google.com/store/apps/details?id=com.snappea" target="_blank" style="color:#3c7800">install SnapPea</a> on your phone. It\'s free.',
         GP_ALT: 'SnapPea on Google Play',
