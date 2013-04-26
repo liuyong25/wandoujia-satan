@@ -1,22 +1,7 @@
 <div class="wdj-applications">
 
     <!-- <div class="wd-loading" data-visible="true"></div> -->
-    <!-- header -->
-    <div class="header">
-        <button class="btn btn-primary installApp">
-            <i class="icon-add"></i>
-            {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
-        </button>
-        <button class="btn select-all" ng-click="selectAll()">
-            <i class="icon-sel"></i>
-            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
-        </button>
-        <button class="btn delete-all" ng-click="delMoreApps()">
-            <i class="icon-delAll"></i>
-            {{$root.DICT.applications.BUTTONS.UNINSTALL}}
-        </button>
-    </div>
-    <!-- header end -->
+
 
     <!-- 应用列表 -->
     <div class="apps-list">
@@ -47,7 +32,7 @@
                     <input type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="checkedApp($event)">
                 </span>
                 <span class="btn-icon-del" ng-click="delApp(item.package_name)" bs-tooltip="Uninstall">
-                    <i class="icon-del"></i>
+                    <i class="icon-delt"></i>
                 </span>
             </dd>
 
@@ -55,13 +40,13 @@
             <dd class="confirm" ng-show="item.confirmTipShow" ng-click="$event.stopPropagation();">
                 <i class="icon-phone"></i>
                 <p>{{$root.DICT.applications.CONFIRMS.UNINSTALL}}</p>
-                <i bs-tooltip="Close" class="icon-close" ng-click="closeConfirm(item)"></i>
+                <i bs-tooltip="Close" class="icon-close" ng-click="closeConfirm(item,$event)"></i>
                 <i bs-tooltip="Uninstall" class="icon-retry" ng-click="delApp(item.package_name)"></i>
             </dd>
             <!-- 确认提示 end -->
 
             <!-- 安装完毕提示 -->
-            <dd class="done" ng-show="item.doneTipShow"><i class="icon-sel_white"></i><p>Installation complete</p></dd>
+            <dd class="done" ng-show="item.doneTipShow"><i class="icon-sel_white"></i><p>{{$root.DICT.applications.CONFIRMS.INSTALL_COMPLETE}}</p></dd>
             <!-- 安装完毕提示 end -->
 
         </dl>
@@ -69,6 +54,23 @@
 
     </div>
     <!-- 应用列表 end -->
+
+    <!-- header -->
+    <div class="header">
+        <div class="btn btn-primary installApp">
+            <i class="icon-add"></i>
+            {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
+        </div>
+        <button class="btn select-all" ng-click="selectAll()">
+            <i class="icon-sel"></i>
+            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
+        </button>
+        <button class="btn delete-all" ng-click="delMoreApps()">
+            <i class="icon-delAll"></i>
+            {{$root.DICT.applications.BUTTONS.UNINSTALL}}
+        </button>
+    </div>
+    <!-- header end -->
 
     <!-- 遮罩层 -->
     <div class="mask" ng-click="closeMask()">
@@ -83,19 +85,19 @@
             <hr>
             <div class="detail-info">
                 <dd>
-                    <p class="title">Size:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.SIZE}}:</p>
                     <p class="detail">{{info.apk_size}} M</p>
                 </dd>
                 <dd>
-                    <p class="title">Installation:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.INSTALLATION}}:</p>
                     <p class="detail">{{info.installed_location}}</p>
                 </dd>
                 <dd>
-                    <p class="title">Version:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.VERSION}}:</p>
                     <p class="detail">{{info.version_name}}</p>
                 </dd>
                 <dd>
-                    <p class="title">Permission:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.PERMISSIONS}}:</p>
                     <ul class="detail">
                         <li ng-repeat="item2 in info.requested_permission">
                             <p>{{item2}}</p>
@@ -112,7 +114,7 @@
         <!-- 显示未知来源提示 -->
         <div class="unknowApkTips" ng-click="$event.stopPropagation();">
             <span class="close-btn" ng-click="closeMask()">&times;</span>
-            <h2>Installation tips!</h2>
+            <h2>{{$root.DICT.applications.CONFIRMS.UNKNOWNTIPS}}</h2>
             <img src="../../images/applications/unkonwTips.png">
             <ul>
                 <li>1. In the pop-up window click settings.</li>
@@ -120,7 +122,7 @@
                 <li>3. Click OK.</li>
             </ul>
             <button class="btn btn-primary" ng-click="reinstall()">
-                Complete
+                {{$root.DICT.applications.BUTTONS.COMPLETE}}
             </button>
         </div>
         <!-- 显示未知来源提示 end -->
@@ -129,9 +131,9 @@
     <!-- 遮罩层 end  -->
 
     <!-- 为空检测 -->
-    <div class="wd-blank">
-        <p>No apps on your phone.<p>
-        <div class="btn btn-primary installApp"><i class="icon-add"></i>Install apk</div>
+    <div class="wd-blank" ui-if="dataLoaded && !(list.length+newList.length)">
+        <p>{{$root.DICT.applications.NOAPP}}<p>
+        <div class="btn btn-primary installApp"><i class="icon-add"></i>{{$root.DICT.applications.BUTTONS.INSTALL_APPS}}</div>
     </div>
     <!-- 为空检测 end -->
 

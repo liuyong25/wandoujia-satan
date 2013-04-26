@@ -19,6 +19,9 @@ define([
         //版本监测
         $scope.serverMatchRequirement = $route.current.locals.versionSupport;
 
+        //数据是否加载完毕
+        $scope.dataLoaded = false;
+
         //全局
         //应用数据列表
         var G_appList = [];
@@ -34,7 +37,7 @@ define([
                 method: 'get',
                 url: '/resource/apps?length=9999'
             }).success(function(data) {
-
+                $scope.dataLoaded = true;
                 for( var i = 0,l = data.length ; i<l; i++ ){
                     G_appList.push(changeInfo(data[i]));
                 };
@@ -42,10 +45,8 @@ define([
                     $('.wd-blank').show();
                 };
                 $scope.list = G_appList;
-                changeAppsBlock();
                 uploadApk($('.installApp'));
             }).error(function(){
-                //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
             });
         };
 
@@ -134,7 +135,7 @@ define([
                 };
                 setTimeout(function(){
                     $('.header button.delete-all').hide();
-                    $('dd.toolbar').css('opacity',0);
+                    $('dd.toolbar').css('opacity','');
                     $('dd.confirm').css('opacity',0.8);
                 },500);
 
@@ -159,7 +160,6 @@ define([
 
         //上传APK
         function uploadApk(btnEles){
-
             for(var i = 0,l = btnEles.length;i<l;i++ ){
                 var uploader = new fineuploader.FineUploaderBasic({
                     button: btnEles[i],
@@ -200,7 +200,6 @@ define([
                                     };
                                 };
                             };
-                            $('.header button.reinstall').show();
                         },
                         onerror:function(){
                             //console.log();
@@ -220,7 +219,6 @@ define([
             };
             $scope.newList.unshift(item);
             $scope.$apply();
-            changeAppsBlock();
         };
 
         //更新上传进度
@@ -230,6 +228,7 @@ define([
                     if( progress == 100 ){
                         $scope.newList[i]['confirmTipShow'] = true;
                         $scope.newList[i]['progressShow'] = false;
+                        $('dd.confirm').css('opacity',0.8);
                         $scope.$apply();
                     }else{
                         $scope.newList[i]['progress'] = ""+progress+"%";
@@ -263,6 +262,7 @@ define([
                 for(var i = 0,l = $scope.newList.length; i<l; i++ ){
                     apk_paths.push({'apk_path':$scope.newList[i]['apk_path']});
                 };
+                $('.mask').hide().children('.unknowApkTips').hide();
             };
 
             $http({
@@ -284,20 +284,23 @@ define([
                     break;
                 };
             };
+            if($scope.list.length == 0 && $scope.newList.length == 0){
+                $('.wd-blank').show();
+            };
         };
 
         //删除confirm提示
-        function closeConfirm(item){
+        function closeConfirm(item,e){
+            $(e.target.parentNode.parentNode).find('.toolbar').css('opacity','');
             item['confirmTipShow'] = false;
         };
 
         //显示对应的应用
         function showAppInfo(package_name){
             var mask = $('.mask');
-            mask.children('.info').show();
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
-                mask.show();
+                mask.show().children('.info').show();
                 setTimeout(function(){
                     mask.css('opacity',1);
                 },30);
@@ -326,8 +329,10 @@ define([
             }else{
                 $scope.isSelectAll = true;
                 for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    $scope.list[i]['checked'] = true;
-                    eles.eq(i).css('opacity',1);
+                    if(!$scope.list[i]['confirmTipShow']){
+                        $scope.list[i]['checked'] = true;
+                        eles.eq(i).css('opacity',1);
+                    };
                 };
                 $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.DESELECT_ALL);
                 $('.header button.delete-all').show();
@@ -349,24 +354,6 @@ define([
             };
         };
 
-        //改变应用的宽度和高度
-        function changeAppsBlock(){
-            var docWidth = $(document).width()-90;
-            var n = Math.floor(docWidth/170);
-            var w = docWidth/n - 10;
-            setTimeout(function(){
-                var ele = $(".apps-list dl");
-                ele.animate({
-                    width:w,
-                    height:w
-                },500);
-                ele.find('img').css('margin-top',(w-72-6-20)/2+'px' );
-            },100);
-            setTimeout(function(){
-                $(window).one("resize",changeAppsBlock);
-            },1000);
-        };
-
         //webSocket处理
         wdpMessagePusher
             .channel('app_install', function(e, message) {
@@ -375,36 +362,26 @@ define([
                     method: 'get',
                     url: '/resource/apps/'+name
                 }).success(function(data){
-
-                    setTimeout(function(){
-                        for(var i = 0,l = $scope.newList.length;i<l; i++ ){
-                            if( $scope.newList[i]['package_name'] == data['package_name'] ){
-                                $scope.newList.splice(i,1);
-                                break;
-                            };
+                    for(var i = 0,l = $scope.newList.length;i<l; i++ ){
+                        if( $scope.newList[i]['package_name'] == data['package_name'] ){
+                            $scope.newList.splice(i,1);
+                            break;
                         };
+                    };
 
-                        //如果已经安装，移除掉之前版本
-                        for(var i = 0,l = $scope.list.length; i<l; i++ ){
-                            if($scope.list[i]['package_name'] == data['package_name'] ){
-                                $scope.list.splice(i,1);
-                                break;
-                            };
+                    //如果已经安装，移除掉之前版本
+                    for(var i = 0,l = $scope.list.length; i<l; i++ ){
+                        if($scope.list[i]['package_name'] == data['package_name'] ){
+                            $scope.list.splice(i,1);
+                            break;
                         };
-                    },100);
-
+                    };
+                    data['doneTipShow'] = true;
+                    $scope.list.unshift(data);
                     setTimeout(function(){
-                        data['doneTipShow'] = true;
-                        $scope.list.unshift(data);
+                        data['doneTipShow'] = false;
                         $scope.$apply();
-                        setTimeout(function(){
-                            data['doneTipShow'] = false;
-                            $scope.$apply();
-                        },4000);
-                        changeAppsBlock();
-                    },200);
-
-
+                    },4000);
                 }).error(function(){
                 });
             })

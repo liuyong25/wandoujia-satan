@@ -1,5 +1,5 @@
 @import "applications/*.png";
-$iconList:"add","check","checked","del","delAll","info-del","phone","search","sel","sel_white","reinstall","close","retry";
+$iconList:"add","check","checked","delt","delAll","info-del","phone","search","sel","sel_white","reinstall","close","retry";
 @each $icon in $iconList{
 
     // sprite meta
