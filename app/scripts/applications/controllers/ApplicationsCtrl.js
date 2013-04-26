@@ -47,7 +47,6 @@ define([
                 $scope.list = G_appList;
                 uploadApk($('.installApp'));
             }).error(function(){
-                //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
             });
         };
 

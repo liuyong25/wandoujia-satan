@@ -46,7 +46,7 @@
             <!-- 确认提示 end -->
 
             <!-- 安装完毕提示 -->
-            <dd class="done" ng-show="item.doneTipShow"><i class="icon-sel_white"></i><p>Installation complete</p></dd>
+            <dd class="done" ng-show="item.doneTipShow"><i class="icon-sel_white"></i><p>{{$root.DICT.applications.CONFIRMS.INSTALL_COMPLETE}}</p></dd>
             <!-- 安装完毕提示 end -->
 
         </dl>
@@ -85,19 +85,19 @@
             <hr>
             <div class="detail-info">
                 <dd>
-                    <p class="title">Size:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.SIZE}}:</p>
                     <p class="detail">{{info.apk_size}} M</p>
                 </dd>
                 <dd>
-                    <p class="title">Installation:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.INSTALLATION}}:</p>
                     <p class="detail">{{info.installed_location}}</p>
                 </dd>
                 <dd>
-                    <p class="title">Version:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.VERSION}}:</p>
                     <p class="detail">{{info.version_name}}</p>
                 </dd>
                 <dd>
-                    <p class="title">Permissions:</p>
+                    <p class="title">{{$root.DICT.applications.WORDS.PERMISSIONS}}:</p>
                     <ul class="detail">
                         <li ng-repeat="item2 in info.requested_permission">
                             <p>{{item2}}</p>
@@ -114,7 +114,7 @@
         <!-- 显示未知来源提示 -->
         <div class="unknowApkTips" ng-click="$event.stopPropagation();">
             <span class="close-btn" ng-click="closeMask()">&times;</span>
-            <h2>Installation tips!</h2>
+            <h2>{{$root.DICT.applications.CONFIRMS.UNKNOWNTIPS}}</h2>
             <img src="../../images/applications/unkonwTips.png">
             <ul>
                 <li>1. In the pop-up window click settings.</li>
@@ -122,7 +122,7 @@
                 <li>3. Click OK.</li>
             </ul>
             <button class="btn btn-primary" ng-click="reinstall()">
-                Complete
+                {{$root.DICT.applications.BUTTONS.COMPLETE}}
             </button>
         </div>
         <!-- 显示未知来源提示 end -->
@@ -132,8 +132,8 @@
 
     <!-- 为空检测 -->
     <div class="wd-blank" ui-if="dataLoaded && !(list.length+newList.length)">
-        <p>No apps on your phone.<p>
-        <div class="btn btn-primary installApp"><i class="icon-add"></i>Install apk</div>
+        <p>{{$root.DICT.applications.NOAPP}}<p>
+        <div class="btn btn-primary installApp"><i class="icon-add"></i>{{$root.DICT.applications.BUTTONS.INSTALL_APPS}}</div>
     </div>
     <!-- 为空检测 end -->
 

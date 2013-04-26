@@ -7,12 +7,16 @@ return {
             SELECT_ALL:'Select all',
             DESELECT_ALL:'Deselect all',
             UNINSTALL:'Uninstall',
-            REINSTALL:'Reinstall'
+            REINSTALL:'Reinstall',
+            COMPLETE:'Complete'
         },
         CONFIRMS:{
             INSTALL:'Confirm install on your phone.',
-            UNINSTALL:'Confirm uninstall on your phone.'
+            UNINSTALL:'Confirm uninstall on your phone.',
+            UNKNOWNTIPS:'Installation tips',
+            INSTALL_COMPLETE:'Installation complete'
         },
+        NOAPP:'No apps on your phone.',
         UPGRADE_TIP:'Please Update SnapPea.',
         DEL_ONE_APP:{
             TITLE:'Uninstall app',
@@ -25,6 +29,12 @@ return {
             CONTENT:'Uninstall the selected applications from your phone?',
             AGREE:'Uninstall',
             CANCEL:'Cancel'
+        },
+        WORDS:{
+            SIZE:'Size',
+            INSTALLATION:'Installation',
+            VERSION:'Version',
+            PERMISSIONS:'Permissions'
         },
         PERMISSIONS:{
             "android.permission.SEND_SMS": "send SMS messages",
