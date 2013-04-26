@@ -40,7 +40,7 @@
         }
     }
 
-    $wdm-actions-height: 53px;
+    $wdm-actions-height: 50px;
 
     .wdm-actions {
         height: $wdm-actions-height;
@@ -54,7 +54,7 @@
     }
 
     .wdm-contact {
-        min-height: 53px;
+        min-height: $wdm-actions-height;
         border-bottom: 1px solid $wdm-border-color;
     }
     .wdm-entries {
