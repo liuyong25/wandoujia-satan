@@ -1,22 +1,7 @@
 <div class="wdj-applications">
 
     <!-- <div class="wd-loading" data-visible="true"></div> -->
-    <!-- header -->
-    <div class="header">
-        <button class="btn btn-primary installApp">
-            <i class="icon-add"></i>
-            {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
-        </button>
-        <button class="btn select-all" ng-click="selectAll()">
-            <i class="icon-sel"></i>
-            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
-        </button>
-        <button class="btn delete-all" ng-click="delMoreApps()">
-            <i class="icon-delAll"></i>
-            {{$root.DICT.applications.BUTTONS.UNINSTALL}}
-        </button>
-    </div>
-    <!-- header end -->
+
 
     <!-- 应用列表 -->
     <div class="apps-list">
@@ -55,7 +40,7 @@
             <dd class="confirm" ng-show="item.confirmTipShow" ng-click="$event.stopPropagation();">
                 <i class="icon-phone"></i>
                 <p>{{$root.DICT.applications.CONFIRMS.UNINSTALL}}</p>
-                <i bs-tooltip="Close" class="icon-close" ng-click="closeConfirm(item)"></i>
+                <i bs-tooltip="Close" class="icon-close" ng-click="closeConfirm(item,$event)"></i>
                 <i bs-tooltip="Uninstall" class="icon-retry" ng-click="delApp(item.package_name)"></i>
             </dd>
             <!-- 确认提示 end -->
@@ -69,6 +54,23 @@
 
     </div>
     <!-- 应用列表 end -->
+
+    <!-- header -->
+    <div class="header">
+        <div class="btn btn-primary installApp">
+            <i class="icon-add"></i>
+            {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
+        </div>
+        <button class="btn select-all" ng-click="selectAll()">
+            <i class="icon-sel"></i>
+            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
+        </button>
+        <button class="btn delete-all" ng-click="delMoreApps()">
+            <i class="icon-delAll"></i>
+            {{$root.DICT.applications.BUTTONS.UNINSTALL}}
+        </button>
+    </div>
+    <!-- header end -->
 
     <!-- 遮罩层 -->
     <div class="mask" ng-click="closeMask()">
@@ -95,7 +97,7 @@
                     <p class="detail">{{info.version_name}}</p>
                 </dd>
                 <dd>
-                    <p class="title">Permission:</p>
+                    <p class="title">Permissions:</p>
                     <ul class="detail">
                         <li ng-repeat="item2 in info.requested_permission">
                             <p>{{item2}}</p>
@@ -129,7 +131,7 @@
     <!-- 遮罩层 end  -->
 
     <!-- 为空检测 -->
-    <div class="wd-blank">
+    <div class="wd-blank" ui-if="dataLoaded && !(list.length+newList.length)">
         <p>No apps on your phone.<p>
         <div class="btn btn-primary installApp"><i class="icon-add"></i>Install apk</div>
     </div>

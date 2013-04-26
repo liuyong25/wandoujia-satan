@@ -14,14 +14,13 @@
 		padding-left: 10px;
 		padding-top: 10px;
 		background: rgba(255, 255, 255, 0.9);
-		z-index: 200;
 
         button.select-all{
-            margin-left: 6px;
+            margin-left: 3px;
         }
 
         button.delete-all{
-            margin-left: 6px;
+            margin-left: 3px;
             display: none;
             i:hover{
                 background-position: 0 -208px;
@@ -41,8 +40,8 @@
 
 		dl{
 			float: left;
-			width: 0px;
-			height: 0px;
+			width: 170px;
+			height: 170px;
 			background-color: #f5f5f5;
 			margin:0px 0px 10px 10px;
 			text-align: center;
@@ -50,6 +49,7 @@
             cursor: pointer;
 
 			img{
+                margin-top: 39px;
                 margin-bottom: 8px;
                 width: 72px;
                 height: 72px;
@@ -272,7 +272,7 @@
         right: 0px;
         bottom: 0px;
         background-color: rgba(9,9,9,0.9);
-        z-index: 1031;
+        @include ui-layer-top;
         text-align: center;
         @include transition(opacity 0.4s);
 
@@ -290,7 +290,7 @@
         dl.info{
             font-weight: normal;
             display: none;
-            width: 330px;
+            width: 400px;
             background-color: #fff;
             border-radius: 6px;
             margin: 0 auto;
@@ -298,12 +298,12 @@
             top:100px;
             bottom: 100px;
             left: 50%;
-            margin-left: -165px;
+            margin-left: -200px;
             overflow: hidden;
 
             div.detail-info{
                 position: fixed;
-                width: 330px;
+                width: 400px;
                 overflow-y:auto;
                 overflow-x:hidden;
                 font-size: 12px;
@@ -318,7 +318,7 @@
 
             hr{
                 color: #e7e7e7;
-                width: 270px;
+                width: 362px;
                 margin-top: 10px;
                 margin: 18px auto 5px auto;
             }
@@ -360,14 +360,18 @@
                     vertical-align: top;
                     width: 50%;
                     display: inline-block;
+                    margin-top: 4px;
+
                     li{
-                        line-height: 20px;
+                        line-height: 16px;
                         color: #555;
                         text-align: left;
+                        margin-bottom: 8px;
+
                         p{
                             word-wrap: break-word;
                             word-break: normal;
-                            width: 170px;
+                            width: 236px;
                             white-space: normal;
                         }
                     }
@@ -378,7 +382,7 @@
                 padding-top: 6px;
                 display: block;
                 height: 28px;
-                width: 330px;
+                width: 400px;
                 position: absolute;
                 bottom: 0px;
                 text-align: center;
@@ -392,7 +396,7 @@
                 p{
                     display: inline-block;
                     margin: 0px;
-
+                    font-size: 12px;
                 }
                 .icon-del{
                     margin-right: 4px;
@@ -448,9 +452,6 @@
         }
         /* unkonw tips end */
 
-    }
-    .wd-blank{
-        display: none;
     }
 
 	@import "icon";

@@ -431,11 +431,11 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         if(!!id){
             word = "contact";
         }else{
-            word = "contact(s)";
+            word = "contacts";
         };
         var alertTpl = '<p>Delete the selected '+word+' from your phone?</p>';
         if(read_only.length > 0){
-            alertTpl += '<p>Those are read-only contact(s),can not be deleted:</p><ul>'
+            alertTpl += '<p>Those are read-only contacts,can not be deleted:</p><ul>'
             for(var i = 0 , l = read_only.length; i < l ; i++ ){
                 alertTpl += ('<li>'+read_only[i]+'</li>');
             };
@@ -447,7 +447,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         },300);
 
         wdAlert.confirm(
-            'Delete '+word+"!",
+            'Delete '+word,
             'Delete the selected '+word+' from your phone?',
             'Delete',
             'Cancel'
@@ -531,7 +531,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                             //全部删除
                         };
                     }).error(function(){
-                        wdAlert.alert('Failed to delete selected contact(s)!', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
+                        wdAlert.alert('Failed to delete selected contacts', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
                     });
                 };
                 del();
@@ -700,7 +700,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
         //检查是否用户没有填入信息
         if(checkBlank($scope.contact)){
-            wdAlert.alert('Please enter the contact!','','OK');
+            wdAlert.alert('Please enter the contact','','OK');
             return;
         };
 
@@ -741,7 +741,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
                     showContacts(data['id']);
                 }).error(function(){
-                    wdAlert.alert('Failed to save edits!', '', 'OK').then(function(){showContacts($scope.contact.id);});
+                    wdAlert.alert('Failed to save edits', '', 'OK').then(function(){showContacts($scope.contact.id);});
                     GA('Web Contacts:save the editing contact failed');
                 });
             break;
@@ -766,7 +766,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
                     showContacts(data[0]['id']);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
-                    wdAlert.alert('Failed to save new contact!', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
+                    wdAlert.alert('Failed to save new contact', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
                     $scope.pageList.shift();
                     showContacts(G_showingContact['id']);
                     G_status = '';

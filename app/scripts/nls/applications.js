@@ -15,14 +15,14 @@ return {
         },
         UPGRADE_TIP:'Please Update SnapPea.',
         DEL_ONE_APP:{
-            TITLE:'Uninstall',
-            CONTENT:'Uninstall the application from your phone?',
+            TITLE:'Uninstall app',
+            CONTENT:'Uninstall the selected application from your phone?',
             AGREE:'Uninstall',
             CANCEL:'Cancel'
         },
         DEL_MORE_APPS:{
-            TITLE:'Uninstall',
-            CONTENT:'Uninstall the applications from your phone?',
+            TITLE:'Uninstall apps',
+            CONTENT:'Uninstall the selected applications from your phone?',
             AGREE:'Uninstall',
             CANCEL:'Cancel'
         },
