@@ -16,7 +16,7 @@
             <dd class="confirm" ng-show="item.confirmTipShow">
                 <i class="icon-phone"></i>
                 <p>{{$root.DICT.applications.CONFIRMS.INSTALL}}</p>
-                <i bs-tooltip="Close" class="icon-close" ng-click="closeUploadApp(item);"></i>
+                <i bs-tooltip="Cancel" class="icon-close" ng-click="closeUploadApp(item);"></i>
                 <i bs-tooltip="Reinstall" class="icon-retry" ng-click="reinstall(item)"></i>
             </dd>
             <!-- 确认提示 end -->
@@ -31,7 +31,7 @@
                 <span class="btn-icon-check" bs-tooltip="Select">
                     <input type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="checkedApp($event)">
                 </span>
-                <span class="btn-icon-del" ng-click="delApp(item.package_name)" bs-tooltip="Uninstall">
+                <span class="btn-icon-del" ng-click="delApp(item.package_name);clickHoverUninstall();" bs-tooltip="Uninstall">
                     <i class="icon-delt"></i>
                 </span>
             </dd>
@@ -40,8 +40,8 @@
             <dd class="confirm" ng-show="item.confirmTipShow" ng-click="$event.stopPropagation();">
                 <i class="icon-phone"></i>
                 <p>{{$root.DICT.applications.CONFIRMS.UNINSTALL}}</p>
-                <i bs-tooltip="Close" class="icon-close" ng-click="closeConfirm(item,$event)"></i>
-                <i bs-tooltip="Uninstall" class="icon-retry" ng-click="delApp(item.package_name)"></i>
+                <i bs-tooltip="Cancel" class="icon-close" ng-click="closeConfirm(item,$event)"></i>
+                <i bs-tooltip="Uninstall" class="icon-retry" ng-click="delApp(item.package_name);clickRetryUninstall();"></i>
             </dd>
             <!-- 确认提示 end -->
 
@@ -57,7 +57,7 @@
 
     <!-- header -->
     <div class="header">
-        <div class="btn btn-primary installApp">
+        <div class="btn btn-primary installApp" ng-click="clickInstallApk()">
             <i class="icon-add"></i>
             {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
         </div>
@@ -105,7 +105,7 @@
                     </ul>
                 </dd>
             </div>
-            <div class="buttons" ng-click="delApp(info.package_name)">
+            <div class="buttons" ng-click="delApp(info.package_name);clickInfoUninstall();">
                 <i class="icon-info-del"></i><p>{{$root.DICT.applications.BUTTONS.UNINSTALL}}</p>
             </div>
         </dl>
@@ -133,7 +133,7 @@
     <!-- 为空检测 -->
     <div class="wd-blank" ui-if="dataLoaded && !(list.length+newList.length)">
         <p>{{$root.DICT.applications.NOAPP}}<p>
-        <div class="btn btn-primary installApp"><i class="icon-add"></i>{{$root.DICT.applications.BUTTONS.INSTALL_APPS}}</div>
+        <div class="btn btn-primary installApp" ng-click="clickInstallApk();"><i class="icon-add"></i>{{$root.DICT.applications.BUTTONS.INSTALL_APPS}}</div>
     </div>
     <!-- 为空检测 end -->
 
