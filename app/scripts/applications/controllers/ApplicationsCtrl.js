@@ -41,9 +41,6 @@ define([
                 for( var i = 0,l = data.length ; i<l; i++ ){
                     G_appList.push(changeInfo(data[i]));
                 };
-                if(G_appList.length == 0){
-                    $('.wd-blank').show();
-                };
                 $scope.list = G_appList;
                 setTimeout(function(){
                     uploadApk($('.installApp'));
@@ -421,6 +418,11 @@ define([
                         $scope.$apply();
                         break;
                     };
+                };
+                if( ($scope.list.length == 0) && ($scope.newList.length == 0) ){
+                    setTimeout(function(){
+                        uploadApk($('.installApp'));
+                    },300);
                 };
             });
 
