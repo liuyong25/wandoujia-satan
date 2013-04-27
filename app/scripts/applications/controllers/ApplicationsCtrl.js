@@ -1,7 +1,7 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev','wdpMessagePusher','wdAlert','$route',function($scope,$http,wdDev,wdpMessagePusher,wdAlert,$route){
+    return ['$scope','$http','wdDev','wdpMessagePusher','wdAlert','$route','GA',function($scope,$http,wdDev,wdpMessagePusher,wdAlert,$route,GA){
 
         //$scope相关
         //展示应用列表
@@ -83,7 +83,7 @@ define([
                     for(var m = 0 , n = data[i]['requested_permission'].length; m < n; m++ ){
                         data[i]['requested_permission'][m] = $scope.$root.DICT.applications.PERMISSIONS[data[i]['requested_permission'][m]] || data[i]['requested_permission'][m];
                     };
-                    console.log(data[i]);
+
                     return data[i];
                 };
             };
@@ -121,6 +121,7 @@ define([
 
         //删除多个
         function delMoreApps(){
+            GA('Web applications : click the top uninstall button');
             wdAlert.confirm(
                 $scope.$root.DICT.applications.DEL_MORE_APPS.TITLE,
                 $scope.$root.DICT.applications.DEL_MORE_APPS.CONTENT,
@@ -163,7 +164,7 @@ define([
         //上传APK
         function uploadApk(btnEles){
             for(var i = 0,l = btnEles.length;i<l;i++ ){
-                console.log(btnEles[i]);
+
                 var uploader = new fineuploader.FineUploaderBasic({
                     button: btnEles[i],
                     request: {
@@ -260,8 +261,10 @@ define([
         function reinstall(item){
             var apk_paths = [];
             if(!!item){
+                GA('Web applications : click reinstall button');
                 apk_paths.push({'apk_path':item['apk_path']});
             }else{
+                GA('Web applications : click the complete button of unknown sources tips page');
                 for(var i = 0,l = $scope.newList.length; i<l; i++ ){
                     apk_paths.push({'apk_path':$scope.newList[i]['apk_path']});
                 };
@@ -281,6 +284,7 @@ define([
 
         //上传之后或者过程中关闭那个应用
         function closeUploadApp(item){
+            GA('Web applications : click cancel install button');
             for(var i = 0,l = $scope.newList.length;i<l;i++ ){
                 if($scope.newList[i]['file_name'] == item['file_name']){
                     $scope.newList.splice(i,1);
@@ -296,10 +300,12 @@ define([
         function closeConfirm(item,e){
             $(e.target.parentNode.parentNode).find('.toolbar').css('opacity','');
             item['confirmTipShow'] = false;
+            GA('Web applications : click cancel uninstall button');
         };
 
         //显示对应的应用
         function showAppInfo(package_name){
+            GA('Web applications : show the app detail informations');
             var mask = $('.mask');
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
@@ -322,6 +328,7 @@ define([
         function selectAll(){
             var eles = $('.apps-list dl dd.toolbar');
             if($scope.isSelectAll){
+                GA('Web applications : click deselect all button');
                 $scope.isSelectAll = false;
                 for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
                     $scope.list[i]['checked'] = false;
@@ -331,6 +338,7 @@ define([
                 $('.header button.delete-all').hide();
             }else{
                 $scope.isSelectAll = true;
+                GA('Web applications : click select all button');
                 for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
                     if(!$scope.list[i]['confirmTipShow']){
                         $scope.list[i]['checked'] = true;
@@ -343,6 +351,7 @@ define([
         };
 
         function checkedApp(e){
+            GA('Web applications : click Checkbox');
             if($(e.target).prop('checked')){
                 $('.header button.delete-all').show();
                 $(e.target.parentNode.parentNode).css('opacity',1);
@@ -355,6 +364,22 @@ define([
                 };
                 $('.header button.delete-all').hide();
             };
+        };
+
+        function clickInstallApk(){
+            GA('Web applications :click install apk button');
+        };
+
+        function clickHoverUninstall(){
+            GA('Web applications : click the hover uninstall button');
+        };
+
+        function clickInfoUninstall(){
+            GA('Web applications : click the uninstall button of detail info page');
+        };
+
+        function clickRetryUninstall(){
+            GA('Web applications : click retry uninstall button');
         };
 
         //webSocket处理
@@ -380,7 +405,7 @@ define([
                         };
                     };
                     data['doneTipShow'] = true;
-                    $scope.list.unshift(data);
+                    $scope.list.unshift(changeInfo(data));
                     setTimeout(function(){
                         data['doneTipShow'] = false;
                         $scope.$apply();
@@ -417,6 +442,10 @@ define([
         $scope.delMoreApps = delMoreApps;
         $scope.closeUploadApp = closeUploadApp;
         $scope.reinstall = reinstall;
+        $scope.clickInstallApk = clickInstallApk;
+        $scope.clickHoverUninstall = clickHoverUninstall;
+        $scope.clickInfoUninstall = clickInfoUninstall;
+        $scope.clickRetryUninstall = clickRetryUninstall;
 
 //最后的括号
     }];
