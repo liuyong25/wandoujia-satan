@@ -4,7 +4,8 @@ define([
     _
 ) {
 'use strict';
-return ['wdmMessages', '$http', '$q', function(wdmMessages, $http, $q) {
+return ['wdmMessages', '$http', '$q', '$rootScope', 'wdpMessagePusher', 'wdEventEmitter',
+function(wdmMessages,   $http,   $q,   $rootScope,   wdpMessagePusher,   wdEventEmitter) {
 
 function ConversationCollection() {
     this._collection = [];
@@ -354,7 +355,30 @@ function guid() {
     return _.uniqueId('wdmConversation_');
 }
 
-return new ConversationCollection();
+var conversations = new ConversationCollection();
+
+// Mixin event emitter.
+wdEventEmitter(conversations);
+
+$rootScope.$on('signout', function() {
+    conversations.clear();
+});
+
+wdpMessagePusher.channel('messages_add.wdm messages_update.wdm', function(e, msg) {
+    var cid = msg.data.threadId;
+    var mid = msg.data.messageId;
+    var c = conversations.getById(cid);
+    if (c) {
+        c.messages.fetch(mid).then(function() {
+            conversations.trigger('update', [c]);
+        });
+    }
+    else {
+        conversations.fetch(cid);
+    }
+});
+
+return conversations;
 
 }];
 });
