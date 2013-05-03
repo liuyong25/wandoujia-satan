@@ -9,9 +9,9 @@ define([
 ) {
 'use strict';
 return [
-        '$scope', '$window', 'Photos', '$log', '$route', '$location', 'wdAlert',
+        '$scope', '$window', 'Photos', '$log', '$route', '$location', 'wdAlert', 'wdpPhotos',
         'wdViewport', 'GA', 'wdpMessagePusher', 'PhotosLayoutAlgorithm', '$q', 'wdNotification',
-function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,
+function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,   wdpPhotos,
          wdViewport,   GA,   wdpMessagePusher,   PhotosLayoutAlgorithm,   $q,   wdNotification) {
 
 $log.log('wdPhotos:galleryController initializing!');
@@ -19,10 +19,17 @@ $log.log('wdPhotos:galleryController initializing!');
 $scope.firstScreenLoaded = false;
 $scope.loaded = false;
 $scope.allLoaded = false;
-$scope.photos = [];
 $scope.layout = null;
 $scope.previewPhoto = null;
 
+// A temp solution.
+// Delegate '$scope.photos' to 'wdpPhotos.photos'
+Object.defineProperty($scope, 'photos', {
+    get: function() { return wdpPhotos.photos; },
+    set: function(photos) { wdpPhotos.photos = photos; }
+});
+
+// Layout when photos amount change. Not a robust way...
 $scope.$watch('photos.length', layout);
 
 wdViewport.on('resize', function() {
@@ -163,25 +170,25 @@ $scope.$on('$destroy', function() {
 function loadScreen() {
     $scope.loaded = false;
     (function fetchLoop(defer, viewportHeight, lastLayoutHeight) {
-        var photosLengthBeforeFetch = $scope.photos.length;
-        fetchPhotos(30).then(function done() {
-            var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
-            calculateLayout();
-            if (newPhotosLength === 0) {
-                $scope.allLoaded = true;
-                defer.resolve();
-            }
-            else {
-                if ($scope.layout.height - lastLayoutHeight < viewportHeight) {
-                    fetchLoop(defer, viewportHeight, lastLayoutHeight);
-                }
-                else {
+        calculateLayout();
+        if ($scope.layout && $scope.layout.height - lastLayoutHeight >= viewportHeight) {
+            defer.resolve();
+        }
+        else {
+            var photosLengthBeforeFetch = $scope.photos.length;
+            fetchPhotos(30).then(function done() {
+                var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
+                if (newPhotosLength === 0) {
+                    $scope.allLoaded = true;
                     defer.resolve();
                 }
-            }
-        }, function fail() {
-            defer.reject();
-        });
+                else {
+                    fetchLoop(defer, viewportHeight, lastLayoutHeight);
+                }
+            }, function fail() {
+                defer.reject();
+            });
+        }
         return defer.promise;
     })($q.defer(), wdViewport.height(), $scope.layout ? $scope.layout.height : 0)
     .then(function done() {
