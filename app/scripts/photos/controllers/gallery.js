@@ -10,9 +10,9 @@ define([
 'use strict';
 return [
         '$scope', '$window', 'Photos', '$log', '$route', '$location', 'wdAlert', 'wdpPhotos',
-        'wdViewport', 'GA', 'wdpMessagePusher', 'PhotosLayoutAlgorithm', '$q', 'wdNotification',
+        'wdViewport', 'GA', 'PhotosLayoutAlgorithm', '$q', 'wdNotification',
 function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,   wdpPhotos,
-         wdViewport,   GA,   wdpMessagePusher,   PhotosLayoutAlgorithm,   $q,   wdNotification) {
+         wdViewport,   GA,   PhotosLayoutAlgorithm,   $q,   wdNotification) {
 
 $log.log('wdPhotos:galleryController initializing!');
 
@@ -25,8 +25,8 @@ $scope.previewPhoto = null;
 // A temp solution.
 // Delegate '$scope.photos' to 'wdpPhotos.photos'
 Object.defineProperty($scope, 'photos', {
-    get: function() { return wdpPhotos.photos; },
-    set: function(photos) { wdpPhotos.photos = photos; }
+    get: function() { return wdpPhotos.collection; },
+    set: function(photos) { wdpPhotos.collection = photos; }
 });
 
 // Layout when photos amount change. Not a robust way...
@@ -65,33 +65,13 @@ if ($window.chrome &&
     }, 3000);
 }
 
-// Temp
-wdpMessagePusher
-    .channel('photos_add.wdp', function(e, message) {
-        _.each(message.data, function(id) {
-            var photo = _.find($scope.photos, function(photo) {
-                return photo.id === id;
-            });
-            if (!photo) {
-                Photos.get({id: id}, function(photo) {
-                    mergePhotos(photo);
-                });
-            }
-        });
-    })
-    .channel('photos_remove.wdp', function(e, message) {
-        _.each(message.data, function(id) {
-            var photo = _.find($scope.photos, function(photo) {
-                return photo.id === id;
-            });
-            if (photo) {
-                $scope.$apply(function() {
-                    exclude($scope.photos, photo);
-                    $scope.$broadcast('wdp:photos:remove', [photo]);
-                });
-            }
-        });
+wdpPhotos.on('add.wdp', function(e, p) {
+    // do nothing...
+}).on('remove.wdp', function(e, p) {
+    $scope.$apply(function() {
+        $scope.$broadcast('wdp:photos:remove', [p]);
     });
+});
 
 $scope.preview = function(photo) {
     if (photo.path) {
@@ -163,7 +143,7 @@ $scope.fetch = function() {
 
 $scope.$on('$destroy', function() {
     clearTimeout(chromeExtensionNotification);
-    wdpMessagePusher.unchannel('.wdp');
+    wdpPhotos.off('.wdp');
 });
 
 //==========================================================================
