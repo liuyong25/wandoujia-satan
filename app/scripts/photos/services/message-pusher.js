@@ -93,7 +93,7 @@ var pusher = {
         };
         // Keep alive.
         websocket.onopen = function() {
-            startHeartbeat();
+            // startHeartbeat();
         };
         return this;
     },

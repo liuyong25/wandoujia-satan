@@ -213,7 +213,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             wdpMessagePusher.start();
         });
         $rootScope.$on('signout', function() {
-            wdpMessagePusher.stop().clear();
+            wdpMessagePusher.stop();
         });
     }]);
 
