@@ -30,6 +30,7 @@ return function() {
                     $location.url('/portal');
                 }
                 $rootScope.$broadcast('signout');
+                this.stopSignoutDetection();
             },
             startSignoutDetection: function() {
                 var self = this;
