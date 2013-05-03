@@ -19,7 +19,8 @@ define([
     'common/directives/blank',
     'common/directives/upgrade-warning',
     'common/services/title-notification',
-    'common/directives/navbar'
+    'common/directives/navbar',
+    'common/services/emitter'
 ], function(
     angular,
     loading,
@@ -41,7 +42,8 @@ define([
     blankDirective,
     upgradeWarningDirective,
     titleNotification,
-    navbar
+    navbar,
+    emitter
 ) {
 // jshint unused:false
 'use strict';
@@ -68,6 +70,7 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .factory('GA', ga)
     .factory('wdNotification', notification)
     .factory('wdTitleNotification', titleNotification)
+    .factory('wdEventEmitter', emitter)
     // Configuration
     .config(['$provide', 'wdHttpProvider', function($provide, wdHttpProvider) {
         $provide.decorator('$http', wdHttpProvider.httpDecorator);
