@@ -2,8 +2,8 @@ define([
     'fineuploader'
 ], function(fineuploader){
 
-return ['$scope','$http','wdAlert','wdDev','$route','GA',
-function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
+return ['$scope','$http','wdAlert','wdDev','$route','GA','wdcContacts',
+function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
 
     //存储当前联系人的数据列表
     var G_contacts = [];
@@ -18,7 +18,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     var G_searchList = [];
 
     //每次拉取数据的长度
-    var G_dataLengthOnce = 50;
+    //var G_dataLengthOnce = 50;
+    var DATA_LENGTH_ONCE = 50;
 
     //标示是否首次进入
     var G_isFirst = true;
@@ -157,37 +158,38 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     var G_debug = 0 ;
 
     //获取数据
-    function getData(offset,length,cursor){
+    function getData(offset, length, cursor){
         cursor = cursor || 0;
         $http({
             method: 'get',
             url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset
         }).success(function(data) {
 
-            for(var i = 0,l = data.length;i<l;i++){
+            for ( var i = 0, l=data.length; i<l; i++ ){
 
                 //修正默认头像
-                if(!data[i].photo_path){
+                if (!data[i].photo_path){
                     data[i].photo_path = G_defaultPhoto;
                 };
                 G_contacts.push(data[i]);
             };
             getList(data);
             G_isFirst = false;
+
             //数据未取完
             if( !G_stopLoad && (l === length)){
                 //如果支持cursor打开这个接口，但是速度不如没有cursor的快
-                //getData(1,G_dataLengthOnce,data[l-1].id);
+                //getData(1,DATA_LENGTH_ONCE,data[l-1].id);
                 //if(G_debug>4){return;}else{G_debug++;};
                 //不支持cursor取数据
-                getData(G_contacts.length,G_dataLengthOnce,null);
+                getData(G_contacts.length,DATA_LENGTH_ONCE,null);
 
             }else{
                 G_dataFinish = true ;
             };
 
         }).error(function(){
-            wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
+            // wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
         });
     };
 
@@ -263,7 +265,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
             $('.wdj-contacts .right .wd-loading').hide();
             if(!id){
-                $('.contacts-edit').hide();
+                //$('.contacts-edit').hide();
+                $scope.shouldContactsEditShow = false;
                 return;
             };
 
@@ -299,7 +302,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
 
             //样式相关处理
             setTimeout(function(){
-                var wrap = $('.contacts-edit').show();
+                $scope.shouldContactsEditShow = true;
+                var wrap = $('.contacts-edit');
                 wrap.find('div.editName').hide();
                 wrap.find('p.name').show();
                 wrap.find('p.remark').show();
@@ -805,7 +809,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         };
         $.extend(true,data,G_showingContact);
 
-        var wrap = $('.contacts-edit').show();
+        var wrap = $('.contacts-edit');
+        $scope.shouldContactsEditShow = true;
         var ele =  wrap.children('.info');
 
 
@@ -953,7 +958,8 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         setTimeout(function(){
             $('ul.contacts-list')[0].scrollTop = 0;
             $scope.editContact();
-            $('.contacts-edit').show();
+            $scope.shouldContactsEditShow = true;
+            $scope.$apply();
         },100);
     };
 
@@ -1120,7 +1126,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
         if(!!G_searchList[0]){
             $('ul.contacts-list li.no-contacts').hide();
             G_clicked['clicked'] = false;
-            $scope.pageList = G_searchList.slice(0,G_dataLengthOnce);
+            $scope.pageList = G_searchList.slice(0,DATA_LENGTH_ONCE);
             if($scope.pageList.length < G_searchList.length){
                 $(".contacts-list .load-more").hide();
             };
@@ -1139,7 +1145,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     //加载更多
     $scope.loadMore = function(){
         var pl = $scope.pageList.length;
-        var l = pl + G_dataLengthOnce;
+        var l = pl + DATA_LENGTH_ONCE;
         if( !!$scope.searchText ){
             $scope.pageList = $scope.pageList.concat(G_searchList.slice(pl,l));
             if(l>$scope.pageList.length){
@@ -1154,8 +1160,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA){
     };
 
     //主函数开始
-    $('.contacts-edit').hide();
-    getData(0,G_dataLengthOnce,null);
+    // $('.contacts-edit').hide();
+    $scope.shouldContactsEditShow = false;
+    //getData(0,DATA_LENGTH_ONCE,null);
     $scope.serverMatchRequirement = $route.current.locals.versionSupport;
     //$scope.list = G_list;
     $scope.pageList = G_pageList;

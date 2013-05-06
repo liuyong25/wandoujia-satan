@@ -56,7 +56,7 @@
         <div class="wd-loading" data-visible="true"></div>
 
         <!-- 查看和编辑用户信息 -->
-        <div class="contacts-edit">
+        <div class="contacts-edit" ng-show="shouldContactsEditShow">
             <img class="photo" ng-src="{{contact.photo_path}}">
 
             <!-- 上传图片遮罩 start -->

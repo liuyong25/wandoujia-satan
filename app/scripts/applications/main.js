@@ -11,6 +11,6 @@ define([
 'use strict';
 
 //注册angular的模块和control
-angular.module('wdApplications', ['wdCommon']).controller('ApplicationsCtrl', applicationsCtrl);
-
+angular.module('wdApplications', ['wdCommon'])
+        .controller('ApplicationsCtrl', applicationsCtrl);
 });
