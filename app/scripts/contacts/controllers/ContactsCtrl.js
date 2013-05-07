@@ -30,9 +30,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     //数据是否已经加载完成
     var G_dataFinish = false;
 
-    //用来阻止加载
-    var G_stopLoad = false;
-
     //是否selectAll了
     var G_selectAll = false;
 
@@ -158,40 +155,28 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     var G_debug = 0 ;
 
     //获取数据
-    function getData(offset, length, cursor){
-        cursor = cursor || 0;
-        $http({
-            method: 'get',
-            url: '/resource/contacts?length='+length+'&cursor='+cursor +'&offset='+offset
-        }).success(function(data) {
+    function init(){
 
-            for ( var i = 0, l=data.length; i<l; i++ ){
-
-                //修正默认头像
-                if (!data[i].photo_path){
-                    data[i].photo_path = G_defaultPhoto;
-                };
-                G_contacts.push(data[i]);
-            };
-            getList(data);
-            G_isFirst = false;
-
-            //数据未取完
-            if( !G_stopLoad && (l === length)){
-                //如果支持cursor打开这个接口，但是速度不如没有cursor的快
-                //getData(1,DATA_LENGTH_ONCE,data[l-1].id);
-                //if(G_debug>4){return;}else{G_debug++;};
-                //不支持cursor取数据
-                getData(G_contacts.length,DATA_LENGTH_ONCE,null);
-
-            }else{
-                G_dataFinish = true ;
-            };
-
-        }).error(function(){
-            // wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
+        wdcContacts.init();
+        wdcContacts.onchange(function(data){
+            getData(data);
         });
     };
+
+    //每次加载数据时触发
+    function getData(data) {
+        for ( var i = 0, l=data.length; i<l; i++ ){
+
+            //修正默认头像
+            if (!data[i].photo_path){
+                data[i].photo_path = G_defaultPhoto;
+            };
+            G_contacts.push(data[i]);
+        };
+        getList(data);
+        G_isFirst = false;
+        G_dataFinish = wdcContacts.getLoadStatus();
+    }
 
     function getListItem(data){
         var id = data.id || '';
@@ -1160,9 +1145,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     };
 
     //主函数开始
-    // $('.contacts-edit').hide();
     $scope.shouldContactsEditShow = false;
-    //getData(0,DATA_LENGTH_ONCE,null);
+
+    //用于版本检测
     $scope.serverMatchRequirement = $route.current.locals.versionSupport;
     //$scope.list = G_list;
     $scope.pageList = G_pageList;
@@ -1170,9 +1155,9 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     $scope.protocolMap = G_protocol;
     $scope.showContacts = showContacts;
 
-    $scope.$on('$destroy',function(){
-        G_stopLoad = true;
-    });
+    init();
+
+    window.wdcContacts = wdcContacts;
 
 //return的最后括号
 }];

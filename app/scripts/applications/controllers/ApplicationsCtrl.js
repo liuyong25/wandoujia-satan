@@ -1,7 +1,7 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev','wdpMessagePusher','wdAlert','$route','GA',function($scope,$http,wdDev,wdpMessagePusher,wdAlert,$route,GA){
+    return ['$scope','$http','wdDev','wdpMessagePusher','wdAlert','$route','GA','wdcApplications',function($scope,$http,wdDev,wdpMessagePusher,wdAlert,$route,GA,wdcApplications){
 
         //$scope相关
         //展示应用列表
@@ -33,10 +33,7 @@ define([
         var G_unknownTips = false;
 
         function getAppListData(){
-            $http({
-                method: 'get',
-                url: '/resource/apps?length=9999'
-            }).success(function(data) {
+            wdcApplications.getAppListData().success(function(data) {
                 $scope.dataLoaded = true;
                 for( var i = 0,l = data.length ; i<l; i++ ){
                     G_appList.push(changeInfo(data[i]));

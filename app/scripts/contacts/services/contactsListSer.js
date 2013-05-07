@@ -24,14 +24,19 @@ return [ '$http', '$q', function ( $http, $q ) {
         'contacts' : [],
 
         //数据是否拉取完成
-        'dataFinish' : false
+        'dataFinish' : false,
+
+        //临时存储onchange中触发的函数
+        'fun' : undefined
     };
+
+    var me = this;
 
     //获取数据
     function getData( offset, length, cursor ) {
         cursor = cursor || 0;
 
-        $http({
+        return $http({
             method: 'get',
             url: '/resource/contacts',
             timeout:CONFIG.timeout,
@@ -45,6 +50,8 @@ return [ '$http', '$q', function ( $http, $q ) {
             _.each( data, function( value ) {
                 global.contacts.push( value );
             });
+
+            global.fun.call(me,data);
 
             //数据未取完
             if ( data.length === length ) {
@@ -65,14 +72,41 @@ return [ '$http', '$q', function ( $http, $q ) {
         });
     }
 
-    //自动加载数据
-    getData( 0, CONFIG.dataLengthOnce, null );
-
     //整个service返回接口
     return {
 
+        init : function(){
+
+            if(!global.contacts.length){
+
+                //自动加载数据，return 一个promise
+                return getData( 0, CONFIG.dataLengthOnce, null );
+            }
+
+        },
+
+        onchange : function(fun) {
+
+            global.fun = fun;
+            if (global.contacts.length) {
+
+                //这里兼容之前loadmore的逻辑
+                global.fun.call( me,global.contacts.slice( 0 , CONFIG.dataLengthOnce ) );
+                global.fun.call( me,global.contacts.slice( CONFIG.dataLengthOnce + 1 ) );
+            }
+        },
+
+        //取得当前已加载的数据
+        getContacts : function() {
+            return global.contacts;
+        },
+
+        getLoadStatus : function() {
+            return global.dataFinish;
+        },
+
         //根据query搜索联系人
-        search:function(query) {
+        search : function(query) {
             query = query.toLocaleLowerCase();
             var list = [];
 
