@@ -1,38 +1,45 @@
 define([
-    'underscore'
+    'underscore',
+    'messages/services/model'
 ], function(
-    _
+    _,
+    Model
 ) {
 'use strict';
 
 return ['$q', '$http', function($q, $http) {
 
 function Message(rawData) {
-    rawData = rawData || {};
 
-    _.extend(this, rawData);
+    var instance = Model.call(this, _.extend({
+        id: guid(),
+        thread_id: null,
+        date: Date.now(),
+        read: 1,
+        status: 32,
+        type: 2,
+        category: 0
+    }, rawData));
 
-    var instance = Object.create(this, {
-        rawData: { value: this }
-    });
-
-    instance._collection = null;
     instance.isSeparator = false;
 
     return instance;
 }
 
-Object.defineProperties(Message.prototype, {
+Message.prototype = Object.create(Model.prototype, {
     cid:        {get: function() { return this.thread_id; }},
-    isNew:      {get: function() { return typeof this.id !== 'number'; }},
     isRead:     {get: function() { return !!this.read; }},
     isPending:  {get: function() { return this.status === 32; }},
     isError:    {get: function() { return this.status === 64; }},
     isSMS:      {get: function() { return this.category === 0; }},
-    isMMS:      {get: function() { return this.category === 1; }}
+    isMMS:      {get: function() { return this.category === 1; }},
+    url:        {get: function() { return '/resource/messages/' + this.id;}}
 });
 
 _.extend(Message.prototype, {
+
+    constructor: Message,
+
     /**
      * Update data from server
      * @return {Promise} Resolve by updated Message instance
@@ -41,7 +48,24 @@ _.extend(Message.prototype, {
         if (this.isNew) {
             return $q.when(this);
         }
-        return this._collection.fetch(this.id);
+
+        var self = this;
+        return $http.get(this.url).then(function done(response) {
+            return self.extend(response.data);
+        });
+    },
+
+    /**
+     * Destroy Message on server
+     * @return {Promise} Resolve by Message
+     */
+    destroy: function() {
+        var self = this;
+        return $http.delete(this.url).then(function done() {
+            return self;
+        }, function fail(response) {
+            return response.status === 404 ? self : $q.reject();
+        });
     },
 
     /**
@@ -65,7 +89,7 @@ _.extend(Message.prototype, {
         else {
             config = {
                 method: 'GET',
-                url: '/resource/messages/' + this.id + '/resend'
+                url: this.url + '/resend'
             };
         }
         return $http(config).then(function success(response) {
@@ -81,18 +105,11 @@ _.extend(Message.prototype, {
             return $q.reject();
         });
     },
-
-    /**
-     * Merge data from rawData or another Message
-     * @param  {Object|Message} newData
-     */
-    extend: function(newData) {
-        if (typeof newData.extend === 'function') {
-            newData = newData.rawData;
-        }
-        _.extend(this.rawData, newData);
-    }
 });
+
+function guid() {
+    return _.uniqueId('wdmMessage_');
+}
 
 return {
     Message: Message,

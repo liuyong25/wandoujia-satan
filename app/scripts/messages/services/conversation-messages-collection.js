@@ -4,39 +4,33 @@ define([
     _
 ) {
 'use strict';
-return ['wdmMessagesCollection', 'wdmMessage', '$http', function(wdmMessagesCollection, wdmMessage, $http) {
+return ['wdmSyncMessagesCollection', '$http', '$q',
+function(wdmSyncMessagesCollection,   $http,   $q) {
 
-var MessagesCollection = wdmMessagesCollection.MessagesCollection;
+var SyncMessagesCollection = wdmSyncMessagesCollection.SyncMessagesCollection;
 
 function ConversationMessagesCollection(conversation) {
-    MessagesCollection.call(this, conversation);
+    SyncMessagesCollection.apply(this);
+    // Whether need a refresh
+    this.dirty = false;
 }
 
-ConversationMessagesCollection.prototype = Object.create(MessagesCollection.prototype);
+ConversationMessagesCollection.prototype = Object.create(SyncMessagesCollection.prototype);
 
 _.extend(ConversationMessagesCollection.prototype, {
 
     constructor: ConversationMessagesCollection,
 
     /**
-     * Create a message on client
-     * @param  {Object} data Data to override defaults.
-     * @return {Message}
+     * Create a Message and add into collection
+     * @param  {Object} data
+     * @return {}      [description]
      */
-    create: function(data, orphan) {
-        orphan = !!orphan;
-        data = _.extend({
-            id: guid(),
-            thread_id: this._conversation.id,
-            date: Date.now(),
-            read: 1,
-            status: 32,
-            type: 2,
-            category: 0
-        }, data);
-
-        var m = wdmMessage.createMessage(data);
-        return orphan ? m : this.add(m)[0];
+    create: function(data) {
+        if (data.thread_id == null) {
+            data.thread_id = this._conversation.id;
+        }
+        return SyncMessagesCollection.prototype.create.call(this, data);
     },
 
     send: function(content) {
@@ -48,63 +42,69 @@ _.extend(ConversationMessagesCollection.prototype, {
                 body: content
             });
         });
+        this.add(messages);
 
-        return $http({
-            method: 'POST',
-            url: '/resource/messages/send',
-            data: {
-                addresses: self._conversation.addresses,
-                body: content
-            }
+        return $http.post('/resource/messages/send', {
+            addresses: self._conversation.addresses,
+            body: content
         }).then(function success(response) {
-            var data = response.data;
             messages.forEach(function(m, index) {
-                m.extend(data[index]);
+                if (response.data[index]) {
+                    m.extend(response.data[index]);
+                }
+                else {
+                    self.drop(m);
+                }
             });
+
             self.sort();
 
-            function always() { return messages; }
-            return self._conversation.fetch().then(always, always);
+            return self._updateConversation(messages);
         });
     },
 
     remove: function(messages) {
+        var self = this;
+
         messages = this.drop(messages);
+
         messages.filter(function(m) {
             return !m.isNew;
         });
 
         return $q.all(messages.map(function(m) {
-            return $http({
-                method: 'DELETE',
-                url: '/resource/messages/' + m.id
-            }).then(function success() {
-                function always() { return messages; }
-                return self._conversation.fetch().then(always, always);
-            }, function error() {
+            return m.destroy().then(null, function fail() {
+                // Add message back
                 self.add(m);
-                return $q.reject();
             });
-        }));
+        })).then(function() {
+            return self._updateConversation(messages);
+        });
     },
 
     fetch: function(id) {
         var self = this;
+
+        // Do nothing when conversation is new
         if (this._conversation.isNew) {
+
             this.loaded = true;
             return $q.when([]);
+
         }
+        // Fetch by id
         else if (arguments.length === 1) {
-            return $http({
-                method: 'GET',
-                url: '/resource/messages/' + id
-            }).then(function success(response) {
-                var m = self.add(wdmMessage.createMessage(response.data))[0];
-                function always() { return m; }
-                return self._conversation.fetch().then(always, always);
+
+            var m = this.getById(id) || this.create({ id: id });
+            return m.fetch().then(function done(m) {
+                self.add(m);
+                return self._updateConversation(m);
             });
+
         }
+        // Fetch list
         else {
+
             var dirty = this.dirty;
             var params = {
                 offset: 0,
@@ -113,34 +113,33 @@ _.extend(ConversationMessagesCollection.prototype, {
             if (this.collection.length && !dirty) {
                 params.cursor = this.collection[0].id;
                 params.offset = 1;
-                this.dirty = false;
             }
-            return $http({
-                method: 'GET',
-                url: '/resource/conversations/' + this._conversation.id + '/messages',
-                params: params
-            }).then(function success(response) {
-                var rawData = [].concat(response.data);
-                var messages = self.add(rawData.map(wdmMessage.createMessage));
-                function always() { return messages; }
+            this.dirty = false;
 
-                if (!dirty) {
-                    self.loaded = response.headers('WD-Need-More') === 'false';
-                }
+            return this.sync('read', {
+                params: params
+            }, dirty).then(function success(messages) {
+                // Conversation has a snapshot for latest data.
+                // We fetch earlier messages by default which needs no updating.
+                // If dirty is true, may snapshot has changes that needs updating.
                 if (dirty) {
-                    return self._conversation.fetch().then(always, always);
+                    return self._updateConversation(messages);
                 }
                 else {
                     return messages;
                 }
             });
+
         }
+    },
+
+    _updateConversation: function(data) {
+        function always() { return data; }
+        return this._conversation.fetch().then(always, always);
     }
 });
 
-function guid() {
-    return _.uniqueId('wdmMessage_');
-}
+
 
 
 

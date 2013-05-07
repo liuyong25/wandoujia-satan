@@ -140,12 +140,14 @@ _.extend(ConversationCollection.prototype, {
     fetch: function(id) {
         var self = this;
         if (arguments.length === 1) {
+            var existed = this.getById(id) ||
             return $http({
                 method: 'GET',
                 url: '/resource/conversations/' + id
             }).then(function success(response) {
-                var c = wrapConversation(response.data);
-                return self.add(c)[0];
+                var c = self.create(response.data);
+                self.add(c);
+                return c;
             });
         }
         else {
