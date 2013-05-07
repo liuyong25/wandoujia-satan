@@ -1,7 +1,6 @@
 define([
     'angular',
     'photos/directives/showcase',
-    'photos/services/photo-group',
     'photos/directives/actionbar',
     'photos/directives/slides',
     'photos/services/layout-algorithm',
@@ -15,11 +14,11 @@ define([
     'photos/controllers/gallery',
     'photos/directives/gallery',
     'common/main',
-    'common/resources'
+    'common/resources',
+    'photos/services/photos'
 ], function(
     angular,
     showcase,
-    PhotoGroup,
     actionbar,
     slides,
     layoutAlgorithm,
@@ -33,7 +32,8 @@ define([
     galleryController,
     gallery,
     common,
-    resources
+    resources,
+    photos
 ) {
 'use strict';
 // jshint unused:false
@@ -51,7 +51,7 @@ angular.module('wdPhotos', ['wdCommon', 'wdResources'])
     .directive('wdpProgress', progress)
     .directive('wdpRepeat', repeat)
     .factory('PhotosLayoutAlgorithm', layoutAlgorithm)
-    .factory('PhotoGroup', PhotoGroup)
+    .factory('wdpPhotos', photos)
     .factory('wdpImageHelper', imageHelper)
     .factory('wdpMessagePusher', messagePusher)
     .controller('galleryController', galleryController);

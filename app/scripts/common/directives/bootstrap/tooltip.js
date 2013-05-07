@@ -23,7 +23,11 @@ return [function() {
             });
 
             element.on('$destroy', function() {
-                element.tooltip('destroy');
+                var tooltip = element.data('tooltip');
+                if (tooltip && tooltip.$tip) {
+                    tooltip.hide();
+                }
+                element.off('.' + tooltip.type).removeData(tooltip.type);
             });
         }
     };
