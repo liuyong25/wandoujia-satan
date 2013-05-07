@@ -4,8 +4,8 @@ define([
     _
 ) {
 'use strict';
-return ['wdmMessages', '$http', '$q', '$rootScope', 'wdSocket', 'wdEventEmitter',
-function(wdmMessages,   $http,   $q,   $rootScope,   wdSocket,   wdEventEmitter) {
+return ['wdmConversationMessagesCollection', '$http', '$q', '$rootScope', 'wdSocket', 'wdEventEmitter',
+function(wdmConversationMessagesCollection,   $http,   $q,   $rootScope,   wdSocket,   wdEventEmitter) {
 
 function ConversationCollection() {
     this._collection = [];
@@ -297,7 +297,7 @@ function wrapConversation(origin) {
     });
 
     _.extend(conversation, {
-        _messages: wdmMessages.getInstance(conversation),
+        _messages: wdmConversationMessagesCollection.createConversationMessagesCollection(conversation),
         selected: false,
         draft: '',
 

@@ -12,7 +12,9 @@ define([
     'messages/directives/textarea',
     'messages/directives/receiver',
     'messages/services/conversations',
-    'messages/services/messages'
+    'messages/services/message',
+    'messages/services/messages-collection',
+    'messages/services/conversation-messages-collection'
 ], function(
     angular,
     common,
@@ -27,13 +29,17 @@ define([
     textarea,
     receiver,
     conversations,
-    messages
+    messageFactory,
+    messagesCollectionFactory,
+    conversationMessagesCollectionFactory
 ) {
 'use strict';
 // jshint unused:false
 angular.module('wdMessages', ['wdCommon'])
     .controller('wdmConversationController', conversationController)
-    .factory('wdmMessages', messages)
+    .factory('wdmMessage', messageFactory)
+    .factory('wdmMessagesCollection', messagesCollectionFactory)
+    .factory('wdmConversationMessagesCollection', conversationMessagesCollectionFactory)
     .factory('wdmConversations', conversations)
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)
