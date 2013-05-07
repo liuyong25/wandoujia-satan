@@ -20,7 +20,8 @@ define([
     'common/directives/upgrade-warning',
     'common/services/title-notification',
     'common/directives/navbar',
-    'common/services/emitter'
+    'common/services/emitter',
+    'common/services/socket'
 ], function(
     angular,
     loading,
@@ -43,7 +44,8 @@ define([
     upgradeWarningDirective,
     titleNotification,
     navbar,
-    emitter
+    emitter,
+    socket
 ) {
 // jshint unused:false
 'use strict';
@@ -61,6 +63,8 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)
+    .provider('wdEventEmitter', emitter)
+    .provider('wdSocket', socket)
     .factory('wdBrowser', browser)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
@@ -70,7 +74,6 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .factory('GA', ga)
     .factory('wdNotification', notification)
     .factory('wdTitleNotification', titleNotification)
-    .factory('wdEventEmitter', emitter)
     // Configuration
     .config(['$provide', 'wdHttpProvider', function($provide, wdHttpProvider) {
         $provide.decorator('$http', wdHttpProvider.httpDecorator);

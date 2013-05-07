@@ -4,8 +4,8 @@ define([
     _
 ) {
 'use strict';
-return ['wdmMessages', '$http', '$q', '$rootScope', 'wdpMessagePusher', 'wdEventEmitter',
-function(wdmMessages,   $http,   $q,   $rootScope,   wdpMessagePusher,   wdEventEmitter) {
+return ['wdmMessages', '$http', '$q', '$rootScope', 'wdSocket', 'wdEventEmitter',
+function(wdmMessages,   $http,   $q,   $rootScope,   wdSocket,   wdEventEmitter) {
 
 function ConversationCollection() {
     this._collection = [];
@@ -364,7 +364,7 @@ $rootScope.$on('signout', function() {
     conversations.clear();
 });
 
-wdpMessagePusher.channel('messages_add.wdm messages_update.wdm', function(e, msg) {
+wdSocket.on('messages_add.wdm messages_update.wdm', function(e, msg) {
     var cid = msg.data.threadId;
     var mid = msg.data.messageId;
     var c = conversations.getById(cid);

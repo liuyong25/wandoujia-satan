@@ -16,6 +16,9 @@ return function() {
     }
 
     var self = this;
+    self.getSocketServer = function() {
+        return ip ? ('//' + ip + ':' + 10209) : '';
+    };
     self.getServer = function() {
         return ip ? ('//' + ip + ':' + (port || 80)) : '';
     };

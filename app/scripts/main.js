@@ -14,6 +14,7 @@
     bootstrap: 'vendor/bootstrap',
     fineuploader: 'vendor/fineuploader/fineuploader',
     moment: '../components/moment/moment',
+    io: 'vendor/socket.io.wrapper',
     // requirejs plugins
     text: 'vendor/requirejs-plugins/text',
     cs: 'vendor/requirejs-plugins/cs',

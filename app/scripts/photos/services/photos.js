@@ -4,8 +4,8 @@ define([
     _
 ) {
 'use strict';
-return ['wdEventEmitter', '$rootScope', 'wdpMessagePusher', 'Photos',
-function(wdEventEmitter,   $rootScope,   wdpMessagePusher,   Photos) {
+return ['wdEventEmitter', '$rootScope', 'wdSocket', 'Photos',
+function(wdEventEmitter,   $rootScope,   wdSocket,   Photos) {
 
 var photos = {
     collection: [],
@@ -31,7 +31,7 @@ $rootScope.$on('signout', function() {
     photos.collection = [];
 });
 
-wdpMessagePusher.channel('photos_add.wdp', function(e, message) {
+wdSocket.on('photos_add.wdp', function(e, message) {
     _(message.data).each(function(id) {
         var photo = photos.getById(id);
         if (!photo) {
@@ -41,7 +41,7 @@ wdpMessagePusher.channel('photos_add.wdp', function(e, message) {
             });
         }
     });
-}).channel('photos_remove.wdp', function(e, message) {
+}).on('photos_remove.wdp', function(e, message) {
     _(message.data).each(function(id) {
         var photo = photos.getById(id);
         if (photo) {

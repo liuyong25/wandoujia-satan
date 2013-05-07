@@ -5,7 +5,14 @@ define([
 ) {
 'use strict';
 return [function() {
-return function EventEmitter(obj, override) {
+
+this.EventEmitter = EventEmitter;
+
+this.$get = [function() {
+    return EventEmitter;
+}];
+
+function EventEmitter(obj, override) {
     var delegate = jQuery({});
     override = !!override;
     ['on', 'off', 'trigger'].forEach(function(fnName) {
