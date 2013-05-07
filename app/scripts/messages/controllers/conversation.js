@@ -16,20 +16,9 @@ $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 
-
-wdpMessagePusher.channel('messages_add.wdm messages_update.wdm', function(e, msg) {
-    var cid = msg.data.threadId;
-    var mid = msg.data.messageId;
-    var c = $scope.conversations.getById(cid);
-    if (c) {
-        c.messages.fetch(mid).then(function() {
-            if (c === $scope.activeConversation) {
-                scrollIntoView();
-            }
-        });
-    }
-    else {
-        $scope.conversations.fetch(cid);
+wdmConversations.on('update.wdm', function(e, c) {
+    if (c === $scope.activeConversation) {
+        scrollIntoView();
     }
 });
 
@@ -121,7 +110,7 @@ $scope.removeMessage = function(c, m) {
 // Startup
 var timer;
 if ($scope.serverMatchRequirement) {
-    $scope.conversations.fetch().then(function() {
+    $q.when($scope.conversations.length || $scope.conversations.fetch()).then(function() {
         $scope.showConversation($scope.conversations.collection[0]);
         $scope.cvsListFirstLoading = false;
     });
@@ -133,9 +122,8 @@ if ($scope.serverMatchRequirement) {
 
 // Shutdown
 $scope.$on('$destroy', function() {
-    $scope.conversations.clear();
     $timeout.cancel(timer);
-    wdpMessagePusher.unchannel('.wdm');
+    wdmConversations.off('.wdm');
 });
 
 function scrollIntoView() {

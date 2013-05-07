@@ -19,7 +19,9 @@ define([
     'common/directives/blank',
     'common/directives/upgrade-warning',
     'common/services/title-notification',
-    'common/directives/navbar'
+    'common/directives/navbar',
+    'common/services/emitter',
+    'common/services/socket'
 ], function(
     angular,
     loading,
@@ -41,7 +43,9 @@ define([
     blankDirective,
     upgradeWarningDirective,
     titleNotification,
-    navbar
+    navbar,
+    emitter,
+    socket
 ) {
 // jshint unused:false
 'use strict';
@@ -59,6 +63,8 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     // Services
     .provider('wdHttp', http)
     .provider('wdDev', dev)
+    .provider('wdEventEmitter', emitter)
+    .provider('wdSocket', socket)
     .factory('wdBrowser', browser)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
