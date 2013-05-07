@@ -32,18 +32,15 @@ define([
         //当前的手机是否开启未知来源提示，false当前用户未开启，true开启
         var G_unknownTips = false;
 
-        function getAppListData(){
-            wdcApplications.getAppListData().success(function(data) {
-                $scope.dataLoaded = true;
-                for( var i = 0,l = data.length ; i<l; i++ ){
-                    G_appList.push(changeInfo(data[i]));
-                };
-                $scope.list = G_appList;
-                setTimeout(function(){
-                    uploadApk($('.installApp'));
-                },300);
-            }).error(function(){
-            });
+        function getAppListData(data){
+            $scope.dataLoaded = true;
+            for( var i = 0,l = data.length ; i<l; i++ ){
+                G_appList.push(changeInfo(data[i]));
+            };
+            $scope.list = G_appList;
+            setTimeout(function(){
+                uploadApk($('.installApp'));
+            },300);
         };
 
         //改变某些字段的值
@@ -424,7 +421,7 @@ define([
             });
 
         //主程序
-        getAppListData();
+        wdcApplications.onchange(getAppListData);
 
         //析构
         $scope.$on('$destroy', function() {
