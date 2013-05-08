@@ -18,7 +18,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     var G_searchList = [];
 
     //每次拉取数据的长度
-    //var G_dataLengthOnce = 50;
     var DATA_LENGTH_ONCE = 50;
 
     //标示是否首次进入
@@ -46,112 +45,10 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     var G_searchTimer;
 
     //各个type字段映射表
-    var G_typeMap = {
-       'address' : {
-           'CA_CUSTOM':'Custom',
-           'CA_HOME':'Home',
-           'CA_WORK':'Work',
-           'CA_OTHER':'Other'
-        },
-       'event' : {
-           'CE_ANNIVERSARY' :'Anniversary', //周年纪念日
-           'CE_OTHER' :'Other',
-           'CE_BIRTHDAY' :'Birthday'
-        },
-       'nickname' : {
-           'CN_DEFAULT' :'Default',
-           'CN_OTHER_NAME' :'Other name',
-           'CN_MAINDEN_NAME' :'Mainden name',
-           'CN_SHORT_NAME' :'Short name',
-           'CN_INITIALS' :'Initials'  //首字母、缩写
-        },
-       'organization' : {
-           'CO_CUSTOM':'Custom',
-           'CO_WORK':'Work',
-           'CO_OTHER':'Other'
-        },
-       'website' : {
-           'CW_HOMEPAGE':'Homepage',
-           'CW_BLOG':'Blog',
-           'CW_PROFILE':'Profile',
-           'CW_HOME':'Home',
-           'CW_WORK':'Work',
-           'CW_FTP':'FTP',
-           'CW_OTHER':'Other'
-        },
-       'IM' : {
-           'CI_TYPE_CUSTOM':'Custom',
-           'CI_HOME':'Home',
-           'CI_WORK':'Work',
-           'CI_OTHER':'Other'
-        },
-       'relation' : {
-            //'CR_CUSTOM' : 'Custom',
-           'CR_ASSISTANT':'Assistant',
-           'CR_BROTHER':'Brother',
-           'CR_CHILD':'Child',
-           'CR_DOMESTIC_PARTNER':'Partner',
-           'CR_FATHER':'Father',
-           'CR_FRIEND':'Friend',
-           'CR_MANAGER':'Manager',
-           'CR_MOTHER':'Mother',
-           'CR_PARENT':'Parent',
-           'CR_PARTNER':'Partner',
-           'CR_REFERRED_BY':'Referred by',
-           'CR_RELATIVE':'Relative',
-           'CR_SISTER':'Sister',
-           'CR_SPOUSE':'Spouse'
-        },
-       'phone' : {
-           'CP_CUSTOM':'Custom',
-           'CP_HOME':'Home',
-           'CP_MOBILE':'Mobile',
-           'CP_WORK':'Work',
-           'CP_FAX_WORK':'Fax Work',
-           'CP_FAX_HOME':'Fax Home',
-           'CP_PAGER':'Pager',
-           'CP_OTHER':'Other',
-           'CP_CALLBACK':'Callback',
-           'CP_CAR':'Car',
-           'CP_COMPANY_MAIN':'Company main',
-           'CP_ISDN':'ISDN',
-           'CP_MAIN':'Main',
-           'CP_OTHER_FAX':'Other Fax',
-           'CP_RADIO':'Radio',
-           'CP_TELEX':'Telex',
-           'CP_TTY_TDD':'TTY TDD',
-           'CP_WORK_MOBILE':'Work Mobile',
-           'CP_WORK_PAGER':'Work Pager',
-           'CP_ASSISTANT':'Assistant',
-           'CP_MMS':'MMS'
-        },
-       'email' : {
-           'CE_CUSTOM':'Custom',
-           'CE_HOME':'Home',
-           'CE_WORK':'Work',
-           'CE_OTHER':'Other',
-           'CE_MOBILE':'Mobile'
-        },
-
-        //原本没有的
-        'note' : {
-            'Default' : 'Default'
-        }
-    };
+    var G_typeMap = $scope.$root.DICT.contacts.TYPE_MAP;
 
     //IM中使用的字段
-    var G_protocol = {
-        'CI_PROTOCOL_CUSTOM':'Custom',
-        'CI_AIM':'AIM',
-        'CI_MSN':'MSN',
-        'CI_YAHOO':'Yahoo',
-        'CI_SKYPE':'Skype',
-        'CI_QQ':'QQ',
-        'CI_GOOGLE_TALK':'Gtalk',
-        'CI_ICQ':'ICQ',
-        'CI_JABBER':'Jabber',
-        'CI_NETMEETING': 'Netmeeting'
-    };
+    var G_protocol = $scope.$root.DICT.contacts.IM_PROTOCOL;
     var G_debug = 0 ;
 
     //获取数据
@@ -180,7 +77,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
 
     function getListItem(data){
         var id = data.id || '';
-        var name = (data.name && data.name.display_name) || 'No Name';
+        var name = (data.name && data.name.display_name) || $scope.$root.DICT.contacts.NO_NAME;
         var phone = (data.phone[0] && data.phone[0].number) || (data.email[0] && data.email[0].address) ||'';
         var photo = data.photo_path || G_defaultPhoto;
         var obj = {
@@ -696,7 +593,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
         //UI操作
         var wrap = $('.contacts-edit');
         var ele =  wrap.children('.info');
-        wrap.hide();
+        $scope.shouldContactsEditShow = false;
         $('.wdj-contacts .right .wd-loading').show();
 
         var saveData = changeDataTypeBack($scope.contact);
@@ -705,12 +602,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
             case 'edit':
                 GA('Web Contacts:click save the editing contact button');
                 var editData = saveData;
-                $http({
-                    method: 'put',
-                    url: '/resource/contacts/'+id,
-                    data:editData,
-                    timeout:7000
-                }).success(function(data){
+                wdcContacts.editContact(editData).success(function(data){
 
                     for(var i = 0 , l = $scope.pageList.length;i<l; i++ ){
                         if(!!id && $scope.pageList[i]['id']===id){
@@ -727,7 +619,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
                             G_contacts[i] = data;
                         };
                     };
-
+                    console.log(data['id']);
                     showContacts(data['id']);
                 }).error(function(){
                     wdAlert.alert('Failed to save edits', '', 'OK').then(function(){showContacts($scope.contact.id);});
@@ -1156,7 +1048,6 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
     $scope.showContacts = showContacts;
 
     init();
-
     window.wdcContacts = wdcContacts;
 
 //return的最后括号

@@ -1,7 +1,7 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev','wdpMessagePusher','wdAlert','$route','GA','wdcApplications',function($scope,$http,wdDev,wdpMessagePusher,wdAlert,$route,GA,wdcApplications){
+    return ['$scope','$http','wdDev','wdSocket','wdAlert','$route','GA','wdcApplications',function($scope,$http,wdDev,wdSocket,wdAlert,$route,GA,wdcApplications){
 
         //$scope相关
         //展示应用列表
@@ -374,8 +374,8 @@ define([
         };
 
         //webSocket处理
-        wdpMessagePusher
-            .channel('app_install', function(e, message) {
+        wdSocket
+            .on('app_install', function(e, message) {
                 var name = message.data.packageName;
                 $http({
                     method: 'get',
@@ -404,7 +404,7 @@ define([
                 }).error(function(){
                 });
             })
-            .channel('app_uninstall', function(e, message) {
+            .on('app_uninstall', function(e, message) {
                 var name = message.data.packageName;
                 for(var i = 0,l = $scope.list.length;i<l;i++ ){
                     if($scope.list[i]['package_name']==name){
@@ -422,11 +422,6 @@ define([
 
         //主程序
         wdcApplications.onchange(getAppListData);
-
-        //析构
-        $scope.$on('$destroy', function() {
-            wdpMessagePusher.unchannel('*');
-        });
 
         //需要挂载到socpe上面的方法
         $scope.showAppInfo = showAppInfo;

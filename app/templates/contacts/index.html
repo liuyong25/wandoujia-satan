@@ -7,15 +7,15 @@
         <div class="btn-all">
             <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()">
                 <i class="icon-ab-add"></i>
-                New contact
+                {{$root.DICT.contacts.BUTTONS.newContact}}
             </button>
             <button class="btn btn-selectAll" type="button" ng-click="selectAll()">
                 <i class="icon-ab-sel"></i>
-                Select all
+                {{$root.DICT.contacts.BUTTONS.selectAll}}
             </button>
             <button class="btn btn-delete dn" type="button" ng-click="deleteContacts()">
                 <i class="icon-ab-del"></i>
-                Delete
+                {{$root.DICT.contacts.BUTTONS.delete}}
             </button>
             <div class="search">
                 <input type="text" ng-model="searchText" placeholder="Search contacts...">
@@ -26,7 +26,7 @@
         <ul class="contacts-list">
 
             <!-- 没有联系人时显示 -->
-            <li class="no-contacts dn">No contacts matched your search.</li>
+            <li class="no-contacts dn">{{$root.DICT.contacts.NO_CONTACT_TIPS}}</li>
             <!-- 没有联系人时显示 end -->
 
             <!-- 每个联系人的模板 -->
@@ -43,7 +43,7 @@
             <!-- 每个联系人的模板 end -->
 
             <!-- 增加load more -->
-            <li class="load-more dn" ng-click="loadMore();">Load more</li>
+            <li class="load-more dn" ng-click="loadMore();">{{$root.DICT.contacts.LOAD_MORE}}</li>
             <!-- 增加load more end -->
         </ul>
 
@@ -76,10 +76,10 @@
                 <p class="remark">{{contact.organization[0].company}}</p>
                 <div class="editName dn">
                     <div class="account dn">
-                        <h4>Account</h4>
+                        <h4>{{$root.DICT.contacts.WORDS.account}}</h4>
                         <select ng-model="contact.account" ng-options="value.name for (key , value) in accounts"></select>
                     </div>
-                    <h4>Name & Organization</h4>
+                    <h4>{{$root.DICT.contacts.WORDS.nameOrganization}}</h4>
                     <input class="name" type="text" ng-model="contact.name.given_name" placeholder="First name">
                     <input class="name" type="text" ng-model="contact.name.middle_name" placeholder="Middle name">
                     <input class="name" type="text" ng-model="contact.name.family_name" placeholder="Last name">
@@ -90,7 +90,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.phone">Phone</dt>
+                    <dt ng-show="contact.phone">{{$root.DICT.contacts.WORDS.phone}}</dt>
                     <dd ng-repeat="item in contact.phone">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
@@ -102,7 +102,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'phone')" ng-show="contact.phone">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'phone')" ng-show="contact.phone">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -110,7 +110,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.email">E-mail</dt>
+                    <dt ng-show="contact.email">{{$root.DICT.contacts.WORDS.email}}</dt>
                     <dd ng-repeat="item in contact.email">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
@@ -122,7 +122,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'email')" ng-show="contact.email">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'email')" ng-show="contact.email">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -130,7 +130,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.address">Address</dt>
+                    <dt ng-show="contact.address">{{$root.DICT.contacts.WORDS.address}}</dt>
 
                     <dd ng-repeat="item in contact.address">
                         <p class="des dn">{{item.type}}</p>
@@ -143,7 +143,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'address')" ng-show="contact.address">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'address')" ng-show="contact.address">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -151,7 +151,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.IM">IM</dt>
+                    <dt ng-show="contact.IM">{{$root.DICT.contacts.WORDS.IM}}</dt>
                     <dd ng-repeat="item in contact.IM">
                         <p class="des dn">{{item.protocol}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
@@ -163,7 +163,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'IM')" ng-show="contact.IM">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'IM')" ng-show="contact.IM">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -171,7 +171,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.website">Website</dt>
+                    <dt ng-show="contact.website">{{$root.DICT.contacts.WORDS.website}}</dt>
                     <dd ng-repeat="item in contact.website">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
@@ -183,7 +183,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'website')" ng-show="contact.website">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'website')" ng-show="contact.website">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -191,7 +191,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.relation">Relationship</dt>
+                    <dt ng-show="contact.relation">{{$root.DICT.contacts.WORDS.relationship}}</dt>
                     <dd ng-repeat="item in contact.relation">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
@@ -203,7 +203,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'relation')" ng-show="contact.relation">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'relation')" ng-show="contact.relation">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -211,7 +211,7 @@
 
                 <!-- 每个独立的信息 start -->
                 <dl>
-                    <dt ng-show="contact.note">Note</dt>
+                    <dt ng-show="contact.note">{{$root.DICT.contacts.WORDS.note}}</dt>
                     <dd ng-repeat="item in contact.note">
                         <p class="des dn">{{item.type}}</p>
                         <p class="labelFlag dn">{{item.label}}</p>
@@ -223,7 +223,7 @@
                     </dd>
 
                     <!-- 新增一个item start -->
-                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'note')" ng-show="contact.note">Add new item</button>
+                    <button type="button" class="btn btn-addNewItem dn" ng-click="addNewItem(contact.id,'note')" ng-show="contact.note">{{$root.DICT.contacts.BUTTONS.addNewItem}}</button>
                     <!-- 新增一个item end -->
 
                 </dl>
@@ -232,10 +232,10 @@
             </div>
 
             <div class="footer">
-                <button class="btn btn-edit" ng-show="!contact.read_only" type="button" ng-click="editContact(contact.id)">Edit</button>
-                <button class="btn btn-del" ng-show="!contact.read_only" type="button" ng-click="deleteContacts(contact.id)">Delete</button>
-                <button class="btn btn-primary btn-save dn" type="button" ng-click="saveContact(contact.id)">Save</button>
-                <button class="btn btn-cancel dn" type="button" ng-click="cancelContact(contact.id)">Cancel</button>
+                <button class="btn btn-edit" ng-show="!contact.read_only" type="button" ng-click="editContact(contact.id)">{{$root.DICT.contacts.BUTTONS.edit}}</button>
+                <button class="btn btn-del" ng-show="!contact.read_only" type="button" ng-click="deleteContacts(contact.id)">{{$root.DICT.contacts.BUTTONS.delete}}</button>
+                <button class="btn btn-primary btn-save dn" type="button" ng-click="saveContact(contact.id)">{{$root.DICT.contacts.BUTTONS.save}}</button>
+                <button class="btn btn-cancel dn" type="button" ng-click="cancelContact(contact.id)">{{$root.DICT.contacts.BUTTONS.cancel}}</button>
             </div>
 
         </div>
@@ -246,9 +246,9 @@
 
     <!-- 为空检测 -->
     <div class="wd-blank dn">
-        <p>No contacts on your phone. Your friends are waiting!<p>
+        <p>{{$root.DICT.contacts.NO_CONTACT}}<p>
         <div class="btn btn-primary"
-            ng-click="addNewContact();"><i class="icon-ab-add"></i> New contact</div>
+            ng-click="addNewContact();"><i class="icon-ab-add"></i>{{$root.DICT.contacts.BUTTONS.newContact}}</div>
     </div>
     <!-- 为空检测 end -->
     <!-- 版本检测 -->

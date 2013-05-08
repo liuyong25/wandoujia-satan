@@ -12,7 +12,7 @@ return [ '$http', '$q', function ( $http, $q ) {
     var CONFIG = {
 
         //每次拉取联系人列表数据的长度
-        'dataLengthOnce' : 50,
+        'dataLengthOnce' : 150,
 
         //统一的超时时间
         'timeout' : 7000
@@ -106,36 +106,63 @@ return [ '$http', '$q', function ( $http, $q ) {
         },
 
         //根据query搜索联系人
-        search : function(query) {
+        search : function(query, fun) {
             query = query.toLocaleLowerCase();
-            var list = [];
 
-            //如果数据未加载完整，从后端搜索，数据完整从前端搜索
-            // if( !global.dataFinish ) {
+            var search = function( query , offset , length , fun) {
 
-            // }else{
+                //如果数据未加载完整，从后端搜索，数据完整从前端搜索
+                if( !global.dataFinish ) {
 
-                _.each( global.contacts, function( value ) {
+                    $http({
+                        method: 'get',
+                        url: '/resource/contacts/search',
+                        timeout:CONFIG.timeout,
+                        params: {
+                            'keyword':query,
+                            'length':length,
+                            'offset':offset
+                        }
+                    }).success(function(data){
+                        fun.call( fun , data );
+                    }).error();
 
-                    //首先查找名字
-                    if( ( !!value[ 'display_name' ] && value[ 'display_name' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
-                        list.push( value );
-                    }else{
+                }else{
+                    var list = [];
+                    _.each( global.contacts, function( value ) {
 
-                        //查找电话
-                        _.each(value[ 'phone' ],function( v ) {
-                            if( ( !!v[ 'number' ] && v[ 'number' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
-                                list.push( value );
-                            }
-                        });
+                        //首先查找名字
+                        if( ( !!value[ 'display_name' ] && value[ 'display_name' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                            list.push( value );
+                        }else{
 
-                    }
+                            //查找电话
+                            _.each(value[ 'phone' ],function( v ) {
+                                if( ( !!v[ 'number' ] && v[ 'number' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                                    list.push( value );
+                                }
+                            });
 
-                });
+                        }
 
-            // }
+                    });
 
-            return list;
+                    //TODO:这块可以根据query是否一致来做些缓存
+                    fun.call( fun , list.slice(offset ,length ) );
+                }
+            };
+
+            search(query ,0 ,CONFIG.dataLengthOnce ,fun);
+
+            return {
+                query : query,
+
+                //再多搜索
+                loadMore : function(offset ,fun){
+                    search(this.query ,offset ,CONFIG.dataLengthOnce ,fun);
+                }
+            };
+
         },
 
         //根据id取得信息
