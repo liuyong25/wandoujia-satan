@@ -7,31 +7,19 @@ define([
 return ['wdmSyncMessagesCollection', '$http', '$q',
 function(wdmSyncMessagesCollection,   $http,   $q) {
 
-var SyncMessagesCollection = wdmSyncMessagesCollection.SyncMessagesCollection;
+var _super = wdmSyncMessagesCollection.SyncMessagesCollection.prototype;
 
 function ConversationMessagesCollection(conversation) {
-    SyncMessagesCollection.apply(this);
+    _super.constructor.call(this, conversation);
     // Whether need a refresh
     this.dirty = false;
 }
 
-ConversationMessagesCollection.prototype = Object.create(SyncMessagesCollection.prototype);
+ConversationMessagesCollection.prototype = Object.create(_super);
 
 _.extend(ConversationMessagesCollection.prototype, {
 
     constructor: ConversationMessagesCollection,
-
-    /**
-     * Create a Message and add into collection
-     * @param  {Object} data
-     * @return {}      [description]
-     */
-    create: function(data) {
-        if (data.thread_id == null) {
-            data.thread_id = this._conversation.id;
-        }
-        return SyncMessagesCollection.prototype.create.call(this, data);
-    },
 
     send: function(content) {
         var self = this;
@@ -63,24 +51,7 @@ _.extend(ConversationMessagesCollection.prototype, {
         });
     },
 
-    remove: function(messages) {
-        var self = this;
 
-        messages = this.drop(messages);
-
-        messages.filter(function(m) {
-            return !m.isNew;
-        });
-
-        return $q.all(messages.map(function(m) {
-            return m.destroy().then(null, function fail() {
-                // Add message back
-                self.add(m);
-            });
-        })).then(function() {
-            return self._updateConversation(messages);
-        });
-    },
 
     fetch: function(id) {
         var self = this;
@@ -131,6 +102,12 @@ _.extend(ConversationMessagesCollection.prototype, {
             });
 
         }
+    },
+
+    remove: function(messages) {
+        return _super.remove.call(this, messages).then(function() {
+            return this._updateConversation(messages);
+        }.bind(this));
     },
 
     _updateConversation: function(data) {

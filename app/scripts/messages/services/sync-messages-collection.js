@@ -7,23 +7,33 @@ define([
 return ['wdmMessagesCollection', '$q', '$http',
 function(wdmMessagesCollection,   $q,   $http) {
 
-var MessagesCollection = wdmMessagesCollection.MessagesCollection;
+var _super = wdmMessagesCollection.MessagesCollection.prototype;
 
 function SyncMessagesCollection(conversation) {
-    MessagesCollection.call(this, conversation);
+    _super.constructor.call(this);
     this._conversation = conversation;
     this.loaded = false;
 }
 
-SyncMessagesCollection.prototype = Object.create(MessagesCollection.prototype);
-
-Object.defineProperties(SyncMessagesCollection.prototype, {
+SyncMessagesCollection.prototype = Object.create(_super, {
     empty: {get: function() { return !this.length && this.loaded; }}
 });
 
 _.extend(SyncMessagesCollection.prototype, {
 
     constructor: SyncMessagesCollection,
+
+    /**
+     * Create a Message and add into collection
+     * @param  {Object} data
+     * @return {}      [description]
+     */
+    create: function(data) {
+        if (data.thread_id == null) {
+            data.thread_id = this._conversation.id;
+        }
+        return _super.create.call(this, data);
+    },
 
     sync: function(action, config, refresh) {
         var self = this;
@@ -46,7 +56,29 @@ _.extend(SyncMessagesCollection.prototype, {
         else {
             return $q.reject();
         }
+    },
+
+    remove: function(messages) {
+        var self = this;
+
+        messages = this.drop(messages);
+
+        messages.filter(function(m) {
+            return !m.isNew;
+        });
+
+        return $q.all(messages.map(function(m) {
+            return m.destroy().then(function done() {
+                return m;
+            }, function fail() {
+                // Add message back
+                self.add(m);
+                return m;
+            });
+        }));
     }
+
+
 
 });
 

@@ -14,6 +14,7 @@ function Model(rawData) {
     });
 
     this._collection = null;
+    this.selected = false;
 
     return instance;
 }

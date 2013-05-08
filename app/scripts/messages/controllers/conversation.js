@@ -10,13 +10,14 @@ function($scope,   $resource,   $q,   $http,   wdpMessagePusher,   $timeout,   w
          GA,   $route,   wdmConversations) {
 
 $scope.serverMatchRequirement = $route.current.locals.versionSupport;
-$scope.conversations = wdmConversations;
+$scope.conversations = wdmConversations.conversations;
+$scope.searchResults = wdmConversations.searchResults;
 $scope.activeConversation = null;
 $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 
-wdmConversations.on('update.wdm', function(e, c) {
+$scope.conversations.on('update.wdm', function(e, c) {
     if (c === $scope.activeConversation) {
         scrollIntoView();
     }
@@ -123,7 +124,7 @@ if ($scope.serverMatchRequirement) {
 // Shutdown
 $scope.$on('$destroy', function() {
     $timeout.cancel(timer);
-    wdmConversations.off('.wdm');
+    $scope.conversations.off('.wdm');
 });
 
 function scrollIntoView() {

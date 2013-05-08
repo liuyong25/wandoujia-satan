@@ -7,15 +7,18 @@ define([
 return ['wdmSyncMessagesCollection', '$http',
 function(wdmSyncMessagesCollection,   $http) {
 
-var SyncMessagesCollection = wdmSyncMessagesCollection.SyncMessagesCollection;
+var _super = wdmSyncMessagesCollection.SyncMessagesCollection.prototype;
 
 function SearchMessagesCollection(conversation) {
-    SyncMessagesCollection.apply(this);
+    _super.constructor.call(this, conversation);
     this._cursor = null;
     this.laterLoaded = false;
 }
 
-SearchMessagesCollection.prototype = Object.create(SyncMessagesCollection.prototype);
+SearchMessagesCollection.prototype = Object.create(_super, {
+    allLoaded: {get: function() { return this.loaded && this.laterLoaded; }},
+    snippet: {get: function() { return this._cursor.body; }}
+});
 
 _.extend(SearchMessagesCollection.prototype, {
 
@@ -31,7 +34,6 @@ _.extend(SearchMessagesCollection.prototype, {
     },
 
     fetch: function() {
-        var self = this;
 
         return this.sync('read', {
             params: {
@@ -40,15 +42,16 @@ _.extend(SearchMessagesCollection.prototype, {
                 length: 11
             }
         }).then(function done(messages) {
-            if (self.length < 11) {
-                self.laterLoaded = true;
+            if (this.length < 11) {
+                this.laterLoaded = true;
             }
             return messages;
-        });
+        }.bind(this));
+
     },
 
     fetchLater: function() {
-        var self = this;
+
         return this.sync('read', {
             params: {
                 cursor: this.collection[this.length - 1].id,
@@ -58,7 +61,8 @@ _.extend(SearchMessagesCollection.prototype, {
         }).then(function done(messages) {
             this.laterLoaded = this.loaded;
             return messages;
-        });
+        }.bind(this));
+
     },
 
     fetchEarlier: function() {

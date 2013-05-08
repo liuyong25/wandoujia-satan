@@ -18,7 +18,10 @@ define([
     'messages/services/search-messages-collection',
     'messages/services/sync-messages-collection',
     'messages/services/conversation',
-    'messages/services/conversations-collection'
+    'messages/services/conversations-collection',
+    'messages/services/basic-conversation',
+    'messages/services/search-conversation',
+    'messages/services/extended-conversations-collection'
 ], function(
     angular,
     common,
@@ -39,7 +42,10 @@ define([
     searchMessagesCollectionFactory,
     syncMessagesCollectionFactory,
     conversationFactory,
-    conversationsCollectionFactory
+    conversationsCollectionFactory,
+    basicConversationFactory,
+    searchConversationFactory,
+    extendedConversationsCollectionFactory
 ) {
 'use strict';
 // jshint unused:false
@@ -50,8 +56,11 @@ angular.module('wdMessages', ['wdCommon'])
     .factory('wdmSyncMessagesCollection', syncMessagesCollectionFactory)
     .factory('wdmConversationMessagesCollection', conversationMessagesCollectionFactory)
     .factory('wdmSearchMessagesCollection', searchMessagesCollectionFactory)
+    .factory('wdmBasicConversation', basicConversationFactory)
     .factory('wdmConversation', conversationFactory)
+    .factory('wdmSearchConversation', searchConversationFactory)
     .factory('wdmConversationsCollection', conversationsCollectionFactory)
+    .factory('wdmExtendedConversationsCollection', extendedConversationsCollectionFactory)
     .factory('wdmConversations', conversations)
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)

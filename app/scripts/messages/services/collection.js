@@ -12,14 +12,28 @@ function Collection(options) {
 
 Object.defineProperties(Collection.prototype, {
     length: {get: function() { return this.collection.length; }},
-    empty:  {get: function() { return !this.length; }}
+    empty:  {get: function() { return !this.length; }},
+    hasSelected: {
+        get: function() {
+            return this.collection.some(function(item) {
+                return item.selected;
+            });
+        }
+    },
+    allSelected: {
+        get: function() {
+            return this.collection.every(function(item) {
+                return item.selected;
+            });
+        }
+    }
 });
 
 _.extend(Collection.prototype, {
 
     constructor: Collection,
 
-    sort: null,
+    sort: function() {},
 
     getById: function(id) {
         return _(this.collection).find(function(item) {
@@ -53,9 +67,7 @@ _.extend(Collection.prototype, {
             }
         }, this);
 
-        if (typeof this.sort === 'function') {
-            this.sort();
-        }
+        this.sort();
 
         return updated;
     },
@@ -70,16 +82,21 @@ _.extend(Collection.prototype, {
             }
         }, this);
 
-        if (typeof this.sort === 'function') {
-            this.sort();
-        }
+        this.sort();
 
         return items;
     },
 
     clear: function() {
-        this.collection = [];
-    }
+        this.drop(this.collection);
+    },
+
+    toggleSelectAll: function() {
+        var toBe = !this.allSelected;
+        this.collection.forEach(function(c) {
+            c.selected = toBe;
+        });
+    },
 });
 
 return Collection;
