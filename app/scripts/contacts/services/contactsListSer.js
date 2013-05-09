@@ -14,6 +14,9 @@ return [ '$http', '$q', function ( $http, $q ) {
         //每次拉取联系人列表数据的长度
         'dataLengthOnce' : 150,
 
+        //搜索时需要的长度
+        'searchLength' : 30,
+
         //统一的超时时间
         'timeout' : 7000
     };
@@ -106,10 +109,21 @@ return [ '$http', '$q', function ( $http, $q ) {
         },
 
         //根据query搜索联系人
-        search : function(query, fun) {
-            query = query.toLocaleLowerCase();
+        searchContacts : function( query ,options ) {
 
-            var search = function( query , offset , length , fun) {
+            //是否查找email数据
+            options = options || {};
+            options['email'] = options['email'] || true ;
+            var defer = $q.defer();
+
+            //如果没有加载过联系人数据，则自动启动启动加载
+            if ( global.contacts.length === 0 ) { me.init(); }
+            query = query.toLocaleLowerCase();
+            if ( !query ) {
+                defer.resolve( global.contacts );
+            }
+
+            var search = function( query , offset , length ) {
 
                 //如果数据未加载完整，从后端搜索，数据完整从前端搜索
                 if( !global.dataFinish ) {
@@ -117,52 +131,66 @@ return [ '$http', '$q', function ( $http, $q ) {
                     $http({
                         method: 'get',
                         url: '/resource/contacts/search',
-                        timeout:CONFIG.timeout,
                         params: {
                             'keyword':query,
                             'length':length,
                             'offset':offset
                         }
                     }).success(function(data){
-                        fun.call( fun , data );
+                        defer.resolve(data);
                     }).error();
 
                 }else{
+
                     var list = [];
                     _.each( global.contacts, function( value ) {
 
                         //首先查找名字
-                        if( ( !!value[ 'display_name' ] && value[ 'display_name' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                        if( ( !!value['name'][ 'display_name' ] && value['name'][ 'display_name' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
                             list.push( value );
                         }else{
 
                             //查找电话
-                            _.each(value[ 'phone' ],function( v ) {
+                            for(var i = 0 , l = value[ 'phone' ].length ; i < l ; i += 1) {
+                                var v = value[ 'phone' ][i];
                                 if( ( !!v[ 'number' ] && v[ 'number' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
                                     list.push( value );
+                                    return;
                                 }
-                            });
+                            }
+
+                            if ( options.email ) {
+                                //查找email
+                                for(var m = 0 , n = value[ 'email' ].length ; m < n ; m += 1) {
+                                    var val = value[ 'email' ][m];
+                                    if( ( !!val[ 'address' ] && val[ 'address' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                                        list.push( value );
+                                        return;
+                                    }
+                                }
+                            }
 
                         }
 
                     });
 
                     //TODO:这块可以根据query是否一致来做些缓存
-                    fun.call( fun , list.slice(offset ,length ) );
+                    defer.resolve( list.slice(offset ,length ) );
                 }
             };
 
-            search(query ,0 ,CONFIG.dataLengthOnce ,fun);
+            //执行search
+            search(query ,0 ,CONFIG.searchLength );
 
-            return {
-                query : query,
+            defer.promise.query = query;
 
-                //再多搜索
-                loadMore : function(offset ,fun){
-                    search(this.query ,offset ,CONFIG.dataLengthOnce ,fun);
-                }
+            //搜索更多
+            defer.promise.loadMore = function( offset ){
+                search( query ,offset ,CONFIG.dataLengthOnce );
+                return defer.promise;
             };
 
+            return defer.promise;
         },
 
         //根据id取得信息
@@ -174,51 +202,68 @@ return [ '$http', '$q', function ( $http, $q ) {
             }
         },
 
+        //取得账号
+        getAccount : function() {
+            return $http({
+                method: 'get',
+                url: '/resource/accounts'
+            }).success(function(data) {
+            }).error(function(){
+            });
+        },
+
         //传入id或者是数组
         delContacts:function(ids){
+            var list = [];
             switch(typeof ids){
 
                 //删除一个
                 case 'number':
                 case 'string':
-
+                    list.push(ids);
                 break;
 
                 //删除多个
-                case 'array':
-
+                default:
+                    list = ids;
                 break;
             }
+
+            return $http({
+                method: 'post',
+                url: '/resource/contacts/delete',
+                data: {'ids':list},
+                timeout:CONFIG.timeout
+            }).success(function(){
+            }).error(function(){
+            });
         },
 
+        //新建联系人
         newContact:function(news){
 
             //TODO:需要传入对应的account信息
             var newData = [];
-            switch(typeof news){
-                case 'array':
-                    newData = news;
-                break;
-                case 'object':
-                    newData.push(news);
-                break;
+            if(Object.prototype.toString.call(news) === '[object Array]'){
+                newData = news;
+            }else{
+                newData.push(news);
             }
+
             return $http({
                 method: 'post',
                 url: '/resource/contacts/',
                 data:newData,
                 timeout:CONFIG.timeout
             }).success(function( data ) {
-
-                // console.log(data);
                 _.each(data,function(value) {
                     global.contacts.unshift(value);
                 });
             }).error(function(){
-                // wdAlert.alert('Failed to save new contact', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
             });
         },
 
+        //编辑联系人
         editContact:function(editData){
 
             return $http({
@@ -227,17 +272,13 @@ return [ '$http', '$q', function ( $http, $q ) {
                 data:editData,
                 timeout:CONFIG.timeout
             }).success(function(data) {
-
-                // console.log(data);
                 for(var i = 0 ; i < global.contacts.length ; i += 1 ) {
                     if( global.contacts[i]['id'] === editData.id ){
                         global.contacts[i] = editData;
                         return;
                     }
                 }
-
             }).error(function(){
-                // wdAlert.alert('Failed to save edits', '', 'OK').then(function(){showContacts($scope.contact.id);});
             });
         },
 

@@ -1,9 +1,10 @@
 define([
-    'fineuploader'
-], function(fineuploader){
+    'fineuploader',
+    'underscore'
+], function(fineuploader,_){
 
-return ['$scope','$http','wdAlert','wdDev','$route','GA','wdcContacts',
-function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
+return ['$scope','wdAlert','wdDev','$route','GA','wdcContacts', '$timeout',
+function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
 
     //存储当前联系人的数据列表
     var G_contacts = [];
@@ -181,10 +182,11 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
                 };
             };
             $scope.contact = data;
+            $scope.shouldContactsEditShow = true;
 
             //样式相关处理
             setTimeout(function(){
-                $scope.shouldContactsEditShow = true;
+
                 var wrap = $('.contacts-edit');
                 wrap.find('div.editName').hide();
                 wrap.find('p.name').show();
@@ -405,11 +407,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
                 var i = 0;
                 var l = delId.length;
                 var del = function(){
-                    $http({
-                        method: 'delete',
-                        url: '/resource/contacts/'+delId[i],
-                        timeout:7000
-                    }).success(function(){
+                    wdcContacts.delContacts(delId[i]).success(function(){
                         i++;
                         if(i<l){
                             del();
@@ -634,12 +632,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
                 editData[0]['account_name'] = account['name'];
                 editData[0]['account_type'] = account['type'];
 
-                $http({
-                    method: 'post',
-                    url: '/resource/contacts/',
-                    data:editData,
-                    timeout:7000
-                }).success(function(data){
+                wdcContacts.newContact(editData).success(function(data){
                     G_contacts.unshift(data[0]);
                     $scope.pageList.shift();
                     $scope.pageList.unshift(getListItem(data[0]));
@@ -792,10 +785,7 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
         //$scope.searchText = '';
 
         //获取用户账户
-        $http({
-            method: 'get',
-            url: '/resource/accounts'
-        }).success(function(data) {
+        wdcContacts.getAccount().success(function(data) {
             $scope.contact.account = data[0];
             $scope.accounts = data;
             if(data.length > 1){
@@ -975,48 +965,56 @@ function ContactsCtrl($scope, $http, wdAlert , wdDev ,$route,GA,wdcContacts){
         });
     };
 
+
     //搜索功能
-    $('.wdj-contacts .btn-all .search input').on('keyup',function(e){
-        clearTimeout(G_searchTimer);
-        G_searchTimer = setTimeout($scope.searchContacts,10);
-    });
+    $('.wdj-contacts .btn-all .search input').on('keyup',_.debounce(function(){
+        $scope.searchContacts();
+        $scope.$apply();
+    },300));
+
     $('.wdj-contacts .btn-all .search .icon-clear').on('click',function(){
         $scope.pageList = G_list;
         showContacts(G_list[0]['id']);
     });
+
     $scope.clearSearch = function(){
         $('ul.contacts-list li.no-contacts').hide();
         $scope.searchContacts();
     };
 
-    //搜索联系人功能，根据联系人列表 G_list 搜索
+    //搜索联系人功能
     $scope.searchContacts = function(){
         $scope.pageList = [];
         G_searchList = [];
         $scope.searchText = $scope.searchText || '';
         var text = $scope.searchText.toLocaleLowerCase();
-        for( var i = 0, l = G_list.length; i < l ; i++ ){
-            if(  (G_list[i]['name'].toLocaleLowerCase().indexOf(text)>=0) || (G_list[i]['phone'].toLocaleLowerCase().indexOf(text)>=0) ){
-                G_searchList.push(G_list[i]);
-            };
-        };
-        if(!!G_searchList[0]){
-            $('ul.contacts-list li.no-contacts').hide();
-            G_clicked['clicked'] = false;
-            $scope.pageList = G_searchList.slice(0,DATA_LENGTH_ONCE);
-            if($scope.pageList.length < G_searchList.length){
+
+        //调用搜索接口
+        var search = wdcContacts.searchContacts(text).then(function(data){
+            console.log(data);
+            for(var i = 0 , l = data.length ; i < l ; i += 1 ){
+                G_searchList.push(getListItem(data[i]));
+            }
+            if(!!G_searchList[0]){
+                $('ul.contacts-list li.no-contacts').hide();
+                G_clicked['clicked'] = false;
+                $scope.pageList = G_searchList.slice(0,DATA_LENGTH_ONCE);
+                if($scope.pageList.length < G_searchList.length){
+                    $(".contacts-list .load-more").hide();
+                };
+                $scope.pageList[0]['clicked'] = true;
+                G_clicked = $scope.pageList[0];
+                showContacts($scope.pageList[0]['id']);
+            }else{
+                $('ul.contacts-list li.no-contacts').show();
                 $(".contacts-list .load-more").hide();
+                showContacts();
             };
-            $scope.pageList[0]['clicked'] = true;
-            G_clicked = $scope.pageList[0];
-            showContacts($scope.pageList[0]['id']);
-        }else{
-            $('ul.contacts-list li.no-contacts').show();
-            $(".contacts-list .load-more").hide();
-            showContacts();
-        };
-        $('ul.contacts-list')[0].scrollTop = 0;
-        $scope.$apply();
+            $('ul.contacts-list')[0].scrollTop = 0;
+            if(!$scope.$$phase) {
+                $scope.$apply();
+            }
+        });
     };
 
     //加载更多
