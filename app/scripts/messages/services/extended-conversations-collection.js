@@ -11,6 +11,7 @@ var _super = wdmConversationsCollection.ConversationsCollection.prototype;
 
 function ExtendedConversationsCollection() {
     _super.constructor.call(this);
+    this._cursor = null;
     this.loaded = true;
 }
 
@@ -35,25 +36,28 @@ _.extend(ExtendedConversationsCollection.prototype, {
         });
     },
 
+    _fetchById: function(id) {
+        var c = this.getById(id) || this.create({ id: id });
+        return $http.get(
+            '/resource/conversations/' + id
+        ).then(function success(response) {
+            c.extend(response.data);
+            this.add(c);
+            return c;
+        }.bind(this));
+    },
+
     fetch: function(id) {
-        var self = this;
         if (arguments.length === 1) {
-            var existed = this.getById(id) || this.create({ id: id });
-            return $http.get(
-                '/resource/conversations/' + id
-            ).then(function success(response) {
-                var c = self.create(response.data);
-                self.add(c);
-                return c;
-            });
+            return this._fetchById(id);
         }
         else {
             var params = {
                 offset: 0,
                 length: 30
             };
-            if (this.collection.length) {
-                params.cursor = this.collection[this.length - 1].id;
+            if (this._cursor) {
+                params.cursor = this._cursor;
                 params.offset = 1;
             }
             return $http.get(
@@ -61,10 +65,10 @@ _.extend(ExtendedConversationsCollection.prototype, {
                 { params: params }
             ).then(function success(response) {
                 var rawData = [].concat(response.data);
-                var conversations = rawData.map(self.create.bind(self));
-                self.loaded = response.headers('WD-Need-More') === 'false';
-                return self.add(conversations);
-            });
+                var conversations = rawData.map(this.create.bind(this));
+                this.loaded = response.headers('WD-Need-More') === 'false';
+                return this.add(conversations);
+            }.bind(this));
         }
     },
 
@@ -72,21 +76,84 @@ _.extend(ExtendedConversationsCollection.prototype, {
         var promise = c.messages.remove(messages);
         if (c.messages.empty) {
             this.drop(c);
-            return promise;
+        }
+        return promise.then(function done(messages) {
+            if (!c.messages.empty) {
+                this.add(c);
+            }
+            return messages;
+        }.bind(this));
+    },
+
+    sendMessages: function(c, m) {
+        var url;
+        var method;
+        var content;
+        var addresses;
+        var config;
+        var messages;
+
+        if (m) {
+            if (m.isNew) {
+                method = 'POST';
+                url = '/resource/messages/send';
+            }
+            else {
+                method = 'GET';
+                url = m.url + '/resend';
+            }
+            content = m.body;
+            addresses = [m.address];
+            messages = [m];
         }
         else {
-            return promise.then(function success() {
-                return c.fetch();
+            method = 'POST';
+            url = '/resource/messages/send';
+            addresses = c.addresses;
+            content = c.draft.trim();
+            c.draft = '';
+
+            if (!content || !addresses.length) {
+                return $q.reject();
+            }
+
+            messages = addresses.map(function(addr, i) {
+                return c.messages.create({
+                    address: addr,
+                    contact_name: c.contact_names[i],
+                    body: content
+                });
             });
+            messages = c.messages.add(messages);
         }
-    },
 
-    sendMessages: function(c) {
-        return c.sendMessages().then(this._placeMessages.bind(this, c));
-    },
+        config = {
+            method: method,
+            url: url
+        };
+        if (method === 'POST') {
+            config.data = {
+                addresses: addresses,
+                body: content
+            };
+        }
 
-    resendMessage: function(c, m) {
-        return c.resendMessage(m).then(this._placeMessages.bind(this, c));
+        messages.forEach(function(m) {
+            m.rawData.status = 32;
+        });
+
+        return $http(config).then(function done(response) {
+            messages.forEach(function(m, i) {
+                m.extend(response.data[i]);
+            });
+            c.sort();
+            return this._placeMessages(c, messages);
+        }.bind(this), function fail() {
+            messages.forEach(function(m) {
+                m.rawData.status = 64;
+            });
+            return c;
+        });
     },
 
     _placeMessages: function(c, messages) {

@@ -29,7 +29,10 @@ function Message(rawData) {
 }
 
 Message.prototype = Object.create(_super, {
-    cid:        {get: function() { return this.thread_id; }},
+    cid:        {
+        get: function() { return this.thread_id; },
+        set: function(cid) { this.rawData.thread_id = cid; }
+    },
     isRead:     {get: function() { return !!this.read; }},
     isPending:  {get: function() { return this.status === 32; }},
     isError:    {get: function() { return this.status === 64; }},
@@ -51,10 +54,9 @@ _.extend(Message.prototype, {
             return $q.when(this);
         }
 
-        var self = this;
         return $http.get(this.url).then(function done(response) {
-            return self.extend(response.data);
-        });
+            return this.extend(response.data);
+        }.bind(this));
     },
 
     /**
@@ -62,51 +64,12 @@ _.extend(Message.prototype, {
      * @return {Promise} Resolve by Message
      */
     destroy: function() {
-        var self = this;
         return $http.delete(this.url).then(function done() {
-            return self;
-        }, function fail(response) {
-            return response.status === 404 ? self : $q.reject();
-        });
-    },
-
-    /**
-     * Send or resend message decided by this.isNew
-     * @return {Promise} Resolve by updated Message instance
-     */
-    send: function() {
-        var self = this;
-        var config;
-        this.rawData.status = 32;
-        if (this.isNew) {
-            config = {
-                method: 'POST',
-                url: '/resource/messages/send',
-                data: {
-                    addresses: [this.address],
-                    body: this.body
-                }
-            };
-        }
-        else {
-            config = {
-                method: 'GET',
-                url: this.url + '/resend'
-            };
-        }
-        return $http(config).then(function success(response) {
-            if (response.data && response.data.length) {
-                self.extend(response.data[0]);
-                if (self._collection) {
-                    self._collection.sort();
-                }
-            }
-            return self;
-        }, function error() {
-            self.rawData.status = 64;
-            return $q.reject();
-        });
-    },
+            return this;
+        }.bind(this), function fail(response) {
+            return response.status === 404 ? this : $q.reject();
+        }.bind(this));
+    }
 });
 
 function guid() {

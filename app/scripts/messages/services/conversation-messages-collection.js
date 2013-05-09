@@ -21,38 +21,6 @@ _.extend(ConversationMessagesCollection.prototype, {
 
     constructor: ConversationMessagesCollection,
 
-    send: function(content) {
-        var self = this;
-        var messages = this._conversation.addresses.map(function(addr, index) {
-            return self.create({
-                address: addr,
-                contact_name: self._conversation.contact_names[index],
-                body: content
-            });
-        });
-        this.add(messages);
-
-        return $http.post('/resource/messages/send', {
-            addresses: self._conversation.addresses,
-            body: content
-        }).then(function success(response) {
-            messages.forEach(function(m, index) {
-                if (response.data[index]) {
-                    m.extend(response.data[index]);
-                }
-                else {
-                    self.drop(m);
-                }
-            });
-
-            self.sort();
-
-            return self._updateConversation(messages);
-        });
-    },
-
-
-
     fetch: function(id) {
         var self = this;
 
@@ -106,7 +74,7 @@ _.extend(ConversationMessagesCollection.prototype, {
 
     remove: function(messages) {
         return _super.remove.call(this, messages).then(function() {
-            return this._updateConversation(messages);
+            return messages.empty ? messages : this._updateConversation(messages);
         }.bind(this));
     },
 

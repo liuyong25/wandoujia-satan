@@ -9,13 +9,15 @@ define([
 return ['wdmMessage',
 function(wdmMessage) {
 
+var _super = Collection.prototype;
+
 function MessagesCollection() {
-    Collection.call(this);
+    _super.constructor.call(this);
 }
 
-MessagesCollection.prototype = Object.create(Collection.prototype, {
+MessagesCollection.prototype = Object.create(_super, {
     latestDate: {get: function() {
-        return this.collection.length ? this.collection[this.collection.length - 1].date : 0;
+        return this.empty ? this.collection[this.length - 1].date : 0;
     }},
     hasError: {get: function() {
         return this.collection.some(function(m) { return m.isError; });

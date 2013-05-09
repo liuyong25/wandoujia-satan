@@ -36,8 +36,11 @@ function Conversation(data) {
 }
 
 Conversation.prototype = Object.create(_super, {
-    brief: {get: function() { return this.snippet; }},
     hasPending: {get: function() { return this.messages.hasPending; }},
+
+    /**
+     * @override
+     */
     hasError: {
         get: function() {
             return this.has_error || this.messages.hasError;
@@ -47,23 +50,8 @@ Conversation.prototype = Object.create(_super, {
 
 _.extend(Conversation.prototype, {
 
-    constructor: Conversation,
+    constructor: Conversation
 
-    sendMessages: function() {
-        var content = this.draft.trim();
-        this.draft = '';
-
-        if (content && this.addresses.length) {
-            return this.messages.send(content);
-        }
-        else {
-            return $q.reject();
-        }
-    },
-
-    resendMessage: function(m) {
-        return m.send();
-    }
 });
 
 

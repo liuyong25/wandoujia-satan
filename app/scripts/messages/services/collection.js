@@ -49,16 +49,20 @@ _.extend(Collection.prototype, {
     },
 
     add: function(items) {
+        // Transform to array
         items = [].concat(items);
+
         var updated = items.map(function(item) {
             var existed = this.getById(item.id);
             if (existed) {
+                // Only copy
                 existed.extend(item);
                 return existed;
             }
             else {
                 if (item._collection) {
-                    item = this.create(item.rawData);
+                    // item = this.create(item.rawData);
+                    item._collection.drop(item);
                 }
                 item._collection = this;
                 this.collection.push(item);
@@ -90,10 +94,18 @@ _.extend(Collection.prototype, {
         this.drop(this.collection);
     },
 
-    toggleSelectAll: function() {
-        var toBe = !this.allSelected;
-        this.collection.forEach(function(c) {
-            c.selected = toBe;
+    selectAll: function() {
+        this.toggleSelectAll(true);
+    },
+
+    deselectAll: function() {
+        this.toggleSelectAll(false);
+    },
+
+    toggleSelectAll: function(toBe) {
+        toBe = arguments.length ? toBe : !this.allSelected;
+        this.collection.forEach(function(item) {
+            item.selected = toBe;
         });
     },
 });

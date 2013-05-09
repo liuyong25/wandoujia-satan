@@ -16,6 +16,9 @@ function SyncMessagesCollection(conversation) {
 }
 
 SyncMessagesCollection.prototype = Object.create(_super, {
+    /**
+     * @override
+     */
     empty: {get: function() { return !this.length && this.loaded; }}
 });
 
@@ -29,27 +32,28 @@ _.extend(SyncMessagesCollection.prototype, {
      * @return {}      [description]
      */
     create: function(data) {
-        if (data.thread_id == null) {
-            data.thread_id = this._conversation.id;
+        if (data.cid == null) {
+            data.cid = this._conversation.id;
         }
         return _super.create.call(this, data);
     },
 
     sync: function(action, config, refresh) {
-        var self = this;
         var done = null;
         var fail = function() { return $q.reject(); };
 
         if (action === 'read') {
+
             config.method = 'GET';
             config.url = '/resource/conversations/' + this._conversation.id + '/messages';
+
             done = function(response) {
                 var data = [].concat(response.data);
                 if (!refresh) {
-                    self.loaded = response.headers('WD-Need-More') === 'false';
+                    this.loaded = response.headers('WD-Need-More') === 'false';
                 }
-                return self.add(data.map(self.create.bind(self)));
-            };
+                return this.add(data.map(this.create.bind(this)));
+            }.bind(this);
 
             return $http(config).then(done, fail);
         }

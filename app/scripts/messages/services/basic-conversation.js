@@ -62,19 +62,18 @@ _.extend(BasicConversation.prototype, {
     },
 
     destroy: function() {
-        var self = this;
         return $http.delete(
             '/resource/conversations/' + this.id
         ).then(function done() {
-            return self;
-        }, function fail(response) {
-            return response.status === 404 ? self : $q.reject();
-        });
+            return this;
+        }.bind(this), function fail(response) {
+            return response.status === 404 ? this : $q.reject();
+        }.bind(this));
     },
 
     allRead: function() {
         if (!this.hasUnread) { return; }
-        var self = this;
+
         var cachedUnreadCount = this.unread_message_count;
         this.rawData.unread_message_count = 0;
 
@@ -82,11 +81,11 @@ _.extend(BasicConversation.prototype, {
             '/resource/conversations/' + this.id + '/messages/update',
             { read: 1 }
         ).then(function success() {
-            return self.fetch();
-        }, function error() {
-            self.rawData.unread_message_count = cachedUnreadCount;
+            return this.fetch();
+        }.bind(this), function error() {
+            this.rawData.unread_message_count = cachedUnreadCount;
             return $q.reject();
-        });
+        }.bind(this));
     }
 });
 

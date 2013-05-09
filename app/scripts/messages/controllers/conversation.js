@@ -95,7 +95,7 @@ $scope.sendMessage = function(c) {
 };
 
 $scope.resendMessage = function(c, m) {
-    $scope.conversations.resendMessage(c, m).then(function(cc) {
+    $scope.conversations.sendMessage(c, m).then(function(cc) {
         if (cc !== $scope.activeConversation) {
             $scope.showConversation(cc);
         }
