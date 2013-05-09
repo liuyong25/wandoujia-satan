@@ -9,9 +9,11 @@ define([
 
 return ['$q', '$http', function($q, $http) {
 
+var _super = Model.prototype;
+
 function Message(rawData) {
 
-    var instance = Model.call(this, _.extend({
+    var instance = _super.constructor.call(this, _.extend({
         id: guid(),
         thread_id: null,
         date: Date.now(),
@@ -26,7 +28,7 @@ function Message(rawData) {
     return instance;
 }
 
-Message.prototype = Object.create(Model.prototype, {
+Message.prototype = Object.create(_super, {
     cid:        {get: function() { return this.thread_id; }},
     isRead:     {get: function() { return !!this.read; }},
     isPending:  {get: function() { return this.status === 32; }},

@@ -18,8 +18,11 @@ _.extend(searchResults, {
 
     _keyword: '',
 
+    loading: false,
+
     search: function(keyword) {
         this.clear();
+        this.loading = true;
         this._keyword = keyword;
         this.add(this._searchFromCache(keyword));
         this._searchFromServer(keyword);
@@ -51,21 +54,25 @@ _.extend(searchResults, {
         ).then(function done(response) {
             if (response.config.keyword === this._keyword) {
                 this.add(response.data.map(this.create));
+                this.loading = false;
             }
+        }.bind(this), function fail() {
+            this.loading = false;
         }.bind(this));
     },
     searchContent: function() {
-        return $http.get(
+        return $http.post(
             '/resource/messages/search',
+            [{
+                field: 'keyword',
+                keyword: this._keyword
+            }],
             {
                 params: {
                     offset: 0,
-                    length: 20,
-                    queries: [{
-                        field: 'keyword',
-                        keyword: this._keyword
-                    }]
-                }
+                    length: 20
+                },
+                keyword: this._keyword
             }
         ).then(function done(response) {
             if (response.config.keyword !== this._keyword) {

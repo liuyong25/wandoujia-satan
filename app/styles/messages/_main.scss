@@ -47,6 +47,11 @@
         border-bottom: 1px solid $wdm-border-color;
         margin-bottom: -1px;
     }
+    .wdm-search {
+        height: 51px;;
+        border-bottom: 1px solid $wdm-border-color;
+        margin-bottom: -1px;
+    }
     .wdm-conversations {
         @include flex(1);
         height: 0; // Flexbox need a height as refer.
@@ -55,6 +60,15 @@
 
     .wdm-contact {
         min-height: $wdm-actions-height;
+        border-bottom: 1px solid $wdm-border-color;
+    }
+    .wdm-results {
+        @include position;
+        height: $global-line-height;
+        padding: ($wdm-actions-height - $global-line-height)/2 10px;
+        padding-right: 50px;
+        @include ellipsis;
+        background: #f5f5f5;
         border-bottom: 1px solid $wdm-border-color;
     }
     .wdm-entries {

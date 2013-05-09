@@ -24,25 +24,38 @@ _.extend(SearchMessagesCollection.prototype, {
 
     constructor: SearchMessagesCollection,
 
-    setCursor: function(data) {
-        this._cursor = this.create(data);
-        this.add(this._cursor);
+    setCursor: function(m) {
+        this._cursor = m;
+        // this.add(this._cursor);
     },
 
     isCursor: function(m) {
-        return this._cursor === m;
+        return this._cursor.id === m.id;
     },
 
     fetch: function() {
-
-        return this.sync('read', {
-            params: {
+        var params;
+        var isFirst = false;
+        if (this.length) {
+            params = {
+                cursor: this.collection[0].id,
+                offset: 1,
+                length: 10
+            };
+        }
+        else {
+            isFirst = true;
+            params = {
                 cursor: this._cursor.id,
                 offset: -5,
                 length: 11
-            }
+            };
+        }
+
+        return this.sync('read', {
+            params: params
         }).then(function done(messages) {
-            if (this.length < 11) {
+            if (isFirst && this.length < 11) {
                 this.laterLoaded = true;
             }
             return messages;

@@ -10,12 +10,35 @@ function($scope,   $resource,   $q,   $http,   wdpMessagePusher,   $timeout,   w
          GA,   $route,   wdmConversations) {
 
 $scope.serverMatchRequirement = $route.current.locals.versionSupport;
-$scope.conversations = wdmConversations.conversations;
+$scope.conversationsCache = wdmConversations.conversations;
 $scope.searchResults = wdmConversations.searchResults;
+$scope.conversations = $scope.conversationsCache;
 $scope.activeConversation = null;
 $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
+$scope.searchQuery = '';
+
+$scope.isSearching = function() {
+    return !!$scope.searchQuery.trim();
+};
+
+$scope.clearSearch = function() {
+    $scope.searchQuery = '';
+};
+
+$scope.$watch('searchQuery', function(value) {
+    var keyword = value.trim();
+    if (keyword) {
+        wdmConversations.searchResults.search(keyword);
+        $scope.conversations = wdmConversations.searchResults;
+    }
+    else {
+        // kill search results
+        $scope.conversations = wdmConversations.conversations;
+        wdmConversations.searchResults.clear();
+    }
+});
 
 $scope.conversations.on('update.wdm', function(e, c) {
     if (c === $scope.activeConversation) {
@@ -28,7 +51,7 @@ $scope.selectTip = function(c) {
 };
 
 $scope.editorPlaceholder = function(c) {
-    if (!c) { return; }
+    if (!c || !c.messages) { return; }
     var hasRecieved = c.messages.collection.some(function(m) {
         return m.type !== 2;
     });
@@ -41,6 +64,7 @@ $scope.createConversation = function() {
     });
     if (!c) {
         c = $scope.conversations.create();
+        $scope.conversations.add(c);
     }
     activeConversation(c);
 };

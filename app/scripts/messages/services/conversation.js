@@ -15,6 +15,19 @@ function Conversation(data) {
 
     var instance = _super.constructor.call(this, data);
 
+    Object.defineProperties(instance, {
+        date: {
+            get: function() {
+                var conversationDate = this.rawData.date;
+                var messageDate = this.messages.latestDate;
+                return Math.max(messageDate, conversationDate);
+            },
+            set: function(value) {
+                this.rawData.date = value;
+            }
+        }
+    });
+
     instance.messages = wdmConversationMessagesCollection.createConversationMessagesCollection(instance),
 
     instance.draft = '';
@@ -22,19 +35,8 @@ function Conversation(data) {
     return instance;
 }
 
-Object.defineProperties(Conversation.prototype, {
+Conversation.prototype = Object.create(_super, {
     brief: {get: function() { return this.snippet; }},
-    date: {
-        get: function() {
-            var conversationDate = this.rawData.date;
-            var messageDate = this.messages.latestDate;
-            return Math.max(messageDate, conversationDate);
-        },
-        set: function(value) {
-            this.rawData.date = value;
-            return value;
-        }
-    },
     hasPending: {get: function() { return this.messages.hasPending; }},
     hasError: {
         get: function() {

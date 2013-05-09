@@ -1,6 +1,6 @@
 @import "messages/*.png";
 
-@each $icon in "alert", "alert-r", "contact", "running", "running-r", "ab-sel", "ab-add", "ab-del", "check", "checked" {
+@each $icon in "alert", "alert-r", "contact", "running", "running-r", "ab-sel", "ab-add", "ab-del", "check", "checked", "search" {
     $sprite-width: messages-sprite-width($icon);
     $sprite-height: messages-sprite-height($icon);
 

@@ -69,8 +69,8 @@ _.extend(ExtendedConversationsCollection.prototype, {
     },
 
     removeMessages: function(c, messages) {
-        var promise = c._messages.remove(messages);
-        if (c._messages.empty) {
+        var promise = c.messages.remove(messages);
+        if (c.messages.empty) {
             this.drop(c);
             return promise;
         }

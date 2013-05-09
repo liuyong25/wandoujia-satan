@@ -4,7 +4,6 @@ define([
     _
 ) {
 'use strict';
-return [function() {
 
 function Collection(options) {
     this.collection = [];
@@ -100,5 +99,5 @@ _.extend(Collection.prototype, {
 });
 
 return Collection;
-}];
+
 });

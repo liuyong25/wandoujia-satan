@@ -124,3 +124,12 @@
         }
     }
 }
+
+.wdme-row-highlight {
+    .wdmer-a {
+        background: #fffabb;
+        &::before {
+            border-left-color: #fffabb;
+        }
+    }
+}

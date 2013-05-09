@@ -4,7 +4,6 @@ define([
     _
 ) {
 'use strict';
-return [function() {
 
 function Model(rawData) {
     _.extend(this, rawData);
@@ -13,8 +12,8 @@ function Model(rawData) {
         rawData: {value: this}
     });
 
-    this._collection = null;
-    this.selected = false;
+    instance._collection = null;
+    instance.selected = false;
 
     return instance;
 }
@@ -35,5 +34,4 @@ _.extend(Model.prototype, {
 
 return Model;
 
-}];
 });
