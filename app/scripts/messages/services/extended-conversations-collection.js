@@ -146,7 +146,7 @@ _.extend(ExtendedConversationsCollection.prototype, {
             messages.forEach(function(m, i) {
                 m.extend(response.data[i]);
             });
-            c.sort();
+            c.messages.sort();
             return this._placeMessages(c, messages);
         }.bind(this), function fail() {
             messages.forEach(function(m) {

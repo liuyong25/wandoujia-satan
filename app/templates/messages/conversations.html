@@ -26,7 +26,7 @@
             </div>
             <ol class="wdm-conversations unstyled">
                 <li class="wdmc-row"
-                    ui-animate11
+                    ui-animate
                     ng-repeat="c in conversations.collection"
                     ng-class="{ selected: c.selected, highlight: c == activeConversation }"
                     wdm-conversation>
@@ -44,7 +44,7 @@
                             <span ng-switch-default>{{ c.displayNames.join(', ') }}</span>
                             <span ng-switch-when="0">New message</span>
                         </div>
-                        <div class="wdmcr-c-b">{{ c.snippet }}</div>
+                        <div class="wdmcr-c-b"><span class="wdmcr-c-b-a">12</span>{{ c.snippet }}</div>
                     </div>
                     <div class="wdmcr-d">
                         <div class="status">&nbsp;
@@ -92,12 +92,16 @@
                 </div>
             </section>
 
-            <section class="wdm-results"
-                ui-if="isSearching() && activeConversation.results">
-                {{activeConversation.index}} ,
-                {{activeConversation.length}}
-                <span ui-if="activeConversation.hasPrevious()" ng-click="activeConversation.previous()">prev</span>
-                <span ui-if="activeConversation.hasNext()" ng-click="activeConversation.next()">next</span>
+            <section class="wdm-results">
+                2 of 2 message ........
+                <div class="wdmr-b btn-group">
+                    <span class="btn"
+                        ui-if="true || activeConversation.hasPrevious()"
+                        ng-click="activeConversation.previous()"><i class="wdmr-a-l"></i></span>
+                    <span class="btn"
+                        ui-if="true || activeConversation.hasNext()"
+                        ng-click="activeConversation.next()"><i class="wdmr-a-r"></i></span>
+                </div>
             </section>
 
             <section class="wdm-entries" wdm-auto-scroll="activeConversation.messages.collection">
@@ -127,6 +131,8 @@
                             </div>
                             <div class="wdmer-b">
                                 <span ui-if="m.isError"><i class="messages-icon-alert"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(activeConversation, m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
+                            </div>
+                            <div class="wdmer-c">
                                 <i ui-if="m.isPending" class="messages-icon-running"></i>
                                 <span class="wdmer-b-date" ui-if="!m.isError && !m.isPending">{{ m.date | messageDate:'HH:mm' }}</span>
                                 <a href="" class="wdmer-b-del"

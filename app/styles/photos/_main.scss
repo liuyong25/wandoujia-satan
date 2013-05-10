@@ -4,8 +4,14 @@
     padding-left: 10px;
     padding-right: 10px;
 
+    @include box-sizing(border-box);
+    height: 100%;
+    border-top: 50px solid transparent;
+    overflow-y: auto;
+    overflow-x: hidden;
+
     .wdp-timeline-container {
-        padding: 50px 0px 20px;
+        padding: 0px 0px 20px;
     }
     @import "showcase"; // showcase consists of group of photos
     @import "block";    // each photos is contained in a block

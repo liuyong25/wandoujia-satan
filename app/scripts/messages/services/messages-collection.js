@@ -17,7 +17,7 @@ function MessagesCollection() {
 
 MessagesCollection.prototype = Object.create(_super, {
     latestDate: {get: function() {
-        return this.empty ? this.collection[this.length - 1].date : 0;
+        return this.length ? this.collection[this.length - 1].date : 0;
     }},
     hasError: {get: function() {
         return this.collection.some(function(m) { return m.isError; });

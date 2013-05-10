@@ -32,8 +32,8 @@ _.extend(SyncMessagesCollection.prototype, {
      * @return {}      [description]
      */
     create: function(data) {
-        if (data.cid == null) {
-            data.cid = this._conversation.id;
+        if (data.thread_id == null) {
+            data.thread_id = this._conversation.id;
         }
         return _super.create.call(this, data);
     },
@@ -90,7 +90,7 @@ return {
     SyncMessagesCollection: SyncMessagesCollection,
     createSyncMessagesCollection: function(conversation) {
         return new SyncMessagesCollection(conversation);
-    },
+    }
 };
 }];
 });
