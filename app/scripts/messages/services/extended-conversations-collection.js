@@ -143,8 +143,9 @@ _.extend(ExtendedConversationsCollection.prototype, {
         });
 
         return $http(config).then(function done(response) {
+            var data = [].concat(response.data);
             messages.forEach(function(m, i) {
-                m.extend(response.data[i]);
+                m.extend(data[i]);
             });
             c.messages.sort();
             return this._placeMessages(c, messages);

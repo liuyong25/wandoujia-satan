@@ -27,7 +27,7 @@
             <ol class="wdm-conversations unstyled">
                 <li class="wdmc-row"
                     ui-animate
-                    ng-repeat="c in conversations.collection"
+                    ng-repeat="c in conversations.collection | orderBy:'-date'"
                     ng-class="{ selected: c.selected, highlight: c == activeConversation }"
                     wdm-conversation>
                     <label class="wdmcr-a"

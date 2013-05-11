@@ -38,16 +38,16 @@ _.extend(searchResults, {
     },
 
     _searchFromServer: function(keyword) {
-        return $http.get(
+        return $http.post(
             '/resource/conversations/search',
+            [{
+                field: 'keyword',
+                keyword: keyword
+            }],
             {
                 params: {
                     offset: 0,
-                    length: 20,
-                    queries: [{
-                        field: 'keyword',
-                        keyword: keyword
-                    }]
+                    length: 20
                 },
                 keyword: keyword
             }
