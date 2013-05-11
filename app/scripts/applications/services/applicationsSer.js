@@ -6,7 +6,7 @@ define( [
     'use strict';
 
 //$q是promise
-return [ '$http', '$q', function ( $http, $q ) {
+return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
     var global = {
         appsList:[],
@@ -26,6 +26,10 @@ return [ '$http', '$q', function ( $http, $q ) {
         }).error(function(){
         });
     }
+
+    $rootScope.$on('signout', function() {
+        global.appsList = [];
+    });
 
     return {
 

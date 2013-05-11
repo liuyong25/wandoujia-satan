@@ -4,7 +4,7 @@ return {
     root: {
         BUTTONS:{
             'newContact' : 'New contact',
-            'selectAll' : 'Select all',
+            'deselect' : 'Deselect',
             'delete' : 'Delete',
             'addNewItem' : 'Add new item',
             'edit' : 'Edit',

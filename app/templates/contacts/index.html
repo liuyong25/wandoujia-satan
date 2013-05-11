@@ -1,17 +1,18 @@
 <div class="wdj-contacts">
-    <div class="wd-loading" data-visible="true"></div>
 
     <!-- 左侧布局 -->
-    <div class="left dn">
+    <div class="left">
+
+        <div class="wd-loading" data-visible="true" ng-show="isLeftLoadingShow"></div>
 
         <div class="btn-all">
             <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()">
                 <i class="icon-ab-add"></i>
                 {{$root.DICT.contacts.BUTTONS.newContact}}
             </button>
-            <button class="btn btn-selectAll" type="button" ng-click="selectAll()">
+            <button class="btn btn-selectAll" ng-show="isDeselectBtnShow" type="button" ng-click="deselectAll()">
                 <i class="icon-ab-sel"></i>
-                {{$root.DICT.contacts.BUTTONS.selectAll}}
+                {{$root.DICT.contacts.BUTTONS.deselect}}({{selectedNum}})
             </button>
             <button class="btn btn-delete dn" type="button" ng-click="deleteContacts()">
                 <i class="icon-ab-del"></i>
@@ -26,7 +27,7 @@
         <ul class="contacts-list">
 
             <!-- 没有联系人时显示 -->
-            <li class="no-contacts dn">{{$root.DICT.contacts.NO_CONTACT_TIPS}}</li>
+            <li class="no-contacts" ng-show="isNoContactsShow">{{$root.DICT.contacts.NO_CONTACT_TIPS}}</li>
             <!-- 没有联系人时显示 end -->
 
             <!-- 每个联系人的模板 -->
@@ -43,32 +44,37 @@
             <!-- 每个联系人的模板 end -->
 
             <!-- 增加load more -->
-            <li class="load-more dn" ng-click="loadMore();">{{$root.DICT.contacts.LOAD_MORE}}</li>
+            <li class="load-more" ng-show="isLoadMoreBtnShow" ng-click="loadMore();">{{$root.DICT.contacts.LOAD_MORE}}</li>
             <!-- 增加load more end -->
+
+            <!-- 增加loading -->
+            <li ng-show="isListLoadShow">
+                <div class="wd-loading" data-visible="true"></div>
+            </li>
+            <!-- 增加load more end -->
+
         </ul>
 
     </div>
     <!-- 左侧布局 end -->
 
     <!-- 右侧布局 -->
-    <div class="right dn">
+    <div class="right">
 
-        <div class="wd-loading" data-visible="true"></div>
+        <div class="wd-loading" data-visible="true" ng-show="isRightLoadShow"></div>
 
         <!-- 查看和编辑用户信息 -->
-        <div class="contacts-edit" ng-show="shouldContactsEditShow">
+        <div class="contacts-edit" ng-show="isContactsEditShow">
             <img class="photo" ng-src="{{contact.photo_path}}">
 
             <!-- 上传图片遮罩 start -->
-            <!--
-            <div class="photoUpload dn">
+            <div class="photoUpload" ng-show='isPhotoUploadShow'>
                 <div class="mask">
                     <div class="bg"></div>
                     <span class="icon"></span>
                     <p>Change Photo</p>
                 </div>
             </div>
-            -->
             <!-- 上传图片遮罩 end -->
 
             <div class="info">
@@ -116,7 +122,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.email"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
-                        <p class="detail dn">{{item.address}}</p>
+                        <p class="detail dn"><a href="mailto:{{item.address}}">{{item.address}}</a></p>
                         <input class="detail dn" type="text" ng-model="item.address"  placeholder="Email address">
                         <span class="delete dn" ng-click="delItem('email',item)">&times;</span>
                     </dd>
@@ -177,7 +183,7 @@
                         <p class="labelFlag dn">{{item.label}}</p>
                         <select class="des dn" ng-model="item.type" ng-options="value for (key , value) in typeMap.website"></select>
                         <input class="label dn" ng-model="item.label" type="text" placeholder="Custom label">
-                        <p class="detail dn">{{item.URL}}</p>
+                        <p class="detail dn"><a href="{{item.URL}}">{{item.URL}}</a></p>
                         <input class="detail dn" type="text" ng-model="item.URL"  placeholder="Website">
                         <span class="delete dn" ng-click="delItem('website',item)">&times;</span>
                     </dd>

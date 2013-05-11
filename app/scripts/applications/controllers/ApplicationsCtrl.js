@@ -33,6 +33,7 @@ define([
         var G_unknownTips = false;
 
         function getAppListData(data){
+            $scope.isLoadShow = false;
             $scope.dataLoaded = true;
             for( var i = 0,l = data.length ; i<l; i++ ){
                 G_appList.push(changeInfo(data[i]));
@@ -421,6 +422,7 @@ define([
             });
 
         //主程序
+        $scope.isLoadShow = true;
         wdcApplications.onchange(getAppListData);
 
         //需要挂载到socpe上面的方法

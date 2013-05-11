@@ -24,7 +24,6 @@
         width: 428px;
         display: block;
         padding-left: 1px;
-        border-right: 1px solid #e7e7e7;
         margin-left: -1px;
         bottom: 0px;
 
@@ -44,6 +43,9 @@
             text-align: center;
             opacity: 0.7;
             cursor: pointer;
+        }
+        li .wd-loading{
+            top:138px;
         }
         .clicked{
             background-color: #444444!important;
@@ -87,7 +89,6 @@
         width: 428px;
         height: 90px;
         border-bottom: 1px solid #e7e7e7;
-        border-right: 1px solid #e7e7e7;
         padding-top: 10px;
         z-index: 200;
 
@@ -118,10 +119,10 @@
             line-height: 25px;
             padding-left: 28px;
             padding-right: 25px;
-            width: 348px;
+            width: 353px;
             height: 22px;
             box-shadow: none;
-            background:#f5f5f5 url("../../images/contacts/icon_search.png") no-repeat 2% 50%;
+            background:#f5f5f5 image-url("contacts/icon_search.png") no-repeat 2% 50%;
         }
 
         input::-ms-clear {
@@ -147,16 +148,23 @@
     }
 
     .left{
-        padding-top: 62px;
         float: left;
-        width: 453px;
+        width: 428px;
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        border-right: 1px solid #E7E7E7;
+
+        .wd-loading{
+            left : 280px;
+        }
     }
 
     .right{
         float: left;
 
         .wd-loading{
-            margin-left: 200px;
+            left: 65%;
         }
 
         .progress{

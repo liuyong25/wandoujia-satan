@@ -6,7 +6,7 @@ define( [
     'use strict';
 
 //$q是promise
-return [ '$http', '$q', function ( $http, $q ) {
+return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
     //配置项
     var CONFIG = {
@@ -75,6 +75,10 @@ return [ '$http', '$q', function ( $http, $q ) {
         });
     }
 
+    $rootScope.$on('signout', function() {
+        global.contacts = [];
+    });
+
     //整个service返回接口
     return {
 
@@ -137,7 +141,17 @@ return [ '$http', '$q', function ( $http, $q ) {
                             'offset':offset
                         }
                     }).success(function(data){
-                        defer.resolve(data);
+                        var list = [];
+                        if ( !options.email ) {
+                            _.each( data, function( value ) {
+                                if( value[ 'phone' ][0] ){
+                                    list.push(value);
+                                }
+                            });
+                        }else{
+                            list = data ;
+                        }
+                        defer.resolve(list);
                     }).error();
 
                 }else{
@@ -146,14 +160,14 @@ return [ '$http', '$q', function ( $http, $q ) {
                     _.each( global.contacts, function( value ) {
 
                         //首先查找名字
-                        if( ( !!value['name'][ 'display_name' ] && value['name'][ 'display_name' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                        if( ( !!value['name'][ 'display_name' ] && value['name'][ 'display_name' ].toLocaleLowerCase().replace(/\s/g,'').indexOf( query ) >= 0 ) ){
                             list.push( value );
                         }else{
 
                             //查找电话
                             for(var i = 0 , l = value[ 'phone' ].length ; i < l ; i += 1) {
                                 var v = value[ 'phone' ][i];
-                                if( ( !!v[ 'number' ] && v[ 'number' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                                if( ( !!v[ 'number' ] && v[ 'number' ].toLocaleLowerCase().replace(/\s/g,'').indexOf( query ) >= 0 ) ){
                                     list.push( value );
                                     return;
                                 }
@@ -163,7 +177,7 @@ return [ '$http', '$q', function ( $http, $q ) {
                                 //查找email
                                 for(var m = 0 , n = value[ 'email' ].length ; m < n ; m += 1) {
                                     var val = value[ 'email' ][m];
-                                    if( ( !!val[ 'address' ] && val[ 'address' ].toLocaleLowerCase().indexOf( query ) >= 0 ) ){
+                                    if( ( !!val[ 'address' ] && val[ 'address' ].toLocaleLowerCase().replace(/\s/g,'').indexOf( query ) >= 0 ) ){
                                         list.push( value );
                                         return;
                                     }
@@ -175,7 +189,7 @@ return [ '$http', '$q', function ( $http, $q ) {
                     });
 
                     //TODO:这块可以根据query是否一致来做些缓存
-                    defer.resolve( list.slice(offset ,length ) );
+                    defer.resolve( list );
                 }
             };
 
