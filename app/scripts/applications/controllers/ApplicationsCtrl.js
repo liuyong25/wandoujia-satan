@@ -10,9 +10,6 @@ define([
         //当前显示的应用详情
         $scope.info = {};
 
-        //是否selectAll
-        $scope.isSelectAll = false;
-
         //新安装的应用列表
         $scope.newList = [];
 
@@ -128,8 +125,8 @@ define([
                         $scope.list[i]['checked'] = false;
                     };
                 };
+                $scope.isDeleteBtnShow = false;
                 setTimeout(function(){
-                    $('.header button.delete-all').hide();
                     $('dd.toolbar').css('opacity','');
                     $('dd.confirm').css('opacity',0.8);
                 },500);
@@ -317,45 +314,35 @@ define([
             },500);
         };
 
-        function selectAll(){
+        function deselectAll(){
             var eles = $('.apps-list dl dd.toolbar');
-            if($scope.isSelectAll){
-                GA('Web applications : click deselect all button');
-                $scope.isSelectAll = false;
-                for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    $scope.list[i]['checked'] = false;
-                    eles.eq(i).css('opacity','');
-                };
-                $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.SELECT_ALL);
-                $('.header button.delete-all').hide();
-            }else{
-                $scope.isSelectAll = true;
-                GA('Web applications : click select all button');
-                for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    if(!$scope.list[i]['confirmTipShow']){
-                        $scope.list[i]['checked'] = true;
-                        eles.eq(i).css('opacity',1);
-                    };
-                };
-                $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.DESELECT_ALL);
-                $('.header button.delete-all').show();
+            GA('Web applications : click deselect all button');
+            for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
+                $scope.list[i]['checked'] = false;
+                eles.eq(i).css('opacity','');
             };
+            $scope.isDeleteBtnShow = false;
+            $scope.isDeselectBtnShow = false;
+            $scope.selectedNum = 0;
         };
 
         function checkedApp(e){
             GA('Web applications : click Checkbox');
             if($(e.target).prop('checked')){
-                $('.header button.delete-all').show();
+                $scope.selectedNum += 1;
                 $(e.target.parentNode.parentNode).css('opacity',1);
             }else{
+                $scope.selectedNum -= 1;
                 $(e.target.parentNode.parentNode).css('opacity','');
-                for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    if($scope.list[i]['checked']){
-                        return;
-                    };
-                };
-                $('.header button.delete-all').hide();
             };
+
+            if($scope.selectedNum > 0){
+                $scope.isDeleteBtnShow = true;
+                $scope.isDeselectBtnShow = true;
+            }else{
+                $scope.isDeleteBtnShow = false;
+                $scope.isDeselectBtnShow = false;
+            }
         };
 
         function clickInstallApk(){
@@ -423,18 +410,22 @@ define([
 
         //主程序
         $scope.isLoadShow = true;
+        $scope.selectedNum = 0;
+        $scope.isDeleteBtnShow = false;
+        $scope.isDeselectBtnShow = false;
+
         wdcApplications.onchange(getAppListData);
 
         //需要挂载到socpe上面的方法
         $scope.showAppInfo = showAppInfo;
         $scope.closeMask = closeMask;
         $scope.closeConfirm = closeConfirm;
-        $scope.selectAll = selectAll;
         $scope.checkedApp = checkedApp;
         $scope.delApp = delApp;
         $scope.delMoreApps = delMoreApps;
         $scope.closeUploadApp = closeUploadApp;
         $scope.reinstall = reinstall;
+        $scope.deselectAll = deselectAll;
         $scope.clickInstallApk = clickInstallApk;
         $scope.clickHoverUninstall = clickHoverUninstall;
         $scope.clickInfoUninstall = clickInfoUninstall;

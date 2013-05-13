@@ -60,11 +60,11 @@
             <i class="icon-add"></i>
             {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
         </div>
-        <button class="btn select-all" ng-click="selectAll()">
+        <button class="btn select-all" ng-click="deselectAll()" ng-show="isDeselectBtnShow">
             <i class="icon-sel"></i>
-            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
+            <p>{{$root.DICT.applications.BUTTONS.DESELECT_ALL}} ({{selectedNum}})</p>
         </button>
-        <button class="btn delete-all" ng-click="delMoreApps()">
+        <button class="btn delete-all" ng-click="delMoreApps()" ng-show="isDeleteBtnShow">
             <i class="icon-delAll"></i>
             {{$root.DICT.applications.BUTTONS.UNINSTALL}}
         </button>

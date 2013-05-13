@@ -161,10 +161,16 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
             data['account'] = {};
             if(!data['organization'][0]){
                 data['organization'][0] = {type:'Work',Company:'',department:'',job_description:'',label:'',office_location:'',phonetic_name:'',symbol:'',title:''};
-            };
-            if(!data['photo_path']){
-                data['photo_path'] = G_defaultPhoto;
-            };
+            }
+
+            if(!!data['website']){
+                for (var i = 0 , l = data['website'].length ; i < l ; i ++ ) {
+                    if( data['website'][i]['URL'].indexOf('http://')<0 ){
+                        data['website'][i]['URL'] = 'http://' + data['website'][i]['URL'];
+                    }
+                }
+            }
+
             data = changeDataType(data);
 
             //备份数据到全局，以便之后cancel时使用
@@ -222,16 +228,10 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
 
                 wrap.find('p.des').css('display','inline-block');
                 wrap.find('p.detail').css('display','inline-block');
-                if(!data.read_only){
-                    wrap.find('.footer .btn-edit').show();
-                    wrap.find('.footer .btn-del').show();
-                }else{
-                    wrap.find('.footer .btn-edit').hide();
-                    wrap.find('.footer .btn-del').hide();
-                };
-
-                wrap.find('.footer .btn-save').hide();
-                wrap.find('.footer .btn-cancel').hide();
+                $scope.isEditBtnShow = true;
+                $scope.isDelBtnShow = true;
+                $scope.isSaveBtnShow = false;
+                $scope.isCancelBtnShow = false;
 
                 var label = $('.labelFlag');
                 for(var i = 0 , l = label.length ; i<l; i++ ){
@@ -252,7 +252,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
 
         switch(G_status){
             case 'new':
-                if(!checkBlank($scope.contact)){
+                if(!wdcContacts.checkBlank($scope.contact)){
                     wdAlert.confirm(
                         'Save Contact',
                         'Save changes to this contact? ',
@@ -391,7 +391,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
             };
             $('ul.contacts-list')[0].scrollTop = 0;
             if(!id){
-                $('.wdj-contacts .btn-all .btn-delete').hide();
+                $scope.isDeleteBtnShow = false;
             };
 
             httpDel(delId);
@@ -424,33 +424,34 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
         });
     };
 
-    //选中所有
+    //取消所有
     $scope.deselectAll = function(){
+        $scope.isDeselectBtnShow = false;
+        $scope.isDeleteBtnShow = false;
+        $scope.selectedNum = 0;
         GA('Web Contacts:click Deselect all button');
-        $('.btn-all .btn-delete').hide();
         for(var i = 0, l = $scope.pageList.length;i<l;i++){
             $scope.pageList[i].checked = false ;
         };
     };
 
     $scope.clickChecked = function(isChecked){
-        if(isChecked){
-            GA('Web Contacts:click checkbox checked');
-        }else{
+
+        if(isChecked === false){
+            $scope.selectedNum -= 1;
             GA('Web Contacts:click checkbox unchecked');
+        }else{
+            $scope.selectedNum += 1;
+            GA('Web Contacts:click checkbox checked');
         };
 
-        for(var i = 0, l = $scope.pageList.length;i<l;i++){
-
-            if($scope.pageList[i].checked){
-                $scope.isDeselectBtnShow = true;
-                $('.btn-all .btn-delete').show();
-                return;
-            }else{
-                $scope.isDeselectBtnShow = false;
-            }
-        };
-        $('.btn-all .btn-delete').hide();
+        if($scope.selectedNum > 0){
+            $scope.isDeselectBtnShow = true;
+            $scope.isDeleteBtnShow = true;
+        }else{
+            $scope.isDeselectBtnShow = false;
+            $scope.isDeleteBtnShow = false;
+        }
     };
 
     //编辑联系人
@@ -500,10 +501,10 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
         //监视select变化
         changeTypeSelect();
 
-        wrap.find('.footer .btn-edit').hide();
-        wrap.find('.footer .btn-del').hide();
-        wrap.find('.footer .btn-save').show();
-        wrap.find('.footer .btn-cancel').show();
+        $scope.isEditBtnShow = false;
+        $scope.isDelBtnShow = false;
+        $scope.isSaveBtnShow = true;
+        $scope.isCancelBtnShow = true;
 
         //添加新item的功能
         ele.find('.btn-addNewItem').show();
@@ -516,61 +517,11 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
         photoUpload();
     };
 
-    //检查当前输入是否为空，为空返回true
-    function checkBlank(contact){
-        if(!!contact['name']['given_name'] ||!!contact['name']['middle_name']||!!contact['name']['family_name']  ){
-            return false;
-        };
-
-        for(var m in contact){
-            for(var n in contact[m]){
-                switch(m){
-                    case 'IM':
-                        if(!!contact[m][n]['data']){return false;}
-                    break;
-                    case 'address':
-                        if(!!contact[m][n]['formatted_address']){return false;}
-                    break;
-                    case 'email':
-                        if(!!contact[m][n]['address']){return false;}
-                    break;
-                    case 'address':
-                        if(!!contact[m][n]['formatted_address']){return false;}
-                    break;
-                    // case 'name':
-                    //     if(!!contact[m][n]['family_name']||!!contact[m][n]['given_name']||!!contact[m][n]['middle_name']){return false;}
-                    // break;
-                    case 'address':
-                        if(!!contact[m][n]['formatted_address']){return false;}
-                    break;
-                    case 'note':
-                        if(!!contact[m][n]['note']){return false;}
-                    break;
-                    case 'organization':
-                        if(!!contact[m][n]['company']||!!contact[m][n]['title']){return false;}
-                    break;
-                    case 'phone':
-                        if(!!contact[m][n]['number']){return false;}
-                    break;
-                    case 'relation':
-                        if(!!contact[m][n]['name']){return false;}
-                    break;
-                    case 'website':
-                        if(!!contact[m][n]['URL']){return false;}
-                    break;
-                };
-            };
-        }
-
-        //用户没有输入，返回true
-        return true;
-    };
-
     //保存联系人
     $scope.saveContact = function(id){
 
         //检查是否用户没有填入信息
-        if(checkBlank($scope.contact)){
+        if(wdcContacts.checkBlank($scope.contact)){
             wdAlert.alert('Please enter the contact','','OK');
             return;
         };
@@ -1005,6 +956,11 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
     $scope.isPhotoUploadShow = false;
     $scope.isNoContactsShow = false;
     $scope.isDeselectBtnShow = false;
+    $scope.isDeleteBtnShow = false;
+    $scope.isEditBtnShow = true;
+    $scope.isDelBtnShow = true;
+    $scope.isSaveBtnShow = false;
+    $scope.isCancelBtnShow = false;
 
     //被选中的数量
     $scope.selectedNum = 0;
