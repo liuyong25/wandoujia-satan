@@ -49,10 +49,10 @@
             color: #fff;
         }
         .wdmcr-icon-alert {
-            @extend .messages-icon-alert-r;
+            @extend .icon-failed-w;
         }
         .wdmcr-icon-running {
-            @extend .messages-icon-running-r;
+            @extend .icon-sending-w;
         }
     }
 }
@@ -69,13 +69,13 @@
 }
 
 .wdmcr-b {
-    $avatar-width: icon-width("profile");
+    $avatar-width: icon-width("profile48");
     width: $avatar-width;
     height: $avatar-width;
-    @include use-sprite("profile");
+    @include use-sprite("profile48");
 
     &.multiple {
-        @include messages-sprite("avatar-c");
+        @include use-sprite("group48");
     }
 
     img {
@@ -128,8 +128,8 @@
 }
 
 .wdmcr-icon-alert {
-    @extend .messages-icon-alert;
+    @extend .icon-failed;
 }
 .wdmcr-icon-running {
-    @extend .messages-icon-running;
+    @extend .icon-sending;
 }

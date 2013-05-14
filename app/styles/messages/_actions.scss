@@ -48,13 +48,16 @@
         }
 
         .clear {
-            @include button-effect;
-            @include position(absolute, (32px - $global-line-height)/2 0px 0 0);
-            padding: 0 5px;
-            font-size: 25px;
-            line-height: $global-line-height;
-            height: $global-line-height;
+            @include position(absolute, 1px 0px 0 0);
+            padding: 5px;
             cursor: pointer;
+            @extend .icon-close;
+            &:hover {
+                @extend .icon-close-h;
+            }
+            &:active {
+                @extend .icon-close-p;
+            }
         }
     }
 }
