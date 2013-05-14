@@ -6,7 +6,7 @@
         <div class="wd-loading" data-visible="true" ng-show="isLeftLoadingShow"></div>
 
         <div class="btn-all">
-            <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()">
+            <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()" ng-disabled="isNewContactDisable">
                 <i class="icon-ab-add"></i>
                 {{$root.DICT.contacts.BUTTONS.newContact}}
             </button>
@@ -33,7 +33,7 @@
             <!-- 每个联系人的模板 -->
             <li class="contacts-item" ng-repeat="item in pageList" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
                 <label class="selected" ng-model="item.checked" ng-click="$event.stopPropagation();">
-                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);">
+                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);" bs-tooltip="{{$root.DICT.contacts.WORDS.select}}">
                 </label>
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">
@@ -94,10 +94,10 @@
 
                 <div class="info-hr">
                     <div class="info-btn">
-                        <button class="btn btn-edit" ng-show="!contact.read_only && isEditBtnShow" type="button" ng-click="editContact(contact.id)">
+                        <button class="btn btn-edit" ng-show="!contact.read_only && isEditBtnShow" type="button" ng-click="editContact(contact.id)" bs-tooltip="{{$root.DICT.contacts.BUTTONS.edit}}">
                             <i class="icon-edit"></i>
                         </button>
-                        <button class="btn btn-del" ng-show="!contact.read_only && isDelBtnShow" type="button" ng-click="deleteContacts(contact.id)">
+                        <button class="btn btn-del" ng-show="!contact.read_only && isDelBtnShow" type="button" ng-click="deleteContacts(contact.id)"  bs-tooltip="{{$root.DICT.contacts.BUTTONS.delete}}">
                             <i class="icon-ab-del"></i>
                         </button>
                     </div>

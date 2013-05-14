@@ -24,7 +24,8 @@ return {
             'IM' : 'IM',
             'website' : 'Website',
             'relationship' : 'Relationship',
-            'note' : 'Note'
+            'note' : 'Note',
+            'select' : 'Select'
         },
         TYPE_MAP:{
              'address' : {

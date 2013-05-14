@@ -32,6 +32,7 @@ define([
         function getAppListData(data){
             $scope.isLoadShow = false;
             $scope.dataLoaded = true;
+            $scope.isInstallBtnDisable = false;
             for( var i = 0,l = data.length ; i<l; i++ ){
                 G_appList.push(changeInfo(data[i]));
             };
@@ -195,11 +196,27 @@ define([
                             };
                         },
                         onerror:function(){
-                            //console.log();
+                            console.log(123);
                         }
                     }
                 });
-            };
+
+                var dnd = new fineuploader.DragAndDrop({
+                    dropArea: document.body,
+                    multiple: true,
+                    hideDropzones: false,
+                    callbacks: {
+                        dropProcessing: function(isProcessing, files) {
+                            uploader.addFiles(files);
+                        },
+                        error: function(code, filename) {},
+                        log: function(message, level) {}
+                    }
+                });
+                dnd.setup();
+
+            }
+
         };
 
         //上传安装应用时，显示对应的应用
@@ -413,6 +430,7 @@ define([
         $scope.selectedNum = 0;
         $scope.isDeleteBtnShow = false;
         $scope.isDeselectBtnShow = false;
+        $scope.isInstallBtnDisable = true;
 
         wdcApplications.onchange(getAppListData);
 

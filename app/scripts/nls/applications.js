@@ -5,7 +5,7 @@ return {
         BUTTONS:{
             INSTALL_APPS:'Install apk',
             SELECT_ALL:'Select all',
-            DESELECT_ALL:'Deselect all',
+            DESELECT:'Deselect',
             UNINSTALL:'Uninstall',
             REINSTALL:'Reinstall',
             COMPLETE:'Complete'

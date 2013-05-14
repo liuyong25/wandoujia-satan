@@ -94,6 +94,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
 
         if(G_isFirst){
             $scope.isLeftLoadingShow = false;
+            $scope.isNewContactDisable = false;
             $('.wdj-contacts .left').show();
             $('.wdj-contacts .right').show();
         };
@@ -298,24 +299,26 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
 
         GA('Web Contacts:click delete contacts button');
 
+        var word = "";
+
         //取得read only的账号
         var read_only = [];
 
-        if(!id){
+        //删除一个
+        if(!!id){
+            word = "contact";
+
+        //删除多个
+        }else{
+            word = "contacts";
             for(var i = 0 , l = G_list.length ; i < l ; i ++){
                 if( G_list[i].checked === true && G_list[i]['read_only'] ){
                     read_only.push(G_list[i]['name']);
                     G_list[i].checked = false;
                 };
             };
-        };
+        }
 
-        var word = "";
-        if(!!id){
-            word = "contact";
-        }else{
-            word = "contacts";
-        };
         var alertTpl = '<p>Delete the selected '+word+' from your phone?</p>';
         if(read_only.length > 0){
             alertTpl += '<p>Those are read-only contacts,can not be deleted:</p><ul>'
@@ -378,7 +381,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
                 };
             };
             $scope.loadMore();
-            $scope.deselectAll();
             if(!!$scope.pageList[0]){
                 $scope.pageList[0]['clicked'] = true;
                 G_clicked = $scope.pageList[0];
@@ -394,26 +396,10 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
                 $scope.isDeleteBtnShow = false;
             };
 
-            httpDel(delId);
-
-            //删除多个
-            function httpDel(delId){
-                var i = 0;
-                var l = delId.length;
-                var del = function(){
-                    wdcContacts.delContacts(delId[i]).success(function(){
-                        i++;
-                        if(i<l){
-                            del();
-                        }else{
-                            //全部删除
-                        };
-                    }).error(function(){
-                        wdAlert.alert('Failed to delete selected contacts', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
-                    });
-                };
-                del();
-            };
+            wdcContacts.delContacts(delId).success(function(){
+            }).error(function(){
+                wdAlert.alert('Failed to delete selected contacts', '', 'OK').then(function(){$('.modal-backdrop').html('');location.reload();});
+            });
 
         //then最后的括号
         },
@@ -961,6 +947,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout){
     $scope.isDelBtnShow = true;
     $scope.isSaveBtnShow = false;
     $scope.isCancelBtnShow = false;
+    $scope.isNewContactDisable = true;
 
     //被选中的数量
     $scope.selectedNum = 0;
