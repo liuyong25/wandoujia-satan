@@ -91,7 +91,18 @@
     .wdmer-b {
         color: #a0a0a0;
         margin: 0;
+        @include flex(0 0 auto);
+        @include nowrap;
     }
+
+    .wdmer-c {
+        @include flex(0 0 auto);
+        @include nowrap;
+        min-width: 22px;
+        color: #a0a0a0;
+        margin: 0;
+    }
+
     .wdmer-b-del {
         display: none;
         @include button-effect;
@@ -124,3 +135,13 @@
         }
     }
 }
+
+.wdme-row-highlight {
+    .wdmer-a {
+        background: #fffabb;
+        &::before {
+            border-left-color: #fffabb;
+        }
+    }
+}
+

@@ -12,7 +12,16 @@ define([
     'messages/directives/textarea',
     'messages/directives/receiver',
     'messages/services/conversations',
-    'messages/services/messages'
+    'messages/services/message',
+    'messages/services/messages-collection',
+    'messages/services/conversation-messages-collection',
+    'messages/services/search-messages-collection',
+    'messages/services/sync-messages-collection',
+    'messages/services/conversation',
+    'messages/services/conversations-collection',
+    'messages/services/basic-conversation',
+    'messages/services/search-conversation',
+    'messages/services/extended-conversations-collection'
 ], function(
     angular,
     common,
@@ -27,13 +36,31 @@ define([
     textarea,
     receiver,
     conversations,
-    messages
+    messageFactory,
+    messagesCollectionFactory,
+    conversationMessagesCollectionFactory,
+    searchMessagesCollectionFactory,
+    syncMessagesCollectionFactory,
+    conversationFactory,
+    conversationsCollectionFactory,
+    basicConversationFactory,
+    searchConversationFactory,
+    extendedConversationsCollectionFactory
 ) {
 'use strict';
 // jshint unused:false
 angular.module('wdMessages', ['wdCommon'])
     .controller('wdmConversationController', conversationController)
-    .factory('wdmMessages', messages)
+    .factory('wdmMessage', messageFactory)
+    .factory('wdmMessagesCollection', messagesCollectionFactory)
+    .factory('wdmSyncMessagesCollection', syncMessagesCollectionFactory)
+    .factory('wdmConversationMessagesCollection', conversationMessagesCollectionFactory)
+    .factory('wdmSearchMessagesCollection', searchMessagesCollectionFactory)
+    .factory('wdmBasicConversation', basicConversationFactory)
+    .factory('wdmConversation', conversationFactory)
+    .factory('wdmSearchConversation', searchConversationFactory)
+    .factory('wdmConversationsCollection', conversationsCollectionFactory)
+    .factory('wdmExtendedConversationsCollection', extendedConversationsCollectionFactory)
     .factory('wdmConversations', conversations)
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)

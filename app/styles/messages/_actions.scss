@@ -11,3 +11,50 @@
         margin-right: 5px;
     }
 }
+
+.wdm-search {
+    @include display-flex;
+    @include align-content(center);
+    @include align-items(center);
+
+    .wdms-container {
+        @include flex(1);
+        @include position;
+        margin: 0 10px;
+
+        input {
+            @include box-sizing(border-box);
+            width: 100%;
+            font-size: 12px;
+            height: 32px;
+            line-height: 22px;
+            padding-left: 28px;
+            padding-right: 25px;
+            margin: 0;
+            border-color: #ccc;
+            @include box-shadow(none);
+            background: #f5f5f5;
+
+            &:focus {
+                background: #fff;
+            }
+            &::-ms-clear {
+                display: none;
+            }
+        }
+
+        i {
+            @include position(absolute, (32px - $global-line-height)/2 0 0 8px);
+        }
+
+        .clear {
+            @include button-effect;
+            @include position(absolute, (32px - $global-line-height)/2 0px 0 0);
+            padding: 0 5px;
+            font-size: 25px;
+            line-height: $global-line-height;
+            height: $global-line-height;
+            cursor: pointer;
+        }
+    }
+}

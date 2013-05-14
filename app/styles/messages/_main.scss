@@ -47,6 +47,11 @@
         border-bottom: 1px solid $wdm-border-color;
         margin-bottom: -1px;
     }
+    .wdm-search {
+        height: 51px;;
+        border-bottom: 1px solid $wdm-border-color;
+        margin-bottom: -1px;
+    }
     .wdm-conversations {
         @include flex(1);
         height: 0; // Flexbox need a height as refer.
@@ -56,6 +61,8 @@
     .wdm-contact {
         min-height: $wdm-actions-height;
         border-bottom: 1px solid $wdm-border-color;
+    }
+    .wdm-results {
     }
     .wdm-entries {
         @include flex(1);
@@ -67,6 +74,7 @@
     @import "actions";
     @import "conversations";
     @import "contact";
+    @import "results";
     @import "entries";
     @import "editor";
     @import "textext";
@@ -76,8 +84,8 @@
     }
 
     .load-more {
-        display: block;
-        width: 80px;
+        display: inline-block;
+        // width: 80px;
         padding: 8px 40px;
         margin: 15px auto;
         border-radius: 20px;

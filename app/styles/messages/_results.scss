@@ -1,0 +1,36 @@
+.wdm-results {
+    @include position;
+    height: $global-line-height;
+    padding: ($wdm-actions-height - $global-line-height)/2 10px;
+    padding-right: 50px;
+    @include ellipsis;
+    background: #f5f5f5;
+    border-bottom: 1px solid $wdm-border-color;
+}
+
+.wdmr-b {
+    @include position(absolute, 10px 10px 0 0);
+}
+
+.wdmr-b-disabled {
+    visibility: hidden;
+}
+
+.wdmr-a-l, .wdmr-a-r {
+    display: inline-block;
+    height: 0;
+    line-height: 0;
+    width: 0;
+    border-width: 5px 6px;
+    border-color: transparent;
+    border-style: solid;
+}
+
+.wdmr-a-l {
+    border-right-color: #666;
+    margin-left: -6px;
+}
+.wdmr-a-r {
+    border-left-color: #666;
+    margin-right: -6px;
+}

@@ -10,13 +10,93 @@ function($scope,   $resource,   $q,   $http,   wdpMessagePusher,   $timeout,   w
          GA,   $route,   wdmConversations) {
 
 $scope.serverMatchRequirement = $route.current.locals.versionSupport;
-$scope.conversations = wdmConversations;
+$scope.conversationsCache = wdmConversations.conversations;
+$scope.conversations = $scope.conversationsCache;
 $scope.activeConversation = null;
 $scope.cvsChanging = false;
 $scope.cvsLoaded = true;
 $scope.cvsListFirstLoading = true;
 
-wdmConversations.on('update.wdm', function(e, c) {
+$scope.searchQuery = '';
+$scope.resultsList = [];
+$scope.searchLoading = false;
+$scope.contentResultsList = [];
+
+$scope.cvs = function() {
+    if ($scope.isSearching()) {
+        return $scope.resultsList.map(function(id) {
+            return $scope.conversationsCache.getById(id);
+        }).concat($scope.contentResultsList);
+    }
+    else {
+        return $scope.conversationsCache.collection;
+    }
+};
+
+$scope.isSearching = function() {
+    return !!$scope.searchQuery;
+};
+
+$scope.clearSearch = function() {
+    $scope.searchQuery = '';
+};
+
+var searchConversationsFromServer = function(keyword) {
+    wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
+        if ($scope.searchQuery !== keyword) { return; }
+        $scope.resultsList = _.uniq($scope.resultsList.concat(list));
+        $scope.searchLoading = false;
+        if ($scope.cvs()) {
+            $scope.showConversation($scope.cvs()[0]);
+        }
+
+    });
+};
+searchConversationsFromServer = _.debounce(searchConversationsFromServer, 500);
+
+$scope.$watch('searchQuery', function(keyword) {
+    if (keyword) {
+        $scope.searchLoading = true;
+        $scope.resultsList = wdmConversations.searchConversationsFromCache(keyword);
+        $scope.contentResultsList = [];
+        searchConversationsFromServer(keyword);
+    }
+    else {
+        // kill search results
+        $scope.resultsList = [];
+        $scope.searchLoading = false;
+    }
+
+    if ($scope.cvs()) {
+        $scope.showConversation($scope.cvs()[0]);
+    }
+});
+
+$scope.searchContent = function() {
+    var keyword = $scope.searchQuery;
+    return wdmConversations.searchMessagesFromServer(keyword).then(function done(cvs) {
+        if ($scope.searchQuery !== keyword) { return; }
+        $scope.contentResultsList = cvs;
+        if ($scope.cvs()) {
+            $scope.showConversation($scope.cvs()[0]);
+        }
+    });
+};
+
+$scope.prevResults = function(c) {
+    $scope.cvsChanging = true;
+    c.previous().then(function() {
+        $scope.cvsChanging = false;
+    });
+};
+$scope.nextResults = function(c) {
+    $scope.cvsChanging = true;
+    c.next().then(function() {
+        $scope.cvsChanging = false;
+    });
+};
+
+$scope.conversations.on('update.wdm', function(e, c) {
     if (c === $scope.activeConversation) {
         scrollIntoView();
     }
@@ -27,7 +107,7 @@ $scope.selectTip = function(c) {
 };
 
 $scope.editorPlaceholder = function(c) {
-    if (!c) { return; }
+    if (!c || !c.messages) { return; }
     var hasRecieved = c.messages.collection.some(function(m) {
         return m.type !== 2;
     });
@@ -40,13 +120,15 @@ $scope.createConversation = function() {
     });
     if (!c) {
         c = $scope.conversations.create();
+        $scope.conversations.add(c);
     }
+    $scope.clearSearch();
     activeConversation(c);
 };
 
-$scope.showConversation = function(conversation) {
-    if (!conversation) { return; }
-    var promise = activeConversation(conversation);
+$scope.showConversation = function(c) {
+    if (!c) { return; }
+    var promise = activeConversation(c);
     promise.then(function() {
         _.defer(function() {
             $scope.$broadcast('wdm:autoscroll:flip');
@@ -57,6 +139,9 @@ $scope.showConversation = function(conversation) {
 
 $scope.sendMessage = function(c) {
     if (!c.draft) { return; }
+    var draft = c.draft;
+    c = $scope.conversationsCache.getById(c.id);
+    c.draft = draft;
     // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
     $scope.$broadcast('wdm:beforeMessageSend', c);
     $scope.conversations.sendMessages(c).then(function(cc) {
@@ -67,10 +152,11 @@ $scope.sendMessage = function(c) {
         GA('messages:send_failed');
     });
     scrollIntoView();
+    $scope.clearSearch();
 };
 
 $scope.resendMessage = function(c, m) {
-    $scope.conversations.resendMessage(c, m).then(function(cc) {
+    $scope.conversations.sendMessages(c, m).then(function(cc) {
         if (cc !== $scope.activeConversation) {
             $scope.showConversation(cc);
         }
@@ -123,7 +209,7 @@ if ($scope.serverMatchRequirement) {
 // Shutdown
 $scope.$on('$destroy', function() {
     $timeout.cancel(timer);
-    wdmConversations.off('.wdm');
+    $scope.conversations.off('.wdm');
 });
 
 function scrollIntoView() {
@@ -143,6 +229,7 @@ function activeConversation(c) {
         }
         // Change c content right now.
         $scope.activeConversation = c;
+
         // If already read any message, just active it.
         // Or load messages.
         if (c.messages.length || c.loaded) {
@@ -150,7 +237,20 @@ function activeConversation(c) {
         }
         else {
             $scope.cvsChanging = true;
-            c.messages.fetch().then(function success() {
+
+            var promise = c;
+            if (c.isSearchResult && !$scope.conversations.contains(c)) {
+                var rc = $scope.conversationsCache.create(c.rawData);
+                $scope.conversationsCache.add(rc);
+                promise = rc.fetch().then(function() {
+                    return rc;
+                }, function() {
+                    return rc;
+                });
+            }
+            $q.when(promise).then(function() {
+                return c.messages.fetch();
+            }).then(function success() {
                 $scope.cvsChanging = false;
                 defer.resolve(c);
             }, function error() {
@@ -158,6 +258,7 @@ function activeConversation(c) {
                 defer.reject();
             });
         }
+
     }
     return defer.promise;
 }
