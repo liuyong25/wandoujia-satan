@@ -4,8 +4,8 @@ define([
     _
 ) {
 'use strict';
-return ['wdmBasicConversation', 'wdmSearchMessagesCollection',
-function(wdmBasicConversation,   wdmSearchMessagesCollection) {
+return ['wdmBasicConversation', 'wdmSearchMessagesCollection', '$q',
+function(wdmBasicConversation,   wdmSearchMessagesCollection,   $q) {
 
 var _super = wdmBasicConversation.BasicConversation.prototype;
 
@@ -16,7 +16,7 @@ function SearchConversation(results) {
     results.forEach(function(m) {
         if (addresses.indexOf(m.address) === -1) {
             addresses.push(m.address);
-            contactNames.push(m.contact_name);
+            contactNames.push(m.contact_name == null ? '' : m.contact_name);
         }
     });
 
@@ -52,13 +52,15 @@ _.extend(SearchConversation.prototype, {
 
     next: function() {
         this._index = (this._index + 1) % this.length;
+        return this.messages.length ? $q.when(true) : this.messages.fetch();
     },
 
     previous: function() {
         this._index = (this._index + this.length - 1) % this.length;
+        return this.messages.length ? $q.when(true) : this.messages.fetch();
     },
 
-    hasNext: function() { return this._index < this.length; },
+    hasNext: function() { return this._index < this.length - 1; },
     hasPrevious: function() { return this._index > 0; }
 
 });

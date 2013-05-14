@@ -36,6 +36,20 @@ _.extend(ExtendedConversationsCollection.prototype, {
         });
     },
 
+    _findCursor: function() {
+        var cursorDate = this._cursor;
+        var i, l, c;
+
+        for (i = 0, l = this.collection.length; i < l; i += 1) {
+            c = this.collection[i];
+            if (c.date <= cursorDate) {
+                break;
+            }
+        }
+
+        return this.collection[Math.min(i, l - 1)].id;
+    },
+
     _fetchById: function(id) {
         var c = this.getById(id) || this.create({ id: id });
         return $http.get(
@@ -57,7 +71,7 @@ _.extend(ExtendedConversationsCollection.prototype, {
                 length: 30
             };
             if (this._cursor) {
-                params.cursor = this._cursor;
+                params.cursor = this._findCursor();
                 params.offset = 1;
             }
             return $http.get(
@@ -65,9 +79,9 @@ _.extend(ExtendedConversationsCollection.prototype, {
                 { params: params }
             ).then(function success(response) {
                 var rawData = [].concat(response.data);
-                var conversations = rawData.map(this.create.bind(this));
+                this._cursor = response.data[response.data.length - 1].date;
                 this.loaded = response.headers('WD-Need-More') === 'false';
-                return this.add(conversations);
+                return this.add(rawData.map(this.create.bind(this)));
             }.bind(this));
         }
     },
@@ -144,10 +158,10 @@ _.extend(ExtendedConversationsCollection.prototype, {
 
         return $http(config).then(function done(response) {
             var data = [].concat(response.data);
+            c.messages.drop(messages);
             messages.forEach(function(m, i) {
                 m.extend(data[i]);
             });
-            c.messages.sort();
             return this._placeMessages(c, messages);
         }.bind(this), function fail() {
             messages.forEach(function(m) {
@@ -159,23 +173,22 @@ _.extend(ExtendedConversationsCollection.prototype, {
 
     _placeMessages: function(c, messages) {
         messages = [].concat(messages);
-        var self = this;
         var cid = messages[0].cid;
-        if (c.id === cid) { return c; }
-        var existed = self.getById(cid);
+
+        var existed = this.getById(cid);
         if (existed) {
             existed.messages.add(messages);
-            var promise = existed.fetch();
-            promise.then(function success() {
-                self.remove(c);
-            });
-            return promise;
-        }
-        else {
             if (c.isNew) {
-                c.rawData.id = cid;
-                return c.fetch();
+                this.drop(c);
             }
+            return existed.fetch();
+        }
+        else if (c.isNew) {
+            c.messages.add(messages);
+            this.drop(c);
+            c.rawData.id = cid;
+            this.add(c);
+            return c.fetch();
         }
     }
 

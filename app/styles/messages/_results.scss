@@ -12,6 +12,10 @@
     @include position(absolute, 10px 10px 0 0);
 }
 
+.wdmr-b-disabled {
+    visibility: hidden;
+}
+
 .wdmr-a-l, .wdmr-a-r {
     display: inline-block;
     height: 0;

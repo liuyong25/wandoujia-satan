@@ -27,7 +27,7 @@
             <ol class="wdm-conversations unstyled">
                 <li class="wdmc-row"
                     ui-animate
-                    ng-repeat="c in conversations.collection | orderBy:'-date'"
+                    ng-repeat="c in cvs()"
                     ng-class="{ selected: c.selected, highlight: c == activeConversation }"
                     wdm-conversation>
                     <label class="wdmcr-a"
@@ -44,7 +44,7 @@
                             <span ng-switch-default>{{ c.displayNames.join(', ') }}</span>
                             <span ng-switch-when="0">New message</span>
                         </div>
-                        <div class="wdmcr-c-b"><span class="wdmcr-c-b-a">12</span>{{ c.snippet }}</div>
+                        <div class="wdmcr-c-b"><span class="wdmcr-c-b-a" ui-if="c.isSearchResult">{{c.length}}</span>{{ c.snippet }}</div>
                     </div>
                     <div class="wdmcr-d">
                         <div class="status">&nbsp;
@@ -57,22 +57,25 @@
                         </div>
                     </div>
                 </li>
-                <li wdm-load-more="conversations.fetch()"
-                    ng-hide="conversations.loaded || cvsListFirstLoading || isSearching()"
-                    ng-click="$root.GA('messages:load_conversations')"></li>
-
-                <li class="wdmc-ph" ui-if="isSearching() && conversations.loading">
+                <li ng-hide="conversations.loaded || cvsListFirstLoading || isSearching()"
+                    style="text-align:center;">
+                    <span wdm-load-more="conversations.fetch()"
+                        ng-click="$root.GA('messages:load_conversations')"></span>
+                </li>
+                <li class="wdmc-ph" ui-if="searchLoading">
                     <span class="wd-loading wd-loading-inline" data-visible="true"></span>
                 </li>
 
                 <li class="wdmc-row"
-                    ui-if="isSearching() && !conversations.loading && conversations.empty">
+                    ui-if="isSearching() && !searchLoading && !cvs().length">
                     <div style="margin:0 auto;">{{ $root.DICT.messages.SEARCH_BLANK_TIP }}</span>
                 </li>
 
-                <li wdm-load-more="conversations.searchContent()"
-                    data-text="{{$root.DICT.messages.SEARCH_TIP.replace('$$', searchQuery.trim())}}"
-                    ui-if="isSearching() && !conversations.loading"></li>
+                <li ui-if="isSearching() && !searchLoading && !contentResultsList.length"
+                    style="text-align:center;">
+                    <span wdm-load-more="searchContent()"
+                        data-text="{{$root.DICT.messages.SEARCH_TIP.replace('$$', searchQuery.trim())}}"></span>
+                </li>
             </ol>
             <div class="wd-loading" data-visible="cvsListFirstLoading"></div>
         </section>
@@ -92,15 +95,15 @@
                 </div>
             </section>
 
-            <section class="wdm-results">
-                2 of 2 message ........
+            <section class="wdm-results" ui-if="isSearching() && activeConversation.isSearchResult">
+                {{activeConversation.index + 1}} of {{activeConversation.length}} message ........
                 <div class="wdmr-b btn-group">
                     <span class="btn"
-                        ui-if="true || activeConversation.hasPrevious()"
-                        ng-click="activeConversation.previous()"><i class="wdmr-a-l"></i></span>
+                        ng-class="{'wdmr-b-disabled': !activeConversation.hasPrevious()}"
+                        ng-click="prevResults(activeConversation)"><i class="wdmr-a-l"></i></span>
                     <span class="btn"
-                        ui-if="true || activeConversation.hasNext()"
-                        ng-click="activeConversation.next()"><i class="wdmr-a-r"></i></span>
+                        ng-class="{'wdmr-b-disabled': !activeConversation.hasNext()}"
+                        ng-click="nextResults(activeConversation)"><i class="wdmr-a-r"></i></span>
                 </div>
             </section>
 

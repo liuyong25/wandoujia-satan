@@ -12,54 +12,9 @@ function(wdmExtendedConversationsCollection,   wdmConversationsCollection,
          wdmSearchConversation,   wdmMessage) {
 
 var conversations = wdmExtendedConversationsCollection.createExtendedConversationsCollection();
-var searchResults = wdmConversationsCollection.createConversationsCollection();
 
-_.extend(searchResults, {
+_.extend({}, {
 
-    _keyword: '',
-
-    loading: false,
-
-    search: function(keyword) {
-        this.clear();
-        this.loading = true;
-        this._keyword = keyword;
-        this.add(this._searchFromCache(keyword));
-        this._searchFromServer(keyword);
-    },
-
-    _searchFromCache: function(keyword) {
-        var regexp = new RegExp(keyword, 'i');
-        return conversations.collection.filter(function(c) {
-            return c.addresses.concat(c.contact_names).some(function(field) {
-                return regexp.test(field);
-            });
-        });
-    },
-
-    _searchFromServer: function(keyword) {
-        return $http.post(
-            '/resource/conversations/search',
-            [{
-                field: 'keyword',
-                keyword: keyword
-            }],
-            {
-                params: {
-                    offset: 0,
-                    length: 20
-                },
-                keyword: keyword
-            }
-        ).then(function done(response) {
-            if (response.config.keyword === this._keyword) {
-                this.add(response.data.map(this.create));
-                this.loading = false;
-            }
-        }.bind(this), function fail() {
-            this.loading = false;
-        }.bind(this));
-    },
     searchContent: function() {
         return $http.post(
             '/resource/messages/search',
@@ -94,7 +49,6 @@ _.extend(searchResults, {
     }
 });
 
-searchResults._searchFromServer = _.debounce(searchResults._searchFromServer, 500);
 
 // Mixin event emitter.
 wdEventEmitter(conversations);
@@ -119,7 +73,64 @@ wdSocket.on('messages_add.wdm messages_update.wdm', function(e, msg) {
 
 return {
     conversations: conversations,
-    searchResults: searchResults
+    searchConversationsFromCache: function(keyword) {
+        var regexp = new RegExp(keyword, 'i');
+        return conversations.collection.filter(function(c) {
+            return c.addresses.concat(c.contact_names).some(function(field) {
+                return regexp.test(field);
+            });
+        }).map(function(c) {
+            return c.id;
+        });
+    },
+    searchConversationsFromServer: function(keyword) {
+        return $http.post(
+            '/resource/conversations/search',
+            [{
+                field: 'keyword',
+                keyword: keyword
+            }],
+            {
+                params: {
+                    offset: 0,
+                    length: 30
+                }
+            }
+        ).then(function done(response) {
+            return conversations.add(response.data.map(conversations.create)).map(function(c) {
+                return c.id;
+            });
+        }, function fail() {
+            return [];
+        });
+    },
+    searchMessagesFromServer: function(keyword) {
+        return $http.post(
+            '/resource/messages/search',
+            [{
+                field: 'keyword',
+                keyword: keyword
+            }],
+            {
+                params: {
+                    offset: 0,
+                    length: 20
+                }
+            }
+        ).then(function done(response) {
+            var messages = response.data.map(wdmMessage.createMessage);
+            var cvs = _.chain(messages).groupBy(function(m) {
+                return m.cid;
+            }).values().map(function(results) {
+                return wdmSearchConversation.createSearchConversation(results);
+            }).value();
+            // conversations.add(cvs);
+            // return cvs.map(function(c) { return c.id; });
+            return cvs;
+        }, function fail() {
+            return [];
+        });
+    }
 };
 
 }];

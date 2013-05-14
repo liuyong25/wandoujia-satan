@@ -7,6 +7,7 @@ define([
 
 function Collection(options) {
     this.collection = [];
+    this._hashMap = {};
 }
 
 Object.defineProperties(Collection.prototype, {
@@ -35,13 +36,11 @@ _.extend(Collection.prototype, {
     sort: function() {},
 
     getById: function(id) {
-        return _(this.collection).find(function(item) {
-            return item.id === id;
-        });
+        return this._hashMap[id];
     },
 
     contains: function(item) {
-        return this.collection.indexOf(item) !== -1;
+        return item != null && (item.id in this._hashMap);
     },
 
     create: function(data) {
@@ -66,6 +65,7 @@ _.extend(Collection.prototype, {
                 }
                 item._collection = this;
                 this.collection.push(item);
+                this._hashMap[item.id] = item;
                 return item;
             }
         }, this);
@@ -82,6 +82,7 @@ _.extend(Collection.prototype, {
             if (index !== -1) {
                 this.collection.splice(index, 1);
                 item._collection = null;
+                delete this._hashMap[item.id];
             }
         }, this);
 
@@ -107,7 +108,7 @@ _.extend(Collection.prototype, {
         this.collection.forEach(function(item) {
             item.selected = toBe;
         });
-    },
+    }
 });
 
 return Collection;
