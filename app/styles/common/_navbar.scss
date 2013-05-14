@@ -1,7 +1,5 @@
 // Global Navbar.
 // Basic styles are modified in bootstrap submodule.
-$navbar-layout: smart;
-@import "navbar/*.png";
 
 
 .navigator {
@@ -44,10 +42,6 @@ $navbar-layout: smart;
                 color: #fff;
                 font-size: 10px;
             }
-            .navbar-icon-feedback,
-            .navbar-icon-help {
-                margin: 0;
-            }
             .signout {
                 border-top: 1px solid #1d1d1d;
                 @include box-shadow(inset 0 1px 0 rgba(#fff, 0.05));
@@ -71,19 +65,13 @@ $navbar-layout: smart;
         }
     }
     // logo & icons
-    %wd-navbar-icon {
-        @include inline-block;
-        // @include hide-text;
-        line-height: 0;
-    }
-    i.navbar-logo {
-        @extend %wd-navbar-icon;
-        @include navbar-sprite(logo);
-        width: navbar-sprite-width(logo);
-        height: navbar-sprite-height(logo);
-        $margin: (92px - navbar-sprite-height(logo)) / 2;
+    i.icon-logo64 {
+        $width: icon-width("logo64");
+        $height: icon-height("logo64");
+        width: $width;
+        height: $height;
+        $margin: (92px - $height) / 2;
         margin: $margin 0;
-        vertical-align: top;
     }
     .nav > li > a {
         @include transition(opacity $global-transition-duration,
@@ -109,13 +97,12 @@ $navbar-layout: smart;
             opacity: 0.5;
         }
     }
-    @each $icon in "app", "contact", "img", "sms", "setting", "signout", "feedback", "help" {
-        i.navbar-icon-#{$icon} {
-            @extend %wd-navbar-icon;
-            @include navbar-sprite($icon);
-            width: navbar-sprite-width($icon);
-            height: navbar-sprite-height($icon);
-            $margin: (55px - navbar-sprite-height($icon)) / 2 - 1px;
+    @each $icon in "app", "contact", "img", "sms", "signout" {
+        i.icon-#{$icon} {
+            width: icon-width($icon);
+            $height: icon-height($icon);
+            height: $height;
+            $margin: (55px - $height) / 2 - 1px;
             margin-top: $margin;
             margin-bottom: $margin;
         }

@@ -60,23 +60,32 @@
                 top:2px;
                 $left: -1px;
                 $top: -3px;
-                &:not(:checked):after {
+                &:not(:checked):after{
                     content: "";
                     position: absolute;
                     left: $left;
                     top: $top;
-                    width: photos-sprite-width("check");
-                    height: photos-sprite-height("check");
-                    @include photos-sprite("check");
+                    width: icon-width("check");
+                    height: icon-height("check");
+                    @include use-sprite("check");
+                }
+                &:not(:checked):hover:after {
+                    content: "";
+                    position: absolute;
+                    left: $left;
+                    top: $top;
+                    width: icon-width("check-h");
+                    height: icon-height("check-h");
+                    @include use-sprite("check-h");
                 }
                 &:checked:after{
                     content: "";
                     position: absolute;
                     left: $left;
                     top: $top;
-                    width: photos-sprite-width("check");
-                    height: photos-sprite-height("check");
-                    @include photos-sprite("checked");
+                    width: icon-width("check");
+                    height: icon-height("check");
+                    @include use-sprite("checked");
                 }
             }
         }

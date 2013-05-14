@@ -33,7 +33,7 @@
 
     $action-padding: 10px;
     $action-margin: 10px;
-    $action-width: photos-sprite-width("slide_play") + $action-padding;
+    $action-width: icon-width("slideplay") + $action-padding;
 
     %wdp-slide-action {
         @include position(absolute, 0 0 20px 50%);
@@ -47,7 +47,7 @@
         width: 70px;
         i {
             @include position(absolute, 50% 0 0 50%);
-            margin: (- photos-sprite-height("slide_pre") / 2) 0 0 (- photos-sprite-width("slide_pre") / 2);
+            margin: (- icon-height("slidepre") / 2) 0 0 (- icon-width("slidepre") / 2);
         }
     }
     .action-next {
@@ -56,7 +56,7 @@
         width: 70px;
         i {
             @include position(absolute, 50% 0 0 50%);
-            margin: (- photos-sprite-height("slide_next") / 2) 0 0 (- photos-sprite-width("slide_next") / 2);
+            margin: (- icon-height("slidenext") / 2) 0 0 (- icon-width("slidenext") / 2);
         }
     }
 
