@@ -69,10 +69,10 @@
 }
 
 .wdmcr-b {
-    $avatar-width: 48px;
+    $avatar-width: icon-width("profile");
     width: $avatar-width;
     height: $avatar-width;
-    @include messages-sprite("avatar");
+    @include use-sprite("profile");
 
     &.multiple {
         @include messages-sprite("avatar-c");
