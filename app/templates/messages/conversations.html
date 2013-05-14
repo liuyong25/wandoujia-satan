@@ -21,7 +21,7 @@
                 <div class="wdms-container">
                     <i class="icon-search"></i>
                     <input type="text" placeholder="{{$root.DICT.messages.SEARCH_PLACEHOLDER}}..." ng-model="searchQuery">
-                    <span class="clear" ng-show="searchQuery" ng-click="clearSearch()">&times;</span>
+                    <span class="clear" ng-show="searchQuery" ng-click="clearSearch()"></span>
                 </div>
             </div>
             <ol class="wdm-conversations unstyled">
@@ -133,10 +133,10 @@
                                 <div ui-if="m.isMMS" class="wdmer-a-b" style="color:#999;">{{ $root.DICT.messages.MMS_WARNING }}</div>
                             </div>
                             <div class="wdmer-b">
-                                <span ui-if="m.isError"><i class="messages-icon-alert"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(activeConversation, m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
+                                <span ui-if="m.isError"><i class="icon-failed"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(activeConversation, m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
                             </div>
                             <div class="wdmer-c">
-                                <i ui-if="m.isPending" class="messages-icon-running"></i>
+                                <i ui-if="m.isPending" class="icon-sending"></i>
                                 <span class="wdmer-b-date" ui-if="!m.isError && !m.isPending">{{ m.date | messageDate:'HH:mm' }}</span>
                                 <a href="" class="wdmer-b-del"
                                     ng-show="!m.isPending"

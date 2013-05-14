@@ -1,6 +1,5 @@
 .wdj-messages {
     @import "flex";
-    @import "icons";
 
     @include position(fixed, 0px 0px 0px $global-left-offset);
     font-size: 12px;
@@ -79,7 +78,8 @@
     @import "editor";
     @import "textext";
 
-    .messages-icon-running {
+    .icon-sending,
+    .icon-sending-w {
         @include animation(flash 4s infinite);
     }
 
