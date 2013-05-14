@@ -1,6 +1,7 @@
 temp
 dist
 app/components
+app/images/sprites
 
 .DS_Store
 .sass-cache
