@@ -3,8 +3,14 @@
 @import "animation";    // animation mixins
 @import "animation/animate"; // Animate.css
 
-@import "mixin";        // custom mixins & functions
+@import "mixins/layer";
+@import "mixins/position";
+@import "mixins/button-effect";
+@import "mixins/retina-sprites";
+@import "mixins/retina-background-image";
+
 @import "base";         // platform level styles
+@import "icons";        // platform level icons
 @import "common/main";  // common styles
 @import "photos/main";  // photos module styles
 @import "auth/main";    // auth module styles
