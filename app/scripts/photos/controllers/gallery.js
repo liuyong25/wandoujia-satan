@@ -156,9 +156,9 @@ function loadScreen() {
         }
         else {
             var photosLengthBeforeFetch = $scope.photos.length;
-            fetchPhotos(30).then(function done() {
+            fetchPhotos(30).then(function done(allLoaded) {
                 var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
-                if (newPhotosLength === 0) {
+                if (newPhotosLength === 0 || allLoaded) {
                     $scope.allLoaded = true;
                     defer.resolve();
                 }
@@ -198,10 +198,10 @@ function fetchPhotos(amount) {
     var timeStart = (new Date()).getTime();
     Photos.query(
         params,
-        function fetchSuccess(photos) {
+        function fetchSuccess(photos, headers) {
             mergePhotos(photos);
             GA('perf:photos_query_duration:success:' + ((new Date()).getTime() - timeStart));
-            defer.resolve();
+            defer.resolve(headers('WD-Need-More') === 'false');
         },
         function fetchError() {
             GA('perf:photos_query_duration:fail:' + ((new Date()).getTime() - timeStart));
