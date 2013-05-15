@@ -1,13 +1,12 @@
-<div ng-class="{'active': selected}">
+<div ng-class="{'active': photo.selected}">
     <div class="photo"
         ng-click="preview(photo);$root.GA('photos:photo:click')"></div>
     <div class="actions">
         <label class="action-select checkbox inline"
-            ng-click="selected && batchSelect(photo, $event.shiftKey)"
+            ng-click="select(photo, $event.shiftKey)"
             bs-tooltip="{{checkboxTipText}}">
             <input type="checkbox"
-                ng-model="selected"
-                ng-change="toggleSelected(selected, photo)">
+                ng-model="photo.selected">
         </label>
 <!--
         <a class="action-share" href=""

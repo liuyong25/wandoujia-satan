@@ -6,11 +6,11 @@
         ><i class="icon-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
     <div class="btn action-select"
         ng-click="deselectAll()"
-        ng-show="selectedPhotos.length">
+        ng-show="selectedPhotos().length">
         <i class="icon-sel-toolbar"></i>
-        {{$root.DICT.photos.ACTIONBAR_DESELECT_ALL}} ({{selectedPhotos.length}})
+        {{$root.DICT.photos.ACTIONBAR_DESELECT_ALL}} ({{selectedPhotos().length}})
     </div>
-    <div class="btn-group" ng-hide="!selectedPhotos.length">
+    <div class="btn-group" ng-hide="!selectedPhotos().length">
         <div class="btn"
             ng-click="deleteSelected();$root.GA('photos:delete_selected')"
             ><i class="icon-del-toolbar"></i> {{$root.DICT.photos.ACTIONBAR_DELETE}}</div>
