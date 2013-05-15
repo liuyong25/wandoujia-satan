@@ -4,7 +4,7 @@ return {
     root: {
         ACTIONBAR_ADD_PHOTOS: 'Add photos',
         ACTIONBAR_SELECT_ALL: 'Select all',
-        ACTIONBAR_DESELECT_ALL: 'Deselect all',
+        ACTIONBAR_DESELECT_ALL: 'Deselect',
         ACTIONBAR_DELETE: 'Delete',
         ACTIONBAR_DOWNLOAD: 'Download',
         ACTIONBAR_SHARE: 'Share',
