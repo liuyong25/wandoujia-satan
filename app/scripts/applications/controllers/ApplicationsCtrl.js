@@ -11,7 +11,7 @@ define([
         $scope.info = {};
 
         //新安装的应用列表
-        $scope.newList = [];
+        $scope.newList = wdcApplications.getNewAppList();
 
         //版本监测
         $scope.serverMatchRequirement = $route.current.locals.versionSupport;
@@ -199,7 +199,6 @@ define([
                             };
                         },
                         onerror:function(){
-                            console.log(123);
                         }
                     }
                 });
@@ -231,6 +230,7 @@ define([
                 doneTipShow: false
             };
             $scope.newList.unshift(item);
+            wdcApplications.setNewAppList($scope.newList);
             $scope.$apply();
         };
 
@@ -440,6 +440,7 @@ define([
         $scope.isDeleteBtnShow = false;
         $scope.isDeselectBtnShow = false;
         $scope.isInstallBtnDisable = true;
+
 
         wdcApplications.onchange(getAppListData);
 
