@@ -6,16 +6,14 @@
                     ng-disabled="cvsListFirstLoading"
                     ng-click="createConversation();$root.GA('messages:create')"><i class="icon-add"></i> {{$root.DICT.messages.ACTION_NEW}}</button>
                 <button class="btn"
-                    ng-hide="cvsListFirstLoading"
-                    ng-click="conversations.toggleSelectAll();$root.GA('messages:select_all:' + conversations.allSelected)"
-                    ng-switch on="conversations.allSelected">
+                    ng-click="deselectAll();$root.GA('messages:select_all:' + false)"
+                    ng-show="selectedCount() && !cvsListFirstLoading">
                     <i class="icon-sel-toolbar"></i>
-                    <span ng-switch-when="false">{{$root.DICT.messages.ACTION_SELECT_ALL}}</span>
-                    <span ng-switch-when="true">{{$root.DICT.messages.ACTION_DESELECT_ALL}}</span>
+                    {{$root.DICT.messages.ACTION_DESELECT_ALL}} ({{selectedCount()}})
                 </button>
                 <button class="btn"
                     ng-click="removeSelected();$root.GA('messages:delete_conversation')"
-                    ng-show="conversations.hasSelected"><i class="icon-del-toolbar"></i> {{$root.DICT.messages.ACTION_DELETE}}</button>
+                    ng-show="selectedCount()"><i class="icon-del-toolbar"></i> {{$root.DICT.messages.ACTION_DELETE}}</button>
             </section>
             <div class="wdm-search">
                 <div class="wdms-container">
