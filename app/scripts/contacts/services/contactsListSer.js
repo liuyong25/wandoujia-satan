@@ -54,8 +54,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                 global.contacts.push( value );
             });
 
-            global.fun.call(me,data);
-
             //数据未取完
             if ( data.length === length ) {
 
@@ -69,6 +67,8 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                 global.dataFinish = true;
 
             }
+
+            global.fun.call(me,data);
 
         }).error( function() {
             //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
@@ -87,7 +87,7 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
             if(!global.contacts.length){
 
                 //自动加载数据，return 一个promise
-                return getData( 0, CONFIG.dataLengthOnce, null );
+                getData( 0, CONFIG.dataLengthOnce, null );
             }
 
         },

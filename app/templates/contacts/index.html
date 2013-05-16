@@ -7,15 +7,15 @@
 
         <div class="btn-all">
             <button class="btn btn-primary btn-new" type="button" ng-click="addNewContact()" ng-disabled="isNewContactDisable">
-                <i class="icon-ab-add"></i>
+                <i class="icon-add"></i>
                 {{$root.DICT.contacts.BUTTONS.newContact}}
             </button>
             <button class="btn btn-selectAll" ng-show="isDeselectBtnShow" type="button" ng-click="deselectAll()">
-                <i class="icon-ab-sel"></i>
+                <i class="icon-sel-toolbar"></i>
                 {{$root.DICT.contacts.BUTTONS.deselect}} ({{selectedNum}})
             </button>
             <button class="btn btn-delete" type="button" ng-click="deleteContacts()" ng-show="isDeleteBtnShow">
-                <i class="icon-ab-del"></i>
+                <i class="icon-del-toolbar"></i>
                 {{$root.DICT.contacts.BUTTONS.delete}}
             </button>
             <div class="search">
@@ -98,7 +98,7 @@
                             <i class="icon-edit"></i>
                         </button>
                         <button class="btn btn-del" ng-show="!contact.read_only && isDelBtnShow" type="button" ng-click="deleteContacts(contact.id)"  bs-tooltip="{{$root.DICT.contacts.BUTTONS.delete}}">
-                            <i class="icon-ab-del"></i>
+                            <i class="icon-del-toolbar"></i>
                         </button>
                     </div>
                     <hr>
@@ -264,7 +264,7 @@
     <div class="wd-blank dn">
         <p>{{$root.DICT.contacts.NO_CONTACT}}<p>
         <div class="btn btn-primary"
-            ng-click="addNewContact();"><i class="icon-ab-add"></i>{{$root.DICT.contacts.BUTTONS.newContact}}</div>
+            ng-click="addNewContact();"><i class="icon-add"></i>{{$root.DICT.contacts.BUTTONS.newContact}}</div>
     </div>
     <!-- 为空检测 end -->
     <!-- 版本检测 -->

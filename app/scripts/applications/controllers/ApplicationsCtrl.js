@@ -1,7 +1,7 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev','wdSocket','wdAlert','$route','GA','wdcApplications',function($scope,$http,wdDev,wdSocket,wdAlert,$route,GA,wdcApplications){
+    return ['$scope','$http','wdDev','wdSocket','wdAlert','$route','GA','wdcApplications','wdKey',function($scope,$http,wdDev,wdSocket,wdAlert,$route,GA,wdcApplications,wdKey){
 
         //$scope相关
         //展示应用列表
@@ -28,6 +28,9 @@ define([
 
         //当前的手机是否开启未知来源提示，false当前用户未开启，true开启
         var G_unknownTips = false;
+
+        //显示联系人的按键
+        var G_keyInfo;
 
         function getAppListData(data){
             $scope.isLoadShow = false;
@@ -312,6 +315,7 @@ define([
         //显示对应的应用
         function showAppInfo(package_name){
             GA('Web applications : show the app detail informations');
+            G_keyInfo = wdKey.push('applications:info');
             var mask = $('.mask');
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
@@ -323,6 +327,7 @@ define([
         };
 
         function closeMask(){
+            G_keyInfo.done();
             var mask = $('.mask').css('opacity',0);
              setTimeout(function(){
                 mask.hide();
@@ -424,6 +429,10 @@ define([
                     },300);
                 };
             });
+
+        wdKey.$apply('esc', 'applications:info', function() {
+            closeMask();
+        });
 
         //主程序
         $scope.isLoadShow = true;
