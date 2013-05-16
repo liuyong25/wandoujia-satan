@@ -41,7 +41,7 @@ $scope.clearSearch = function() {
     $scope.searchQuery = '';
 };
 
-var searchConversationsFromServer = function(keyword) {
+var searchConversationsFromServer = _.debounce(function(keyword) {
     wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
         if ($scope.searchQuery !== keyword) { return; }
         $scope.resultsList = _.uniq($scope.resultsList.concat(list));
@@ -51,8 +51,9 @@ var searchConversationsFromServer = function(keyword) {
         }
 
     });
-};
-searchConversationsFromServer = _.debounce(searchConversationsFromServer, 500);
+    $scope.$apply();
+}, 500);
+// searchConversationsFromServer = _.debounce(searchConversationsFromServer, 500);
 
 $scope.$watch('searchQuery', function(keyword) {
     if (keyword) {
@@ -124,6 +125,7 @@ $scope.createConversation = function() {
     }
     $scope.clearSearch();
     activeConversation(c);
+    return c;
 };
 
 $scope.showConversation = function(c) {
@@ -204,6 +206,15 @@ if ($scope.serverMatchRequirement) {
     timer = $timeout(function update() {
        timer = $timeout(update, 60000 - Date.now() % 60000);
     }, 60000 - Date.now() % 60000);
+
+    if ($route.current.params.create) {
+        var parts = $route.current.params.create.split(',');
+        var c = $scope.createConversation();
+        c.extend({
+            addresses: [parts[0]],
+            contact_names: [parts[1]]
+        });
+    }
 }
 
 // Shutdown

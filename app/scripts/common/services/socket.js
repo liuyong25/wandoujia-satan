@@ -5,35 +5,20 @@ define([
 ) {
 'use strict';
 
-return ['wdEventEmitterProvider', 'wdDevProvider', function(wdEventEmitterProvider, wdDevProvider) {
+return ['wdEventEmitter', '$rootScope', 'wdDev', '$log',
+function(wdEventEmitter,   $rootScope,   wdDev,   $log) {
 
-this.$get = ['wdDev', '$log', function(wdDev, $log) {
-    return Object.create(socket)._init($log);
-}];
-
+function Socket() {
+    // Mixin event emitter behavior.
+    wdEventEmitter(this);
+    this._transport = null;
+}
 /*
  * Socket prototype
  */
-var socket = {
+Socket.prototype = {
 
-    /**
-     * Prepare instance.
-     * Can just called once.
-     * @protected
-     */
-    _init: function(log) {
-
-        // Prevent 'init' to be called other than once.
-        this.init = function() {};
-
-        // Mixin event emitter behavior.
-        wdEventEmitterProvider.EventEmitter(this);
-
-        this._transport = null;
-        this._log = log;
-
-        return this;
-    },
+    constructor: Socket,
 
     /**
      * Destroy everything.
@@ -47,7 +32,7 @@ var socket = {
     connect: function() {
         if (this._transport) { return; }
 
-        this._transport = io.connect(wdDevProvider.getSocketServer(), {
+        this._transport = io.connect(wdDev.getSocketServer(), {
             transports: [
                 'websocket',
                 'htmlfile',
@@ -72,31 +57,33 @@ var socket = {
                 message = JSON.parse(message);
             }
             catch (err) {
-                self._log.warn('Invalid message data: ', message);
+                $log.warn('Invalid message data: ', message);
                 return;
             }
-            self._log.log('socket: ', message);
-            self.trigger(message.type.replace('.', '_'), [message]);
+            $log.log('socket: ', message);
+            $rootScope.$apply(function() {
+                self.trigger(message.type.replace('.', '_'), [message]);
+            });
         });
 
         this._transport.on('disconnect', function disconnect() {
-            self._log.error('Socket disconnected!');
+            $log.error('Socket disconnected!');
         });
 
         this._transport.on('reconnecting', function reconnecting(reconnectionDelay, reconnectionAttempts) {
-            self._log.log('Socket will try reconnect after ' + reconnectionDelay + ' ms, for ' + reconnectionAttempts + ' times.');
+            $log.log('Socket will try reconnect after ' + reconnectionDelay + ' ms, for ' + reconnectionAttempts + ' times.');
         });
 
         this._transport.on('reconnect', function reconnect() {
-            self._log.log('Socket reconnected!');
+            $log.log('Socket reconnected!');
         });
 
         this._transport.on('reconnect_failed', function failed() {
-            self._log.warn('Socket server seems cold dead...');
+            $log.warn('Socket server seems cold dead...');
         });
 
         this._transport.on('connect_failed', function() {
-            self._log.warn('Socket fails to establish.');
+            $log.warn('Socket fails to establish.');
         });
     },
 
@@ -109,6 +96,8 @@ var socket = {
         return this;
     }
 };
+
+return new Socket();
 
 }];
 });

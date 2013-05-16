@@ -9,7 +9,9 @@ return [function() {
         restrict: 'EAC',
         replace: true,
         template: template,
-        controller: ['$scope', 'wdAuthToken', '$route', 'wdpMessagePusher', function($scope, wdAuthToken, $route, wdpMessagePusher) {
+        controller: [
+                '$scope', 'wdAuthToken', '$route', 'wdSocket',
+        function($scope,   wdAuthToken,   $route,   wdSocket) {
             $scope.messageNotification = false;
 
             $scope.signout = function() {
@@ -28,14 +30,13 @@ return [function() {
                 }
             });
 
-            wdpMessagePusher.channel('messages_add.wdNavbar', function(e) {
+            wdSocket.on('messages_add.wdNavbar', function(e) {
                 if ($scope.currentModule !== 'messages') {
                     $scope.messageNotification = true;
                     if ($route.current.locals.nav != null &&
                         $route.current.locals.nav !== 'messages') {
                         $scope.$root.notifyNewMessage();
                     }
-                    $scope.$apply();
                 }
             });
         }]

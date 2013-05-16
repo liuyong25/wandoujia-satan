@@ -5,7 +5,6 @@ define([
     'common/services/sharing',
     'common/services/dev',
     'common/services/viewport',
-    'common/services/http',
     'common/directives/autofocus',
     'common/services/key',
     'common/services/alert',
@@ -21,7 +20,8 @@ define([
     'common/services/title-notification',
     'common/directives/navbar',
     'common/services/emitter',
-    'common/services/socket'
+    'common/services/socket',
+    'common/directives/auto-stretch-textarea'
 ], function(
     angular,
     loading,
@@ -29,7 +29,6 @@ define([
     sharing,
     dev,
     viewport,
-    http,
     autofocus,
     key,
     alert,
@@ -45,26 +44,27 @@ define([
     titleNotification,
     navbar,
     emitter,
-    socket
+    socket,
+    autoStretchTextarea
 ) {
 // jshint unused:false
 'use strict';
 // Common Module is the collection of most used or global functions.
 angular.module('wdCommon', ['wdBootstrap', 'ui'])
     // Directives
+    .directive('wdAutoFocus', autofocus)
+    .directive('wdAutoStretchTextarea', autoStretchTextarea)
     .directive('wdNavbar', navbar)
     .directive('wdStrip', strip)
     .directive('wdLoading', loading)
-    .directive('wdAutoFocus', autofocus)
     .directive('wdAlert', alertDirecitve)
     .directive('wdNotification', notificationDirective)
     .directive('wdBlank', blankDirective)
     .directive('wdUpgradeWarning', upgradeWarningDirective)
     // Services
-    .provider('wdHttp', http)
     .provider('wdDev', dev)
     .provider('wdEventEmitter', emitter)
-    .provider('wdSocket', socket)
+    .factory('wdSocket', socket)
     .factory('wdBrowser', browser)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
@@ -73,9 +73,5 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .factory('wdKeeper', keeper)
     .factory('GA', ga)
     .factory('wdNotification', notification)
-    .factory('wdTitleNotification', titleNotification)
-    // Configuration
-    .config(['$provide', 'wdHttpProvider', function($provide, wdHttpProvider) {
-        $provide.decorator('$http', wdHttpProvider.httpDecorator);
-    }]);
+    .factory('wdTitleNotification', titleNotification);
 });

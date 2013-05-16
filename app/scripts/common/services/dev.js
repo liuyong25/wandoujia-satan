@@ -50,6 +50,7 @@ return function() {
             setServer: self.setServer,
             setMetaData: self.setMetaData,
             getMetaData: self.getMetaData,
+            getSocketServer: self.getSocketServer,
             query: function(key) {
                 var queries = $window.location.search.slice(1).split('&');
                 var params = {};

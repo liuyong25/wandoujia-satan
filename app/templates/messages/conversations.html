@@ -29,9 +29,9 @@
                     ui-animate
                     ng-repeat="c in cvs()"
                     ng-class="{ selected: c.selected, highlight: c == activeConversation }"
-                    wdm-conversation>
+                    ng-click="showConversation(c)">
                     <label class="wdmcr-a"
-                        ng-click="$root.GA('messages:select:' + c.selected)">
+                        ng-click="$event.stopPropagation();$root.GA('messages:select:' + c.selected)">
                         <span bs-tooltip="{{ selectTip(c) }}">
                             <input type="checkbox" ng-model="c.selected">
                         </span>
@@ -161,6 +161,7 @@
                     <textarea rows="1"
                         ng-model="activeConversation.draft"
                         wdm-textarea
+                        wd-auto-stretch-textarea
                         data-placeholder="{{ editorPlaceholder(activeConversation) }}"></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')"
                         bs-tooltip="{{$root.DICT.messages.BTN_SEND_TIP}}"

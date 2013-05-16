@@ -8,7 +8,6 @@ define([
     'messages/filters/ms',
     'messages/filters/message-date',
     'messages/directives/realtime',
-    'messages/directives/conversation',
     'messages/directives/textarea',
     'messages/directives/receiver',
     'messages/services/conversations',
@@ -32,7 +31,6 @@ define([
     msFilter,
     messageDateFilter,
     realtime,
-    conversation,
     textarea,
     receiver,
     conversations,
@@ -65,7 +63,6 @@ angular.module('wdMessages', ['wdCommon'])
     .directive('wdmAutoScroll', autoscroll)
     .directive('wdmLoadMore', loadmore)
     .directive('wdmRealtime', realtime)
-    .directive('wdmConversation', conversation)
     .directive('wdmTextarea', textarea)
     .directive('wdmReceiver', receiver)
     .filter('ms', msFilter)
