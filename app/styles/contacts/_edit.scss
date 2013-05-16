@@ -5,33 +5,32 @@
     right: 0px;
     left: 514px;
 
-    .photo{
+    img.photo{
         margin-top: 25px;
         width: 127px;
         height: 127px;
+        background: image-url('contacts/default.png');
     }
 
     .photoUpload{
         top: -129px;
         overflow: hidden;
-        width: 128px;
-        height: 128px;
+        width: 129px;
+        height: 129px;
+
         input{
-            font-family: arial, sans-serif;
-            width: 200px;
-            height: 200px;
+            height: 128px;
         }
-        input::-ms-clear {
-            display: none;
-        }
+
         .mask{
-            width: 127px;
-            height: 127px;
+            display: none;
+            width: 129px;
+            height: 129px;
             cursor: pointer;
 
             div.bg{
-                width: 127px;
-                height: 127px;
+                width: 129px;
+                height: 129px;
                 opacity: 0.6;
                 background-color: #000;
             }
@@ -41,7 +40,7 @@
                 top: 0px;
                 width: 127px;
                 height: 127px;
-                background:url("../../images/contacts/profileicon.png") no-repeat 50% 40%;
+                background:image-url("contacts/profileicon.png") no-repeat 50% 40%;
             }
 
             p{
@@ -53,14 +52,18 @@
                 font-weight: bold;
                 text-overflow: ellipsis;
             }
-
         }
-
     }
+
+    .photoUpload:hover{
+        .mask{
+            display: block;
+        }
+    };
 
     .footer{
         position: fixed;
-        right: 10px;
+        right: 25px;
         height: 45px;
         left: 490px;
         background-color: #FFF;
@@ -82,18 +85,29 @@
         left: 127px;
         right: 35px;
 
-        hr{
-            border: 0px;
-            height: 5px;
-            background-color: #ededed;
-            margin-top: 8px;
+
+        .info-hr{
+            position: relative;
+
+            .info-btn{
+                position: absolute;
+                right: 0px;
+                bottom: 10px;
+            }
+
+            hr{
+                border: 0px;
+                height: 5px;
+                background-color: #ededed;
+                margin-top: 8px;
+            }
         }
 
         select{
             min-width: 115px;
             width: 18%;
             margin-right: 4px;
-            background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
+            background:#f5f5f5 image-url("contacts/select.png") no-repeat 97% 50%;
             border: 1px solid #d6d6d6;
             line-height: 28px;
             padding-left: 10px;
@@ -150,7 +164,7 @@
 
                 select{
                     margin-right: 4px;
-                    background:#f5f5f5 url("../../images/contacts/select.png") no-repeat 97% 50%;
+                    background:#f5f5f5 image-url("contacts/select.png") no-repeat 97% 50%;
                     border: 1px solid #d6d6d6;
                     padding-left: 10px;
                     -webkit-appearance:none;

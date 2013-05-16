@@ -1,7 +1,7 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev','wdpMessagePusher','wdAlert','$route','GA',function($scope,$http,wdDev,wdpMessagePusher,wdAlert,$route,GA){
+    return ['$scope','$http','wdDev','wdSocket','wdAlert','$route','GA','wdcApplications','wdKey',function($scope,$http,wdDev,wdSocket,wdAlert,$route,GA,wdcApplications,wdKey){
 
         //$scope相关
         //展示应用列表
@@ -9,9 +9,6 @@ define([
 
         //当前显示的应用详情
         $scope.info = {};
-
-        //是否selectAll
-        $scope.isSelectAll = false;
 
         //新安装的应用列表
         $scope.newList = [];
@@ -32,24 +29,20 @@ define([
         //当前的手机是否开启未知来源提示，false当前用户未开启，true开启
         var G_unknownTips = false;
 
-        function getAppListData(){
-            $http({
-                method: 'get',
-                url: '/resource/apps?length=9999'
-            }).success(function(data) {
-                $scope.dataLoaded = true;
-                for( var i = 0,l = data.length ; i<l; i++ ){
-                    G_appList.push(changeInfo(data[i]));
-                };
-                if(G_appList.length == 0){
-                    $('.wd-blank').show();
-                };
-                $scope.list = G_appList;
-                setTimeout(function(){
-                    uploadApk($('.installApp'));
-                },300);
-            }).error(function(){
-            });
+        //显示联系人的按键
+        var G_keyInfo;
+
+        function getAppListData(data){
+            $scope.isLoadShow = false;
+            $scope.dataLoaded = true;
+            $scope.isInstallBtnDisable = false;
+            for( var i = 0,l = data.length ; i<l; i++ ){
+                G_appList.push(changeInfo(data[i]));
+            };
+            $scope.list = G_appList;
+            setTimeout(function(){
+                uploadApk($('.installApp'));
+            },300);
         };
 
         //改变某些字段的值
@@ -136,8 +129,8 @@ define([
                         $scope.list[i]['checked'] = false;
                     };
                 };
+                $scope.isDeleteBtnShow = false;
                 setTimeout(function(){
-                    $('.header button.delete-all').hide();
                     $('dd.toolbar').css('opacity','');
                     $('dd.confirm').css('opacity',0.8);
                 },500);
@@ -206,11 +199,27 @@ define([
                             };
                         },
                         onerror:function(){
-                            //console.log();
+                            console.log(123);
                         }
                     }
                 });
-            };
+
+                var dnd = new fineuploader.DragAndDrop({
+                    dropArea: document.body,
+                    multiple: true,
+                    hideDropzones: false,
+                    callbacks: {
+                        dropProcessing: function(isProcessing, files) {
+                            uploader.addFiles(files);
+                        },
+                        error: function(code, filename) {},
+                        log: function(message, level) {}
+                    }
+                });
+                dnd.setup();
+
+            }
+
         };
 
         //上传安装应用时，显示对应的应用
@@ -306,6 +315,7 @@ define([
         //显示对应的应用
         function showAppInfo(package_name){
             GA('Web applications : show the app detail informations');
+            G_keyInfo = wdKey.push('applications:info');
             var mask = $('.mask');
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
@@ -317,6 +327,7 @@ define([
         };
 
         function closeMask(){
+            G_keyInfo.done();
             var mask = $('.mask').css('opacity',0);
              setTimeout(function(){
                 mask.hide();
@@ -325,45 +336,35 @@ define([
             },500);
         };
 
-        function selectAll(){
+        function deselectAll(){
             var eles = $('.apps-list dl dd.toolbar');
-            if($scope.isSelectAll){
-                GA('Web applications : click deselect all button');
-                $scope.isSelectAll = false;
-                for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    $scope.list[i]['checked'] = false;
-                    eles.eq(i).css('opacity','');
-                };
-                $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.SELECT_ALL);
-                $('.header button.delete-all').hide();
-            }else{
-                $scope.isSelectAll = true;
-                GA('Web applications : click select all button');
-                for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    if(!$scope.list[i]['confirmTipShow']){
-                        $scope.list[i]['checked'] = true;
-                        eles.eq(i).css('opacity',1);
-                    };
-                };
-                $('.header button.select-all p').text($scope.$root.DICT.applications.BUTTONS.DESELECT_ALL);
-                $('.header button.delete-all').show();
+            GA('Web applications : click deselect all button');
+            for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
+                $scope.list[i]['checked'] = false;
+                eles.eq(i).css('opacity','');
             };
+            $scope.isDeleteBtnShow = false;
+            $scope.isDeselectBtnShow = false;
+            $scope.selectedNum = 0;
         };
 
         function checkedApp(e){
             GA('Web applications : click Checkbox');
             if($(e.target).prop('checked')){
-                $('.header button.delete-all').show();
+                $scope.selectedNum += 1;
                 $(e.target.parentNode.parentNode).css('opacity',1);
             }else{
+                $scope.selectedNum -= 1;
                 $(e.target.parentNode.parentNode).css('opacity','');
-                for(var i = 0, l = $scope.list.length; i < l ; i ++ ){
-                    if($scope.list[i]['checked']){
-                        return;
-                    };
-                };
-                $('.header button.delete-all').hide();
             };
+
+            if($scope.selectedNum > 0){
+                $scope.isDeleteBtnShow = true;
+                $scope.isDeselectBtnShow = true;
+            }else{
+                $scope.isDeleteBtnShow = false;
+                $scope.isDeselectBtnShow = false;
+            }
         };
 
         function clickInstallApk(){
@@ -383,8 +384,8 @@ define([
         };
 
         //webSocket处理
-        wdpMessagePusher
-            .channel('app_install', function(e, message) {
+        wdSocket
+            .on('app_install', function(e, message) {
                 var name = message.data.packageName;
                 $http({
                     method: 'get',
@@ -413,7 +414,7 @@ define([
                 }).error(function(){
                 });
             })
-            .channel('app_uninstall', function(e, message) {
+            .on('app_uninstall', function(e, message) {
                 var name = message.data.packageName;
                 for(var i = 0,l = $scope.list.length;i<l;i++ ){
                     if($scope.list[i]['package_name']==name){
@@ -422,26 +423,36 @@ define([
                         break;
                     };
                 };
+                if( ($scope.list.length == 0) && ($scope.newList.length == 0) ){
+                    setTimeout(function(){
+                        uploadApk($('.installApp'));
+                    },300);
+                };
             });
 
-        //主程序
-        getAppListData();
-
-        //析构
-        $scope.$on('$destroy', function() {
-            wdpMessagePusher.unchannel('*');
+        wdKey.$apply('esc', 'applications:info', function() {
+            closeMask();
         });
+
+        //主程序
+        $scope.isLoadShow = true;
+        $scope.selectedNum = 0;
+        $scope.isDeleteBtnShow = false;
+        $scope.isDeselectBtnShow = false;
+        $scope.isInstallBtnDisable = true;
+
+        wdcApplications.onchange(getAppListData);
 
         //需要挂载到socpe上面的方法
         $scope.showAppInfo = showAppInfo;
         $scope.closeMask = closeMask;
         $scope.closeConfirm = closeConfirm;
-        $scope.selectAll = selectAll;
         $scope.checkedApp = checkedApp;
         $scope.delApp = delApp;
         $scope.delMoreApps = delMoreApps;
         $scope.closeUploadApp = closeUploadApp;
         $scope.reinstall = reinstall;
+        $scope.deselectAll = deselectAll;
         $scope.clickInstallApk = clickInstallApk;
         $scope.clickHoverUninstall = clickHoverUninstall;
         $scope.clickInfoUninstall = clickInfoUninstall;

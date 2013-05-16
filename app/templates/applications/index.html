@@ -1,7 +1,6 @@
 <div class="wdj-applications">
 
-    <!-- <div class="wd-loading" data-visible="true"></div> -->
-
+    <div class="wd-loading" data-visible="true" ng-show="isLoadShow"></div>
 
     <!-- 应用列表 -->
     <div class="apps-list">
@@ -57,15 +56,15 @@
 
     <!-- header -->
     <div class="header">
-        <div class="btn btn-primary installApp" ng-click="clickInstallApk()">
+        <div class="btn btn-primary installApp" ng-click="clickInstallApk()" ng-disabled="isInstallBtnDisable">
             <i class="icon-add"></i>
             {{$root.DICT.applications.BUTTONS.INSTALL_APPS}}
         </div>
-        <button class="btn select-all" ng-click="selectAll()">
+        <button class="btn select-all" ng-click="deselectAll()" ng-show="isDeselectBtnShow">
             <i class="icon-sel"></i>
-            <p>{{$root.DICT.applications.BUTTONS.SELECT_ALL}}</p>
+            <p>{{$root.DICT.applications.BUTTONS.DESELECT}} ({{selectedNum}})</p>
         </button>
-        <button class="btn delete-all" ng-click="delMoreApps()">
+        <button class="btn delete-all" ng-click="delMoreApps()" ng-show="isDeleteBtnShow">
             <i class="icon-delAll"></i>
             {{$root.DICT.applications.BUTTONS.UNINSTALL}}
         </button>
