@@ -14,8 +14,6 @@ return [
 function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,   wdpPhotos,
          wdViewport,   GA,   PhotosLayoutAlgorithm,   $q,   wdNotification) {
 
-$log.log('wdPhotos:galleryController initializing!');
-
 $scope.firstScreenLoaded = false;
 $scope.loaded = false;
 $scope.allLoaded = false;
