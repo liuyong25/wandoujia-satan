@@ -966,11 +966,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     $scope.showContacts = showContacts;
     window.wdcContacts = wdcContacts;
     wdKey.$apply('up', 'contacts', function() {
-        console.log('up');
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
             if( (i - 1 < l) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i-1]['id']);
-                $('ul.contacts-list')[0].scrollTop = (i-1)*68;
                 return;
             }
         }
@@ -979,7 +977,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
             if( (i + 1 < l) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i+1]['id']);
-                $('ul.contacts-list')[0].scrollTop = (i+1)*68;
                 return;
             }
         }
