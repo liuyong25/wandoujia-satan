@@ -148,6 +148,21 @@ function loadScreen() {
     (function fetchLoop(defer, viewportHeight, lastLayoutHeight) {
         calculateLayout();
         if ($scope.layout && $scope.layout.height - lastLayoutHeight >= viewportHeight) {
+
+            // WARNING!!! A TEMP SOLUTION!!!
+            if (!$scope.allLoaded) {
+                Photos.query({
+                    cursor: $scope.photos[$scope.photos.length - 1].id,
+                    offset: 1,
+                    length: 1
+                }, function(data) {
+                    if (!data.length) {
+                        $scope.allLoaded = true;
+                    }
+                });
+            }
+            // WARNING!!! A TEMP SOLUTION!!!
+
             defer.resolve();
         }
         else {

@@ -22,8 +22,10 @@ return ['$rootScope', '$log', '$q', function($rootScope, $log, $q) {
             $log.log('Shortcuts scope changed to: ' + key.getScope() + '. Total ' + stack.length);
         });
         return {
+            isDone: false,
             done: function() {
                 deferred.resolve();
+                this.isDone = true;
             }
         };
     };

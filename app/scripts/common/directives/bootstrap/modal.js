@@ -86,7 +86,7 @@ return ['wdKey', function(wdKey) {
             // Destruction
             $scope.$on('$destroy', function() {
                 if (keyboardScope) {
-                    keyboardScope.resolve();
+                    keyboardScope.done();
                 }
                 wdKey.deleteScope(uid);
             });
