@@ -940,10 +940,8 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     };
 
     $scope.sendMessageTo = function(phoneNum , display_name){
-        console.log(phoneNum);
-        console.log(display_name);
         $location.path('/messages').search({
-            create: phoneNum + ',' + display_name
+            create: encodeURI(phoneNum)  + ',' + encodeURI(display_name)
         });
     };
 
@@ -976,7 +974,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     window.wdcContacts = wdcContacts;
     wdKey.$apply('up', 'contacts', function() {
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
-            if( (i - 1 < l) && G_pageList[i]['clicked'] ){
+            if( (i - 1 > 0) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i-1]['id']);
                 return;
             }
@@ -990,9 +988,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             }
         }
     });
-
     $scope.$on('$destroy', function() {
         G_keyContact.done();
+        wdKey.deleteScope('contacts');
     });
 
     init();
