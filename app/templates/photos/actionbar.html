@@ -3,20 +3,20 @@
         wdp-uploader
         ng-class="{ 'disabled': !photos.length }"
         ng-click="$root.GA('photos:toolbar:add_photo')"
-        ><i class="photos-icon-ab-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
+        ><i class="icon-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
     <div class="btn action-select"
         ng-click="selectAll()"
         ng-show="photos.length"
         ng-switch on="selectedPhotos.length == photos.length && photos.length != 0"
         >
-        <i class="photos-icon-ab-sel"></i>
+        <i class="icon-sel-toolbar"></i>
         <span ng-switch-when="false">{{$root.DICT.photos.ACTIONBAR_SELECT_ALL}}</span>
         <span ng-switch-when="true">{{$root.DICT.photos.ACTIONBAR_DESELECT_ALL}}</span>
     </div>
     <div class="btn-group" ng-hide="!selectedPhotos.length">
         <div class="btn"
             ng-click="deleteSelected();$root.GA('photos:delete_selected')"
-            ><i class="photos-icon-ab-del"></i> {{$root.DICT.photos.ACTIONBAR_DELETE}}</div>
+            ><i class="icon-del-toolbar"></i> {{$root.DICT.photos.ACTIONBAR_DELETE}}</div>
 <!--
         <div class="btn"
             ><i class="photos-icon-ab-dl"></i> {{$root.DICT.photos.ACTIONBAR_DOWNLOAD}}</div>

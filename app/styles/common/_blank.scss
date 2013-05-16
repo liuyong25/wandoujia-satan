@@ -32,9 +32,9 @@
         margin: 0 auto 40px;
 
         @mixin import-icon($name) {
-            @include common-sprite($name);
-            width: common-sprite-width($name);
-            height: common-sprite-height($name);
+            @include use-sprite($name);
+            width: icon-width($name);
+            height: icon-height($name);
         }
 
         .wdj-photos & {

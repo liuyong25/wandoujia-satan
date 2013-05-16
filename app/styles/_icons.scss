@@ -1,0 +1,80 @@
+$global-icons: "add",
+"app",
+"check-h",
+"check",
+"checked",
+"chrome",
+"close-h",
+"close-p",
+"close",
+"contact",
+"del-toolbar",
+"delete-tb",
+"delete",
+"down-tb",
+"down-toolbar",
+"down",
+"edit",
+"failed",
+"failed-w",
+"feedback",
+"group48",
+"help",
+"img",
+"logo-white",
+"logo64",
+"nocontacts",
+"nophotos",
+"nosms",
+"noapps",
+"profile",
+"profile48",
+"profileicon",
+"retry",
+"search",
+"sel-toolbar",
+"select",
+"sending",
+"sending-w",
+"share-tb",
+"share-toolbar",
+"share",
+"signout",
+"slide-close",
+"slidedl",
+"slidedown",
+"slidenext",
+"slidepause",
+"slideplay",
+"slidepre",
+"sliderotate",
+"slideshare",
+"sms",
+"update";
+
+@each $name in $global-icons {
+    .icon-#{$name} {
+        // Regularly, we'd like the boundary of interactive zone of a icon larger than
+        // its physics metric.
+        // These could allow icon has any padding without bleeding sprites.
+        background-clip: content-box;
+        background-origin: content-box;
+
+        $width: image-width("icons/#{$name}.png");
+        $height: image-height("icons/#{$name}.png");
+        // Margin should be integer.
+        $margin-top: floor(($global-line-height - $height) / 2);
+        $margin-bottom: $global-line-height - $height - $margin-top;
+
+        @include use-sprite($name);
+        display: inline-block;
+        width: $width;
+        // Each icon should be inline-block and occupies $global-line-height of height.
+        // margins keeps it vertical align by middle of line box absolutely.
+        height: $height;
+        line-height: 0;
+        vertical-align: top;
+        margin-top: $margin-top;
+        margin-bottom: $margin-bottom;
+    }
+}

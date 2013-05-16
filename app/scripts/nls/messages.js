@@ -14,6 +14,10 @@ return {
         ACTION_SELECT: 'Select',
         ACTION_DESELECT: 'Deselect',
 
+        SEARCH_PLACEHOLDER: 'Search Messages',
+        SEARCH_BLANK_TIP: 'No conversations matched your search.',
+        SEARCH_TIP: 'Search messages include "$$"...',
+
         BTN_SEND_TIP: 'Send (Enter)',
         BATCH_RECEIVER_TIP: 'To',
 

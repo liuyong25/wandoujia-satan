@@ -4,23 +4,30 @@
             <section class="wdm-actions">
                 <button class="btn btn-primary"
                     ng-disabled="cvsListFirstLoading"
-                    ng-click="createConversation();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</button>
+                    ng-click="createConversation();$root.GA('messages:create')"><i class="icon-add"></i> {{$root.DICT.messages.ACTION_NEW}}</button>
                 <button class="btn"
                     ng-hide="cvsListFirstLoading"
                     ng-click="conversations.toggleSelectAll();$root.GA('messages:select_all:' + conversations.allSelected)"
                     ng-switch on="conversations.allSelected">
-                    <i class="messages-icon-ab-sel"></i>
+                    <i class="icon-sel-toolbar"></i>
                     <span ng-switch-when="false">{{$root.DICT.messages.ACTION_SELECT_ALL}}</span>
                     <span ng-switch-when="true">{{$root.DICT.messages.ACTION_DESELECT_ALL}}</span>
                 </button>
                 <button class="btn"
                     ng-click="removeSelected();$root.GA('messages:delete_conversation')"
-                    ng-show="conversations.hasSelected"><i class="messages-icon-ab-del"></i> {{$root.DICT.messages.ACTION_DELETE}}</button>
+                    ng-show="conversations.hasSelected"><i class="icon-del-toolbar"></i> {{$root.DICT.messages.ACTION_DELETE}}</button>
             </section>
+            <div class="wdm-search">
+                <div class="wdms-container">
+                    <i class="icon-search"></i>
+                    <input type="text" placeholder="{{$root.DICT.messages.SEARCH_PLACEHOLDER}}..." ng-model="searchQuery">
+                    <span class="clear" ng-show="searchQuery" ng-click="clearSearch()"></span>
+                </div>
+            </div>
             <ol class="wdm-conversations unstyled">
                 <li class="wdmc-row"
                     ui-animate
-                    ng-repeat="c in conversations.collection"
+                    ng-repeat="c in cvs()"
                     ng-class="{ selected: c.selected, highlight: c == activeConversation }"
                     wdm-conversation>
                     <label class="wdmcr-a"
@@ -37,7 +44,7 @@
                             <span ng-switch-default>{{ c.displayNames.join(', ') }}</span>
                             <span ng-switch-when="0">New message</span>
                         </div>
-                        <div class="wdmcr-c-b">{{ c.snippet }}</div>
+                        <div class="wdmcr-c-b"><span class="wdmcr-c-b-a" ui-if="c.isSearchResult">{{c.length}}</span>{{ c.snippet }}</div>
                     </div>
                     <div class="wdmcr-d">
                         <div class="status">&nbsp;
@@ -50,14 +57,31 @@
                         </div>
                     </div>
                 </li>
-                <li wdm-load-more="conversations.fetch()" ng-hide="conversations.loaded || cvsListFirstLoading"
-                    ng-click="$root.GA('messages:load_conversations')"></li>
+                <li ng-hide="conversations.loaded || cvsListFirstLoading || isSearching()"
+                    style="text-align:center;">
+                    <span wdm-load-more="conversations.fetch()"
+                        ng-click="$root.GA('messages:load_conversations')"></span>
+                </li>
+                <li class="wdmc-ph" ui-if="searchLoading">
+                    <span class="wd-loading wd-loading-inline" data-visible="true"></span>
+                </li>
+
+                <li class="wdmc-row"
+                    ui-if="isSearching() && !searchLoading && !cvs().length">
+                    <div style="margin:0 auto;">{{ $root.DICT.messages.SEARCH_BLANK_TIP }}</span>
+                </li>
+
+                <li ui-if="isSearching() && !searchLoading && !contentResultsList.length"
+                    style="text-align:center;">
+                    <span wdm-load-more="searchContent()"
+                        data-text="{{$root.DICT.messages.SEARCH_TIP.replace('$$', searchQuery.trim())}}"></span>
+                </li>
             </ol>
             <div class="wd-loading" data-visible="cvsListFirstLoading"></div>
         </section>
         <section class="wdm-main">
             <section class="wdm-contact">
-                <div ui-if="activeConversation.messageCount > 0" class="wdmct-a">
+                <div ui-if="!activeConversation.isNew" class="wdmct-a">
                     <span
                         ng-repeat="a in activeConversation.addresses"
                         bs-tooltip="{{a}}" data-options="{placement: 'bottom'}">
@@ -65,11 +89,24 @@
                         <span ng-hide="$last">, </span>
                     </span>
                 </div>
-                <div ui-if="activeConversation.messageCount == 0" class="wdmct-c">
+                <div ui-if="activeConversation.isNew" class="wdmct-c">
                     <div>{{$root.DICT.messages.LABEL_SEND_TO}}: </div>
                     <textarea wdm-receiver rows="1"></textarea>
                 </div>
             </section>
+
+            <section class="wdm-results" ui-if="isSearching() && activeConversation.isSearchResult">
+                {{activeConversation.index + 1}} of {{activeConversation.length}} message ........
+                <div class="wdmr-b btn-group">
+                    <span class="btn"
+                        ng-class="{'wdmr-b-disabled': !activeConversation.hasPrevious()}"
+                        ng-click="prevResults(activeConversation)"><i class="wdmr-a-l"></i></span>
+                    <span class="btn"
+                        ng-class="{'wdmr-b-disabled': !activeConversation.hasNext()}"
+                        ng-click="nextResults(activeConversation)"><i class="wdmr-a-r"></i></span>
+                </div>
+            </section>
+
             <section class="wdm-entries" wdm-auto-scroll="activeConversation.messages.collection">
                 <div wdm-auto-scroll-container>
                     <div class="wdme-load-more">
@@ -85,7 +122,7 @@
                         >
                         <div class="wdme-sep" ui-if="m.isSeparator"><span>{{ m.date | date:'MMM d' }}</span></div>
                         <div class="wdme-row"
-                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6}">
+                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6, 'wdme-row-highlight': activeConversation.messages.isCursor(m)}">
                             <div class="wdmer-a">
                                 <div class="wdmer-a-a"
                                     ng-show="m.type >= 2 && m.type <= 6 && activeConversation.addresses.length > 1">
@@ -96,15 +133,26 @@
                                 <div ui-if="m.isMMS" class="wdmer-a-b" style="color:#999;">{{ $root.DICT.messages.MMS_WARNING }}</div>
                             </div>
                             <div class="wdmer-b">
-                                <span ui-if="m.isError"><i class="messages-icon-alert"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(activeConversation, m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
-                                <i ui-if="m.isPending" class="messages-icon-running"></i>
+                                <span ui-if="m.isError"><i class="icon-failed"></i> {{$root.DICT.messages.ERROR_SEND_FAILED}} <a href="" ng-click="resendMessage(activeConversation, m)">{{$root.DICT.messages.ACTION_RETRY}}</a></span>
+                            </div>
+                            <div class="wdmer-c">
+                                <i ui-if="m.isPending" class="icon-sending"></i>
                                 <span class="wdmer-b-date" ui-if="!m.isError && !m.isPending">{{ m.date | messageDate:'HH:mm' }}</span>
                                 <a href="" class="wdmer-b-del"
                                     ng-show="!m.isPending"
                                     bs-tooltip="{{$root.DICT.messages.ACTION_DELETE}}"
-                                    ng-click="removeMessage(activeConversation, m);$root.GA('messages:delete_message')"><i class="messages-icon-ab-del"></i></a>
+                                    ng-click="removeMessage(activeConversation, m);$root.GA('messages:delete_message')"><i class="icon-del-toolbar"></i></a>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="wdme-load-more" ui-if="activeConversation.messages.isSearchResult">
+                        <div wdm-load-more="activeConversation.messages.fetchLater()"
+                            data-pre="this.$emit('wdm:autoscroll:prekeep')"
+                            data-post="this.$emit('wdm:autoscroll:keep')"
+                            data-text="{{$root.DICT.messages.BTN_LOAD_MSG}}"
+                            ng-hide="activeConversation.messages.laterLoaded || !activeConversation || activeConversation.messages.length == 0"
+                            ng-click="$root.GA('messages:load_messages')"></div>
                     </div>
                 </div>
             </section>
@@ -125,10 +173,10 @@
             <div class="wd-loading" data-visible="cvsChanging || cvsListFirstLoading"></div>
         </section>
     </div>
-    <div class="wd-blank" ui-if="!conversations.length && !cvsListFirstLoading">
+    <div class="wd-blank" ui-if="!conversationsCache.length && !cvsListFirstLoading">
         <p>{{$root.DICT.messages.BLANK_TIP}}<p>
         <div class="btn btn-primary"
-            ng-click="createConversation();$root.GA('messages:create')"><i class="messages-icon-ab-add"></i> {{$root.DICT.messages.ACTION_NEW}}</div>
+            ng-click="createConversation();$root.GA('messages:create')"><i class="icon-add"></i> {{$root.DICT.messages.ACTION_NEW}}</div>
     </div>
     <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.messages.UPGRADE_TIP}}"></div>
 </section>

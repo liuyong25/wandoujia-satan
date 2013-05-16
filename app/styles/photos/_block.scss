@@ -56,27 +56,15 @@
             padding-left: 25px;
 
             input[type=checkbox] {
-                position: relative;
-                top:2px;
-                $left: -1px;
-                $top: -3px;
-                &:not(:checked):after {
-                    content: "";
-                    position: absolute;
-                    left: $left;
-                    top: $top;
-                    width: photos-sprite-width("check");
-                    height: photos-sprite-height("check");
-                    @include photos-sprite("check");
+                &:not(:checked):after{
+                    width: icon-width("check-h");
+                    height: icon-height("check-h");
+                    @include use-sprite("check-h");
                 }
-                &:checked:after{
-                    content: "";
-                    position: absolute;
-                    left: $left;
-                    top: $top;
-                    width: photos-sprite-width("check");
-                    height: photos-sprite-height("check");
-                    @include photos-sprite("checked");
+                &:not(:checked):hover:after {
+                    width: icon-width("check");
+                    height: icon-height("check");
+                    @include use-sprite("check");
                 }
             }
         }

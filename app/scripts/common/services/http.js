@@ -48,6 +48,26 @@ return function() {
                 return $delegate(config);
             }
         }
+
+        _(['get', 'delete', 'head', 'jsonp']).each(function(name) {
+            http[name] = function(url, config) {
+                return http(_.extend(config || {}, {
+                    method: name,
+                    url: url
+                }));
+            };
+        });
+
+        _(['post', 'put']).each(function(name) {
+            http[name] = function(url, data, config) {
+                return http(_.extend(config || {}, {
+                    method: name,
+                    url: url,
+                    data: data
+                }));
+            };
+        });
+
         return http;
     }];
     self.$get = function() {};

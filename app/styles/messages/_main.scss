@@ -1,6 +1,5 @@
 .wdj-messages {
     @import "flex";
-    @import "icons";
 
     @include position(fixed, 0px 0px 0px $global-left-offset);
     font-size: 12px;
@@ -47,6 +46,11 @@
         border-bottom: 1px solid $wdm-border-color;
         margin-bottom: -1px;
     }
+    .wdm-search {
+        height: 51px;;
+        border-bottom: 1px solid $wdm-border-color;
+        margin-bottom: -1px;
+    }
     .wdm-conversations {
         @include flex(1);
         height: 0; // Flexbox need a height as refer.
@@ -56,6 +60,8 @@
     .wdm-contact {
         min-height: $wdm-actions-height;
         border-bottom: 1px solid $wdm-border-color;
+    }
+    .wdm-results {
     }
     .wdm-entries {
         @include flex(1);
@@ -67,17 +73,19 @@
     @import "actions";
     @import "conversations";
     @import "contact";
+    @import "results";
     @import "entries";
     @import "editor";
     @import "textext";
 
-    .messages-icon-running {
+    .icon-sending,
+    .icon-sending-w {
         @include animation(flash 4s infinite);
     }
 
     .load-more {
-        display: block;
-        width: 80px;
+        display: inline-block;
+        // width: 80px;
         padding: 8px 40px;
         margin: 15px auto;
         border-radius: 20px;
@@ -95,38 +103,5 @@
     }
     .load-more-hide {
         visibility: hidden;
-    }
-
-    input[type=checkbox] {
-        // WebKit-only hacks
-        @media screen and (-webkit-min-device-pixel-ratio:0) {
-            position: relative;
-            -webkit-appearance: none;
-            $height: messages-sprite-height("check");
-            $margin-top: round(($global-line-height - $height) / 2);
-            width: messages-sprite-width("check");
-            height: $height;
-            margin: $margin-top 0 ($global-line-height - $height - $margin-top);
-            border: 0;
-        }
-
-        &:not(:checked):after {
-            content: "";
-            @include position(absolute, 0px 0 0 0px);
-            width: messages-sprite-width("check");
-            height: messages-sprite-height("check");
-            @include messages-sprite("check");
-        }
-        &:not(:checked):hover:after {
-            @include messages-sprite("check_h");
-        }
-        &:checked:after{
-            content: "";
-            @include position(absolute, 0px 0 0 0px);
-            width: messages-sprite-width("check");
-            height: messages-sprite-height("check");
-            @include messages-sprite("checked");
-        }
-
     }
 }
