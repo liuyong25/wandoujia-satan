@@ -224,10 +224,12 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                 GA('photos:slide:close_key');
                 return false;
             });
-            // $scope.$on('$destroy', function() {
-            //     wdKey.setScope('photos');
-            //     wdKey.deleteScope('photos:preview');
-            // });
+            $scope.$on('$destroy', function() {
+                if (keyboardScope) {
+                    keyboard.done();
+                }
+                wdKey.deleteScope('photos:preview');
+            });
         }
     };
 }];
