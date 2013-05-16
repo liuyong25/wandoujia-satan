@@ -3,8 +3,8 @@ define([
     'underscore'
 ], function(fineuploader,_){
 
-return ['$scope','wdAlert','wdDev','$route','GA','wdcContacts', '$timeout','wdKey',
-function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,wdKey){
+return ['$scope','wdAlert','wdDev','$route','GA','wdcContacts', '$timeout','wdKey','$location',
+function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,wdKey,$location){
 
     //存储当前联系人的数据列表
     var G_contacts = [];
@@ -150,7 +150,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             $scope.isRightLoadShow = false;
             $scope.isPhotoUploadShow = false;
             if(!id){
-                //$('.contacts-edit').hide();
                 $scope.isContactsEditShow = false;
                 return;
             };
@@ -230,6 +229,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 wrap.find('p.name').show();
                 wrap.find('p.remark').show();
                 wrap.find('select').hide();
+                wrap.find('i.icon-sms-toolbar').show();
                 wrap.find('input').hide();
                 wrap.find('button.btn-addNewItem').hide();
                 wrap.find('hr').show();
@@ -469,6 +469,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         ele.find('dt').show();
 
         ele.find('p.name').hide();
+        ele.find('i.icon-sms-toolbar').hide();
         ele.find('p.remark').hide();
         ele.find('hr').hide();
         ele.find('div.editName').show();
@@ -938,6 +939,12 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         };
     };
 
+    $scope.sendMessageTo = function(phoneNum , display_name){
+        $location.path('/messages').search({
+            create: encodeURI(phoneNum)  + ',' + encodeURI(display_name)
+        });
+    };
+
     //主函数开始
     $scope.isContactsEditShow = false;
     $scope.isLeftLoadingShow = true;
@@ -966,11 +973,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     $scope.showContacts = showContacts;
     window.wdcContacts = wdcContacts;
     wdKey.$apply('up', 'contacts', function() {
-        console.log('up');
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
-            if( (i - 1 < l) && G_pageList[i]['clicked'] ){
+            if( (i - 1 > 0) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i-1]['id']);
-                $('ul.contacts-list')[0].scrollTop = (i-1)*68;
                 return;
             }
         }
@@ -979,14 +984,13 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
             if( (i + 1 < l) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i+1]['id']);
-                $('ul.contacts-list')[0].scrollTop = (i+1)*68;
                 return;
             }
         }
     });
-
     $scope.$on('$destroy', function() {
         G_keyContact.done();
+        wdKey.deleteScope('contacts');
     });
 
     init();

@@ -11,7 +11,7 @@ define([
         $scope.info = {};
 
         //新安装的应用列表
-        $scope.newList = [];
+        $scope.newList = wdcApplications.getNewAppList();
 
         //版本监测
         $scope.serverMatchRequirement = $route.current.locals.versionSupport;
@@ -199,7 +199,6 @@ define([
                             };
                         },
                         onerror:function(){
-                            console.log(123);
                         }
                     }
                 });
@@ -231,6 +230,7 @@ define([
                 doneTipShow: false
             };
             $scope.newList.unshift(item);
+            wdcApplications.setNewAppList($scope.newList);
             $scope.$apply();
         };
 
@@ -315,7 +315,7 @@ define([
         //显示对应的应用
         function showAppInfo(package_name){
             GA('Web applications : show the app detail informations');
-            G_keyInfo = wdKey.push('applications:info');
+            G_keyInfo = wdKey.push('applications');
             var mask = $('.mask');
             $scope.info = getAppInfo(G_appList,package_name);
             setTimeout(function(){
@@ -430,8 +430,12 @@ define([
                 };
             });
 
-        wdKey.$apply('esc', 'applications:info', function() {
+        wdKey.$apply('esc', 'applications', function() {
             closeMask();
+        });
+
+        $scope.$on('$destroy', function() {
+            wdKey.deleteScope('applications');
         });
 
         //主程序
@@ -440,6 +444,7 @@ define([
         $scope.isDeleteBtnShow = false;
         $scope.isDeselectBtnShow = false;
         $scope.isInstallBtnDisable = true;
+
 
         wdcApplications.onchange(getAppListData);
 

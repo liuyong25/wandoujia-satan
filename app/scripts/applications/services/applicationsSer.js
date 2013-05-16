@@ -10,7 +10,8 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
     var global = {
         appsList:[],
-        fun : undefined
+        fun : undefined,
+        newAppList : []
     };
 
     var me = this;
@@ -42,6 +43,14 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                     global.fun.call(me,global.appsList);
                 });
             }
+        },
+
+        setNewAppList : function(list){
+            global.newAppList = list;
+        },
+
+        getNewAppList : function(){
+            return global.newAppList;
         }
 
     };

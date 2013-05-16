@@ -1,5 +1,5 @@
 @import "contacts/*.png";
-$iconList: "ab-add", "ab-sel", "ab-del", "check", "checked","edit";
+$iconList:"sms-toolbar";
 @each $icon in $iconList{
 
     // sprite meta
@@ -26,37 +26,4 @@ $iconList: "ab-add", "ab-sel", "ab-del", "check", "checked","edit";
         // for accessibility
         @include hide-text;
     }
-}
-
-input[type=checkbox] {
-    // WebKit-only hacks
-    @media screen and (-webkit-min-device-pixel-ratio:0) {
-        position: relative;
-        -webkit-appearance: none;
-        $height: contacts-sprite-height("check");
-        $margin-top: round(($global-line-height - $height) / 2);
-        width: contacts-sprite-width("check");
-        height: $height;
-        margin: $margin-top 0 ($global-line-height - $height - $margin-top);
-        border: 0;
-    }
-
-    &:not(:checked):after {
-        content: "";
-        @include position(absolute, 0px 0 0 0px);
-        width: contacts-sprite-width("check");
-        height: contacts-sprite-height("check");
-        @include contacts-sprite("check");
-    }
-    &:not(:checked):hover:after {
-        @include contacts-sprite("check_h");
-    }
-    &:checked:after{
-        content: "";
-        @include position(absolute, 0px 0 0 0px);
-        width: contacts-sprite-width("check");
-        height: contacts-sprite-height("check");
-        @include contacts-sprite("checked");
-    }
-
 }
