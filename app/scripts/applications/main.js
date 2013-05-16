@@ -1,16 +1,19 @@
 define([
     'angular',
     'common/main',
-    'applications/controllers/ApplicationsCtrl'
+    'applications/controllers/ApplicationsCtrl',
+    'applications/services/applicationsSer'
 ], function(
     angular,
     common,
-    applicationsCtrl
+    applicationsCtrl,
+    applicationsSer
 ) {
 
 'use strict';
 
 //注册angular的模块和control
-angular.module('wdApplications', ['wdCommon']).controller('ApplicationsCtrl', applicationsCtrl);
-
+angular.module('wdApplications', ['wdCommon'])
+        .controller('ApplicationsCtrl', applicationsCtrl)
+        .factory('wdcApplications',applicationsSer);
 });

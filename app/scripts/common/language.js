@@ -3,6 +3,7 @@ define([
     'i18n!nls/photos',
     'i18n!nls/app',
     'i18n!nls/portal',
+    'i18n!nls/contacts',
     'i18n!nls/messages',
     'i18n!nls/applications'
 ], function(
@@ -10,6 +11,7 @@ define([
     photosDict,
     appDict,
     portalDict,
+    contactsDict,
     messagesDict,
     applicationsDict
 ) {
@@ -21,6 +23,7 @@ angular.module('wdLanguage', [])
             portal: portalDict,
             photos: photosDict,
             messages: messagesDict,
+            contacts: contactsDict,
             applications: applicationsDict
         };
     }]);
