@@ -5,7 +5,6 @@ define([
     'common/services/sharing',
     'common/services/dev',
     'common/services/viewport',
-    'common/services/http',
     'common/directives/autofocus',
     'common/services/key',
     'common/services/alert',
@@ -30,7 +29,6 @@ define([
     sharing,
     dev,
     viewport,
-    http,
     autofocus,
     key,
     alert,
@@ -64,10 +62,9 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .directive('wdBlank', blankDirective)
     .directive('wdUpgradeWarning', upgradeWarningDirective)
     // Services
-    .provider('wdHttp', http)
     .provider('wdDev', dev)
     .provider('wdEventEmitter', emitter)
-    .provider('wdSocket', socket)
+    .factory('wdSocket', socket)
     .factory('wdBrowser', browser)
     .factory('wdViewport', viewport)
     .factory('wdSharing', sharing)
@@ -76,9 +73,5 @@ angular.module('wdCommon', ['wdBootstrap', 'ui'])
     .factory('wdKeeper', keeper)
     .factory('GA', ga)
     .factory('wdNotification', notification)
-    .factory('wdTitleNotification', titleNotification)
-    // Configuration
-    .config(['$provide', 'wdHttpProvider', function($provide, wdHttpProvider) {
-        $provide.decorator('$http', wdHttpProvider.httpDecorator);
-    }]);
+    .factory('wdTitleNotification', titleNotification);
 });

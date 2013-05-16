@@ -13,42 +13,6 @@ function(wdmExtendedConversationsCollection,   wdmConversationsCollection,
 
 var conversations = wdmExtendedConversationsCollection.createExtendedConversationsCollection();
 
-_.extend({}, {
-
-    searchContent: function() {
-        return $http.post(
-            '/resource/messages/search',
-            [{
-                field: 'keyword',
-                keyword: this._keyword
-            }],
-            {
-                params: {
-                    offset: 0,
-                    length: 20
-                },
-                keyword: this._keyword
-            }
-        ).then(function done(response) {
-            if (response.config.keyword !== this._keyword) {
-                return $q.reject();
-            }
-
-            var messages = response.data.map(wdmMessage.createMessage);
-            return _.chain(messages).groupBy(function(m) {
-                return m.cid;
-            }).values().map(function(results) {
-                return wdmSearchConversation.createSearchConversation(results);
-            }).value();
-        }.bind(this)).then(function done(conversations) {
-            this.add(conversations);
-            return this;
-        }.bind(this), function fail() {
-            return this;
-        }.bind(this));
-    }
-});
-
 
 // Mixin event emitter.
 wdEventEmitter(conversations);

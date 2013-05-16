@@ -68,9 +68,7 @@ if ($window.chrome &&
 wdpPhotos.on('add.wdp', function(e, p) {
     // do nothing...
 }).on('remove.wdp', function(e, p) {
-    $scope.$apply(function() {
-        $scope.$broadcast('wdp:photos:remove', [p]);
-    });
+    $scope.$broadcast('wdp:photos:remove', [p]);
 });
 
 $scope.preview = function(photo) {
@@ -231,7 +229,7 @@ function calculateLayout() {
         gapWidth:  10,
         gapHeight: 10,
         borderWidth: 0,
-        containerWidth: wdViewport.width() - 60 - 10 * 2,
+        containerWidth: wdViewport.width() - 60 - 10 - 20,
         containerHeight: -1,
         photos: _.map($scope.photos, function(photo) {
             return {

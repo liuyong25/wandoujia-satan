@@ -30,8 +30,8 @@ define([
 'use strict';
 
 angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMessages', 'wdContacts','wdApplications'])
-    .config([   '$routeProvider', '$httpProvider', 'wdHttpProvider',
-        function($routeProvider,   $httpProvider,   wdHttpProvider) {
+    .config([   '$routeProvider', '$httpProvider',
+        function($routeProvider,   $httpProvider) {
 
         // Prevent CORS error for accept-headers...
         delete $httpProvider.defaults.headers.common['X-Requested-With'];
@@ -123,45 +123,40 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
         });
 
         // Global exception handling.
-        wdHttpProvider.requestInterceptors.push(['wdDev', '$rootScope', function(wdDev, $rootScope) {
-            return function(config) {
-                // Using realtime data source url.
-                if (config.url) {
-                    config.url = wdDev.wrapURL(config.url);
+        $httpProvider.interceptors.push(['wdDev', '$rootScope', '$q', '$log', 'wdAuthToken', function(wdDev, $rootScope, $q, $log, wdAuthToken) {
+            return {
+                request: function(config) {
+                    // Using realtime data source url.
+                    if (config.url) {
+                        config.url = wdDev.wrapURL(config.url);
+                    }
+                    // Global timeout
+                    if (angular.isUndefined(config.timeout)) {
+                        config.timeout = 60 * 1000;
+                    }
+                    // By default, all request using withCredentials to support cookies in CORS.
+                    if (angular.isUndefined(config.withCredentials)) {
+                        config.withCredentials = true;
+                    }
+                    pushActiveRequest($rootScope);
+                    return config;
+                },
+                response: function success(response) {
+                    $log.log(response.config.url, response.status);
+                    popActiveRequest($rootScope);
+                    return response;
+                },
+                responseError: function error(rejection) {
+                    $log.warn(rejection.config.url, rejection.status);
+                    popActiveRequest($rootScope);
+                    // If auth error, always signout.
+                    // 401 for auth invalid, 0 for server no response.
+                    if (!rejection.config.disableErrorControl &&
+                        (rejection.status === 401 /*|| response.status === 0 */)) {
+                        wdAuthToken.signout();
+                    }
+                    return $q.reject(rejection);
                 }
-                // Global timeout
-                if (angular.isUndefined(config.timeout)) {
-                    config.timeout = 60 * 1000;
-                }
-                // By default, all request using withCredentials to support cookies in CORS.
-                if (angular.isUndefined(config.withCredentials)) {
-                    config.withCredentials = true;
-                }
-                pushActiveRequest($rootScope);
-            };
-        }]);
-
-        $httpProvider.responseInterceptors.push([
-                     '$q', 'wdAuthToken', '$rootScope', '$log',
-            function( $q,   wdAuthToken,   $rootScope,   $log) {
-            return function(promise) {
-                return promise.then(
-                    function success(response) {
-                        $log.log(response.config.url, response.status);
-                        popActiveRequest($rootScope);
-                        return response;
-                    },
-                    function error(response) {
-                        $log.warn(response.config.url, response.status);
-                        popActiveRequest($rootScope);
-                        // If auth error, always signout.
-                        // 401 for auth invalid, 0 for server no response.
-                        if (!response.config.disableErrorControl &&
-                            (response.status === 401 /*|| response.status === 0 */)) {
-                            wdAuthToken.signout();
-                        }
-                        return $q.reject(response);
-                    });
             };
         }]);
 
