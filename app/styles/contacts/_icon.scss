@@ -1,0 +1,29 @@
+@import "contacts/*.png";
+$iconList:"sms-toolbar";
+@each $icon in $iconList{
+
+    // sprite meta
+    $sprite-width : contacts-sprite-width($icon);
+    $sprite-height: contacts-sprite-height($icon);
+
+    // icon class directly populated in namespace
+    i.icon-#{$icon}{
+        @include contacts-sprite($icon);
+
+        // constrain icon dimensions for preventing sprites leaking
+        width: $sprite-width;
+        height: $sprite-height;
+
+        // ensure icon margin edge from top to bottom is computed just equals the global line height
+        @include inline-block;
+        $margin-all   : $global-line-height - $sprite-height;
+        $margin-top   : round($margin-all / 2);
+        $margin-bottom: $margin-all - $margin-top;
+        margin: $margin-top 0 $margin-bottom;
+        vertical-align: top;
+        cursor: pointer;
+
+        // for accessibility
+        @include hide-text;
+    }
+}

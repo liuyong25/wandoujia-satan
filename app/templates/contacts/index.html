@@ -115,6 +115,7 @@
                         <p class="detail dn">{{item.number}}</p>
                         <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone number">
                         <span class="delete dn" ng-click="delItem('phone',item)">&times;</span>
+                        <i class="icon-sms-toolbar" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
                     </dd>
 
                     <!-- 新增一个item start -->
