@@ -33,6 +33,16 @@ $scope.cvs = function() {
     }
 };
 
+$scope.selectedCount = function() {
+    return $scope.cvs().filter(function(c) { return c.selected; }).length;
+};
+
+$scope.deselectAll = function() {
+    $scope.cvs().forEach(function(c) {
+        c.selected = false;
+    });
+};
+
 $scope.isSearching = function() {
     return !!$scope.searchQuery;
 };

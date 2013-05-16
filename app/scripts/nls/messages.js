@@ -8,7 +8,7 @@ return {
 
         ACTION_NEW: 'New message',
         ACTION_SELECT_ALL: 'Select all',
-        ACTION_DESELECT_ALL: 'Deselect all',
+        ACTION_DESELECT_ALL: 'Deselect',
         ACTION_DELETE: 'Delete',
         ACTION_RETRY: 'Retry',
         ACTION_SELECT: 'Select',
