@@ -31,8 +31,12 @@ link: function($scope, $element, $attributes) {
         var el = $element[0];
         var rowCount = 1;
         $element.attr('rows', 1);
+        var cache = $element[0].value;
+        $element[0].value = '';
+        var clearWidth = $element[0].scrollWidth;
+        $element[0].value = cache;
 
-        while ($element[0].scrollWidth < $element.innerWidth()) {
+        while ($element[0].scrollWidth < clearWidth) {
             rowCount += 1;
             if (rowCount > 4) { break; }
             $element.attr('rows', rowCount);

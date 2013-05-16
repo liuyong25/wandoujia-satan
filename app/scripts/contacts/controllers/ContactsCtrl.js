@@ -941,7 +941,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
     $scope.sendMessageTo = function(phoneNum , display_name){
         $location.path('/messages').search({
-            create: encodeURI(phoneNum)  + ',' + encodeURI(display_name)
+            create: encodeURIComponent(phoneNum)  + ',' + encodeURIComponent(display_name)
         });
     };
 

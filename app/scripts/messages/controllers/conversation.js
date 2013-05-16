@@ -5,9 +5,9 @@ define([
 ) {
 'use strict';
 return ['$scope', '$resource', '$q', '$http', 'wdpMessagePusher', '$timeout', 'wdAlert',
-        'GA', '$route', 'wdmConversations',
+        'GA', '$route', 'wdmConversations', '$location', 'wdKey',
 function($scope,   $resource,   $q,   $http,   wdpMessagePusher,   $timeout,   wdAlert,
-         GA,   $route,   wdmConversations) {
+         GA,   $route,   wdmConversations,   $location,   wdKey) {
 
 $scope.serverMatchRequirement = $route.current.locals.versionSupport;
 $scope.conversationsCache = wdmConversations.conversations;
@@ -107,6 +107,26 @@ $scope.nextResults = function(c) {
     });
 };
 
+// A very temp way
+$scope.jumpToContacts = function(c) {
+    if (c.multiple) { return; }
+    var contactId;
+    if (c.messages.length) {
+        contactId = c.messages.collection[0].person;
+    }
+    else {
+        contactId = c.messages.fetch().then(function(messages) {
+            return messages[0].person;
+        });
+    }
+    $q.when(contactId).then(function(id) {
+        if (!id) { return; }
+        $location.path('/contacts').search({
+            contact_id: id
+        });
+    });
+};
+
 $scope.conversations.on('update.wdm', function(e, c) {
     if (c === $scope.activeConversation) {
         scrollIntoView();
@@ -141,6 +161,7 @@ $scope.createConversation = function() {
 $scope.showConversation = function(c) {
     if (!c) { return; }
     var promise = activeConversation(c);
+    $scope.$broadcast('wdm:conversations:intoView');
     promise.then(function() {
         _.defer(function() {
             $scope.$broadcast('wdm:autoscroll:flip');
@@ -221,16 +242,35 @@ if ($scope.serverMatchRequirement) {
         var parts = $route.current.params.create.split(',');
         var c = $scope.createConversation();
         c.extend({
-            addresses: [parts[0]],
-            contact_names: [parts[1]]
+            addresses: [decodeURIComponent(parts[0])],
+            contact_names: [decodeURIComponent(parts[1])]
         });
     }
 }
+
+var keyboardScope = wdKey.push('messages');
+
+wdKey.$apply('up', 'messages', function() {
+    var index = $scope.cvs().indexOf($scope.activeConversation);
+    if (index === -1) { return; }
+    if (index > 0) {
+        $scope.showConversation($scope.cvs()[index - 1]);
+    }
+});
+wdKey.$apply('down', 'messages', function() {
+    var index = $scope.cvs().indexOf($scope.activeConversation);
+    if (index === -1) { return; }
+    if (index < $scope.cvs().length - 1) {
+        $scope.showConversation($scope.cvs()[index + 1]);
+    }
+});
 
 // Shutdown
 $scope.$on('$destroy', function() {
     $timeout.cancel(timer);
     $scope.conversations.off('.wdm');
+    keyboardScope.done();
+    wdKey.deleteScope('messages');
 });
 
 function scrollIntoView() {

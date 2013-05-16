@@ -22,7 +22,7 @@
                     <span class="clear" ng-show="searchQuery" ng-click="clearSearch()"></span>
                 </div>
             </div>
-            <ol class="wdm-conversations unstyled">
+            <ol class="wdm-conversations unstyled" wdm-keep-visible>
                 <li class="wdmc-row"
                     ui-animate
                     ng-repeat="c in cvs()"
@@ -34,7 +34,8 @@
                             <input type="checkbox" ng-model="c.selected">
                         </span>
                     </label>
-                    <div class="wdmcr-b" ng-class="{ multiple: c.multiple }">
+                    <div class="wdmcr-b" ng-class="{ multiple: c.multiple }"
+                        ng-click="jumpToContacts(c)">
                         <img ui-if="!c.multiple && c.photo_path" ng-src="{{c.photo_path}}">
                     </div>
                     <div class="wdmcr-c">

@@ -73,9 +73,11 @@
     width: $avatar-width;
     height: $avatar-width;
     @include use-sprite("profile48");
+    cursor: pointer;
 
     &.multiple {
         @include use-sprite("group48");
+        cursor: default;
     }
 
     img {
