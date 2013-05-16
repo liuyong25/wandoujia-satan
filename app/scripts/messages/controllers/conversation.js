@@ -41,7 +41,7 @@ $scope.clearSearch = function() {
     $scope.searchQuery = '';
 };
 
-var searchConversationsFromServer = function(keyword) {
+var searchConversationsFromServer = _.debounce(function(keyword) {
     wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
         if ($scope.searchQuery !== keyword) { return; }
         $scope.resultsList = _.uniq($scope.resultsList.concat(list));
@@ -51,8 +51,9 @@ var searchConversationsFromServer = function(keyword) {
         }
 
     });
-};
-searchConversationsFromServer = _.debounce(searchConversationsFromServer, 500);
+    $scope.$apply();
+}, 500);
+// searchConversationsFromServer = _.debounce(searchConversationsFromServer, 500);
 
 $scope.$watch('searchQuery', function(keyword) {
     if (keyword) {

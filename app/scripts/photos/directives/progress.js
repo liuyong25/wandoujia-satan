@@ -54,6 +54,7 @@ return [function() {
                     });
                     btnCancel.fadeOut('fast');
                     done.fadeIn();
+                    delete scope.photo.deferred;
                 });
             // Initialize
             done.hide();

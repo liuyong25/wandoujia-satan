@@ -68,9 +68,7 @@ if ($window.chrome &&
 wdpPhotos.on('add.wdp', function(e, p) {
     // do nothing...
 }).on('remove.wdp', function(e, p) {
-    $scope.$apply(function() {
-        $scope.$broadcast('wdp:photos:remove', [p]);
-    });
+    $scope.$broadcast('wdp:photos:remove', [p]);
 });
 
 $scope.preview = function(photo) {
@@ -156,9 +154,9 @@ function loadScreen() {
         }
         else {
             var photosLengthBeforeFetch = $scope.photos.length;
-            fetchPhotos(30).then(function done() {
+            fetchPhotos(30).then(function done(allLoaded) {
                 var newPhotosLength = $scope.photos.length - photosLengthBeforeFetch;
-                if (newPhotosLength === 0) {
+                if (newPhotosLength === 0 || allLoaded) {
                     $scope.allLoaded = true;
                     defer.resolve();
                 }
@@ -198,10 +196,10 @@ function fetchPhotos(amount) {
     var timeStart = (new Date()).getTime();
     Photos.query(
         params,
-        function fetchSuccess(photos) {
+        function fetchSuccess(photos, headers) {
             mergePhotos(photos);
             GA('perf:photos_query_duration:success:' + ((new Date()).getTime() - timeStart));
-            defer.resolve();
+            defer.resolve(headers('WD-Need-More') === 'false');
         },
         function fetchError() {
             GA('perf:photos_query_duration:fail:' + ((new Date()).getTime() - timeStart));
@@ -231,7 +229,7 @@ function calculateLayout() {
         gapWidth:  10,
         gapHeight: 10,
         borderWidth: 0,
-        containerWidth: wdViewport.width() - 60 - 10 * 2,
+        containerWidth: wdViewport.width() - 60 - 10 - 20,
         containerHeight: -1,
         photos: _.map($scope.photos, function(photo) {
             return {
