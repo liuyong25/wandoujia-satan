@@ -7,7 +7,7 @@
 	img.photo{
 	    width: 48px;
 	    height: 48px;
-        background: image-url('contacts/default.png');
+        @include contacts-sprite("default");
 	}
     label{
         margin-bottom: 0px;

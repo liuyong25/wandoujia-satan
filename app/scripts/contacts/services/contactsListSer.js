@@ -70,8 +70,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
             global.fun.call(me,data);
 
-        }).error( function() {
-            //wdAlert.alert('Lost connection to phone','Please refresh your browser','Refresh').then(function(){location.reload();});
         });
     }
 
@@ -117,7 +115,7 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
             //是否查找email数据
             options = options || {};
-            options['email'] = options['email'] || true ;
+            options.email = options.email || true ;
             var defer = $q.defer();
 
             //如果没有加载过联系人数据，则自动启动启动加载
@@ -152,7 +150,7 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                             list = data ;
                         }
                         defer.resolve(list);
-                    }).error();
+                    });
 
                 }else{
 
@@ -222,7 +220,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                 method: 'get',
                 url: '/resource/accounts'
             }).success(function(data) {
-            }).error(function(){
             });
         },
 
@@ -292,7 +289,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                         return;
                     }
                 }
-            }).error(function(){
             });
         },
 
