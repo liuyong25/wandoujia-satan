@@ -21,7 +21,8 @@ define([
     'messages/services/basic-conversation',
     'messages/services/search-conversation',
     'messages/services/extended-conversations-collection',
-    'messages/directives/keep-visible'
+    'messages/directives/keep-visible',
+    'messages/directives/selection'
 ], function(
     angular,
     common,
@@ -45,7 +46,8 @@ define([
     basicConversationFactory,
     searchConversationFactory,
     extendedConversationsCollectionFactory,
-    keepVisible
+    keepVisible,
+    selection
 ) {
 'use strict';
 // jshint unused:false
@@ -68,6 +70,7 @@ angular.module('wdMessages', ['wdCommon'])
     .directive('wdmTextarea', textarea)
     .directive('wdmReceiver', receiver)
     .directive('wdmKeepVisible', keepVisible)
+    .directive('wdmSelection', selection)
     .filter('ms', msFilter)
     .filter('group', groupFilter)
     .filter('messageDate', messageDateFilter);

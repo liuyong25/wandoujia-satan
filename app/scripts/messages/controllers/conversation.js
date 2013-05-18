@@ -24,9 +24,13 @@ $scope.contentResultsList = [];
 
 $scope.cvs = function() {
     if ($scope.isSearching()) {
-        return $scope.resultsList.map(function(id) {
-            return $scope.conversationsCache.getById(id);
-        }).concat($scope.contentResultsList);
+        return $scope.resultsList.reduce(function(mem, id) {
+            var c = $scope.conversationsCache.getById(id);
+            if (c) {
+                mem.push(c);
+            }
+            return mem;
+        }, []).concat($scope.contentResultsList);
     }
     else {
         return $scope.conversationsCache.collection;
@@ -38,9 +42,7 @@ $scope.selectedCount = function() {
 };
 
 $scope.deselectAll = function() {
-    $scope.cvs().forEach(function(c) {
-        c.selected = false;
-    });
+    $scope.cvs().forEach(function(c) { c.selected = false; });
 };
 
 $scope.isSearching = function() {
@@ -52,18 +54,20 @@ $scope.clearSearch = function() {
 };
 
 var searchConversationsFromServer = _.debounce(function(keyword) {
-    wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
-        if ($scope.searchQuery !== keyword) { return; }
-        $scope.resultsList = _.uniq($scope.resultsList.concat(list));
-        $scope.searchLoading = false;
-        if ($scope.cvs()) {
-            $scope.showConversation($scope.cvs()[0]);
-        }
+    $scope.$apply(function() {
+        wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
+            if ($scope.searchQuery !== keyword) { return; }
 
+            $scope.resultsList = _.uniq($scope.resultsList.concat(list));
+            $scope.searchLoading = false;
+
+            var cvs = $scope.cvs();
+            if (cvs.length) {
+                $scope.showConversation(cvs[0]);
+            }
+        });
     });
-    $scope.$apply();
 }, 500);
-// searchConversationsFromServer = _.debounce(searchConversationsFromServer, 500);
 
 $scope.$watch('searchQuery', function(keyword) {
     if (keyword) {
@@ -78,72 +82,76 @@ $scope.$watch('searchQuery', function(keyword) {
         $scope.searchLoading = false;
     }
 
-    if ($scope.cvs()) {
-        $scope.showConversation($scope.cvs()[0]);
+    var cvs = $scope.cvs();
+    if (cvs.length) {
+        $scope.showConversation(cvs[0]);
     }
 });
 
 $scope.searchContent = function() {
     var keyword = $scope.searchQuery;
-    return wdmConversations.searchMessagesFromServer(keyword).then(function done(cvs) {
+    return wdmConversations.searchMessagesFromServer(keyword).then(function done(list) {
         if ($scope.searchQuery !== keyword) { return; }
-        $scope.contentResultsList = cvs;
-        if ($scope.cvs()) {
-            $scope.showConversation($scope.cvs()[0]);
+
+        $scope.contentResultsList = list;
+
+        var cvs = $scope.cvs();
+        if (cvs.length) {
+            $scope.showConversation(cvs[0]);
         }
     });
 };
 
 $scope.prevResults = function(c) {
     $scope.cvsChanging = true;
-    c.previous().then(function() {
+    c.previous().then(function done() {
         $scope.cvsChanging = false;
+    }, function fail() {
+        $scope.cvsChanging = false;
+    }).then(function() {
+        _.defer(function() {
+            $scope.$broadcast('wdm:autoscroll:flip');
+        });
     });
 };
 $scope.nextResults = function(c) {
     $scope.cvsChanging = true;
-    c.next().then(function() {
+    c.next().then(function done() {
         $scope.cvsChanging = false;
+    }, function fail() {
+        $scope.cvsChanging = false;
+    }).then(function() {
+        _.defer(function() {
+            $scope.$broadcast('wdm:autoscroll:flip');
+        });
     });
 };
 
 // A very temp way
-$scope.jumpToContacts = function(c) {
-    if (c.multiple) { return; }
-    var contactId;
-    if (c.messages.length) {
-        contactId = c.messages.collection[0].person;
-    }
-    else {
-        contactId = c.messages.fetch().then(function(messages) {
-            return messages[0].person;
-        });
-    }
-    $q.when(contactId).then(function(id) {
-        if (!id) { return; }
-        $location.path('/contacts').search({
-            contact_id: id
-        });
-    });
-};
+// $scope.jumpToContacts = function(c) {
+//     if (c.multiple) { return; }
+//     var contactId;
+//     if (c.messages.length) {
+//         contactId = c.messages.collection[0].person;
+//     }
+//     else {
+//         contactId = c.messages.fetch().then(function(messages) {
+//             return messages[0].person;
+//         });
+//     }
+//     $q.when(contactId).then(function(id) {
+//         if (!id) { return; }
+//         $location.path('/contacts').search({
+//             contact_id: id
+//         });
+//     });
+// };
 
 $scope.conversations.on('update.wdm', function(e, c) {
     if (c === $scope.activeConversation) {
         scrollIntoView();
     }
 });
-
-$scope.selectTip = function(c) {
-    return c.selected ? $scope.$root.DICT.messages.ACTION_DESELECT : $scope.$root.DICT.messages.ACTION_SELECT;
-};
-
-$scope.editorPlaceholder = function(c) {
-    if (!c || !c.messages) { return; }
-    var hasRecieved = c.messages.collection.some(function(m) {
-        return m.type !== 2;
-    });
-    return (hasRecieved ? $scope.$root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + c.displayNames.join(', ') : $scope.$root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...';
-};
 
 $scope.createConversation = function() {
     var c = _($scope.conversations.collection).find(function(c) {
@@ -154,7 +162,7 @@ $scope.createConversation = function() {
         $scope.conversations.add(c);
     }
     $scope.clearSearch();
-    activeConversation(c);
+    $scope.showConversation(c);
     return c;
 };
 
@@ -172,11 +180,15 @@ $scope.showConversation = function(c) {
 
 $scope.sendMessage = function(c) {
     if (!c.draft) { return; }
+
+    // Result conversation needs copy draft into copied conversation in cache
     var draft = c.draft;
     c = $scope.conversationsCache.getById(c.id);
     c.draft = draft;
+
     // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
     $scope.$broadcast('wdm:beforeMessageSend', c);
+
     $scope.conversations.sendMessages(c).then(function(cc) {
         if (cc !== $scope.activeConversation) {
             $scope.showConversation(cc);
@@ -184,7 +196,10 @@ $scope.sendMessage = function(c) {
     }, function() {
         GA('messages:send_failed');
     });
+
     scrollIntoView();
+
+    // Always jump to default view when send messages.
     $scope.clearSearch();
 };
 
@@ -196,6 +211,32 @@ $scope.resendMessage = function(c, m) {
     });
 };
 
+$scope.remove = function(c) {
+    wdAlert.confirm(
+        $scope.$root.DICT.messages.CONFIRM_DELETE_TITLE,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CONTENT,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
+        $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
+    ).then(function() {
+        if (c.isSearchResult) {
+            var index = $scope.contentResultsList.indexOf(c);
+            if (index !== -1) {
+                $scope.contentResultsList.splice(index, 1);
+            }
+            c.destroy();
+        }
+        else {
+            $scope.conversationsCache.remove(c);
+        }
+
+        if ($scope.cvs().indexOf($scope.activeConversation) === -1) {
+            $scope.showConversation($scope.cvs()[0]);
+        }
+        else {
+            $scope.showConversation($scope.activeConversation);
+        }
+    });
+};
 
 $scope.removeSelected = function() {
     wdAlert.confirm(
@@ -204,10 +245,30 @@ $scope.removeSelected = function() {
         $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
         $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
     ).then(function() {
-        $scope.conversations.removeSelected();
-        if (!$scope.conversations.contains($scope.activeConversation)) {
-            $scope.showConversation($scope.conversations.collection[0]);
+        var selected = $scope.cvs().filter(function(c) {
+            return c.selected;
+        }).reduce(function(mem, c) {
+            if (c.isSearchResult) {
+                var index = $scope.contentResultsList.indexOf(c);
+                if (index !== -1) {
+                    $scope.contentResultsList.splice(index, 1);
+                }
+            }
+            else {
+                mem.push(c);
+            }
+            return mem;
+        }, []);
+
+        $scope.conversationsCache.remove(selected);
+
+        if ($scope.cvs().indexOf($scope.activeConversation) === -1) {
+            $scope.showConversation($scope.cvs()[0]);
         }
+        else {
+            $scope.showConversation($scope.activeConversation);
+        }
+
     });
 };
 
@@ -218,10 +279,14 @@ $scope.removeMessage = function(c, m) {
         $scope.$root.DICT.messages.CONFIRM_DELETE_OK,
         $scope.$root.DICT.messages.CONFIRM_DELETE_CANCEL
     ).then(function() {
-        $scope.conversations.removeMessages(c, m);
-        if (!$scope.conversations.contains($scope.activeConversation)) {
-            $scope.showConversation($scope.conversations.collection[0]);
+        $scope.conversationsCache.removeMessages(c, m);
+        if ($scope.cvs().indexOf($scope.activeConversation) === -1) {
+            $scope.showConversation($scope.cvs()[0]);
         }
+        else {
+            $scope.showConversation($scope.activeConversation);
+        }
+
     });
 };
 
@@ -275,45 +340,61 @@ $scope.$on('$destroy', function() {
     wdKey.deleteScope('messages');
 });
 
+//=================================================================================
 function scrollIntoView() {
     _.defer(function() {
         $scope.$broadcast('wdm:autoscroll:bottom');
     });
 }
+
+/**
+ * Active a conversation in conversations list of current view.
+ * @param  {Conversation} c
+ * @return {Promise}    Resolved by newly active conversation.
+ */
 function activeConversation(c) {
     var defer = $q.defer();
     if ($scope.activeConversation === c) {
-        defer.reject();
+        defer.reject('pass');
     }
     else {
         var curActiveCvs = $scope.activeConversation;
-        if ($scope.conversations.contains(curActiveCvs)) {
+
+        if ($scope.conversationsCache.contains(curActiveCvs)) {
             curActiveCvs.allRead();
         }
         // Change c content right now.
         $scope.activeConversation = c;
+        $scope.cvsChanging = true;
 
         // If already read any message, just active it.
         // Or load messages.
         if (c.messages.length || c.loaded) {
+            $scope.cvsChanging = false;
             defer.resolve(c);
         }
         else {
-            $scope.cvsChanging = true;
+            var preloading;
 
-            var promise = c;
             if (c.isSearchResult && !$scope.conversations.contains(c)) {
-                var rc = $scope.conversationsCache.create(c.rawData);
-                $scope.conversationsCache.add(rc);
-                promise = rc.fetch().then(function() {
-                    return rc;
+                // When active a results conversation, preload it.
+                var copy = $scope.conversationsCache.create(c.rawData);
+                $scope.conversationsCache.add(copy);
+                preloading = copy.fetch().then(function() {
+                    return c;
                 }, function() {
-                    return rc;
+                    return c;
                 });
             }
-            $q.when(promise).then(function() {
+            else {
+                preloading = $q.when(c);
+            }
+
+            preloading.then(function() {
+                // Normal conversation will fetch it's latest messages.
+                // Results conversation will fetch it's first result messages set.
                 return c.messages.fetch();
-            }).then(function success() {
+            }).then(function done() {
                 $scope.cvsChanging = false;
                 defer.resolve(c);
             }, function error() {
@@ -321,7 +402,6 @@ function activeConversation(c) {
                 defer.reject();
             });
         }
-
     }
     return defer.promise;
 }

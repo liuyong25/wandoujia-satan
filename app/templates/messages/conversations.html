@@ -22,15 +22,15 @@
                     <span class="clear" ng-show="searchQuery" ng-click="clearSearch()"></span>
                 </div>
             </div>
-            <ol class="wdm-conversations unstyled" wdm-keep-visible>
+            <ol class="wdm-conversations unstyled" wdm-keep-visible wdm-selection>
                 <li class="wdmc-row"
                     ui-animate
                     ng-repeat="c in cvs()"
                     ng-class="{ selected: c.selected, highlight: c == activeConversation }"
                     ng-click="showConversation(c)">
                     <label class="wdmcr-a"
-                        ng-click="$event.stopPropagation();$root.GA('messages:select:' + c.selected)">
-                        <span bs-tooltip="{{ selectTip(c) }}">
+                        ng-click="$event.stopPropagation();select(c, $event.shiftKey);$root.GA('messages:select:' + c.selected)">
+                        <span bs-tooltip="{{ c.selected && $root.DICT.messages.ACTION_DESELECT || $root.DICT.messages.ACTION_SELECT }}">
                             <input type="checkbox" ng-model="c.selected">
                         </span>
                     </label>
@@ -91,6 +91,8 @@
                     <div>{{$root.DICT.messages.LABEL_SEND_TO}}: </div>
                     <textarea wdm-receiver rows="1"></textarea>
                 </div>
+                <div class="btn wdmct-d"
+                    ng-click="remove(activeConversation)"><i class="icon-del-toolbar"></i></div>
             </section>
 
             <section class="wdm-results" ui-if="isSearching() && activeConversation.isSearchResult">
@@ -120,10 +122,10 @@
                         >
                         <div class="wdme-sep" ui-if="m.isSeparator"><span>{{ m.date | date:'MMM d' }}</span></div>
                         <div class="wdme-row"
-                            ng-class="{'wdme-row-self': m.type >= 2 && m.type <= 6, 'wdme-row-highlight': activeConversation.messages.isCursor(m)}">
+                            ng-class="{'wdme-row-self': m.isSent, 'wdme-row-highlight': activeConversation.messages.isCursor(m)}">
                             <div class="wdmer-a">
                                 <div class="wdmer-a-a"
-                                    ng-show="m.type >= 2 && m.type <= 6 && activeConversation.addresses.length > 1">
+                                    ng-show="m.isSent && activeConversation.multiple">
                                     {{$root.DICT.messages.BATCH_RECEIVER_TIP}}
                                     <span bs-tooltip="{{m.address}}">{{ m.contact_name || m.address }}</span>:
                                 </div>
@@ -160,7 +162,7 @@
                         ng-model="activeConversation.draft"
                         wdm-textarea
                         wd-auto-stretch-textarea
-                        data-placeholder="{{ editorPlaceholder(activeConversation) }}"></textarea>
+                        data-placeholder="{{ (activeConversation.messages.hasRecieved && ($root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + activeConversation.displayNames.join(', ')) || $root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...' }}"></textarea>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')"
                         bs-tooltip="{{$root.DICT.messages.BTN_SEND_TIP}}"
                         ng-disabled="!activeConversation.draft"

@@ -19,7 +19,21 @@ link: function(scope, element, attributes) {
         }, 0);
     });
     scope.$on('wdm:autoscroll:flip', function() {
-        element.stop().scrollTop(childElement.outerHeight());
+        var cursor = childElement.find('.wdme-row-highlight');
+        var to = childElement.outerHeight();
+        if (cursor.length) {
+            var cursorTop = cursor.offset().top;
+            var cursorHeight = cursor.height();
+            var cursorBottom = cursorTop + cursorHeight;
+            var containerTop = element.offset().top;
+            var containerHeight = element.height();
+            var containerBottom = containerTop + containerHeight;
+            var scrollTop = element.scrollTop();
+
+            to = Math.min(to, scrollTop + (cursorTop - containerTop) - (containerHeight / 2 - cursorHeight / 2));
+        }
+
+        element.stop().scrollTop(to);
     });
 
     scope.$on('wdm:autoscroll:bottom', function() {
