@@ -1,3 +1,5 @@
+    @import "icon";
+
 .wdj-applications{
     p{
         display: inline-block;
@@ -206,11 +208,15 @@
         dl.new-list{
 
             dt{
-                img{
+                div.new-app-image{
+                    display: inline-block;
+                    margin-top: 39px;
                     width: 96px;
                     height: 96px;
+                    @include applications-sprite("app_default");
                 }
             }
+
             cursor: default;
 
             span.close-btn{
@@ -445,10 +451,16 @@
                 bottom: 8px;
             }
 
+            div.unknowTips{
+                height: 147px;
+                width: 679px;
+                display: block;
+                @include applications-sprite("unknowTips");
+            }
+
         }
         /* unkonw tips end */
 
     }
 
-	@import "icon";
 }

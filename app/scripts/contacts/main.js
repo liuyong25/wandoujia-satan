@@ -2,12 +2,14 @@ define([
     'angular',
     'common/main',
     'contacts/controllers/ContactsCtrl',
-    'contacts/services/contactsListSer'
+    'contacts/services/contactsListSer',
+    'contacts/directives/autoScroll'
 ], function(
     angular,
     common,
     contactsCtrl,
-    contactsListSer
+    contactsListSer,
+    autoScroll
 ) {
 
 'use strict';
@@ -15,5 +17,6 @@ define([
 //注册angular的模块和control
 angular.module('wdContacts', ['wdCommon'])
     .controller('ContactsCtrl', contactsCtrl)
-    .factory('wdcContacts',contactsListSer);
+    .factory('wdcContacts',contactsListSer)
+    .directive('wdcAutoScroll', autoScroll);
 });

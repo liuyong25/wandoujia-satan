@@ -20,11 +20,12 @@
             </button>
             <div class="search">
                 <input type="text" ng-model="searchText" placeholder="Search contacts...">
+                <i class="icon-search"></i>
                 <span class="icon-clear" ng-show="searchText" ng-click="searchText='';clearSearch();">&times;</span>
             </div>
         </div>
 
-        <ul class="contacts-list">
+        <ul class="contacts-list" wdc-auto-scroll>
 
             <!-- 没有联系人时显示 -->
             <li class="no-contacts" ng-show="isNoContactsShow">{{$root.DICT.contacts.NO_CONTACT_TIPS}}</li>
@@ -33,7 +34,7 @@
             <!-- 每个联系人的模板 -->
             <li class="contacts-item" ng-repeat="item in pageList" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
                 <label class="selected" ng-model="item.checked" ng-click="$event.stopPropagation();">
-                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);" bs-tooltip="{{$root.DICT.contacts.WORDS.select}}">
+                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked($event,item);" bs-tooltip="{{$root.DICT.contacts.WORDS.select}}">
                 </label>
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">
@@ -78,7 +79,7 @@
             <!-- 上传图片遮罩 end -->
             <div class="info">
                 <p class="name">{{contact.name.display_name}}</p>
-                <p class="remark">{{contact.organization[0].company}}</p>
+                <p class="remark">{{contact.organization[0].company}}  {{contact.organization[0].title}}</p>
                 <div class="editName dn">
                     <div class="account dn">
                         <h4>{{$root.DICT.contacts.WORDS.account}}</h4>
@@ -115,7 +116,7 @@
                         <p class="detail dn">{{item.number}}</p>
                         <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone number">
                         <span class="delete dn" ng-click="delItem('phone',item)">&times;</span>
-                        <i class="icon-sms-toolbar" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
+                        <i class="icon-sms-toolbar" ng-show="isSendMessageShow" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
                     </dd>
 
                     <!-- 新增一个item start -->

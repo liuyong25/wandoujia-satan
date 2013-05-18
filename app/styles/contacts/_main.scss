@@ -1,3 +1,5 @@
+    @import "icon";
+
 .wdj-contacts{
     font-family: arial, sans-serif;
 
@@ -113,6 +115,12 @@
         padding-top: 9px;
         cursor: pointer;
 
+        i.icon-search{
+            position: absolute;
+            left: 17px;
+            top: 66px;
+        }
+
         input{
             border-color: #CCC;
             font-size: 12px;
@@ -122,7 +130,6 @@
             width: 353px;
             height: 22px;
             box-shadow: none;
-            background:#f5f5f5 image-url("contacts/icon_search.png") no-repeat 2% 50%;
         }
 
         input::-ms-clear {
@@ -174,5 +181,4 @@
 
 	@import "item";
 	@import "edit";
-    @import "icon";
 }
