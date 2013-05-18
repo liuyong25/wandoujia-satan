@@ -880,6 +880,12 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         //显示为base64
                         reader.onload = function(e){
                             $('.contacts-edit img.photo').attr('src',e.target.result);
+                            for (var i = 0 , l = $scope.pageList.length ; i < l ; i++ ) {
+                                if($scope.pageList[i]['id'] === G_showingContact['id'] ){
+                                    $scope.pageList[i]['photo'] = e.target.result;
+                                    return;
+                                }
+                            }
                         };
                     };
                 }
