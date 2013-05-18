@@ -250,19 +250,21 @@ if ($scope.serverMatchRequirement) {
 
 var keyboardScope = wdKey.push('messages');
 
-wdKey.$apply('up', 'messages', function() {
+wdKey.$apply('up, k', 'messages', function() {
     var index = $scope.cvs().indexOf($scope.activeConversation);
     if (index === -1) { return; }
     if (index > 0) {
         $scope.showConversation($scope.cvs()[index - 1]);
     }
+    return false;
 });
-wdKey.$apply('down', 'messages', function() {
+wdKey.$apply('down, j', 'messages', function() {
     var index = $scope.cvs().indexOf($scope.activeConversation);
     if (index === -1) { return; }
     if (index < $scope.cvs().length - 1) {
         $scope.showConversation($scope.cvs()[index + 1]);
     }
+    return false;
 });
 
 // Shutdown
