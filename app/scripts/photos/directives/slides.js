@@ -1,10 +1,12 @@
 define([
-        'text!templates/photos/slides.html',
-        'underscore'
-    ], function(
-        template,
-        _
-    ) {
+    'text!templates/photos/slides.html',
+    'underscore',
+    'angular'
+], function(
+    template,
+    _,
+    angular
+) {
 'use strict';
 return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
     function(WDP_PLAYING_INTERVAL, $rootScope, wdViewport, wdKey, GA) {
@@ -142,18 +144,92 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
             });
 
             var timeStart = null;
+            var maskImage = null;
             var open = function() {
-                element.addClass('slides-active');
+                if (!element.hasClass('slides-active')) {
+                    maskImage = createAnimation();
+                    maskImage.promise().done(function() {
+                        element.addClass('slides-active');
+                        setTimeout(function() {
+                            maskImage.remove();
+                            maskImage = null;
+                        }, 400);
+                    });
+                }
                 $scope.$broadcast('open');
                 timeStart = (new Date()).getTime();
             };
             var close = function() {
-                // wdKey.setScope('photos');
+                if (maskImage) {
+                    maskImage.remove();
+                    maskImage = null;
+                }
                 $scope.$broadcast('close');
                 $scope.close();
                 element.removeClass('slides-active');
                 GA('photos:slide:stay:' + ((new Date()).getTime() - timeStart));
             };
+
+            function createAnimation() {
+                var img = angular.element('<img>');
+                img.attr('src', $scope.current.thumbnail_path);
+                var body = angular.element('body');
+
+                var index = $scope.photos.indexOf($scope.current);
+                var block = angular.element('.wdp-block:nth-of-type(' + (index + 1) + ')');
+                var offset = block.offset();
+
+                img.css({
+                    opacity: 0,
+                    position: 'fixed',
+                    left: offset.left + $scope.$parent.layout.metas[index].innerX,
+                    top: offset.top + $scope.$parent.layout.metas[index].innerY,
+                    'z-index': 100000
+                });
+
+                body.append(img);
+
+                // force reflow
+                img.offset();
+
+                var windowWidth = angular.element(window).width();
+                var windowHeight = angular.element(window).height();
+
+                var horizontal = $scope.current.orientation % 180 === 0;
+                var frameWidth = windowWidth - 90 * 2;
+                var frameHeight = windowHeight - 30 - 80;
+                var frameLeft = 90;
+                var frameTop = 30;
+
+                var imageWidth = horizontal ? $scope.current.width : $scope.current.height;
+                var imageHeight = horizontal ? $scope.current.height : $scope.current.width;
+
+                var widthScale = imageWidth / frameWidth;
+                var heightScale = imageHeight / frameHeight;
+                var scale = Math.max(widthScale, heightScale);
+
+                if (scale > 1) {
+                    imageWidth = imageWidth / scale;
+                    imageHeight = imageHeight / scale;
+                }
+
+                var offsetX = (frameWidth - (horizontal ? imageWidth : imageHeight)) / 2;
+                var offsetY = (frameHeight - (horizontal ? imageHeight : imageWidth)) / 2;
+
+                img.animate({
+                    opacity: 1
+                }).animate({
+                    left: windowWidth / 2 - $scope.current.thumbnail_width / 2,
+                    top: windowHeight / 2 - $scope.current.thumbnail_height / 2
+                }).animate({
+                    left: offsetX + frameLeft,
+                    top: offsetY + frameTop,
+                    width: imageWidth,
+                    height: imageHeight
+                });
+
+                return img;
+            }
 
             // Watch 'current' to toggle open/close.
             var keyboardScope = null;
@@ -226,7 +302,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
             });
             $scope.$on('$destroy', function() {
                 if (keyboardScope) {
-                    keyboard.done();
+                    keyboardScope.done();
                 }
                 wdKey.deleteScope('photos:preview');
             });
