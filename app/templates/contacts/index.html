@@ -34,7 +34,7 @@
             <!-- 每个联系人的模板 -->
             <li class="contacts-item" ng-repeat="item in pageList" ng-click="showContacts(item.id)" ng-class="{clicked:item.clicked,checked:item.checked}">
                 <label class="selected" ng-model="item.checked" ng-click="$event.stopPropagation();">
-                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked(item.checked);" bs-tooltip="{{$root.DICT.contacts.WORDS.select}}">
+                    <input class="selected" type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="clickChecked($event,item);" bs-tooltip="{{$root.DICT.contacts.WORDS.select}}">
                 </label>
                 <img class="photo" ng-src="{{item.photo}}">
                 <div class="info">

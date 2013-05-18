@@ -49,6 +49,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     var G_protocol = $scope.$root.DICT.contacts.IM_PROTOCOL;
     var G_debug = 0 ;
 
+    //最后一个选择的元素
+    var G_lastChecked;
+
     //按键相关
     var G_keyContact;
 
@@ -433,15 +436,25 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         };
     };
 
-    $scope.clickChecked = function(isChecked){
-
-        if(isChecked === false){
-            $scope.selectedNum -= 1;
+    $scope.clickChecked = function(event,item){
+        if(item['checked'] === false){
             GA('Web Contacts:click checkbox unchecked');
+            $scope.selectedNum -= 1;
         }else{
-            $scope.selectedNum += 1;
             GA('Web Contacts:click checkbox checked');
+            $scope.selectedNum += 1;
         };
+
+        if(event.shiftKey){
+            var startIndex = Math.max($scope.pageList.indexOf(G_lastChecked), 0);
+            var stopIndex = $scope.pageList.indexOf(item);
+            $scope.pageList.slice(Math.min(startIndex, stopIndex), Math.max(startIndex, stopIndex) + 1).forEach(function(v) {
+                if(!v['checked']){
+                    v['checked'] = true;
+                    $scope.selectedNum += 1;
+                }
+            });
+        }
 
         if($scope.selectedNum > 0){
             $scope.isDeselectBtnShow = true;
@@ -450,6 +463,8 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             $scope.isDeselectBtnShow = false;
             $scope.isDeleteBtnShow = false;
         }
+
+        G_lastChecked = item ;
     };
 
     //编辑联系人
@@ -1000,6 +1015,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             }
         }
     });
+
     $scope.$on('$destroy', function() {
         G_keyContact.done();
         wdKey.deleteScope('contacts');
