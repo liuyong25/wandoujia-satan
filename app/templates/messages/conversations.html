@@ -34,8 +34,7 @@
                             <input type="checkbox" ng-model="c.selected">
                         </span>
                     </label>
-                    <div class="wdmcr-b" ng-class="{ multiple: c.multiple }"
-                        ng-click="jumpToContacts(c)">
+                    <div class="wdmcr-b" ng-class="{ multiple: c.multiple }">
                         <img ui-if="!c.multiple && c.photo_path" ng-src="{{c.photo_path}}">
                     </div>
                     <div class="wdmcr-c">
@@ -95,7 +94,7 @@
             </section>
 
             <section class="wdm-results" ui-if="isSearching() && activeConversation.isSearchResult">
-                {{activeConversation.index + 1}} of {{activeConversation.length}} message ........
+                {{ $root.DICT.messages.SEARCH_RESULTS_TIP.replace('$1$', activeConversation.index + 1).replace('$2$', activeConversation.length).replace('$3$', searchQuery) }}
                 <div class="wdmr-b btn-group">
                     <span class="btn"
                         ng-class="{'wdmr-b-disabled': !activeConversation.hasPrevious()}"

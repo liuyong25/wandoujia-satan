@@ -1,7 +1,7 @@
 temp
 dist
 app/components
-app/images/sprites
+app/images/*.*
 
 .DS_Store
 .sass-cache

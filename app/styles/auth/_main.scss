@@ -7,11 +7,14 @@ $auth-spacing: 4px;
 
     .a:before {
         content: "";
-        $name: "icon_logo_white";
+        // $name: "icon_logo_white";
         @include position(fixed, 20px 0 0 30px);
-        @include auth-sprite($name);
-        width: auth-sprite-width($name);
-        height: auth-sprite-height($name);
+        // @include auth-sprite($name);
+        // width: auth-sprite-width($name);
+        // height: auth-sprite-height($name);
+        @include use-sprite("logo-white");
+        width: icon-width("logo-white");
+        height: icon-height("logo-white");
     }
 
     .container {
