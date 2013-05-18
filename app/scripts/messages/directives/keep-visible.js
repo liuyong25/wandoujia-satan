@@ -24,8 +24,6 @@ link: function(scope, element) {
 
             var scrollTop = element.scrollTop();
 
-console.log(containerTop, containerBottom, top, bottom, scrollTop);
-
             if (top < 0) {
                 element.stop().animate({
                     scrollTop: scrollTop + top - containerHeight
