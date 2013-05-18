@@ -986,7 +986,8 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
             if( (i - 1 >= 0) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i-1]['id']);
-                return;
+                $scope.$broadcast('wdc:intoView');
+                return false;
             }
         }
     });
@@ -994,7 +995,8 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
             if( (i + 1 < l) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i+1]['id']);
-                return;
+                $scope.$broadcast('wdc:intoView');
+                return false;
             }
         }
     });
