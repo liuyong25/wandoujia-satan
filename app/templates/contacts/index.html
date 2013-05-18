@@ -20,6 +20,7 @@
             </button>
             <div class="search">
                 <input type="text" ng-model="searchText" placeholder="Search contacts...">
+                <i class="icon-search"></i>
                 <span class="icon-clear" ng-show="searchText" ng-click="searchText='';clearSearch();">&times;</span>
             </div>
         </div>
@@ -115,7 +116,7 @@
                         <p class="detail dn">{{item.number}}</p>
                         <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone number">
                         <span class="delete dn" ng-click="delItem('phone',item)">&times;</span>
-                        <i class="icon-sms-toolbar" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
+                        <i class="icon-sms-toolbar" ng-show="isSendMessageShow" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
                     </dd>
 
                     <!-- 新增一个item start -->

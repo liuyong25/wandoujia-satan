@@ -7,7 +7,7 @@
 
         <!-- 新安装的应用列表 -->
         <dl class="new-list" ng-repeat="item in newList">
-            <dt><img ng-src="../../images/applications/app_default.png"></dt>
+            <dt><div class="new-app-image"></div></dt>
             <dd class="title" title="{{item.file_name}}">{{item.file_name}}</dd>
             <dd class="progress" ng-show="item.progressShow"><span style="width:{{item.progress}}"></span></dd>
 
@@ -114,7 +114,7 @@
         <div class="unknowApkTips" ng-click="$event.stopPropagation();">
             <span class="close-btn" ng-click="closeMask()">&times;</span>
             <h2>{{$root.DICT.applications.CONFIRMS.UNKNOWNTIPS}}</h2>
-            <img src="../../images/applications/unkonwTips.png">
+            <div class="unknowTips"></div>
             <ul>
                 <li>1. In the pop-up window click settings.</li>
                 <li>2. In the safe list check allows. The unknown source applications.</li>

@@ -221,6 +221,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             $scope.isDelBtnShow = true;
             $scope.isSaveBtnShow = false;
             $scope.isCancelBtnShow = false;
+            $scope.isSendMessageShow = false;
 
             setTimeout(function(){
 
@@ -229,7 +230,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 wrap.find('p.name').show();
                 wrap.find('p.remark').show();
                 wrap.find('select').hide();
-                wrap.find('i.icon-sms-toolbar').show();
                 wrap.find('input').hide();
                 wrap.find('button.btn-addNewItem').hide();
                 wrap.find('hr').show();
@@ -251,6 +251,8 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         dt.eq(i).hide();
                     };
                 };
+                $scope.isSendMessageShow = true;
+                $scope.$apply();
             },50);
         };
 
@@ -360,6 +362,14 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 delId.push(id);
             };
 
+            //取得将被删除的上一个元素，为了删除后跳回目的地
+            var delBack;
+            for(var i = 0 , l = $scope.pageList.length ; i < l ; i ++){
+                if($scope.pageList[i]['id'] === delId[0]){
+                    delBack = $scope.pageList[i-1];
+                }
+            };
+
             for(var i = 0 , l = delId.length ; i < l ; i ++ ){
                 for(var j = 0 , k = $scope.pageList.length ; j < k ; j++){
                     if( $scope.pageList[j].id == delId[i] ){
@@ -384,17 +394,16 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 };
             };
             $scope.loadMore();
-            if(!!$scope.pageList[0]){
-                $scope.pageList[0]['clicked'] = true;
-                G_clicked = $scope.pageList[0];
-                showContacts($scope.pageList[0]['id']);
-            }else{
-                showContacts();
-            };
             if(!!G_clicked && !!G_clicked['clicked']){
                 G_clicked.clicked = false;
             };
-            $('ul.contacts-list')[0].scrollTop = 0;
+            if(!!$scope.pageList[0]){
+                G_clicked = delBack;
+                showContacts(delBack['id']);
+                delBack['clicked'] = true;
+            }else{
+                showContacts();
+            };
             if(!id){
                 $scope.isDeleteBtnShow = false;
             };
@@ -448,6 +457,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
         GA('Web Contacts:click edit contact button');
         $scope.isPhotoUploadShow = true;
+        $scope.isSendMessageShow = false;
         G_keyContact.done();
 
         var wrap = $('.contacts-edit');
@@ -469,7 +479,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         ele.find('dt').show();
 
         ele.find('p.name').hide();
-        ele.find('i.icon-sms-toolbar').hide();
         ele.find('p.remark').hide();
         ele.find('hr').hide();
         ele.find('div.editName').show();
@@ -960,6 +969,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     $scope.isSaveBtnShow = false;
     $scope.isCancelBtnShow = false;
     $scope.isNewContactDisable = true;
+    $scope.isSendMessageShow = false;
 
     //被选中的数量
     $scope.selectedNum = 0;
@@ -974,7 +984,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     window.wdcContacts = wdcContacts;
     wdKey.$apply('up', 'contacts', function() {
         for (var i = 0 , l = G_pageList.length ; i < l ; i += 1 ){
-            if( (i - 1 > 0) && G_pageList[i]['clicked'] ){
+            if( (i - 1 >= 0) && G_pageList[i]['clicked'] ){
                 showContacts(G_pageList[i-1]['id']);
                 return;
             }
