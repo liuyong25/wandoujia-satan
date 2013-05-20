@@ -32,6 +32,9 @@ define([
         //显示联系人的按键
         var G_keyInfo;
 
+        //最后一个选择的元素
+        var G_lastChecked;
+
         function getAppListData(data){
             $scope.isLoadShow = false;
             $scope.dataLoaded = true;
@@ -348,15 +351,31 @@ define([
             $scope.selectedNum = 0;
         };
 
-        function checkedApp(e){
+        function checkedApp(e, item){
             GA('Web applications : click Checkbox');
-            if($(e.target).prop('checked')){
+            if(item.checked){
                 $scope.selectedNum += 1;
                 $(e.target.parentNode.parentNode).css('opacity',1);
             }else{
                 $scope.selectedNum -= 1;
                 $(e.target.parentNode.parentNode).css('opacity','');
             };
+
+            if(e.shiftKey){
+                var startIndex = Math.max($scope.list.indexOf(G_lastChecked), 0);
+                var stopIndex = $scope.list.indexOf(item);
+                $scope.list.slice(Math.min(startIndex, stopIndex), Math.max(startIndex, stopIndex) + 1).forEach(function(v,i) {
+                    if(!v['checked']){
+                        v['checked'] = true;
+                        $scope.selectedNum += 1;
+                    }
+                });
+
+                var ele = $('dd.toolbar');
+                for (var i = startIndex ; i <= stopIndex; i += 1 ){
+                    ele.eq(i).css('opacity',1);
+                }
+            }
 
             if($scope.selectedNum > 0){
                 $scope.isDeleteBtnShow = true;
@@ -365,6 +384,8 @@ define([
                 $scope.isDeleteBtnShow = false;
                 $scope.isDeselectBtnShow = false;
             }
+
+            G_lastChecked = item ;
         };
 
         function clickInstallApk(){
