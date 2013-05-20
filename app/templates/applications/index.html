@@ -28,7 +28,7 @@
             <dd class="title" title="{{item.name}}">{{item.name}}</dd>
             <dd class="toolbar" ng-click="$event.stopPropagation();">
                 <span class="btn-icon-check" bs-tooltip="Select">
-                    <input type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="checkedApp($event)">
+                    <input type="checkbox" ng-checked="item.checked" ng-model="item.checked" ng-click="checkedApp($event,item)">
                 </span>
                 <span class="btn-icon-del" ng-click="delApp(item.package_name);clickHoverUninstall();" bs-tooltip="Uninstall">
                     <i class="icon-delete"></i>
