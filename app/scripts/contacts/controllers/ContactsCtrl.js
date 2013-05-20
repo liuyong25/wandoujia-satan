@@ -941,7 +941,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         $scope.isNoContactsShow = false;
 
         //调用搜索接口
-        var search = wdcContacts.searchContacts(text).then(function(data){
+        wdcContacts.searchContacts(text).then(function(data){
             $scope.isListLoadShow = false;
             for(var i = 0 , l = data.length ; i < l ; i += 1 ){
                 G_searchList.push(getListItem(data[i]));
