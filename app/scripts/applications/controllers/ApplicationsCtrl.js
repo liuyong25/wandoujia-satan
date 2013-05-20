@@ -1,8 +1,9 @@
 define([
     'fineuploader'
     ],function(fineuploader){
-    return ['$scope','$http','wdDev','wdSocket','wdAlert','$route','GA','wdcApplications','wdKey',function($scope,$http,wdDev,wdSocket,wdAlert,$route,GA,wdcApplications,wdKey){
+    return ['$scope','$http','wdDev','wdSocket','wdAlert','$route','GA','wdcApplications','wdKey','wdcContacts',function($scope,$http,wdDev,wdSocket,wdAlert,$route,GA,wdcApplications,wdKey,wdcContacts){
 
+        window.wdcContacts = wdcContacts;
         //$scope相关
         //展示应用列表
         $scope.list = [];
