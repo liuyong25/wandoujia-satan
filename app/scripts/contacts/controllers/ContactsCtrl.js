@@ -55,6 +55,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     //按键相关
     var G_keyContact;
 
+    //搜索为空过嘛，如果为空过则是true
+    var G_searchIsNull = false;
+
     //获取数据
     function init(){
 
@@ -396,20 +399,26 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                     };
                 };
             };
+
             $scope.loadMore();
             if(!!G_clicked && !!G_clicked['clicked']){
                 G_clicked.clicked = false;
             };
+
             if(!!$scope.pageList[0]){
-                G_clicked = delBack;
-                showContacts(delBack['id']);
-                delBack['clicked'] = true;
+                G_clicked = delBack || $scope.pageList[0];
+                showContacts(G_clicked['id']);
+                G_clicked['clicked'] = true;
             }else{
                 showContacts();
             };
+
             if(!id){
                 $scope.isDeleteBtnShow = false;
             };
+
+            $scope.selectedNum = 0;
+            $scope.isDeselectBtnShow = false;
 
             wdcContacts.delContacts(delId).success(function(){
             }).error(function(){
@@ -900,8 +909,14 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
     //搜索功能
     $('.wdj-contacts .btn-all .search input').on('keyup',_.debounce(function(){
-        $scope.searchContacts();
-        $scope.$apply();
+        if(!!$scope.searchText){
+            $scope.searchContacts();
+            $scope.$apply();
+        }else if(!$scope.searchText && !G_searchIsNull ){
+            G_searchIsNull = true;
+            $scope.searchContacts();
+            $scope.$apply();
+        }
     },300));
 
     $('.wdj-contacts .btn-all .search .icon-clear').on('click',function(){
