@@ -68,7 +68,9 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
             }
 
-            global.fun.call(me,data);
+            if(!!global.fun){
+                global.fun.call(me,data);
+            }
 
         });
     }
@@ -119,7 +121,12 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
             var defer = $q.defer();
 
             //如果没有加载过联系人数据，则自动启动启动加载
-            if ( global.contacts.length === 0 ) { me.init(); }
+            if(!global.contacts.length){
+
+                //自动加载数据，return 一个promise
+                getData( 0, CONFIG.dataLengthOnce, null );
+            }
+
             query = query.toLocaleLowerCase();
             if ( !query ) {
                 defer.resolve( global.contacts );
@@ -129,7 +136,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
                 //如果数据未加载完整，从后端搜索，数据完整从前端搜索
                 if( !global.dataFinish ) {
-
                     $http({
                         method: 'get',
                         url: '/resource/contacts/search',
