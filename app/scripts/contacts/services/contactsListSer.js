@@ -118,6 +118,7 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
             //是否查找email数据
             options = options || {};
             options.email = options.email || true ;
+            options.sms = options.sms || false;
             var defer = $q.defer();
 
             //如果没有加载过联系人数据，则自动启动启动加载
@@ -161,11 +162,25 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                 }else{
 
                     var list = [];
+
+                    //返回的简版数据
+                    var smsList = [];
                     _.each( global.contacts, function( value ) {
 
                         //首先查找名字
                         if( ( !!value['name'][ 'display_name' ] && value['name'][ 'display_name' ].toLocaleLowerCase().replace(/\s/g,'').indexOf( query ) >= 0 ) ){
                             list.push( value );
+
+                            //给简版的逻辑
+                            if(options.sms){
+                                _.each(value[ 'phone' ],function(v){
+                                    smsList.push({
+                                        name:value['name'][ 'display_name' ],
+                                        phone:v['number']
+                                    });
+                                });
+                            }
+
                         }else{
 
                             //查找电话
@@ -173,6 +188,15 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                                 var v = value[ 'phone' ][i];
                                 if( ( !!v[ 'number' ] && v[ 'number' ].toLocaleLowerCase().replace(/\s/g,'').indexOf( query ) >= 0 ) ){
                                     list.push( value );
+
+                                    //给简版的逻辑
+                                    if(options.sms){
+                                        smsList.push({
+                                            name:value['name'][ 'display_name' ],
+                                            phone:v[ 'number' ]
+                                        });
+                                    }
+
                                     return;
                                 }
                             }
@@ -193,7 +217,12 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                     });
 
                     //TODO:这块可以根据query是否一致来做些缓存
-                    defer.resolve( list );
+                    if(options.sms){
+                        defer.resolve( smsList );
+                    }else{
+                        defer.resolve( list );
+                    }
+
                 }
             };
 
