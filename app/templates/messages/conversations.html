@@ -92,6 +92,8 @@
                     <textarea wdm-receiver rows="1"></textarea>
                 </div>
                 <div class="btn wdmct-d"
+                    bs-tooltip="{{ $root.DICT.messages.ACTION_DELETE }}"
+                    data-options="{ placement: 'bottom' }"
                     ng-click="remove(activeConversation)"><i class="icon-del-toolbar"></i></div>
             </section>
 
