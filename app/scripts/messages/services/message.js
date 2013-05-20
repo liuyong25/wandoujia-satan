@@ -38,6 +38,7 @@ Message.prototype = Object.create(_super, {
     isError:    {get: function() { return this.status === 64; }},
     isSMS:      {get: function() { return this.category === 0; }},
     isMMS:      {get: function() { return this.category === 1; }},
+    isSent:     {get: function() { return this.type >= 2 && this.type <= 6; }},
     url:        {get: function() { return '/resource/messages/' + this.id;}}
 });
 
@@ -64,7 +65,7 @@ _.extend(Message.prototype, {
      * @return {Promise} Resolve by Message
      */
     destroy: function() {
-        return $http.delete(this.url).then(function done() {
+        return $http['delete'](this.url).then(function done() {
             return this;
         }.bind(this), function fail(response) {
             return response.status === 404 ? this : $q.reject();

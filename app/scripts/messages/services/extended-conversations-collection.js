@@ -21,6 +21,12 @@ _.extend(ExtendedConversationsCollection.prototype, {
 
     constructor: ExtendedConversationsCollection,
 
+    clear: function() {
+        _super.clear.call(this);
+        this._cursor = null;
+        this.loaded = true;
+    },
+
     sort: function() {
         this.collection.sort(function(a, b) {
             if (a.isNew && b.isNew) {

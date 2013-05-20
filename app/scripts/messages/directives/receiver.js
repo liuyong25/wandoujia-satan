@@ -4,10 +4,12 @@ define([
     _
 ) {
 'use strict';
-return ['wdDev', function(wdDev) {
+return ['wdDev', 'wdcContacts', function(wdDev, wdcContacts) {
 return {
 
 link: function(scope, element) {
+    wdcContacts.init();
+
     var itemManager = {
         stringToItem: function(str)
         {
@@ -44,7 +46,7 @@ link: function(scope, element) {
         }
         if (addresses === old) {
             element.textext({
-                plugins : 'tags prompt autocomplete ajax',
+                plugins : 'tags prompt autocomplete',
                 prompt : scope.$root.DICT.messages.RECEIVER_PLACEHOLDER,
                 ext: {
                     itemManager: itemManager
@@ -62,25 +64,43 @@ link: function(scope, element) {
                     render: function(suggestion) {
                         return '<span>' + suggestion.display_name + '</span>&nbsp;' + suggestion.number;
                     }
-                },
-                ajax : {
-                    typeDelay: 0.2,
-                    type: 'POST',
-                    contentType: 'application/json; charset=utf-8',
-                    url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=20'),
-                    dataType : 'json',
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    processData: false,
-                    dataCallback: function(query) {
-                        var data = [{
-                            field: 'keyword',
-                            keyword: query
-                        }];
-                        return JSON.stringify(data);
-                    }
                 }
+                // ajax : {
+                //     typeDelay: 0.2,
+                //     type: 'POST',
+                //     contentType: 'application/json; charset=utf-8',
+                //     url : wdDev.wrapURL('/resource/contacts/suggestion?offset=0&length=20'),
+                //     dataType : 'json',
+                //     xhrFields: {
+                //         withCredentials: true
+                //     },
+                //     processData: false,
+                //     dataCallback: function(query) {
+                //         var data = [{
+                //             field: 'keyword',
+                //             keyword: query
+                //         }];
+                //         return JSON.stringify(data);
+                //     }
+                // }
+            });
+
+            element.on('getSuggestions', function(e, data) {
+                var query = data.query;
+                element.data('currentQuery', query);
+
+                wdcContacts.getContactSuggestions(query).then(function(results) {
+                    console.log(results);
+                    if (query !== element.data('currentQuery')) { return; }
+
+                    var data = results.map(function(r) {
+                        return {
+                            display_name: r.name,
+                            number: r.phone
+                        };
+                    });
+                    element.trigger('setSuggestions', { result : data });
+                });
             });
 
             element.on('setFormData', function() {

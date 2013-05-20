@@ -50,8 +50,10 @@ return ['wdpImageHelper', function(wdpImageHelper) {
             var layout = function($image) {
                 var horizontal = $image.data('rotation') % 180 === 0;
                 var photo = $image.data('photo');
-                var frameWidth = element.width();
-                var frameHeight = element.height();
+                // var frameWidth = element.width();
+                // var frameHeight = element.height();
+                var frameWidth = angular.element(window).width() - 90 * 2;
+                var frameHeight = angular.element(window).height() - 30 - 80;
                 var imageWidth = horizontal ? $image.data('width') : $image.data('height');
                 var imageHeight = horizontal ? $image.data('height') : $image.data('width');
                 var widthScale = imageWidth / frameWidth;

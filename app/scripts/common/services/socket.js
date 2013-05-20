@@ -5,8 +5,8 @@ define([
 ) {
 'use strict';
 
-return ['wdEventEmitter', '$rootScope', 'wdDev', '$log',
-function(wdEventEmitter,   $rootScope,   wdDev,   $log) {
+return ['wdEventEmitter', '$rootScope', 'wdDev', '$log', 'GA',
+function(wdEventEmitter,   $rootScope,   wdDev,   $log,   GA) {
 
 function Socket() {
     // Mixin event emitter behavior.
@@ -66,24 +66,30 @@ Socket.prototype = {
             });
         });
 
-        this._transport.on('disconnect', function disconnect() {
-            $log.error('Socket disconnected!');
+        this._transport.on('connect', function() {
+            GA('socket:connect');
         });
 
+        // this._transport.on('disconnect', function disconnect() {
+        //     $log.error('Socket disconnected!');
+        // });
+
         this._transport.on('reconnecting', function reconnecting(reconnectionDelay, reconnectionAttempts) {
-            $log.log('Socket will try reconnect after ' + reconnectionDelay + ' ms, for ' + reconnectionAttempts + ' times.');
+            // $log.log('Socket will try reconnect after ' + reconnectionDelay + ' ms, for ' + reconnectionAttempts + ' times.');
         });
 
         this._transport.on('reconnect', function reconnect() {
-            $log.log('Socket reconnected!');
+            // $log.log('Socket reconnected!');
         });
 
         this._transport.on('reconnect_failed', function failed() {
             $log.warn('Socket server seems cold dead...');
+            GA('socket:dead');
         });
 
         this._transport.on('connect_failed', function() {
-            $log.warn('Socket fails to establish.');
+            // $log.warn('Socket fails to establish.');
+            GA('socket:connect_failed');
         });
     },
 

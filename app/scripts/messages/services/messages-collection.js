@@ -27,6 +27,9 @@ MessagesCollection.prototype = Object.create(_super, {
     }},
     hasUnread: {get: function() {
         return this.collection.some(function(m) { return !m.isRead; });
+    }},
+    hasRecieved: {get: function() {
+        return this.collection.some(function(m) { return m.type !== 2; });
     }}
 });
 

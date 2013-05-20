@@ -105,7 +105,7 @@ angular.module('wdAuth', ['wdCommon'])
                     GA('perf:auth_duration:success:' + ((new Date()).getTime() - timeStart));
                     $rootScope.$broadcast('signin');
                 })
-                .error(function() {
+                .error(function(reason, status) {
                     keeper.done();
                     $scope.state = 'standby';
                     $scope.buttonText = $scope.$root.DICT.portal.AUTH_FAILED;
@@ -118,16 +118,29 @@ angular.module('wdAuth', ['wdCommon'])
                     if ($scope.autoAuth) {
                         $route.reload();
                     }
+
+                    var action;
+
+                    if (status === 0) {
+                        action = 'timeout';
+                    }
+                    else if (status === 401) {
+                        action = 'reject';
+                    }
+                    else {
+                        action = 'unknown_' + status;
+                    }
+
                     if (acFromInput) {
-                        GA('login:fail:user_input');
+                        GA('login:' + action + ':user_input');
                     }
                     else if (acFromQuery) {
-                        GA('login:fail:query');
+                        GA('login:' + action + ':query');
                     }
                     if (acFromCache) {
-                        GA('login:fail:cache');
+                        GA('login:' + action + ':cache');
                     }
-                    GA('perf:auth_duration:fail:' + ((new Date()).getTime() - timeStart));
+                    GA('perf:auth_duration:' + action + ':' + ((new Date()).getTime() - timeStart));
                 });
             }
             // Invalid auth code.
