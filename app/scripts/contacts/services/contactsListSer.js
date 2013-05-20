@@ -112,6 +112,10 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
             return global.dataFinish;
         },
 
+        getContactSuggestions: function(query) {
+            return this.searchContacts(query, { sms: true, email: false });
+        },
+
         //根据query搜索联系人
         searchContacts : function( query ,options ) {
 
