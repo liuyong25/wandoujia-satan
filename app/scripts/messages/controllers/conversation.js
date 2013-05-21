@@ -179,8 +179,7 @@ $scope.showConversation = function(c) {
 };
 
 $scope.sendMessage = function(c) {
-    if (!c.draft) { return; }
-
+    if (!c.draft || !c.addresses.length) { return; }
     // Result conversation needs copy draft into copied conversation in cache
     var draft = c.draft;
     c = $scope.conversationsCache.getById(c.id);
@@ -338,6 +337,9 @@ $scope.$on('$destroy', function() {
     $scope.conversations.off('.wdm');
     keyboardScope.done();
     wdKey.deleteScope('messages');
+    if ($scope.conversationsCache.contains($scope.activeConversation)) {
+        $scope.activeConversation.allRead();
+    }
 });
 
 //=================================================================================

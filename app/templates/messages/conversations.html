@@ -64,9 +64,9 @@
                     <span class="wd-loading wd-loading-inline" data-visible="true"></span>
                 </li>
 
-                <li class="wdmc-row"
+                <li class="wdmc-blank"
                     ui-if="isSearching() && !searchLoading && !cvs().length">
-                    <div style="margin:0 auto;">{{ $root.DICT.messages.SEARCH_BLANK_TIP }}</span>
+                    <div>{{ $root.DICT.messages.SEARCH_BLANK_TIP }}</span>
                 </li>
 
                 <li ui-if="isSearching() && !searchLoading && !contentResultsList.length"
@@ -160,11 +160,13 @@
             </section>
             <section class="wdm-editor" ng-hide="cvsChanging || cvsListFirstLoading">
                 <form ng-submit="sendMessage(activeConversation)">
-                    <textarea rows="1"
-                        ng-model="activeConversation.draft"
-                        wdm-textarea
-                        wd-auto-stretch-textarea
-                        data-placeholder="{{ (activeConversation.messages.hasRecieved && ($root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + activeConversation.displayNames.join(', ')) || $root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...' }}"></textarea>
+                    <div class="wdme-ta">
+                        <textarea
+                            ng-model="activeConversation.draft"
+                            wdm-textarea
+                            msd-elastic
+                            data-placeholder="{{ (activeConversation.messages.hasRecieved && ($root.DICT.messages.EDITOR_REPLY_PLACEHOLDER + activeConversation.displayNames.join(', ')) || $root.DICT.messages.EDITOR_SEND_PLACEHOLDER) + '...' }}"></textarea>
+                    </div>
                     <button class="btn" type="submit" ng-click="$root.GA('message:send_click')"
                         bs-tooltip="{{$root.DICT.messages.BTN_SEND_TIP}}"
                         ng-disabled="!activeConversation.draft"
