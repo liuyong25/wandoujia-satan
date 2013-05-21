@@ -85,7 +85,9 @@ _.extend(ExtendedConversationsCollection.prototype, {
                 { params: params }
             ).then(function success(response) {
                 var rawData = [].concat(response.data);
-                this._cursor = response.data[response.data.length - 1].date;
+                if (response.data.length) {
+                    this._cursor = response.data[response.data.length - 1].date;
+                }
                 this.loaded = response.headers('WD-Need-More') === 'false';
                 return this.add(rawData.map(this.create.bind(this)));
             }.bind(this));

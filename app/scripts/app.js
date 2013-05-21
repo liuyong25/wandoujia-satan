@@ -96,7 +96,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
                 auth: validateToken,
                 nav: reflectNavbar('messages'),
                 versionSupport: minVersionRequirement(3769)
-            }
+            },
+            reloadOnSearch: false
         });
         $routeProvider.when('/contacts', {
             template: ContactsTemplate,

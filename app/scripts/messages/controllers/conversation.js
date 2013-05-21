@@ -309,6 +309,7 @@ if ($scope.serverMatchRequirement) {
             addresses: [decodeURIComponent(parts[0])],
             contact_names: [decodeURIComponent(parts[1])]
         });
+        $location.search('create', null).replace();
     }
 }
 

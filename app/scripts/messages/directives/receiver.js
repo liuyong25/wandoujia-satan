@@ -129,8 +129,10 @@ link: function(scope, element) {
             return item.display_name;
         });
 
-        scope.activeConversation.addresses = addresses;
-        scope.activeConversation.contact_names = names;
+        scope.activeConversation.extend({
+            addresses: addresses,
+            contact_names: names
+        });
     }
 
     _.defer(function() {
