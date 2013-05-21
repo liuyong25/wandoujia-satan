@@ -25,7 +25,8 @@ return {
             'website' : 'Website',
             'relationship' : 'Relationship',
             'note' : 'Note',
-            'select' : 'Select'
+            'select' : 'Select',
+            'deselect' : 'Deselect'
         },
         TYPE_MAP:{
              'address' : {
