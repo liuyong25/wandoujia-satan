@@ -48,6 +48,7 @@
             }
 
             li:not(:last-of-type) a {
+                font-family: Arial;
                 opacity: 0.3;
                 &:hover, &:focus {
                     opacity: 1;

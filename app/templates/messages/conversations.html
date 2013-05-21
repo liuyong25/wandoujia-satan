@@ -100,12 +100,12 @@
             <section class="wdm-results" ui-if="isSearching() && activeConversation.isSearchResult">
                 {{ $root.DICT.messages.SEARCH_RESULTS_TIP.replace('$1$', activeConversation.index + 1).replace('$2$', activeConversation.length).replace('$3$', searchQuery) }}
                 <div class="wdmr-b btn-group">
-                    <span class="btn"
-                        ng-class="{'wdmr-b-disabled': !activeConversation.hasPrevious()}"
-                        ng-click="prevResults(activeConversation)"><i class="wdmr-a-l"></i></span>
-                    <span class="btn"
-                        ng-class="{'wdmr-b-disabled': !activeConversation.hasNext()}"
-                        ng-click="nextResults(activeConversation)"><i class="wdmr-a-r"></i></span>
+                    <button class="btn"
+                        ng-disabled="!activeConversation.hasPrevious()"
+                        ng-click="prevResults(activeConversation)"><i class="wdmr-a-l"></i></button>
+                    <button class="btn"
+                        ng-disabled="!activeConversation.hasNext()"
+                        ng-click="nextResults(activeConversation)"><i class="wdmr-a-r"></i></button>
                 </div>
             </section>
 
