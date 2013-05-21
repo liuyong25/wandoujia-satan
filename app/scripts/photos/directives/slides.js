@@ -148,15 +148,22 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
             var open = function() {
                 if (!element.hasClass('slides-active')) {
                     maskImage = createAnimation();
+                    element.addClass('slides-active');
+                    $scope.$broadcast('hide');
+                    $scope.$broadcast('open');
                     maskImage.promise().done(function() {
-                        element.addClass('slides-active');
                         setTimeout(function() {
+                            $scope.$broadcast('show');
                             maskImage.remove();
                             maskImage = null;
                         }, 400);
                     });
                 }
-                $scope.$broadcast('open');
+                else if (maskImage) {
+                    $scope.$broadcast('show');
+                    maskImage.remove();
+                    maskImage = null;
+                }
                 timeStart = (new Date()).getTime();
             };
             var close = function() {
@@ -216,12 +223,13 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                 var offsetX = (frameWidth - (horizontal ? imageWidth : imageHeight)) / 2;
                 var offsetY = (frameHeight - (horizontal ? imageHeight : imageWidth)) / 2;
 
-                img.animate({
-                    opacity: 1
-                }).animate({
-                    left: windowWidth / 2 - $scope.current.thumbnail_width / 2,
-                    top: windowHeight / 2 - $scope.current.thumbnail_height / 2
-                }).animate({
+                img
+                // .animate({
+                //     left: windowWidth / 2 - $scope.current.thumbnail_width / 2,
+                //     top: windowHeight / 2 - $scope.current.thumbnail_height / 2
+                // })
+                .animate({
+                    opacity: 1,
                     left: offsetX + frameLeft,
                     top: offsetY + frameTop,
                     width: imageWidth,

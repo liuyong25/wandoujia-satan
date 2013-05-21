@@ -182,7 +182,7 @@ $scope.showConversation = function(c) {
 };
 
 $scope.sendMessage = function(c) {
-    if (!c.draft || !c.addresses.length) { return; }
+    if (!c.draft) { return; }
     // Result conversation needs copy draft into copied conversation in cache
     var draft = c.draft;
     c = $scope.conversationsCache.getById(c.id);
@@ -190,6 +190,8 @@ $scope.sendMessage = function(c) {
 
     // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
     $scope.$broadcast('wdm:beforeMessageSend', c);
+
+    if (!c.addresses.length) { return; }
 
     $scope.conversations.sendMessages(c).then(function(cc) {
         if (cc !== $scope.activeConversation) {
@@ -310,7 +312,8 @@ if ($scope.serverMatchRequirement) {
         var c = $scope.createConversation();
         c.extend({
             addresses: [decodeURIComponent(parts[0])],
-            contact_names: [decodeURIComponent(parts[1])]
+            contact_names: [decodeURIComponent(parts[1])],
+            date: Date.now()
         });
         $location.search('create', null).replace();
     }

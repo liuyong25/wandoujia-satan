@@ -108,6 +108,12 @@ return ['wdpImageHelper', function(wdpImageHelper) {
             // 2. When parent container shown.
             $scope.$on('resize', relayoutAll);
             $scope.$on('open',   relayoutAll);
+            $scope.$on('show', function() {
+                element.css('visibility', 'visible');
+            })
+            $scope.$on('hide', function() {
+                element.css('visibility', 'hidden');
+            });
 
             $scope.$on('rotate', function() {
                 // Error-tolerate

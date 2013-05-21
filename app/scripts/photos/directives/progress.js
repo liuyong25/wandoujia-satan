@@ -35,17 +35,20 @@ return [function() {
 
             promise
                 .progress(function(report) {
-                    if (report.status === 'uploading') {
-                        bar.css('transform', 'scaleX(' + (report.percent / 100) + ')');
-                    }
-                    if (report.status === 'failed') {
-                        bar.css({
-                            transform: 'none',
-                            height: 20,
-                            background: '#a00'
-                        });
-                        failed.fadeIn();
-                    }
+                    _.defer(function() {
+                        if (report.status === 'uploading') {
+                            bar.css('transform', 'scaleX(' + (report.percent / 100) + ')');
+                        }
+                        if (report.status === 'failed') {
+                            bar.css({
+                                transform: 'none',
+                                height: 20,
+                                background: '#a00'
+                            });
+                            failed.fadeIn();
+                        }
+
+                    });
                 })
                 .done(function() {
                     bar.css({
