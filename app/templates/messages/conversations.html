@@ -69,7 +69,7 @@
                     <div>{{ $root.DICT.messages.SEARCH_BLANK_TIP }}</span>
                 </li>
 
-                <li ui-if="isSearching() && !searchLoading && !contentResultsList.length"
+                <li ui-if="isSearching() && !searchLoading && !contentSearchDone"
                     style="text-align:center;">
                     <span wdm-load-more="searchContent()"
                         data-text="{{$root.DICT.messages.SEARCH_TIP.replace('$$', searchQuery.trim())}}"></span>

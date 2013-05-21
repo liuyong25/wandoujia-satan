@@ -21,6 +21,7 @@ $scope.searchQuery = '';
 $scope.resultsList = [];
 $scope.searchLoading = false;
 $scope.contentResultsList = [];
+$scope.contentSearchDone = false;
 
 $scope.cvs = function() {
     if ($scope.isSearching()) {
@@ -74,6 +75,7 @@ $scope.$watch('searchQuery', function(keyword) {
         $scope.searchLoading = true;
         $scope.resultsList = wdmConversations.searchConversationsFromCache(keyword);
         $scope.contentResultsList = [];
+        $scope.contentSearchDone = false;
         searchConversationsFromServer(keyword);
     }
     else {
@@ -94,6 +96,7 @@ $scope.searchContent = function() {
         if ($scope.searchQuery !== keyword) { return; }
 
         $scope.contentResultsList = list;
+        $scope.contentSearchDone = true;
 
         var cvs = $scope.cvs();
         if (cvs.length) {
