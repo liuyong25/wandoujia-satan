@@ -49,7 +49,6 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
                             photo: photoPromise,
                             upload: uploadPromise
                         });
-
                     },
                     onProgress: function(id, name, uploadedBytes, totalBytes) {
                         var file = uploader.getFile(id);

@@ -41,7 +41,7 @@ _.extend(ConversationsCollection.prototype, {
 
         var self = this;
         return $q.all(removed.map(function(c) {
-            // return c.destroy();
+            return c.destroy();
         }));
     },
 

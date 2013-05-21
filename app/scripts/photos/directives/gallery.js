@@ -27,7 +27,12 @@ controller: ['$scope', 'GA', 'wdAlert', function($scope, GA, wdAlert) {
     };
     $scope.select = function(photo, shiftKey) {
         if (photo.selected) {
-            GA('photos:photo:select');
+            if (shiftKey) {
+                GA('photos:photo:shift_select');
+            }
+            else {
+                GA('photos:photo:select');
+            }
         }
         else {
             GA('photos:photo:deselect');

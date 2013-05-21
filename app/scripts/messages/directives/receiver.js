@@ -88,19 +88,22 @@ link: function(scope, element) {
             element.on('getSuggestions', function(e, data) {
                 var query = data.query;
                 element.data('currentQuery', query);
+                if (!query) {
+                    element.trigger('setSuggestions', { result: [] });
+                }
+                else {
+                    wdcContacts.getContactSuggestions(query).then(function(results) {
+                        if (query !== element.data('currentQuery')) { return; }
 
-                wdcContacts.getContactSuggestions(query).then(function(results) {
-                    console.log(results);
-                    if (query !== element.data('currentQuery')) { return; }
-
-                    var data = results.map(function(r) {
-                        return {
-                            display_name: r.name,
-                            number: r.phone
-                        };
+                        var data = results.map(function(r) {
+                            return {
+                                display_name: r.name,
+                                number: r.phone
+                            };
+                        });
+                        element.trigger('setSuggestions', { result : data });
                     });
-                    element.trigger('setSuggestions', { result : data });
-                });
+                }
             });
 
             element.on('setFormData', function() {
@@ -126,8 +129,10 @@ link: function(scope, element) {
             return item.display_name;
         });
 
-        scope.activeConversation.addresses = addresses;
-        scope.activeConversation.contact_names = names;
+        scope.activeConversation.extend({
+            addresses: addresses,
+            contact_names: names
+        });
     }
 
     _.defer(function() {

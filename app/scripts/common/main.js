@@ -50,7 +50,7 @@ define([
 // jshint unused:false
 'use strict';
 // Common Module is the collection of most used or global functions.
-angular.module('wdCommon', ['wdBootstrap', 'ui'])
+angular.module('wdCommon', ['wdBootstrap', 'ui', 'monospaced.elastic'])
     // Directives
     .directive('wdAutoFocus', autofocus)
     .directive('wdAutoStretchTextarea', autoStretchTextarea)

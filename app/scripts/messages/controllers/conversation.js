@@ -21,6 +21,7 @@ $scope.searchQuery = '';
 $scope.resultsList = [];
 $scope.searchLoading = false;
 $scope.contentResultsList = [];
+$scope.contentSearchDone = false;
 
 $scope.cvs = function() {
     if ($scope.isSearching()) {
@@ -55,6 +56,7 @@ $scope.clearSearch = function() {
 
 var searchConversationsFromServer = _.debounce(function(keyword) {
     $scope.$apply(function() {
+        GA('messages:search:input');
         wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
             if ($scope.searchQuery !== keyword) { return; }
 
@@ -74,6 +76,7 @@ $scope.$watch('searchQuery', function(keyword) {
         $scope.searchLoading = true;
         $scope.resultsList = wdmConversations.searchConversationsFromCache(keyword);
         $scope.contentResultsList = [];
+        $scope.contentSearchDone = false;
         searchConversationsFromServer(keyword);
     }
     else {
@@ -94,6 +97,7 @@ $scope.searchContent = function() {
         if ($scope.searchQuery !== keyword) { return; }
 
         $scope.contentResultsList = list;
+        $scope.contentSearchDone = true;
 
         var cvs = $scope.cvs();
         if (cvs.length) {
@@ -180,7 +184,6 @@ $scope.showConversation = function(c) {
 
 $scope.sendMessage = function(c) {
     if (!c.draft) { return; }
-
     // Result conversation needs copy draft into copied conversation in cache
     var draft = c.draft;
     c = $scope.conversationsCache.getById(c.id);
@@ -188,6 +191,8 @@ $scope.sendMessage = function(c) {
 
     // Broadcast beforeMessageSend to assure all necessary data that should be prepared and merge into scope
     $scope.$broadcast('wdm:beforeMessageSend', c);
+
+    if (!c.addresses.length) { return; }
 
     $scope.conversations.sendMessages(c).then(function(cc) {
         if (cc !== $scope.activeConversation) {
@@ -308,14 +313,17 @@ if ($scope.serverMatchRequirement) {
         var c = $scope.createConversation();
         c.extend({
             addresses: [decodeURIComponent(parts[0])],
-            contact_names: [decodeURIComponent(parts[1])]
+            contact_names: [decodeURIComponent(parts[1])],
+            date: Date.now()
         });
+        $location.search('create', null).replace();
     }
 }
 
 var keyboardScope = wdKey.push('messages');
 
 wdKey.$apply('up, k', 'messages', function() {
+    GA('messages:keyboard:up');
     var index = $scope.cvs().indexOf($scope.activeConversation);
     if (index === -1) { return; }
     if (index > 0) {
@@ -324,6 +332,7 @@ wdKey.$apply('up, k', 'messages', function() {
     return false;
 });
 wdKey.$apply('down, j', 'messages', function() {
+    GA('messages:keyboard:down');
     var index = $scope.cvs().indexOf($scope.activeConversation);
     if (index === -1) { return; }
     if (index < $scope.cvs().length - 1) {
@@ -338,6 +347,9 @@ $scope.$on('$destroy', function() {
     $scope.conversations.off('.wdm');
     keyboardScope.done();
     wdKey.deleteScope('messages');
+    if ($scope.conversationsCache.contains($scope.activeConversation)) {
+        $scope.activeConversation.allRead();
+    }
 });
 
 //=================================================================================
