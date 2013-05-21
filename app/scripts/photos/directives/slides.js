@@ -211,6 +211,7 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                 var imageWidth = horizontal ? $scope.current.width : $scope.current.height;
                 var imageHeight = horizontal ? $scope.current.height : $scope.current.width;
 
+
                 var widthScale = imageWidth / frameWidth;
                 var heightScale = imageHeight / frameHeight;
                 var scale = Math.max(widthScale, heightScale);
@@ -220,15 +221,10 @@ return ['WDP_PLAYING_INTERVAL', '$rootScope', 'wdViewport', 'wdKey', 'GA',
                     imageHeight = imageHeight / scale;
                 }
 
-                var offsetX = (frameWidth - (horizontal ? imageWidth : imageHeight)) / 2;
-                var offsetY = (frameHeight - (horizontal ? imageHeight : imageWidth)) / 2;
+                var offsetX = (frameWidth - imageWidth) / 2;
+                var offsetY = (frameHeight - imageHeight) / 2;
 
-                img
-                // .animate({
-                //     left: windowWidth / 2 - $scope.current.thumbnail_width / 2,
-                //     top: windowHeight / 2 - $scope.current.thumbnail_height / 2
-                // })
-                .animate({
+                img.animate({
                     opacity: 1,
                     left: offsetX + frameLeft,
                     top: offsetY + frameTop,

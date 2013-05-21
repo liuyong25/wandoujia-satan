@@ -33,4 +33,5 @@
             ng-click="$root.GA('photos:toolbar:add_photo')"
             ><i class="icon-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
     </div>
+    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.photos.UPGRADE_TIP}}"></div>
 </div>

@@ -14,6 +14,8 @@ return [
 function($scope,  $window,    Photos,   $log,   $route,   $location,   wdAlert,   wdpPhotos,
          wdViewport,   GA,   PhotosLayoutAlgorithm,   $q,   wdNotification) {
 
+$scope.serverMatchRequirement = $route.current.locals.versionSupport;
+
 $scope.firstScreenLoaded = false;
 $scope.loaded = false;
 $scope.allLoaded = false;
@@ -34,40 +36,42 @@ wdViewport.on('resize', function() {
     $scope.$apply(layout);
 });
 
-if ($route.current.params.preview) {
-    Photos.get(
-        { id: $route.current.params.preview },
-        function(photo) {
-            $location.search('preview', null).replace();
-            mergePhotos(photo);
-            $scope.preview(photo);
-            loadScreen();
-        }, function() {
-            loadScreen();
-        });
-}
-else {
-    loadScreen();
-}
-
-var chromeExtensionNotification;
-if ($window.chrome &&
-    $window.chrome.webstore &&
-    !localStorage.getItem('photosExtensionInstalled') &&
-    !angular.element($window.document.documentElement).hasClass('photos-extension-installed')) {
-    chromeExtensionNotification = setTimeout(function() {
-        wdNotification.notify($scope, extensionNotificationTemplate)
-            .then(null, function() {
-                localStorage.setItem('photosExtensionInstalled', true);
+if ($scope.serverMatchRequirement) {
+    if ($route.current.params.preview) {
+        Photos.get(
+            { id: $route.current.params.preview },
+            function(photo) {
+                $location.search('preview', null).replace();
+                mergePhotos(photo);
+                $scope.preview(photo);
+                loadScreen();
+            }, function() {
+                loadScreen();
             });
-    }, 3000);
-}
+    }
+    else {
+        loadScreen();
+    }
 
-wdpPhotos.on('add.wdp', function(e, p) {
-    // do nothing...
-}).on('remove.wdp', function(e, p) {
-    $scope.$broadcast('wdp:photos:remove', [p]);
-});
+    var chromeExtensionNotification;
+    if ($window.chrome &&
+        $window.chrome.webstore &&
+        !localStorage.getItem('photosExtensionInstalled') &&
+        !angular.element($window.document.documentElement).hasClass('photos-extension-installed')) {
+        chromeExtensionNotification = setTimeout(function() {
+            wdNotification.notify($scope, extensionNotificationTemplate)
+                .then(null, function() {
+                    localStorage.setItem('photosExtensionInstalled', true);
+                });
+        }, 3000);
+    }
+
+    wdpPhotos.on('add.wdp', function(e, p) {
+        // do nothing...
+    }).on('remove.wdp', function(e, p) {
+        $scope.$broadcast('wdp:photos:remove', [p]);
+    });
+}
 
 $scope.preview = function(photo) {
     if (photo.path) {

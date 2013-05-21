@@ -56,6 +56,7 @@ $scope.clearSearch = function() {
 
 var searchConversationsFromServer = _.debounce(function(keyword) {
     $scope.$apply(function() {
+        GA('messages:search:input');
         wdmConversations.searchConversationsFromServer(keyword).then(function done(list) {
             if ($scope.searchQuery !== keyword) { return; }
 
@@ -322,6 +323,7 @@ if ($scope.serverMatchRequirement) {
 var keyboardScope = wdKey.push('messages');
 
 wdKey.$apply('up, k', 'messages', function() {
+    GA('messages:keyboard:up');
     var index = $scope.cvs().indexOf($scope.activeConversation);
     if (index === -1) { return; }
     if (index > 0) {
@@ -330,6 +332,7 @@ wdKey.$apply('up, k', 'messages', function() {
     return false;
 });
 wdKey.$apply('down, j', 'messages', function() {
+    GA('messages:keyboard:down');
     var index = $scope.cvs().indexOf($scope.activeConversation);
     if (index === -1) { return; }
     if (index < $scope.cvs().length - 1) {

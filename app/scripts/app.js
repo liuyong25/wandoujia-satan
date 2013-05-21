@@ -85,7 +85,8 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             controller: 'galleryController',
             resolve: {
                 auth: validateToken,
-                nav: reflectNavbar('photos')
+                nav: reflectNavbar('photos'),
+                versionSupport: minVersionRequirement(3769)
             },
             reloadOnSearch: false
         });
