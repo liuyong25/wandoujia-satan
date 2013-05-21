@@ -71,7 +71,7 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
                             file.defer.notify({
                                 status: 'failed'
                             });
-                            GA('photos:upload:fail');
+                            GA('photos:upload:fail_' + response.status);
                         }
                     },
                     onManualRetry: function() {
