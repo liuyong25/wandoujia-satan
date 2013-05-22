@@ -29,6 +29,7 @@ return {
         SLIDES_CLOSE: 'Close',
 
         BLANK_TIP: 'No photos on your phone. Add some photos to share with friends.',
+        UPGRADE_TIP: 'Update SnapPea to start view photos from the web.',
 
         BTN_LOAD: 'Load more...',
 

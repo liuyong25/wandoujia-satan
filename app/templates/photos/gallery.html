@@ -6,12 +6,14 @@
                     wdp-repeat="photo in photos"
                 ></div>
             </div>
-            <div class="load-more"
-                ng-class="{'load-more-hide': allLoaded || !firstScreenLoaded}"
-                ng-click="fetch();$root.GA('photos:loadmore')"
-                ng-switch on="loaded">
-                    <span ng-switch-when="true">{{$root.DICT.photos.BTN_LOAD}}</span>
-                    <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>
+            <div style="text-align:center;">
+                <div class="load-more"
+                    ng-class="{'load-more-hide': allLoaded || !firstScreenLoaded}"
+                    ng-click="fetch();$root.GA('photos:loadmore')"
+                    ng-switch on="loaded">
+                        <span ng-switch-when="true">{{$root.DICT.photos.BTN_LOAD}}</span>
+                        <span ng-switch-when="false" class="wd-loading wd-loading-inline" data-visible="true"></span>
+                </div>
             </div>
         </div>
         <div class="wdp-actionbar"></div>
@@ -31,4 +33,5 @@
             ng-click="$root.GA('photos:toolbar:add_photo')"
             ><i class="icon-add"></i> {{$root.DICT.photos.ACTIONBAR_ADD_PHOTOS}}</div>
     </div>
+    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.photos.UPGRADE_TIP}}"></div>
 </div>

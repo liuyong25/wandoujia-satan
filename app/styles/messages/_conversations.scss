@@ -61,6 +61,11 @@
     margin: 15px 0;
 }
 
+.wdmc-blank {
+    @extend .wdmc-row;
+    @include justify-content(center);
+}
+
 .wdmcr-a {
     width: 43px;
     text-align: center;

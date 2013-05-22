@@ -43,6 +43,7 @@ _.extend(ExtendedConversationsCollection.prototype, {
     },
 
     _findCursor: function() {
+        if (!this._cursor) { return null; }
         var cursorDate = this._cursor;
         var i, l, c;
 
@@ -53,7 +54,9 @@ _.extend(ExtendedConversationsCollection.prototype, {
             }
         }
 
-        return this.collection[Math.min(i, l - 1)].id;
+        var cursor = this.collection[Math.min(i, l - 1)];
+
+        return cursor ? cursor.id : null;
     },
 
     _fetchById: function(id) {
@@ -76,8 +79,9 @@ _.extend(ExtendedConversationsCollection.prototype, {
                 offset: 0,
                 length: 30
             };
-            if (this._cursor) {
-                params.cursor = this._findCursor();
+            var cursor = this._findCursor();
+            if (cursor) {
+                params.cursor = cursor;
                 params.offset = 1;
             }
             return $http.get(
@@ -85,7 +89,9 @@ _.extend(ExtendedConversationsCollection.prototype, {
                 { params: params }
             ).then(function success(response) {
                 var rawData = [].concat(response.data);
-                this._cursor = response.data[response.data.length - 1].date;
+                if (response.data.length) {
+                    this._cursor = response.data[response.data.length - 1].date;
+                }
                 this.loaded = response.headers('WD-Need-More') === 'false';
                 return this.add(rawData.map(this.create.bind(this)));
             }.bind(this));

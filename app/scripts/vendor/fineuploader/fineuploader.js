@@ -2354,11 +2354,16 @@ qq.UploadHandlerXhr = function(o, uploadCompleteCallback, logCallback) {
         try {
             response = {
                 success: xhr.status === 200,
+                status: xhr.status,
                 result: parseResponse(xhr)
             };
         }
         catch (error) {
-            response = {};
+            response = {
+                success: false,
+                status: xhr.status,
+                result: xhr.responseText
+            };
         }
 
         if (isErrorResponse(xhr, response)) {

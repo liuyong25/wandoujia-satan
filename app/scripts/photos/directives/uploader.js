@@ -49,7 +49,6 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
                             photo: photoPromise,
                             upload: uploadPromise
                         });
-
                     },
                     onProgress: function(id, name, uploadedBytes, totalBytes) {
                         var file = uploader.getFile(id);
@@ -72,7 +71,7 @@ return [    '$q', 'wdDev', 'wdKeeper', 'wdpImageHelper', 'GA',
                             file.defer.notify({
                                 status: 'failed'
                             });
-                            GA('photos:upload:fail');
+                            GA('photos:upload:fail_' + response.status);
                         }
                     },
                     onManualRetry: function() {
