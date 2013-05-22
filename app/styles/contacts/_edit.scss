@@ -252,6 +252,7 @@
 
                 i.icon-sendsms{
                     margin-left: 5px;
+                    cursor: pointer;
                     @include transition(opacity 0.4s);
                     opacity: 0.65;
                 }
