@@ -92,6 +92,7 @@
                     <textarea wdm-receiver rows="1"></textarea>
                 </div>
                 <div class="btn wdmct-d"
+                    ng-show="activeConversation"
                     bs-tooltip="{{ $root.DICT.messages.ACTION_DELETE }}"
                     data-options="{ placement: 'bottom' }"
                     ng-click="remove(activeConversation);$root.GA('messages:delete_conversation_single')"><i class="icon-del-toolbar"></i></div>
@@ -158,7 +159,7 @@
                     </div>
                 </div>
             </section>
-            <section class="wdm-editor" ng-hide="cvsChanging || cvsListFirstLoading">
+            <section class="wdm-editor" ng-hide="cvsChanging || cvsListFirstLoading || !activeConversation">
                 <form ng-submit="sendMessage(activeConversation)">
                     <div class="wdme-ta">
                         <textarea
