@@ -22,7 +22,7 @@
     .contacts-list{
         position: fixed;
         overflow-y : auto;
-        top:101px;
+        top:100px;
         width: 428px;
         display: block;
         padding-left: 1px;
@@ -139,11 +139,23 @@
         span.icon-clear{
             @include button-effect;
             position: absolute;
-            right: 20px;
+            right: 15px;
             font-size: 25px;
             padding-top: 8px;
             width: 14px;
             overflow: hidden;
+            padding: 5px;
+            cursor: pointer;
+            @extend .icon-close;
+            &:hover {
+                @extend .icon-close-h;
+                right: 12px;
+            }
+            &:active {
+                @extend .icon-close-p;
+                right: 12px;
+            }
+
         }
 
         input:focus{

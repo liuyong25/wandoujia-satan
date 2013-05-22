@@ -362,6 +362,7 @@ define([
             };
 
             if(e.shiftKey){
+                GA('Web Applications : press shift and click checkbox checked');
                 var startIndex = Math.max($scope.list.indexOf(G_lastChecked), 0);
                 var stopIndex = $scope.list.indexOf(item);
                 $scope.list.slice(Math.min(startIndex, stopIndex), Math.max(startIndex, stopIndex) + 1).forEach(function(v,i) {
@@ -452,6 +453,7 @@ define([
             });
 
         wdKey.$apply('esc', 'applications', function() {
+            GA('Web Applications:press esc and close the application info page');
             closeMask();
         });
 

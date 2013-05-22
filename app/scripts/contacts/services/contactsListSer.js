@@ -285,6 +285,14 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                 data: {'ids':list},
                 timeout:CONFIG.timeout
             }).success(function(){
+                for( var m = 0 , n = list.length ; m < n ; m += 1 ){
+                    for (var i = 0 , l = global.contacts.length ; i < l ; i += 1 ){
+                        if(list[m] === global.contacts[i]['id']){
+                            global.contacts.splice(i,1);
+                            return;
+                        }
+                    }
+                }
             }).error(function(){
             });
         },

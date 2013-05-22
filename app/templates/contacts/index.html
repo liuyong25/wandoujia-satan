@@ -21,7 +21,7 @@
             <div class="search">
                 <input type="text" ng-model="searchText" placeholder="Search contacts...">
                 <i class="icon-search"></i>
-                <span class="icon-clear" ng-show="searchText" ng-click="searchText='';clearSearch();">&times;</span>
+                <span class="icon-clear" ng-show="searchText" ng-click="searchText='';clearSearch();"></span>
             </div>
         </div>
 
@@ -79,7 +79,7 @@
             <!-- 上传图片遮罩 end -->
             <div class="info">
                 <p class="name">{{contact.name.display_name}}</p>
-                <p class="remark">{{contact.organization[0].company}}  {{contact.organization[0].title}}</p>
+                <p class="remark">{{contact.workinfo}}</p>
                 <div class="editName dn">
                     <div class="account dn">
                         <h4>{{$root.DICT.contacts.WORDS.account}}</h4>
@@ -116,7 +116,7 @@
                         <p class="detail dn">{{item.number}}</p>
                         <input class="detail dn" type="text" ng-model="item.number"  placeholder="Phone number">
                         <span class="delete dn" ng-click="delItem('phone',item)">&times;</span>
-                        <i class="icon-sms-toolbar" ng-show="isSendMessageShow" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
+                        <i class="icon-sendsms" bs-tooltip="Send message" ng-show="isSendMessageShow" ng-click="sendMessageTo(item.number,contact.name.display_name)"></i>
                     </dd>
 
                     <!-- 新增一个item start -->
@@ -270,7 +270,7 @@
     </div>
     <!-- 为空检测 end -->
     <!-- 版本检测 -->
-    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.messages.UPGRADE_TIP}}"></div>
+    <div ui-if="!serverMatchRequirement" class="wd-upgrade-warning" data-text="{{$root.DICT.contacts.UPGRADE_TIP}}"></div>
     <!-- 版本检测 end -->
 
 </div>

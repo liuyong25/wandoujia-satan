@@ -12,6 +12,7 @@ return {
             'cancel' : 'Cancel'
         },
         NO_CONTACT_TIPS : 'No contacts matched your search.',
+        UPGRADE_TIP:'Update SnapPea to manage your contacts from the web.',
         NO_CONTACT : 'No contacts on your phone. Your friends are waiting!',
         NO_NAME : 'No Name',
         LOAD_MORE : 'Load more',
