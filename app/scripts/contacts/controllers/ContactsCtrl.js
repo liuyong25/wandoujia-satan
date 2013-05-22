@@ -161,7 +161,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
     //显示对应的联系人
     function showContacts(id,data){
-
         var show = function(){
 
             $scope.isRightLoadShow = false;
@@ -170,7 +169,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 $scope.isContactsEditShow = false;
                 return;
             };
+            G_contacts = wdcContacts.getContacts();
             var data = data || getContactsById(id,G_contacts) || getContactsById(id,G_search);
+
             if(!data){
                 data = G_contacts[0];
                 $('ul.contacts-list')[0].scrollTop = 0;
@@ -251,6 +252,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             $scope.isSendMessageShow = false;
 
             setTimeout(function(){
+                $('.contacts-edit img.photo').attr('src',data['photo_path']);
                 var wrap = $('.contacts-edit');
                 wrap.find('div.editName').hide();
                 wrap.find('p.name').show();
@@ -430,12 +432,17 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 showContacts();
             };
 
-            if(!id){
+            if(delId.length > 1){
+                $scope.selectedNum = 0;
+                $scope.isDeselectBtnShow = false;
                 $scope.isDeleteBtnShow = false;
-            };
-
-            $scope.selectedNum = 0;
-            $scope.isDeselectBtnShow = false;
+            }else{
+                $scope.selectedNum -= 1;
+                if($scope.selectedNum < 1){
+                    $scope.isDeselectBtnShow = false;
+                    $scope.isDeleteBtnShow = false;
+                }
+            }
 
             wdcContacts.delContacts(delId).success(function(){
             }).error(function(){
@@ -622,12 +629,11 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 var account = editData[0].account || {name:'',type:''};
                 editData[0]['account_name'] = account['name'];
                 editData[0]['account_type'] = account['type'];
-
                 wdcContacts.newContact(editData).success(function(data){
                     $scope.pageList.shift();
                     $scope.pageList.unshift(getListItem(data[0]));
                     getList(data,true);
-                    showContacts(data[0]['id']);
+                    showContacts(data[0]);
                     $('ul.contacts-list')[0].scrollTop = 0;
                 }).error(function(){
                     wdAlert.alert('Failed to save new contact', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
@@ -765,7 +771,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         $('.wdj-contacts .wd-blank').hide();
         $scope.isRightLoadShow = false;
         var wrap = $('.contacts-edit .info');
-        wrap.find('img.photo').attr('src',G_defaultPhoto);
+        $('.contacts-edit img.photo').attr('src',G_defaultPhoto);
         //$scope.searchText = '';
 
         //获取用户账户
@@ -916,12 +922,18 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         //显示为base64
                         reader.onload = function(e){
                             base64 = e.target.result;
-                            setPhoto(base64);
+                            $('.contacts-edit img.photo').attr('src',base64);
                         };
                     };
                 },
                 onComplete : function(){
                     setPhoto(base64);
+                    setTimeout(function(){
+                        setPhoto(base64);
+                    },1000);
+                    setTimeout(function(){
+                        setPhoto(base64);
+                    },1500);
                 }
             }
         });
@@ -945,11 +957,13 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
     //搜索功能
     $('.wdj-contacts .btn-all .search input').on('keyup',_.debounce(function(){
-        if(!!$scope.searchText){
+
+        //不是空则执行搜索
+        if(!!$scope.searchText && (G_contacts.length > 1) ){
             G_searchIsNull = false;
             $scope.searchContacts();
             $scope.$apply();
-        }else if(!$scope.searchText && !G_searchIsNull ){
+        }else if(!$scope.searchText && !G_searchIsNull && (G_contacts.length > 1) ){
             G_searchIsNull = true;
             $scope.searchContacts();
             $scope.$apply();
@@ -958,7 +972,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
     $('.wdj-contacts .btn-all .search .icon-clear').on('click',function(){
         $scope.pageList = G_list;
-        showContacts(G_list[0]['id']);
+        if(!!G_list[0] &&!!G_list[0]['id']){
+            showContacts(G_list[0]['id']);
+        }
     });
 
     $scope.clearSearch = function(){
