@@ -176,8 +176,10 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             }
         }
     }])
-    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable', 'wdSocket', 'wdTitleNotification',
-        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable,   wdSocket,   wdTitleNotification) {
+    .run([      '$window', '$rootScope', 'wdKeeper', 'GA', 'wdWordTable', 'wdSocket',
+            'wdTitleNotification', 'wdDev',
+        function($window,   $rootScope,   wdKeeper,   GA,   wdWordTable,   wdSocket,
+             wdTitleNotification,   wdDev) {
         // Tip users when leaving.
         $window.onbeforeunload = function () {
             return wdKeeper.getTip();
@@ -208,6 +210,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
 
         $rootScope.$on('signin', function() {
             wdSocket.connect();
+            GA('login:phone_model:' + wdDev.getMetaData('phone_model'));
         });
         $rootScope.$on('signout', function() {
             wdSocket.close();
