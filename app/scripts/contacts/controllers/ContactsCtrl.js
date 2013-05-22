@@ -281,6 +281,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             },50);
         };
 
+        //点了旁边，没有点保存
         switch(G_status){
             case 'new':
                 if(!wdcContacts.checkBlank($scope.contact)){
@@ -314,7 +315,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                     show();
                 },function(){
                     G_status = '';
-                    $scope.pageList.shift();
+                    //$scope.pageList.shift();
                     show();
                 });
             break;
@@ -931,9 +932,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                     setTimeout(function(){
                         setPhoto(base64);
                     },1000);
-                    setTimeout(function(){
-                        setPhoto(base64);
-                    },1500);
                 }
             }
         });
