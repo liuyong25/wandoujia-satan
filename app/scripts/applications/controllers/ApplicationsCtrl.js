@@ -39,38 +39,14 @@ define([
             $scope.isLoadShow = false;
             $scope.dataLoaded = true;
             $scope.isInstallBtnDisable = false;
-            for( var i = 0,l = data.length ; i<l; i++ ){
-                G_appList.push(changeInfo(data[i]));
-            };
+            G_appList = wdcApplications.getApplications();
+            console.log(G_appList);
             $scope.list = G_appList;
             setTimeout(function(){
                 uploadApk($('.installApp'));
             },300);
         };
 
-        //改变某些字段的值
-        function changeInfo(data){
-
-            //将字节换算为兆
-            data['apk_size'] = Number(data['apk_size']/1024/1024).toFixed(2);
-            switch(data['installed_location']){
-                case 1:
-                    data['installed_location'] = "Phone memory";
-                break;
-                case 2:
-                    data['installed_location'] = "SD card";
-                break;
-            };
-
-            //是否显示提示
-            data['confirmTipShow'] = false;
-
-            //是否显示安装成功
-            data['doneTipShow'] = false;
-
-            data['checked'] = false;
-            return data;
-        };
 
         //取得具体应用的数据信息
         function getAppInfo(data,package_name){
@@ -428,7 +404,7 @@ define([
                         };
                     };
                     data['doneTipShow'] = true;
-                    $scope.list.unshift(changeInfo(data));
+                    $scope.list.unshift(wdcApplications.changeInfo(data));
                     setTimeout(function(){
                         data['doneTipShow'] = false;
                         $scope.$apply();
