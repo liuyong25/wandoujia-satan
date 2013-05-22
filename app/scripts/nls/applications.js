@@ -17,7 +17,7 @@ return {
             INSTALL_COMPLETE:'Installation complete'
         },
         NOAPP:'No applications on your phone.',
-        UPGRADE_TIP:'Please Update SnapPea.',
+        UPGRADE_TIP:'Update SnapPea to manage your applications from the web.',
         DEL_ONE_APP:{
             TITLE:'Uninstall application',
             CONTENT:'Uninstall the selected application from your phone?',

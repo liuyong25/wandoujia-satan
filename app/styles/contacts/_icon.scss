@@ -1,5 +1,5 @@
 @import "contacts/*.png";
-$iconList:"sms-toolbar";
+$iconList:"default";
 @each $icon in $iconList{
 
     // sprite meta

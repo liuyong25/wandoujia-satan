@@ -1,7 +1,7 @@
 .contacts-edit{
     position: fixed;
     overflow-y : auto;
-    height:95%;
+    height:100%;
     right: 0px;
     left: 514px;
 
@@ -46,10 +46,9 @@
             p{
                 position: absolute;
                 top: 75px;
-                left: 13px;
+                left: 27px;
                 color: #FFF;
-                font-size: 14px;
-                font-weight: bold;
+                font-size: 12px;
                 text-overflow: ellipsis;
             }
         }
@@ -73,6 +72,7 @@
         .btn{
             width: 80px;
             margin-left: 5px;
+            margin-top: 5px;
             float: right;
         }
     }
@@ -84,7 +84,7 @@
         top:0px;
         left: 127px;
         right: 35px;
-
+        padding-bottom: 100px;
 
         .info-hr{
             position: relative;
@@ -250,8 +250,16 @@
                     background-color: #FFF;
                 }
 
-                i.icon-sms-toolbar{
-                    margin-left: 15px;
+                i.icon-sendsms{
+                    margin-left: 5px;
+                    @include transition(opacity 0.4s);
+                    opacity: 0.65;
+                }
+                i.icon-sendsms:hover{
+                    opacity: 1;
+                }
+                i.icon-sendsms:active{
+                    opacity: 0.5;
                 }
             }
         }

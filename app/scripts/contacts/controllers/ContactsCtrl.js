@@ -18,6 +18,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     //搜索出的联系人列表
     var G_searchList = [];
 
+    //搜索出的数据
+    var G_search = [];
+
     //被点击选择了的元素id
     var G_checkedIds = [];
 
@@ -70,12 +73,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     function getData(data) {
         G_dataFinish = wdcContacts.getLoadStatus();
         for ( var i = 0, l=data.length; i<l; i++ ){
-
-            //修正默认头像
-            if (!data[i].photo_path){
-                data[i].photo_path = G_defaultPhoto;
-            };
-            G_contacts.push(data[i]);
+            G_contacts = wdcContacts.getContacts();
         };
         getList(data);
         G_isFirst = false;
@@ -95,6 +93,12 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             checked : false,
             tooltip : $scope.$root.DICT.contacts.WORDS.select
         };
+
+        //修正默认头像
+        if (!data.photo_path){
+            data.photo_path = G_defaultPhoto;
+        };
+
         for (var i = 0, l = G_checkedIds.length ; i < l ; i++ ){
             if(id === G_checkedIds[i]){
                 obj.checked = true;
@@ -156,7 +160,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     };
 
     //显示对应的联系人
-    function showContacts(id){
+    function showContacts(id,data){
 
         var show = function(){
 
@@ -166,8 +170,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 $scope.isContactsEditShow = false;
                 return;
             };
-
-            var data = getContactsById(id,G_contacts);
+            var data = data || getContactsById(id,G_contacts) || getContactsById(id,G_search);
             if(!data){
                 data = G_contacts[0];
                 $('ul.contacts-list')[0].scrollTop = 0;
@@ -187,6 +190,16 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 }
             }
 
+            if( data['organization'][0] && data['organization'][0]['title'] && data['organization'][0]['company'] ){
+
+                //要显示的工作信息
+                data[ 'workinfo' ] = data['organization'][0]['title'] + ", " + data['organization'][0]['company']
+            }else if( data['organization'][0] && data['organization'][0]['title'] && !data['organization'][0]['company'] ){
+                data[ 'workinfo' ] = data['organization'][0]['title'];
+            }else if( data['organization'][0] && !data['organization'][0][''] && data['organization'][0]['company'] ){
+                data[ 'workinfo' ] = data['organization'][0]['company'];
+            }
+
             data = changeDataType(data);
 
             //备份数据到全局，以便之后cancel时使用
@@ -201,6 +214,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                     G_clicked = $scope.pageList[i];
                 };
             };
+
             $scope.contact = data;
             $scope.isContactsEditShow = true;
 
@@ -237,7 +251,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             $scope.isSendMessageShow = false;
 
             setTimeout(function(){
-
                 var wrap = $('.contacts-edit');
                 wrap.find('div.editName').hide();
                 wrap.find('p.name').show();
@@ -247,8 +260,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 wrap.find('button.btn-addNewItem').hide();
                 wrap.find('hr').show();
                 wrap.find('span.delete').hide();
-
-
                 wrap.find('p.des').css('display','inline-block');
                 wrap.find('p.detail').css('display','inline-block');
                 var label = $('.labelFlag');
@@ -257,7 +268,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         label.eq(i).css('display','inline-block').prevAll('p.des').hide();
                     };
                 };
-
                 var dt = wrap.find('dt');
                 for(var i = 0 ,l = dt.length;i<l;i++){
                     if(!dt.eq(i).next('dd').length){
@@ -366,9 +376,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
             //生成delId
             if(!id){
-                for(var i = 0 , l = G_list.length ; i < l ; i ++){
-                    if( G_list[i].checked === true && !G_list[i]['read_only'] ){
-                        delId.push(G_list[i].id);
+                for(var i = 0 , l = $scope.pageList.length ; i < l ; i ++){
+                    if( $scope.pageList[i].checked === true && !$scope.pageList[i]['read_only'] ){
+                        delId.push($scope.pageList[i].id);
                     };
                 };
             }else{
@@ -446,7 +456,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         $scope.isDeselectBtnShow = false;
         $scope.isDeleteBtnShow = false;
         $scope.selectedNum = 0;
-        GA('Web Contacts:click Deselect all button');
+        GA('Web Contacts:click deselect all button');
         for(var i = 0, l = $scope.pageList.length;i<l;i++){
             $scope.pageList[i].checked = false ;
         };
@@ -468,6 +478,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         };
 
         if(event.shiftKey){
+            GA('Web Contacts:press shift and click checkbox checked');
             var startIndex = Math.max($scope.pageList.indexOf(G_lastChecked), 0);
             var stopIndex = $scope.pageList.indexOf(item);
             $scope.pageList.slice(Math.min(startIndex, stopIndex), Math.max(startIndex, stopIndex) + 1).forEach(function(v) {
@@ -613,7 +624,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 editData[0]['account_type'] = account['type'];
 
                 wdcContacts.newContact(editData).success(function(data){
-                    G_contacts.unshift(data[0]);
                     $scope.pageList.shift();
                     $scope.pageList.unshift(getListItem(data[0]));
                     getList(data,true);
@@ -879,6 +889,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     };
 
     function photoUpload(){
+        var base64 = '';
         var uploader = new fineuploader.FineUploaderBasic({
             button: $('.contacts-edit .photoUpload')[0],
             request: {
@@ -904,18 +915,27 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
                         //显示为base64
                         reader.onload = function(e){
-                            $('.contacts-edit img.photo').attr('src',e.target.result);
-                            for (var i = 0 , l = $scope.pageList.length ; i < l ; i++ ) {
-                                if($scope.pageList[i]['id'] === G_showingContact['id'] ){
-                                    $scope.pageList[i]['photo'] = e.target.result;
-                                    return;
-                                }
-                            }
+                            base64 = e.target.result;
+                            setPhoto(base64);
                         };
                     };
+                },
+                onComplete : function(){
+                    setPhoto(base64);
                 }
             }
         });
+
+        function setPhoto(src){
+            $('.contacts-edit img.photo').attr('src',src);
+            for (var i = 0 , l = $scope.pageList.length ; i < l ; i++ ) {
+                if($scope.pageList[i]['id'] === G_showingContact['id'] ){
+                    $scope.pageList[i]['photo'] = src;
+                    $scope.$apply();
+                    return;
+                }
+            }
+        }
 
         $('.contacts-edit .footer .btn-save').click(function() {
             uploader.uploadStoredFiles();
@@ -952,13 +972,19 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         $scope.isListLoadShow = true;
         $scope.pageList = [];
         G_searchList = [];
+        G_search = [];
         $scope.searchText = $scope.searchText || '';
         var text = $scope.searchText.toLocaleLowerCase();
         $scope.isNoContactsShow = false;
+        $scope.isRightLoadShow = true;
+        $scope.isContactsEditShow = false;
 
         //调用搜索接口
         wdcContacts.searchContacts(text).then(function(data){
+            G_search = data;
             $scope.isListLoadShow = false;
+            $scope.isRightLoadShow = false;
+            $scope.isContactsEditShow = true;
             for(var i = 0 , l = data.length ; i < l ; i += 1 ){
                 G_searchList.push(getListItem(data[i]));
             }
@@ -1055,7 +1081,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     });
 
     $scope.$on('$destroy', function() {
-        G_keyContact.done();
+        if(!!G_keyContact){
+            G_keyContact.done();
+        }
         wdKey.deleteScope('contacts');
     });
 
