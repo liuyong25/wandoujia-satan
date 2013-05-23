@@ -384,6 +384,7 @@ define([
                 $scope.isDeleteBtnShow = false;
                 $scope.isDeselectBtnShow = false;
             }
+            $scope.$apply();
         }
 
         function clickInstallApk(){
