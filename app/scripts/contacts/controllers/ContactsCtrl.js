@@ -443,7 +443,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 $scope.isDeselectBtnShow = false;
                 $scope.isDeleteBtnShow = false;
             }else{
-                $scope.selectedNum -= 1;
+                if($scope.selectedNum>0){
+                    $scope.selectedNum -= 1;
+                }
                 if($scope.selectedNum < 1){
                     $scope.isDeselectBtnShow = false;
                     $scope.isDeleteBtnShow = false;
@@ -486,7 +488,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     $scope.clickChecked = function(event,item){
         if(item['checked'] === false){
             GA('Web Contacts:click checkbox unchecked');
-            $scope.selectedNum -= 1;
+            if($scope.selectedNum > 0){
+                $scope.selectedNum -= 1;
+            }
             item.tooltip = $scope.$root.DICT.contacts.WORDS.select;
             for (var i = 0 , l = G_checkedIds.length ; i < l ; i++ ) {
                 G_checkedIds.splice(i,1);
