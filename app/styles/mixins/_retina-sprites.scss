@@ -12,8 +12,8 @@
  */
 
 //first we'll define the folders where the sprites are and their layouts
-$icons: sprite-map("icons/*.png", $layout: smart);
-$icons-2x: sprite-map("icons-2x/*.png", $layout: smart);
+$icons: sprite-map("icons/*.png", $spacing: 4px);
+$icons-2x: sprite-map("icons-2x/*.png", $spacing: 4px);
 
 //Sprite mixin, works perfectly with standard defines
 @mixin use-sprite($sprite) {
