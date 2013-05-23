@@ -24,8 +24,9 @@ $scope.contentResultsList = [];
 $scope.contentSearchDone = false;
 
 $scope.cvs = function() {
+    var result;
     if ($scope.isSearching()) {
-        return $scope.resultsList.reduce(function(mem, id) {
+        result = $scope.resultsList.reduce(function(mem, id) {
             var c = $scope.conversationsCache.getById(id);
             if (c) {
                 mem.push(c);
@@ -34,8 +35,12 @@ $scope.cvs = function() {
         }, []).concat($scope.contentResultsList);
     }
     else {
-        return $scope.conversationsCache.collection;
+        result = $scope.conversationsCache.collection;
     }
+    if (!result.length) {
+        $scope.activeConversation = null;
+    }
+    return result;
 };
 
 $scope.selectedCount = function() {

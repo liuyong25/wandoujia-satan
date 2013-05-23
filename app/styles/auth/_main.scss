@@ -114,10 +114,10 @@ $auth-spacing: 4px;
         .link-to-gp {
             margin-top: 52px;
             $name: "googleplay";
-            @include auth-sprite($name);
+            @include use-sprite($name);
             display: block;
-            width: auth-sprite-width($name);
-            height: auth-sprite-height($name);
+            width: icon-width($name);
+            height: icon-height($name);
         }
         ul.inline {
             margin-top: 50px;
