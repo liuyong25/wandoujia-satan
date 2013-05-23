@@ -60,6 +60,9 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     //搜索为空过嘛，如果为空过则是true
     var G_searchIsNull = false;
 
+    //上传实例
+    var G_uploader ;
+
     //获取数据
     function init(){
 
@@ -101,7 +104,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
         for (var i = 0, l = G_checkedIds.length ; i < l ; i++ ){
             if(id === G_checkedIds[i]){
-                obj.checked = true;
+                //obj.checked = true;
                 obj.tooltip = $scope.$root.DICT.contacts.WORDS.deselect
             }
         }
@@ -403,6 +406,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         break;
                     };
                 };
+
                 for(var j = 0, k = G_list.length ; j < k ; j++ ){
                     if( !!G_list[j] && !!G_list[j]['id'] && G_list[j]['id'] == delId[i]){
                         G_list.splice(j,1);
@@ -412,6 +416,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         break;
                     };
                 };
+
                 for(var j = 0, k = G_searchList.length ; j < k ; j++ ){
                     if( !!G_searchList[j] && !!G_searchList[j]['id'] && G_searchList[j]['id'] == delId[i]){
                         G_searchList.splice(j,1);
@@ -465,9 +470,17 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         $scope.isDeleteBtnShow = false;
         $scope.selectedNum = 0;
         GA('Web Contacts:click deselect all button');
+        G_contacts = wdcContacts.getContacts();
+        for(var i = 0, l = G_contacts.length;i<l;i++){
+            G_contacts[i].checked = false ;
+        };
         for(var i = 0, l = $scope.pageList.length;i<l;i++){
             $scope.pageList[i].checked = false ;
         };
+        for(var i = 0, l = G_searchList.length;i<l;i++){
+            G_searchList[i].checked = false ;
+        };
+        $scope.$apply();
     };
 
     $scope.clickChecked = function(event,item){
@@ -514,7 +527,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     $scope.editContact = function(id){
 
         GA('Web Contacts:click edit contact button');
-        $scope.isPhotoUploadShow = true;
         $scope.isSendMessageShow = false;
         G_keyContact.done();
 
@@ -525,6 +537,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         if(G_status !== 'new'){
             G_status = 'edit';
             ele.find('.account').hide();
+            $scope.isPhotoUploadShow = true;
         };
 
         var change = function(arr){
@@ -618,6 +631,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                         };
                     };
                     showContacts(data['id']);
+                    G_uploader.uploadStoredFiles();
                 }).error(function(){
                     wdAlert.alert('Failed to save edits', '', 'OK').then(function(){showContacts($scope.contact.id);});
                     GA('Web Contacts:save the editing contact failed');
@@ -636,6 +650,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                     getList(data,true);
                     showContacts(data[0]);
                     $('ul.contacts-list')[0].scrollTop = 0;
+                    G_uploader.uploadStoredFiles();
                 }).error(function(){
                     wdAlert.alert('Failed to save new contact', '', 'OK').then(function(){showContacts(G_showingContact[id]);});
                     $scope.pageList.shift();
@@ -897,10 +912,10 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
 
     function photoUpload(){
         var base64 = '';
-        var uploader = new fineuploader.FineUploaderBasic({
+        G_uploader = new fineuploader.FineUploaderBasic({
             button: $('.contacts-edit .photoUpload')[0],
             request: {
-                endpoint: wdDev.wrapURL('/resource/contacts/'+$scope.contact.id+'/upload/')
+                endpoint: wdDev.wrapURL('/resource/contacts/'+ $scope.contact.id +'/upload/')
             },
             validation: {
                 acceptFiles: 'image/*'
@@ -913,7 +928,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
             autoUpload: false,
             callbacks: {
                 onSubmit: function(id) {
-                    var file = uploader.getFile(id);
+                    var file = G_uploader.getFile(id);
                     if(!file.type.match('image.*')){
                         return;
                     }else{
@@ -929,9 +944,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
                 },
                 onComplete : function(){
                     setPhoto(base64);
-                    setTimeout(function(){
-                        setPhoto(base64);
-                    },1000);
                 }
             }
         });
@@ -939,17 +951,17 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         function setPhoto(src){
             $('.contacts-edit img.photo').attr('src',src);
             for (var i = 0 , l = $scope.pageList.length ; i < l ; i++ ) {
-                if($scope.pageList[i]['id'] === G_showingContact['id'] ){
-                    $scope.pageList[i]['photo'] = src;
-                    $scope.$apply();
-                    return;
+                if(G_status === 'new'){
+                    $scope.pageList[0]['photo'] = src;
+                }else{
+                    if($scope.pageList[i]['id'] === G_showingContact['id'] ){
+                        $scope.pageList[i]['photo'] = src;
+                        $scope.$apply();
+                        return;
+                    }
                 }
             }
         }
-
-        $('.contacts-edit .footer .btn-save').click(function() {
-            uploader.uploadStoredFiles();
-        });
     };
 
 
@@ -960,10 +972,12 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         if(!!$scope.searchText && (G_contacts.length > 1) ){
             G_searchIsNull = false;
             $scope.searchContacts();
+            $scope.deselectAll();
             $scope.$apply();
         }else if(!$scope.searchText && !G_searchIsNull && (G_contacts.length > 1) ){
             G_searchIsNull = true;
             $scope.searchContacts();
+            $scope.deselectAll();
             $scope.$apply();
         }
     },300));

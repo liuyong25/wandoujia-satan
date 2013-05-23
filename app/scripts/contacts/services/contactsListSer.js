@@ -79,6 +79,12 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
         global.contacts = [];
     });
 
+    function deselectAll(){
+        for(var i = 0 , l = global.contacts.length ; i < l ; i ++ ){
+            global.contacts[i]['checked'] = false;
+        }
+    }
+
     //整个service返回接口
     return {
 
