@@ -23,7 +23,7 @@
         <!-- 新安装的应用列表 end -->
 
         <!-- 已安装的应用列表 -->
-        <dl ng-repeat="item in list" ng-click="showAppInfo(item.package_name);" ng-class="{'confirm':item.confirmTipShow}">
+        <dl class="old-list" ng-repeat="item in list" ng-click="showAppInfo(item.package_name);" ng-class="{'confirm':item.confirmTipShow}">
             <dt><img ng-src="{{item.icon}}"></dt>
             <dd class="title" title="{{item.name}}">{{item.name}}</dd>
             <dd class="toolbar" ng-click="$event.stopPropagation();">

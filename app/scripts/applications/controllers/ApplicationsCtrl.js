@@ -35,12 +35,14 @@ define([
         //最后一个选择的元素
         var G_lastChecked;
 
+        //上传的实例
+        var G_uploader;
+
         function getAppListData(data){
             $scope.isLoadShow = false;
             $scope.dataLoaded = true;
             $scope.isInstallBtnDisable = false;
             G_appList = wdcApplications.getApplications();
-            console.log(G_appList);
             $scope.list = G_appList;
             setTimeout(function(){
                 uploadApk($('.installApp'));
@@ -137,7 +139,7 @@ define([
         function uploadApk(btnEles){
             for(var i = 0,l = btnEles.length;i<l;i++ ){
 
-                var uploader = new fineuploader.FineUploaderBasic({
+                G_uploader = new fineuploader.FineUploaderBasic({
                     button: btnEles[i],
                     request: {
                         endpoint: wdDev.wrapURL('/resource/apps/upload')
@@ -155,16 +157,16 @@ define([
                     autoUpload: true,
                     callbacks: {
                         onSubmit: function(id,name) {
-                            showUploadApp(name);
+                            showUploadApp(id,name);
                             $('.wd-blank').hide();
                         },
                         onProgress: function(id,name,progress,total){
-                            updateUpload(name,Math.floor(progress/total*100));
+                            updateUpload(id,name,Math.floor(progress/total*100));
                         },
                         onComplete: function(id, name, data){
                             var result = data.result[0];
                             for(var i = 0, l = $scope.newList.length; i < l ; i++ ){
-                                if($scope.newList[i]['file_name'] == name){
+                                if($scope.newList[i]['id'] === id){
                                     $scope.newList[i]['package_name'] = result['package_name'];
                                     $scope.newList[i]['apk_path'] =  result['apk_path'];
                                     $scope.newList[i]['unknown_sources'] = result['unknown_sources'];
@@ -188,7 +190,7 @@ define([
                     hideDropzones: false,
                     callbacks: {
                         dropProcessing: function(isProcessing, files) {
-                            uploader.addFiles(files);
+                            G_uploader.addFiles(files);
                         },
                         error: function(code, filename) {},
                         log: function(message, level) {}
@@ -201,8 +203,9 @@ define([
         };
 
         //上传安装应用时，显示对应的应用
-        function showUploadApp(file_name){
+        function showUploadApp(id,file_name){
             var item = {
+                id : id,
                 file_name:file_name,
                 progress:'1%',
                 progressShow:true,
@@ -214,9 +217,9 @@ define([
         };
 
         //更新上传进度
-        function updateUpload(name,progress){
+        function updateUpload(id,name,progress){
             for(var i = 0 , l = $scope.newList.length; i < l ; i++ ){
-                if( $scope.newList[i]['file_name'] == name ){
+                if( $scope.newList[i]['id'] === id ){
                     if( progress == 100 ){
                         $scope.newList[i]['confirmTipShow'] = true;
                         $scope.newList[i]['progressShow'] = false;
@@ -365,6 +368,24 @@ define([
             G_lastChecked = item ;
         };
 
+        function showToolbar() {
+            $scope.selectedNum = 0;
+            var eles = $('.apps-list .old-list');
+            for (var i = 0 , l = $scope.list.length ; i < l ; i += 1) {
+                if($scope.list[i]['checked']){
+                    $scope.selectedNum += 1;
+                    eles.eq(i).find('dd.toolbar').css('opacity',1);
+                }
+            }
+            if($scope.selectedNum > 0){
+                $scope.isDeleteBtnShow = true;
+                $scope.isDeselectBtnShow = true;
+            }else{
+                $scope.isDeleteBtnShow = false;
+                $scope.isDeselectBtnShow = false;
+            }
+        }
+
         function clickInstallApk(){
             GA('Web applications :click install apk button');
         };
@@ -444,8 +465,8 @@ define([
         $scope.isDeselectBtnShow = false;
         $scope.isInstallBtnDisable = true;
 
-
         wdcApplications.onchange(getAppListData);
+        setTimeout(showToolbar,150);
 
         //需要挂载到socpe上面的方法
         $scope.showAppInfo = showAppInfo;
