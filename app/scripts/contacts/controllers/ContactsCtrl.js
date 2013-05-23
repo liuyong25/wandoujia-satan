@@ -527,7 +527,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
     $scope.editContact = function(id){
 
         GA('Web Contacts:click edit contact button');
-        $scope.isPhotoUploadShow = true;
         $scope.isSendMessageShow = false;
         G_keyContact.done();
 
@@ -538,6 +537,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         if(G_status !== 'new'){
             G_status = 'edit';
             ele.find('.account').hide();
+            $scope.isPhotoUploadShow = true;
         };
 
         var change = function(arr){
@@ -915,7 +915,7 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         G_uploader = new fineuploader.FineUploaderBasic({
             button: $('.contacts-edit .photoUpload')[0],
             request: {
-                endpoint: wdDev.wrapURL('/resource/contacts/'+$scope.contact.id+'/upload/')
+                endpoint: wdDev.wrapURL('/resource/contacts/'+ $scope.contact.id +'/upload/')
             },
             validation: {
                 acceptFiles: 'image/*'
