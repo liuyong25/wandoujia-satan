@@ -119,7 +119,7 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
         },
 
         getContactSuggestions: function(query) {
-            return this.searchContacts(query, { sms: true, email: false });
+            return this.searchContacts(query, { sms: true });
         },
 
         //根据query搜索联系人
@@ -127,7 +127,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
 
             //是否查找email数据
             options = options || {};
-            options.email = options.email || true ;
             options.sms = options.sms || false;
             var defer = $q.defer();
 
@@ -139,9 +138,6 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
             }
 
             query = query.toLocaleLowerCase();
-            if ( !query ) {
-                defer.resolve( global.contacts );
-            }
 
             var search = function( query , offset , length ) {
 
@@ -157,10 +153,17 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                         }
                     }).success(function(data){
                         var list = [];
-                        if ( !options.email ) {
+                        if ( options.sms ) {
                             _.each( data, function( value ) {
                                 if( value[ 'phone' ][0] ){
-                                    list.push(value);
+
+                                    //给简版的逻辑
+                                    _.each(value[ 'phone' ],function(v){
+                                        list.push({
+                                            name:value['name'][ 'display_name' ],
+                                            phone:v['number']
+                                        });
+                                    });
                                 }
                             });
                         }else{
@@ -211,7 +214,7 @@ return [ '$http', '$q','$rootScope', function ( $http, $q, $rootScope ) {
                                 }
                             }
 
-                            if ( options.email ) {
+                            if ( !options.sms ) {
                                 //查找email
                                 for(var m = 0 , n = value[ 'email' ].length ; m < n ; m += 1) {
                                     var val = value[ 'email' ][m];

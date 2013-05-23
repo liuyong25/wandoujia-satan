@@ -482,7 +482,6 @@ function ContactsCtrl($scope, wdAlert , wdDev ,$route,GA,wdcContacts, $timeout,w
         for(var i = 0, l = G_searchList.length;i<l;i++){
             G_searchList[i].checked = false ;
         };
-        $scope.$apply();
     };
 
     $scope.clickChecked = function(event,item){

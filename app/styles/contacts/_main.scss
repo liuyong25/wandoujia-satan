@@ -139,20 +139,19 @@
         span.icon-clear{
             @include button-effect;
             position: absolute;
-            right: 15px;
+            right: 18px;
             font-size: 25px;
             width: 14px;
             overflow: hidden;
-            padding-top: 5px;
-            cursor: pointer;
+            padding-top: 6px;
             @extend .icon-close;
             &:hover {
                 @extend .icon-close-h;
-                right: 12px;
+                right: 16px;
             }
             &:active {
                 @extend .icon-close-p;
-                right: 12px;
+                right: 18px;
             }
 
         }
