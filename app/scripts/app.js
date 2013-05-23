@@ -86,7 +86,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             resolve: {
                 auth: validateToken,
                 nav: reflectNavbar('photos'),
-                versionSupport: minVersionRequirement(3769)
+                versionSupport: minVersionRequirement(3820)
             },
             reloadOnSearch: false
         });
@@ -96,7 +96,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             resolve: {
                 auth: validateToken,
                 nav: reflectNavbar('messages'),
-                versionSupport: minVersionRequirement(3769)
+                versionSupport: minVersionRequirement(3820)
             },
             reloadOnSearch: false
         });
@@ -106,7 +106,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             resolve: {
                 auth: validateToken,
                 nav: reflectNavbar('contacts'),
-                versionSupport: minVersionRequirement(3769)
+                versionSupport: minVersionRequirement(3820)
             },
             reloadOnSearch: false
         });
@@ -116,7 +116,7 @@ angular.module('wdApp', ['wdCommon', 'wdAuth', 'wdPhotos', 'wdLanguage', 'wdMess
             resolve: {
                 auth: validateToken,
                 nav: reflectNavbar('applications'),
-                versionSupport: minVersionRequirement(3796)
+                versionSupport: minVersionRequirement(3820)
             },
             reloadOnSearch: false
         });
