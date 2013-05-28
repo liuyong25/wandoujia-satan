@@ -113,7 +113,8 @@ module.exports = function( grunt ) {
             }
         },
         bootstrap_copy: {
-            command: 'cp bootstrap/bootstrap/img/* app/images/; cp bootstrap/bootstrap/css/bootstrap.css app/styles/bootstrap.css; cp bootstrap/bootstrap/css/bootstrap-responsive.css app/styles/bootstrap-responsive.css'
+            // command: 'cp bootstrap/bootstrap/img/* app/images/; cp bootstrap/bootstrap/css/bootstrap.css app/styles/bootstrap.css; cp bootstrap/bootstrap/css/bootstrap-responsive.css app/styles/bootstrap-responsive.css'
+            command: 'cp bootstrap/bootstrap/css/bootstrap.css app/styles/bootstrap.css; cp bootstrap/bootstrap/css/bootstrap-responsive.css app/styles/bootstrap-responsive.css'
         },
         bootstrap_clean: {
             command: 'make clean',
