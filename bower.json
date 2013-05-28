@@ -4,9 +4,9 @@
   "dependencies": {
     "angular-ui": "~0.4.0",
     "moment": "~2.0.0",
-    "angular": "~1.0.6",
     "angular-resource": "~1.0.6",
     "socket.io-client": "~0.9.11",
-    "angular-unstable": "~1.1.4"
+    "angular-unstable": "~1.1.5",
+    "angular-bootstrap": "~0.3.0"
   }
 }
